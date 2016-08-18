@@ -19,3 +19,4 @@ INSTALLATION
 * Set your mysql root/user password at conf/settings.conf.
 
 * If you wish to enable Twig caching for better performance, create a folder called "cache" under the webroot and give the WWW server process ownership of it. Edit main.php and uncomment row 6 to enable cache.
+* Additionally if you wish to be able to edit the settings for Kirjuri inside the web app, give ownership of conf/settings.conf to the www process.

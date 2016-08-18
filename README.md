@@ -20,3 +20,7 @@ INSTALLATION
 
 * If you wish to enable Twig caching for better performance, create a folder called "cache" under the webroot and give the WWW server process ownership of it. Edit main.php and uncomment row 6 to enable cache.
 * Additionally if you wish to be able to edit the settings for Kirjuri inside the web app, give ownership of conf/settings.conf to the www process.
+* 
+![Add a request](https://github.com/AnttiKurittu/kirjuri/blob/master/conf/screenshot_add_request.png)
+![Index page](https://github.com/AnttiKurittu/kirjuri/blob/master/conf/screenshot_index.png)
+![Device listing in case](https://github.com/AnttiKurittu/kirjuri/blob/master/conf/screenshot_devices.png)

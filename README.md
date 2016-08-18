@@ -1,9 +1,5 @@
 # kirjuri
-Kirjuri is a web application for managing physical forensic evidence
-
-Kirjuri
-======
-
+Kirjuri is a simple php/mysql web application for managing physical forensic evidence.
 
 LICENSE
 ------------
@@ -12,4 +8,14 @@ Kirjuri is developed by Antti Kurittu at the Helsinki Police Department as an in
 
 Kirjuri requires PHP5 and MySQL.
 
-Drop the files in your webroot and run conf/create_tables.sql against your database to create the tables needed for operation.
+Kirjuri is NOT designed to be installed on an internet-facing machine except for testing and development purposes. It is INHERENTLY INSECURE, and built to be used in an air-gapped network by trusted operators. If you wish to implement user management and security features, you are welcome to submit a pull request.
+
+INSTALLATION
+------------
+
+* Clone the repository to your server.
+* Copy the files in your webroot directory (for example /usr/share/nginx/html/) 
+* Run conf/create_tables.sql against your database to create the tables needed for operation. (mysql -u root -pyourpassword <create_tables.sql)
+* Set your mysql root/user password at conf/settings.conf.
+
+* If you wish to enable Twig caching for better performance, create a folder called "cache" under the webroot and give the WWW server process ownership of it. Edit main.php and uncomment row 6 to enable cache.

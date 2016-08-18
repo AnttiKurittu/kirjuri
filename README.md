@@ -26,4 +26,5 @@ SCREENSHOTS
 
 ![Add a request](https://github.com/AnttiKurittu/kirjuri/blob/master/conf/screenshot_add_request.png)
 ![Index page](https://github.com/AnttiKurittu/kirjuri/blob/master/conf/screenshot_index.png)
+![Case overview](https://github.com/AnttiKurittu/kirjuri/blob/master/conf/screenshot_overview.png)
 ![Device listing in case](https://github.com/AnttiKurittu/kirjuri/blob/master/conf/screenshot_devices.png)

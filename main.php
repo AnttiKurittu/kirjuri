@@ -2,7 +2,8 @@
 require __DIR__ . '/vendor/autoload.php';
 $loader = new Twig_Loader_Filesystem('views/');
 $twig = new Twig_Environment($loader, array(
-    'debug' => true, 'cache' => "cache"
+    'debug' => true
+    //, 'cache' => "cache" // uncomment to allow caching. Create a folder called "cache" under the webroot dir and give the www process ownership.
 ));
 $twig->addExtension(new Twig_Extension_Debug());
 session_start();

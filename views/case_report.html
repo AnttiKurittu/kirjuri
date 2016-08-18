@@ -1,0 +1,100 @@
+
+
+{% extends 'base.html' %}
+{% block title %}
+<title>{{ lang.155}}</title>
+{% endblock title %}
+
+{% block bodytag %}
+<body style="margin-left:20px;margin-right:40px;">
+  {% endblock bodytag %}
+  {% block upperframe %}
+  {% endblock upperframe %}
+  {% block logo %}
+  {% endblock logo %}
+  {% block navi %}
+  {% endblock navi %}
+  {% block content %}
+  {% for entry in caserow %}
+  <div class="page">
+    <table>
+      <tr>
+        <td>
+          <img src="views/img/logo.png" width="130px" style="horizontal-align:left;vertical-align:top;">
+        </td>
+        <td style="padding-left:50px;">
+          <h2>{{lang.155}}</h2>
+          <h3>{{settings.police_precinct}}</h3>
+          <h3>{{entry.case_file_number}}</h3>
+          <h3>
+          {{lang.156}}</h1>
+          <p>{{lang.19}}: {{entry.case_crime}}</p>
+          <p>{{lang.d20}}: {{entry.case_suspect}}<br>
+          <p>{{lang.56}}: {{entry.case_investigation_lead}}.</p>
+          <p>{{lang.57}}: {{entry.case_investigator}} (p. {{entry.case_investigator_tel}})<br>
+          <p>{{lang.b22}}: {{entry.forensic_investigator}}</p>
+          {% if (entry.phone_investigator) and (entry.phone_investigator != entry.forensic_investigator) %}
+          <p>{{lang.b23}}: {{entry.phone_investigator}}</p>
+          {% endif %}</p>
+          <p>{{lang.157}} {{entry.case_added_date|date("d.m.Y")}}.<br>
+            {{lang.158}} {{entry.case_start_date|date("d.m.Y") }}.<br>
+            {{lang.159}} {{entry.case_ready_date|date("d.m.Y") }}.
+          </p>
+          <br>
+          <br>
+          ____________________________________________<br>
+          {{entry.forensic_investigator}}<br><br>
+          {% if entry.phone_investigator and (entry.phone_investigator != entry.forensic_investigator)%}
+          ____________________________________________<br>
+          {{entry.phone_investigator}}<br>
+          {% endif %}
+          <br>
+          <p>{{settings.report_city}} {{"now"|date("d.m.Y")}}</p>
+        </td>
+      </tr>
+    </table>
+  </div>
+  {% if entry.report_notes %}
+  <div class="page">
+    <h1>{{lang.119}}</h1>
+    <hr>
+    {{entry.report_notes|raw}}
+  </div>
+  {% endif %}
+  <div class="page">
+    <h4>{{lang.160}}<div class="pull-right">{{entry.case_file_number}}</div></h4>
+    <hr>
+    <ul>
+      {% for entry in mediarow %}{% if (entry.is_removed == "0") and (entry.device_is_host == "1") %}
+      <li>{{lang.161}} {% if entry.device_document %}{{entry.device_document}}{% endif %}{% if entry.device_item_number %} {{lang.93}} {{entry.device_item_number}}{% endif %}
+        <b>{{entry.device_type}}, {{entry.device_manuf}} {{entry.device_model}} {% if entry.device_size_in_gb %}({{lang.162}} {{entry.device_size_in_gb}} GB){% endif %}</b>
+        {% if entry.device_identifier %}<br>{{lang.b30}}: {{entry.device_identifier}}{% endif %}, {{lang.163}} {{entry.id}}
+        {% if entry.case_request_description %}<br>{{lang.80}}: <i>{{entry.case_request_description}}</i>{% endif %}
+        {% endif %}
+      </li>
+      {% set this_parent = entry.id %}
+      {% for entry in mediarow %}
+      {% if (entry.device_host_id == this_parent) and (entry.is_removed == "0") %}
+      <ul>
+        <li>{{lang.164}}{% if entry.device_document %}{{entry.device_document}}{% endif %}{% if entry.device_item_number %} {{lang.93}} {{entry.device_item_number}}{% endif %}
+          <b>{{entry.device_type}}, {{entry.device_manuf}} {{entry.device_model}} {% if entry.device_size_in_gb %}({{lang.162}} {{entry.device_size_in_gb}} GB){% endif %}</b>
+          {% if entry.device_identifier %}<br>{{lang.b30}}: {{entry.device_identifier}}, {% endif %}{{lang.163}} {{entry.id}}
+          {% if entry.case_request_description %}<br>{{lang.80}}: <i>{{entry.case_request_description}}</i>{% endif %}
+        </li>
+      </ul>
+      {% endif %}{% endfor %}{% endfor %}
+
+  </div>
+<div class="page">
+<h4>{{lang.165}}<div class="pull-right">{{entry.case_file_number}}</div></h4>
+<hr>
+{% for entry in mediarow %}
+{% if (entry.is_removed == "0") and (entry.report_notes) and (entry.device_include_in_report == "1")%}
+<h4>&nbsp;&nbsp;{{entry.device_type}}, {{entry.device_manuf}} {{entry.device_model}} {% if entry.device_size_in_gb %}(koko {{entry.device_size_in_gb}} GB){% endif %} {% if entry.device_identifier %}[{{entry.device_identifier}}]{% endif %}</h4>
+<div class="well well-sm">{{entry.report_notes|raw}}</div>
+{% endif %}
+{% endfor %}
+</div>
+</ul>
+{% endfor %}
+{% endblock %}

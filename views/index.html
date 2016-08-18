@@ -1,0 +1,211 @@
+{% extends 'base.html' %}
+{% block title %}
+<title>{{lang.1}} - {{settings.title_text}}</title>
+{% endblock title %}
+{% block navi %}
+<ul class="nav nav-sidebar">
+  <li class="active"><a href='index.php?vuosi={{dateStart|date("Y")}}'><span class="glyphicon glyphicon-home" aria-hidden="true"></span> {{lang.1}} {{dateStart|date("Y")}}<span class="sr-only">(current)</span></a></li>
+</ul>
+<ul class="nav nav-sidebar">
+  <li><a href='statistics.php?vuosi={{dateStart|date("Y")}}'> <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> {{lang.2}} {{dateStart|date("Y")}}</a></li>
+</ul>
+<ul class="nav nav-sidebar">
+  <li><a href="add_case.php"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{lang.3}}</a></li>
+</ul>
+<ul class="nav nav-sidebar">
+  <li><a href="help.php"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> {{lang.4}}</a></li>
+</ul>
+<ul class="nav nav-sidebar">
+  <li><a href="help.php?settings=1"><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> {{lang.5}}</a></li>
+</ul>
+</div>
+{% endblock navi %}
+{% block content %}
+
+<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+<ol class="breadcrumb">
+  <li><a href="index.php?vuosi={{caserow.0.case_added_date|date("Y")}}">{{lang.1}} {{dateStart|date("Y")}}</a></li>
+</ol>
+<div class="col-md-4 pull-right">
+  <form role="form" method="GET" action="index.php">
+    <input type="text" class="form-control" name="hae" placeholder="{{lang.6}}" title="Boolean-haku, * toimii katkaisudev_manufnä." value="{{hakusana}}" onkeyup="showHint(this.value)">
+    <input type="hidden" name="vuosi" value="{{dateStart|date("Y")}}">
+    {% if query_j %}<input type="hidden" name="j" value="{{query_j}}">{% endif %}
+    {% if query_d %}<input type="hidden" name="d" value="{{query_d}}">{% endif %}
+    {% if query_s %}<input type="hidden" name="s" value="{{query_s}}">{% endif %}
+  </form>
+
+</div>
+<h3 class="page-header">{{lang.7}} {{dateStart|date("Y")}} <a href='index.php?vuosi={{(dateStart|date("Y") - 1 )}}{% if query_s %}&s={{query_s}}{% endif %}{% if query_j %}&j={{query_j}}{% endif %}{% if query_d %}&d={{query_d}}{% endif %}{% if hakusana %}&hae={{hakusana|replace({"\+": "%2B"})}}{% endif %}'><span class="glyphicon glyphicon-triangle-left" aria-hidden="true"></span></a> <a href='index.php?vuosi={{(dateStart|date("Y") + 1 )}}{% if query_s %}&s={{query_s}}{% endif %}{% if query_j %}&j={{query_j}}{% endif %}{% if query_d %}&d={{query_d}}{% endif %}{% if hakusana %}&hae={{hakusana|replace({"\+": "%2B"})}}{% endif %}'><span class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span></a> </h3>
+{% if settings.motd %}
+<div class="panel panel-danger">
+  <div class="panel-body">
+    <i class="fa fa-warning"></i> {{settings.motd}}
+  </div>
+</div>
+{% endif %}
+
+<div class="table-responsive">
+<!--  {% if hakusana %}
+  <h5>{{lang.8}}4
+    "{{hakusana}}"{% if query_s == "1" %} {{lang.9}}</a>{% endif %} {% if query_s == "2" %} {{lang.10}}{% endif %}{% if query_s == "3" %} {{lang.11}}{% endif %}, {{lang.12}}: {% if query_s != "1" %} <a href="index.php?vuosi={{dateStart|date("Y")}}&s=1{% if query_j %}&j={{query_j}}{% endif %}{% if query_d %}&d={{query_d}}{% endif %}{% if hakusana %}&hae={{hakusana|replace({"\+": "%2B"})}}{% endif %}"><span class="label label-primary">{{lang.13}}</span></a>{% endif %}{% if query_s != "2" %} <a href="index.php?vuosi={{dateStart|date("Y")}}&s=2{% if query_j %}&j={{query_j}}{% endif %}{% if query_d %}&d={{query_d}}{% endif %}{% if hakusana %}&hae={{hakusana|replace({"\+": "%2B"})}}{% endif %}"><span class="label label-primary">{{lang.14}}</span></a>{% endif%}{% if query_s != "3" %} <a href="index.php?vuosi={{dateStart|date("Y")}}&s=3{% if query_j %}&j={{query_j}}{% endif %}{% if query_d %}&d={{query_d}}{% endif %}{% if hakusana %}&hae={{hakusana|replace({"\+": "%2B"})}}{% endif %}"><span class="label label-primary">{{lang.15}}</span></a>{% endif %}
+  </h5>
+  {% endif %}
+-->
+
+  <table class="table table-condensed">
+    <thead>
+      <tr>
+        {% if (order_by == "case_id ASC") %}
+        <th style="width:1%;white-space:nowrap;" class="active"><a href="index.php?vuosi={{dateStart|date("Y")}}&j=1{% if query_s %}&s={{query_s}}{% endif %}{% if hakusana %}&hae={{hakusana|replace({"\+": "%2B"})}}{% endif %}">{{lang.16}} <i class="fa fa-sort-numeric-asc"></i></a></th>
+        {% elseif (order_by == "case_id DESC") %}
+        <th style="width:1%;white-space:nowrap;" class="active"><a href="index.php?vuosi={{dateStart|date("Y")}}&j=1&d=a{% if query_s %}&s={{query_s}}{% endif %}{% if hakusana %}&hae={{hakusana|replace({"\+": "%2B"})}}{% endif %}">Nro <i class="fa fa-sort-numeric-desc"></i></a></th>
+        {% else %}
+        <th style="width:1%;white-space:nowrap;"><a href="index.php?vuosi={{dateStart|date("Y")}}&j=1&d=a{% if query_s %}&s={{query_s}}{% endif %}{% if hakusana %}&hae={{hakusana|replace({"\+": "%2B"})}}{% endif %}">{{lang.16}} <i class="fa fa-sort"></i></a></th>
+        {% endif %}
+        {% if (order_by == "case_name ASC") %}
+        <th class="active"><a href="index.php?vuosi={{dateStart|date("Y")}}&j=2{% if query_s %}&s={{query_s}}{% endif %}{% if hakusana %}&hae={{hakusana|replace({"\+": "%2B"})}}{% endif %}">{{lang.17}} <i class="fa fa-sort-alpha-asc"></i></a></th>
+        {% elseif (order_by == "case_name DESC") %}
+        <th class="active"><a href="index.php?vuosi={{dateStart|date("Y")}}&j=2&d=a{% if query_s %}&s={{query_s}}{% endif %}{% if hakusana %}&hae={{hakusana|replace({"\+": "%2B"})}}{% endif %}">case_name <i class="fa fa-sort-alpha-desc"></i></a></th>
+        {% else %}
+        <th><a href="index.php?vuosi={{dateStart|date("Y")}}&j=2&d=a{% if query_s %}&s={{query_s}}{% endif %}{% if hakusana %}&hae={{hakusana|replace({"\+": "%2B"})}}{% endif %}">{{lang.17}} <i class="fa fa-sort"></i></a></th>
+        {% endif %}
+        {% if (order_by == "case_file_number ASC") %}
+        <th class="active"><a href="index.php?vuosi={{dateStart|date("Y")}}&j=3{% if query_s %}&s={{query_s}}{% endif %}{% if hakusana %}&hae={{hakusana|replace({"\+": "%2B"})}}{% endif %}">{{lang.18}} <i class="fa fa-sort-numeric-asc"></i></a></th>
+        {% elseif (order_by == "case_file_number DESC") %}
+        <th class="active"><a href="index.php?vuosi={{dateStart|date("Y")}}&j=3&d=a{% if query_s %}&s={{query_s}}{% endif %}{% if hakusana %}&hae={{hakusana|replace({"\+": "%2B"})}}{% endif %}">Ilm. nro <i class="fa fa-sort-numeric-desc"></i></a></th>
+        {% else %}
+        <th><a href="index.php?vuosi={{dateStart|date("Y")}}&j=3&d=a{% if query_s %}&s={{query_s}}{% endif %}{% if hakusana %}&hae={{hakusana|replace({"\+": "%2B"})}}{% endif %}">{{lang.18}} <i class="fa fa-sort"></i></a></th>
+        {% endif %}
+        {% if (order_by == "case_crime ASC") %}
+        <th class="active"><a href="index.php?vuosi={{dateStart|date("Y")}}&j=4{% if query_s %}&s={{query_s}}{% endif %}{% if hakusana %}&hae={{hakusana|replace({"\+": "%2B"})}}{% endif %}">{{lang.19}} <i class="fa fa-sort-alpha-asc"></i></a></th>
+        {% elseif (order_by == "case_crime DESC") %}
+        <th class="active"><a href="index.php?vuosi={{dateStart|date("Y")}}&j=4&d=a{% if query_s %}&s={{query_s}}{% endif %}{% if hakusana %}&hae={{hakusana|replace({"\+": "%2B"})}}{% endif %}">Rikosnimike <i class="fa fa-sort-alpha-desc"></i></a></th>
+        {% else %}
+        <th><a href="index.php?vuosi={{dateStart|date("Y")}}&j=4&d=a{% if query_s %}&s={{query_s}}{% endif %}{% if hakusana %}&hae={{hakusana|replace({"\+": "%2B"})}}{% endif %}">{{lang.19}} <i class="fa fa-sort"></i></a></th>
+        {% endif %}
+        {% if (order_by == "case_suspect ASC") %}
+        <th class="active"><a href="index.php?vuosi={{dateStart|date("Y")}}&j=5{% if query_s %}&s={{query_s}}{% endif %}{% if hakusana %}&hae={{hakusana|replace({"\+": "%2B"})}}{% endif %}">{{lang.20}} <i class="fa fa-sort-alpha-asc"></i></a></th>
+        {% elseif (order_by == "case_suspect DESC") %}
+        <th class="active"><a href="index.php?vuosi={{dateStart|date("Y")}}&j=5&d=a{% if query_s %}&s={{query_s}}{% endif %}{% if hakusana %}&hae={{hakusana|replace({"\+": "%2B"})}}{% endif %}">Epäilty <i class="fa fa-sort-alpha-desc"></i></a></th>
+        {% else %}
+        <th><a href="index.php?vuosi={{dateStart|date("Y")}}&j=5&d=a{% if query_s %}&s={{query_s}}{% endif %}{% if hakusana %}&hae={{hakusana|replace({"\+": "%2B"})}}{% endif %}">{{lang.20}} <i class="fa fa-sort"></i></a></th>
+        {% endif %}
+        {% if (order_by == "case_investigator ASC") %}
+        <th class="active"><a href="index.php?vuosi={{dateStart|date("Y")}}&j=6{% if query_s %}&s={{query_s}}{% endif %}{% if hakusana %}&hae={{hakusana|replace({"\+": "%2B"})}}{% endif %}">{{lang.21}} <i class="fa fa-sort-alpha-asc"></i></a></th>
+        {% elseif (order_by == "case_investigator DESC") %}
+        <th class="active"><a href="index.php?vuosi={{dateStart|date("Y")}}&j=6&d=a{% if query_s %}&s={{query_s}}{% endif %}{% if hakusana %}&hae={{hakusana|replace({"\+": "%2B"})}}{% endif %}">Takt. tutkija <i class="fa fa-sort-alpha-desc"></i></a></th>
+        {% else %}
+        <th><a href="index.php?vuosi={{dateStart|date("Y")}}&j=6&d=a{% if query_s %}&s={{query_s}}{% endif %}{% if hakusana %}&hae={{hakusana|replace({"\+": "%2B"})}}{% endif %}">{{lang.21}} <i class="fa fa-sort"></i></a></th>
+        {% endif %}
+        {% if (order_by == "forensic_investigator ASC") %}
+        <th class="active"><a href="index.php?vuosi={{dateStart|date("Y")}}&j=7{% if query_s %}&s={{query_s}}{% endif %}{% if hakusana %}&hae={{hakusana|replace({"\+": "%2B"})}}{% endif %}">{{lang.22}} <i class="fa fa-sort-alpha-asc"></i></a></th>
+        {% elseif (order_by == "forensic_investigator DESC") %}
+        <th class="active"><a href="index.php?vuosi={{dateStart|date("Y")}}&j=7&d=a{% if query_s %}&s={{query_s}}{% endif %}{% if hakusana %}&hae={{hakusana|replace({"\+": "%2B"})}}{% endif %}">Tekn. tutkija <i class="fa fa-sort-alpha-desc"></i></a></th>
+        {% else %}
+        <th><a href="index.php?vuosi={{dateStart|date("Y")}}&j=7&d=a{% if query_s %}&s={{query_s}}{% endif %}{% if hakusana %}&hae={{hakusana|replace({"\+": "%2B"})}}{% endif %}">{{lang.22}} <i class="fa fa-sort"></i></a></th>
+        {% endif %}
+        {% if (order_by == "phone_investigator ASC") %}
+        <th class="active"><a href="index.php?vuosi={{dateStart|date("Y")}}&j=8{% if query_s %}&s={{query_s}}{% endif %}{% if hakusana %}&hae={{hakusana|replace({"\+": "%2B"})}}{% endif %}">{{lang.23}} <i class="fa fa-sort-alpha-asc"></i></a></th>
+        {% elseif (order_by == "phone_investigator DESC") %}
+        <th class="active"><a href="index.php?vuosi={{dateStart|date("Y")}}&j=8&d=a{% if query_s %}&s={{query_s}}{% endif %}{% if hakusana %}&hae={{hakusana|replace({"\+": "%2B"})}}{% endif %}">Puh. tutkija <i class="fa fa-sort-alpha-desc"></i></a></th>
+        {% else %}
+        <th><a href="index.php?vuosi={{dateStart|date("Y")}}&j=8&d=a{% if query_s %}&s={{query_s}}{% endif %}{% if hakusana %}&hae={{hakusana|replace({"\+": "%2B"})}}{% endif %}">{{lang.23}} <i class="fa fa-sort"></i></a></th>
+        {% endif %}
+        {% if (order_by == "case_added_date ASC") %}
+        <th class="active"><a href="index.php?vuosi={{dateStart|date("Y")}}&j=9{% if query_s %}&s={{query_s}}{% endif %}{% if hakusana %}&hae={{hakusana|replace({"\+": "%2B"})}}{% endif %}">{{lang.24}} <i class="fa fa-sort-asc"></i></a></th>
+        {% elseif (order_by == "case_added_date DESC") %}
+        <th class="active"><a href="index.php?vuosi={{dateStart|date("Y")}}&j=9&d=a{% if query_s %}&s={{query_s}}{% endif %}{% if hakusana %}&hae={{hakusana|replace({"\+": "%2B"})}}{% endif %}">case_added_date <i class="fa fa-sort-desc"></i></a></th>
+        {% else %}
+        <th><a href="index.php?vuosi={{dateStart|date("Y")}}&j=9&d=a{% if query_s %}&s={{query_s}}{% endif %}{% if hakusana %}&hae={{hakusana|replace({"\+": "%2B"})}}{% endif %}">{{lang.24}} <i class="fa fa-sort"></i></a></th>
+        {% endif %}
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% set counter = "0" %}
+      {% set device_counter = "0" %}
+      {% set new_counter = "0" %}
+      {% set open_counter = "0" %}
+      {% set ready_counter = "0" %}
+      {% for entry in row_cases %}
+      {% if (entry.id == entry.parent_id) and (entry.is_removed == "0") %}
+      {% set counter = counter + 1 %}
+      <tr title="{{lang.25}} {{entry.case_added_date|date("d.m.Y")}}, {{lang.26}} {{entry.case_start_date|date("d.m.Y")}}{% if entry.case_ready_date %}, valmistui {{entry.case_ready_date|date("d.m.Y")}}{% endif %}" {% if entry.case_status == "1" %}class="danger"{% set new_counter = new_counter + 1 %}{% elseif entry.case_status == "2"  %}class="warning"{% set open_counter = open_counter + 1%}{% elseif entry.case_status == "3" %}class="default"{% set ready_counter = ready_counter + 1%}{% endif %}>
+      <td style="width:1%;white-space:nowrap;"><a style="font-weight:bold;" href="view_case.php?case={{entry.id}}">{{entry.case_id}}/{{entry.case_added_date|date("y")}}</a></td>
+      <td>
+          {% set has_new = false %}
+          {% set newcount = 0 %}
+              {% for device in row_devices %}
+                {% if device.parent_id == entry.id %}
+                  {% set device_status = device.device_action|split('|') %}
+                  {% if (device_status.0 == 1) %}
+                    {% set has_new = true %}
+                    {% set newcount = newcount + 1 %}
+                  {% endif %}
+                {% endif %}
+              {% endfor %}
+              {% if has_new == true %}<span class="label label-danger pull-right">{{ newcount }}</span>{% endif %}
+              {% if (entry.case_urgency == "1") and ( entry.case_status <= "2") %}<i style="color:red;" class="fa fa-bolt"></i>&nbsp;{% endif %}<a style="font-weight:bold;" href="view_case.php?case={{entry.id}}">{% if entry.case_name %}{{entry.case_name}}{% elseif entry.case_suspect %}{{lang.27}} {{entry.case_suspect}}{% else %}{{lang.28}}{% endif %}</a></td>
+      <td style="width:1%;white-space:nowrap;"><a style="font-weight:bold;" href="view_case.php?case={{entry.id}}">{{entry.case_file_number}}</a>{% if settings.notify_after_4_months == "1" and (entry.case_confiscation_date != "0000-00-00") and ((entry.case_confiscation_date|date("U")) < ("-4 months"|date("U"))) %} &nbsp;<i class="fa fa-calendar-times-o" style="color:red;"></i><i class="fa fa-exclamation" style="color:red;"></i>{%endif%}</td>
+      <td><a href="index.php?hae={{entry.case_crime|url_encode}}&vuosi={{entry.case_added_date|date("Y")}}">{{entry.case_crime|length > 20 ? entry.case_crime|slice(0, 20) ~ '...' : entry.case_crime}}</a></td>
+      <td><a href="index.php?hae={{entry.case_suspect|url_encode}}&vuosi={{entry.case_added_date|date("Y")}}">{{entry.case_suspect|length > 20 ? entry.case_suspect|slice(0, 20) ~ '...' : entry.case_suspect}}</a></td>
+      <td><a href="index.php?hae={{entry.case_investigator|url_encode}}&vuosi={{entry.case_added_date|date("Y")}}">{{entry.case_investigator|length > 20 ? entry.case_investigator|slice(0, 20) ~ '...' : entry.case_investigator}}</a> </td>
+      <td>{% if not entry.forensic_investigator %}<b style="color:red">{{ lang.174 }}</b>{% endif %}
+
+        <a href="index.php?hae={{"\"" ~ entry.forensic_investigator ~ "\""|url_encode}}&vuosi={{entry.case_added_date|date("Y")}}">{{entry.forensic_investigator|length > 20 ? entry.forensic_investigator|slice(0, 20) ~ '...' : entry.forensic_investigator}}</a></td>
+      <td>{% if entry.case_contains_mob_dev == "1" and not entry.phone_investigator %}<b style="color:red">{{ lang.174 }}</b>{% endif %}<a href="index.php?hae={{"\"" ~ entry.phone_investigator ~ "\""|url_encode}}&vuosi={{entry.case_added_date|date("Y")}}">{{entry.phone_investigator|length > 20 ? entry.phone_investigator|slice(0, 20) ~ '...' : entry.phone_investigator}}</a></td>
+      <td style="width:1%;white-space:nowrap;">{{entry.case_added_date|date("d.m.Y")}}
+</td>
+      <td>
+        {% if entry.case_contains_mob_dev == "1" %}
+        <span class="glyphicon glyphicon-phone" aria-hidden="true" style="color:#090;"></span>
+        {% else %}
+        <span class="glyphicon glyphicon-phone" aria-hidden="true" style="color:#DDD;"></span>
+        {% endif %}
+      </td>
+      <td>
+        {% if entry.report_notes %}
+        <span class="glyphicon glyphicon-file" aria-hidden="true" style="color:#090;"></span>
+        {% else %}
+        <span class="glyphicon glyphicon-file" aria-hidden="true" style="color:#DDD;"></span>
+        {% endif %}
+      </td>
+      <td>
+        {% if entry.examiners_notes %}
+        <span class="glyphicon glyphicon-comment" aria-hidden="true" style="color:#090;"></span>
+        {% else %}
+        <span class="glyphicon glyphicon-comment" aria-hidden="true" style="color:#DDD;"></span>
+        {% endif %}
+      </td>
+      <td>{{entry.case_devicecount}}{% set device_counter = device_counter + entry.case_devicecount %}</td>
+      </tr>
+      {% endif %}
+      {% endfor %}
+      {% for entry in row_cases %}
+      {% if (entry.id != entry.parent_id) and (entry.is_removed == "0") %}
+      <tr>
+        <td colspan="11">
+          <i class="fa fa-cube"></i> {{lang.29}}: <a href="device_memo.php?db_row={{entry.id}}">{{entry.device_type}}, {{entry.device_manuf}} {{entry.device_model}}{% if entry.device_identifier %}, {{lang.30}} {{entry.device_identifier}}{% endif %}{% if entry.device_owner %}, {{lang.31}} {{entry.device_owner}}{% endif %}</a> (<a href="view_case.php?case={{entry.parent_id}}&tab=devices">{{lang.32}}</a>)
+        </td>
+      </tr>
+      {% endif %}
+      {% endfor %}
+      <tr>
+        <td colspan="5">
+          {{lang.33}}: {% if query_s == "1" %} {{lang.34}} <a href="index.php?vuosi={{dateStart|date("Y")}}{% if query_j %}&j={{query_j}}{% endif %}{% if query_d %}&d={{query_d}}{% endif %}{% if hakusana %}&hae={{hakusana|replace({"\+": "%2B"})}}{% endif %}"><span class="label label-primary">{{lang.37}}</span> {% elseif query_s == "2" %} {{lang.35}} <a href="index.php?vuosi={{dateStart|date("Y")}}{% if query_j %}&j={{query_j}}{% endif %}{% if query_d %}&d={{query_d}}{% endif %}{% if hakusana %}&hae={{hakusana|replace({"\+": "%2B"})}}{% endif %}"><span class="label label-primary">{{lang.37}}</span> {% elseif query_s == "3" %} {{lang.36}} <a href="index.php?vuosi={{dateStart|date("Y")}}{% if query_j %}&j={{query_j}}{% endif %}{% if query_d %}&d={{query_d}}{% endif %}{% if hakusana %}&hae={{hakusana|replace({"\+": "%2B"})}}{% endif %}"><span class="label label-primary">{{lang.37}}</span> {% else %} {{lang.38}}{% endif %} {% if query_s != "1" %} <a href="index.php?vuosi={{dateStart|date("Y")}}&s=1{% if query_j %}&j={{query_j}}{% endif %}{% if query_d %}&d={{query_d}}{% endif %}{% if hakusana %}&hae={{hakusana|replace({"\+": "%2B"})}}{% endif %}"><span class="label label-primary">{{lang.13}}</span></a>{% endif %}{% if query_s != "2" %} <a href="index.php?vuosi={{dateStart|date("Y")}}&s=2{% if query_j %}&j={{query_j}}{% endif %}{% if query_d %}&d={{query_d}}{% endif %}{% if hakusana %}&hae={{hakusana|replace({"\+": "%2B"})}}{% endif %}"><span class="label label-primary">{{lang.14}}</span></a>{% endif%}{% if query_s != "3" %} <a href="index.php?vuosi={{dateStart|date("Y")}}&s=3{% if query_j %}&j={{query_j}}{% endif %}{% if query_d %}&d={{query_d}}{% endif %}{% if hakusana %}&hae={{hakusana|replace({"\+": "%2B"})}}{% endif %}"><span class="label label-primary">{{lang.15}}</span></a>{% endif %}
+        </td>
+        <td colspan="9" style="text-align:right;">
+          {% if query_j or query_d %}<a type="button" class="btn btn-danger btn-xs" href="index.php?vuosi={{dateStart|date("Y")}}{% if query_s %}&s={{query_s}}{% endif %}{% if hakusana %}&hae={{hakusana|replace({"\+": "%2B"})}}{% endif %}"> <i class="fa fa-remove"></i><i class="fa fa-sort"></i> {{lang.40}}</a>{% endif %}
+          {% if query_s %}<a type="button" class="btn btn-danger btn-xs" href="index.php?vuosi={{dateStart|date("Y")}}{% if query_j %}&j={{query_j}}{% endif %}{% if query_d %}&d={{query_d}}{% endif %}{% if hakusana %}&hae={{hakusana|replace({"\+": "%2B"})}}{% endif %}"> <i class="fa fa-remove"></i><i class="fa fa-filter"></i> {{lang.41}}</a>{% endif %}
+          {% if hakusana %}<a type="button" class="btn btn-danger btn-xs" href="index.php?vuosi={{dateStart|date("Y")}}{% if query_j %}&j={{query_j}}{% endif %}{% if query_d %}&d={{query_d}}{% endif %}{% if query_s %}&s={{query_s}}{% endif %}"> <i class="fa fa-remove"></i><i class="fa fa-search"></i> {{lang.39}}</a>{% endif %}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>
+{% endblock %}

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+  {% block title %}
+    <title>{{settings.title_text}}</title>
+  {% endblock title %}
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <link rel="stylesheet" href="views/jquery-ui/jquery-ui.min.css">
+  <link href="views/css/bootstrap.min.css" rel="stylesheet">
+  <link href="views/css/bootstrap-theme.min.css" rel="stylesheet">
+  <link href="views/css/dashboard.css" rel="stylesheet">
+  <link rel="stylesheet" href="views/font-awesome-4.4.0/css/font-awesome.min.css">
+  <style type="text/css" media="print">
+    div.page {
+      page-break-after: always;
+      page-break-inside: avoid;
+    }
+    div.avoidbreak {
+      page-break-inside: avoid;
+    }
+  </style>
+  <style>
+    label {
+      display: inline-block;
+      width: 5em;
+    }
+  </style>
+  <script src="views/js/jquery.min.js"></script>
+  <script src="views/js/Chart.js"></script>
+  <script src="views/js/bootstrap.min.js"></script>
+  <script src="views/jquery-ui/jquery-ui.min.js"></script>
+  <script type="text/javascript" src="views/js/tinymce/tinymce.min.js"></script>
+  <script>
+    tinymce.init({
+      mode: "textareas",
+      editor_deselector: "mceNoEditor",
+      width : "100%"
+    });
+
+    $(document).ready(function() {
+      $("#alert-success").fadeOut({{settings.fadeout}});
+    });
+    $(function() {
+      $(document).tooltip();
+    });
+  </script>
+  <script type="text/javascript">
+    $(function() {
+      var availableTags = [{{confCrimes|raw}}];
+      $("#case_crime").autocomplete({
+        source: availableTags
+      });
+    });
+    $(function() {
+      $("#case_confiscation_date").datepicker({
+        dayNamesMin: ["{{lang.d7}}", "{{lang.d1}}", "{{lang.d2}}", "{{lang.d3}}", "{{lang.d4}}", "{{lang.d5}}", "{{lang.d6}}"],
+        dateFormat: "yy-mm-dd",
+        monthNames: ["{{lang.m1}}", "{{lang.m2}}", "{{lang.m3}}", "{{lang.m4}}", "{{lang.m5}}", "{{lang.m6}}", "{{lang.m7}}", "{{lang.m8}}", "{{lang.m9}}", "{{lang.m10}}", "{{lang.m11}}", "{{lang.m12}}"],
+        monthNamesShort: ["{{lang.m1|slice(0, 4)}}", "{{lang.m1|slice(0, 4)}}", "{{lang.m3|slice(0, 4)}}", "{{lang.m4|slice(0, 4)}}", "{{lang.m5|slice(0, 4)}}", "{{lang.m6|slice(0, 4)}}", "{{lang.m7|slice(0, 4)}}", "{{lang.m8|slice(0, 4)}}", "{{lang.m9|slice(0, 4)}}", "{{lang.m10|slice(0, 4)}}", "{{lang.m11|slice(0, 4)}}", "{{lang.m12|slice(0, 4)}}"],
+        firstDay: ["1"],
+        showButtonPanel: ["false"],
+        closeText: ["{{lang.53}}"],
+        currentText: ["{{lang.173}} "]
+      });
+    });
+    <!--
+    // copyright 1999 Idocs, Inc. http://www.idocs.com
+    // Distribute this script freely but keep this notice in place
+    function numbersonly(myfield, e, dec) {
+      var key;
+      var keychar;
+      if (window.event)
+        key = window.event.keyCode;
+      else if (e)
+        key = e.which;
+      else
+        return true;
+      keychar = String.fromCharCode(key);
+      // control keys
+      if ((key == null) || (key == 0) || (key == 8) ||
+        (key == 9) || (key == 13) || (key == 27))
+        return true;
+      // numbers
+      else if ((("0123456789.").indexOf(keychar) > -1))
+        return true;
+      else
+        return false;
+    }
+    //-->
+  </script>
+  <title id="html-title">
+  </title>
+  {% block reroute %} {% endblock %}
+  </head>
+  {% block bodytag %}
+    <body>
+    {% endblock bodytag %}
+    {% block upperframe %}
+  {% endblock upperframe %}
+  {% block logo %}
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-3 col-md-2 sidebar">
+        <h2><!--<i class="fa fa-pencil-square"></i>--><img src="{{settings.logo_image}}" style="width:{{settings.logo_image_width}};"> {{settings.logo_text}}</h2>
+        <hr> {% endblock logo %}
+        {% block navi %}
+        <ul class="nav nav-sidebar">
+          <li><a href='index.php?vuosi={{dateStart|date("Y")}}'><span class="glyphicon glyphicon-home" aria-hidden="true"></span> {{lang.1}} {{dateStart|date("Y")}}<span class="sr-only">(current)</span></a></li>
+        </ul>
+        <ul class="nav nav-sidebar">
+          <li><a href='statistics.php?vuosi={{dateStart|date("Y")}}'> <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> {{lang.2}} {{dateStart|date("Y")}}</a></li>
+        </ul>
+        <ul class="nav nav-sidebar">
+          <li><a href="add_case.php"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{lang.3}}</a></li>
+        </ul>
+        <ul class="nav nav-sidebar">
+          <li><a href="help.php"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> {{lang.4}}</a></li>
+        </ul>
+        <ul class="nav nav-sidebar">
+          <li><a href="help.php?settings=1"><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> {{lang.5}}</a></li>
+        </ul>
+        </div>
+        {% endblock navi %}
+      {% block content %}
+      {% endblock %}
+    </div>
+  </div>
+</div>
+</body>
+</html>

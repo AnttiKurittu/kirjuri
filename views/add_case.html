@@ -1,0 +1,196 @@
+
+
+{% extends 'base.html' %}
+{% block title %}
+<title>{{lang.133}} - {{settings.title_text}}</title>
+{% endblock title %}
+{% block navi %}
+      <ul class="nav nav-sidebar">
+        <li><a href='index.php?vuosi={{dateStart|date("Y")}}'><span class="glyphicon glyphicon-home" aria-hidden="true"></span> {{lang.1}} {{dateStart|date("Y")}}<span class="sr-only">(current)</span></a></li>
+      </ul>
+      <ul class="nav nav-sidebar">
+        <li><a href='statistics.php?vuosi={{dateStart|date("Y")}}'> <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> {{lang.2}} {{dateStart|date("Y")}}</a></li>
+      </ul>
+      <ul class="nav nav-sidebar">
+        <li class="active"><a href="add_case.php"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{lang.3}}</a></li>
+      </ul>
+      <ul class="nav nav-sidebar">
+        <li><a href="help.php"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> {{lang.4}}</a></li>
+      </ul>
+      <ul class="nav nav-sidebar">
+        <li><a href="help.php?settings=1"><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> {{lang.5}}</a></li>
+      </ul>
+
+    </div>
+    {% endblock navi %}
+{% block content %}
+
+<script>
+$(document).ready(function (){
+    validate();
+    $('#case_file_number, #classification, #case_suspect, #case_investigation_lead, #case_investigator, #case_investigator_unit, #case_investigator_tel, #case_confiscation_date, #case_request_description, #case_requested_action, #case_crime').change(validate);
+});
+
+function validate(){
+    if ($('#case_file_number').val().length  >   7   &&
+        $('#classification').val().length  >   0   &&
+        $('#case_suspect').val().length  >   0   &&
+        $('#case_investigation_lead').val().length  >   0   &&
+        $('#case_investigator').val().length  >   0   &&
+        $('#case_investigator_unit').val().length  >   0   &&
+        $('#case_investigator_tel').val().length  >   0   &&
+        $('#case_confiscation_date').val().length  >   0   &&
+        $('#case_request_description').val().length  >   0   &&
+        $('#case_requested_action').val().length  >   0   &&
+        $('#case_crime').val().length    >   0) {
+        $("#tallennusnappi").prop("disabled", false);
+        $("#tallennusnappi").addClass("btn-success");
+        $("#ohje").hide();
+
+    }
+    else {
+        $("#tallennusnappi").prop("disabled", true);
+        $("#tallennusnappi").removeClass("btn-success");
+    }
+}
+</script>
+
+<script>
+function showHint(str) {
+  var xhttp;
+  if (str.length == 0) {
+    document.getElementById("txtHint").innerHTML = "";
+    return;
+  }
+  xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (xhttp.readyState == 4 && xhttp.status == 200) {
+      document.getElementById("txtHint").innerHTML = xhttp.responseText;
+    }
+  };
+  xhttp.open("GET", "request.php?case_file_number="+str, true);
+  xhttp.send();
+}
+</script>
+
+<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+  <h1 class="page-header">{{lang.133}}</h1>
+  <form class="form-horizontal" role="form" method="post" action="save.php?type=juttu">
+    <div class="form-group">
+      <label for="juttu" class="col-sm-2 control-label">{{lang.134}}</label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" id="juttu" name="case_name" placeholder="{{lang.b134}}">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="case_file_number" class="col-sm-2 control-label">{{lang.135}} <span style="color:red;">*</span></label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" id="case_file_number" name="case_file_number" placeholder="{{settings.police_precinct_prefix}}" value="{{settings.police_precinct_prefix}}" maxlength="32" onkeyup="showHint(this.value)">
+        <span id="txtHint"></span>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="case_crime" class="col-sm-2 control-label">{{lang.75}} <span style="color:red;">*</span></label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" id="case_crime" name="case_crime" placeholder="{{lang.76}}" maxlength="128">
+      </div>
+    </div>
+    <div class="form-group">
+        <label for="classification" class="col-sm-2 control-label">{{lang.77}} <span style="color:red;">*</span></label>
+        <div class="col-sm-2">
+          <select style="text-align:left;" class="btn btn-default" name="classification" id="classification">
+            <option value="" selected disabled>{{lang.b77}}</option>
+            {% for classification in classifications %}
+            <option value="{{classification}}">{{classification}}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+    <div class="form-group">
+      <label for="case_suspect" class="col-sm-2 control-label">{{lang.b20}} <span style="color:red;">*</span></label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" id="case_suspect" name="case_suspect" placeholder="{{lang.c20}}"  maxlength="128">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="forensic_investigator" class="col-sm-2 control-label">{{lang.56}} <span style="color:red;">*</span></label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" id="case_investigation_lead" name="case_investigation_lead" placeholder="{{lang.c21}}"  maxlength="128">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="case_investigator" class="col-sm-2 control-label">{{lang.b21}} <span style="color:red;">*</span></label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" id="case_investigator" name="case_investigator" placeholder="{{lang.c21}}" value=""  maxlength="128">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="case_investigator_tel" class="col-sm-2 control-label">{{lang.b78}} <span style="color:red;">*</span></label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" id="case_investigator_tel" name="case_investigator_tel" placeholder="{{lang.c78}}" value="{{settings.phone_number_prefix}}"  maxlength="128">
+      </div>
+    </div>
+
+
+      <div class="form-group">
+        <label for="case_crime" class="col-sm-2 control-label">{{lang.79}} <span style="color:red;">*</span></label>
+        <div class="col-sm-2">
+          <select  style="text-align:left;"  class="btn btn-default" name="case_investigator_unit" id="case_investigator_unit">
+            <option value="" disabled selected>{{lang.b79}}</option>
+            {% for yksikko in inv_units %}
+            <option value="{{yksikko}}">{{yksikko}}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+      <label for="case_confiscation_date" class="col-sm-2 control-label">{{lang.d81}} <span style="color:red;">*</span></label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" id="case_confiscation_date" name="case_confiscation_date" placeholder="{{lang.e81}}"  maxlength="10">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="case_request_description" class="col-sm-2 control-label">{{lang.c80}} <span style="color:red;">*</span></label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" id="case_request_description" name="case_request_description" placeholder='{{lang.b80}}' maxlength="1024">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="case_requested_action" class="col-sm-2 control-label">{{lang.61}} <span style="color:red;">*</span></label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" id="case_requested_action" name="case_requested_action" placeholder="{{lang.b61}}"  maxlength="1024">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="case_contains_mob_dev" class="col-sm-2 control-label"></label>
+      <div class="col-sm-6">
+        <input type="checkbox" name="case_contains_mob_dev" value="1"> {{lang.136}}
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="case_urgency" class="col-sm-2 control-label">{{lang.62}}</label>
+      <div class="col-sm-2">
+        <select  style="text-align:left;" class="btn btn-default" name="case_urgency" id="case_urgency">
+          <option selected="selected" disabled>{{lang.83}}</option>
+          <option value="1">{{lang.a83}}</option>
+          <option value="2" selected>{{lang.b83}}</option>
+          <option value="3">{{lang.c83}}</option>
+        </select>
+      </div>
+      <div class="col-sm-4">
+        <input type="text" class="form-control" id="perustelu" placeholder="{{lang.d83}}" name="case_urg_justification" maxlength="128">
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-10">
+        <button type="submit" class="btn btn-success" id="tallennusnappi"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{lang.137}}</button>
+        &nbsp;&nbsp;<input type="reset" class="btn btn-danger" value="{{lang.138}}">
+      </div>
+    </div>
+  </form>
+    <div class="col-md-offset-2" id="ohje"><span style="color:red;">*</span> {{lang.139}} </div>
+</div>
+
+{% endblock %}

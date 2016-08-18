@@ -1,0 +1,13 @@
+{% extends 'base.html'%}
+{% block reroute %}
+<META http-equiv="refresh" content="1200;URL=add_case.php">
+{% endblock reroute %}
+{% block content %}
+<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+  <h1>{{ title_text }}</h1>
+  <hr>
+<h3>{{ viesti }}</h3>
+  <hr>
+  <a class="btn btn-info" role="button" onclick="window.history.back()"><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Palaa edelliselle sivulle</a>
+</div>
+{% endblock %}

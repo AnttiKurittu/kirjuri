@@ -1,0 +1,7 @@
+{% if returnpage == "devicememo" %}
+<META http-equiv="refresh" content="0;URL=device_memo.php?db_row={{ returnid }}&showStatus=OK">
+{% elseif returnpage == "etusivu" %} %}
+<META http-equiv="refresh" content="0;URL=index.php">
+{% else %}
+<META http-equiv="refresh" content="0;URL=view_case.php?case={{ returnid }}{% if showStatus == "OK"%}&showStatus=OK{% endif %}{{ anchor }}#{{ deviceid }}">
+{% endif %}

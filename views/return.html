@@ -3,5 +3,5 @@
 {% elseif returnpage == "etusivu" %} %}
 <META http-equiv="refresh" content="0;URL=index.php">
 {% else %}
-<META http-equiv="refresh" content="0;URL=view_case.php?case={{ returnid }}{% if showStatus == "OK"%}&showStatus=OK{% endif %}{{ anchor }}#{{ deviceid }}">
+<META http-equiv="refresh" content="0;URL=edit_request.php?case={{ returnid }}{% if showStatus == "OK"%}&showStatus=OK{% endif %}{{ anchor }}#{{ deviceid }}">
 {% endif %}

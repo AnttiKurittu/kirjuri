@@ -108,10 +108,10 @@
         <hr> {% endblock logo %}
         {% block navi %}
         <ul class="nav nav-sidebar">
-          <li><a href='index.php?vuosi={{dateStart|date("Y")}}'><span class="glyphicon glyphicon-home" aria-hidden="true"></span> {{lang.1}} {{dateStart|date("Y")}}<span class="sr-only">(current)</span></a></li>
+          <li><a href='index.php?year={{dateStart|date("Y")}}'><span class="glyphicon glyphicon-home" aria-hidden="true"></span> {{lang.1}} {{dateStart|date("Y")}}<span class="sr-only">(current)</span></a></li>
         </ul>
         <ul class="nav nav-sidebar">
-          <li><a href='statistics.php?vuosi={{dateStart|date("Y")}}'> <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> {{lang.2}} {{dateStart|date("Y")}}</a></li>
+          <li><a href='statistics.php?year={{dateStart|date("Y")}}'> <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> {{lang.2}} {{dateStart|date("Y")}}</a></li>
         </ul>
         <ul class="nav nav-sidebar">
           <li><a href="add_case.php"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{lang.3}}</a></li>

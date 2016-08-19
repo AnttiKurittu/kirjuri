@@ -1,8 +1,8 @@
 <?php
-require_once("./main.php");
+require_once("./include_functions.php");
 $kirjuri_database = db('kirjuri-database');
-$dateStart = $_GET['vuosi'] . ":01:01 00:00:00";
-$dateStop = ($_GET['vuosi'] + 1) . ":01:01 00:00:00";
+$dateStart = $_GET['year'] . ":01:01 00:00:00";
+$dateStop = ($_GET['year'] + 1) . ":01:01 00:00:00";
 $query = $kirjuri_database->prepare('select * FROM exam_requests WHERE id = parent_id AND case_added_date BETWEEN :datestart AND :datestop');
 $query->execute(array(
     ':datestart' => $dateStart,
@@ -24,8 +24,8 @@ $count_new = $query->fetch(PDO::FETCH_ASSOC);
 $count_new = $count_new['COUNT(id)'];
 $query = $kirjuri_database->prepare('select COUNT(id) FROM exam_requests WHERE id = parent_id');
 $query->execute();
-$count_totaali = $query->fetch(PDO::FETCH_ASSOC);
-$count_totaali = $count_totaali['COUNT(id)'];
+$count_total = $query->fetch(PDO::FETCH_ASSOC);
+$count_total = $count_total['COUNT(id)'];
 $query = $kirjuri_database->prepare('select COUNT(id) FROM exam_requests WHERE case_status = "2" AND id=parent_id AND case_added_date BETWEEN :datestart AND :datestop');
 $query->execute(array(
     ':datestart' => $dateStart,
@@ -70,7 +70,7 @@ echo $twig->render('statistics.html', array(
     'classifications' => $classifications,
     'all_cases' => $all_cases,
     'all_devices' => $all_devices,
-    'count_totaali' => $count_totaali,
+    'count_total' => $count_total,
     'count_new' => $count_new,
     'count_open' => $count_open,
     'count_finished' => $count_finished,

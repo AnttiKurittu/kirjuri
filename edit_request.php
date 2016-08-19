@@ -1,5 +1,5 @@
 <?php
-require_once("./main.php");
+require_once("./include_functions.php");
 $confCrimes = file_get_contents('conf/crimes_autofill.conf');
 $kirjuri_database = db('kirjuri-database');
 $query = $kirjuri_database->prepare('SELECT * FROM exam_requests WHERE id=:id AND parent_id=:id LIMIT 1');
@@ -12,7 +12,7 @@ $query->execute(array(
     ':case_file_number' => $caserow[0]['case_file_number'],
     ':case_id' => $caserow[0]['case_id']
 ));
-$samacase_file_number = $query->fetchAll(PDO::FETCH_ASSOC);
+$samerequest_file_number = $query->fetchAll(PDO::FETCH_ASSOC);
 if ($_GET['j'] === "dev_owner")
   {
     $j = "device_owner";
@@ -59,8 +59,8 @@ else
   {
     $instructions_text = file_get_contents("conf/instructions_" . str_replace(" ", "_", strtolower($caserow[0]['classification'])) . ".txt");
   }
-echo $twig->render('view_case.html', array(
-    'samacase_file_number' => $samacase_file_number,
+echo $twig->render('edit_request.html', array(
+    'samerequest_file_number' => $samerequest_file_number,
     'dev_owner' => urldecode($_GET['dev_owner']),
     'j' => $_GET['j'],
     'sort_order' => $j,

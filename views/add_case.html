@@ -6,10 +6,10 @@
 {% endblock title %}
 {% block navi %}
       <ul class="nav nav-sidebar">
-        <li><a href='index.php?vuosi={{dateStart|date("Y")}}'><span class="glyphicon glyphicon-home" aria-hidden="true"></span> {{lang.1}} {{dateStart|date("Y")}}<span class="sr-only">(current)</span></a></li>
+        <li><a href='index.php?year={{dateStart|date("Y")}}'><span class="glyphicon glyphicon-home" aria-hidden="true"></span> {{lang.1}} {{dateStart|date("Y")}}<span class="sr-only">(current)</span></a></li>
       </ul>
       <ul class="nav nav-sidebar">
-        <li><a href='statistics.php?vuosi={{dateStart|date("Y")}}'> <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> {{lang.2}} {{dateStart|date("Y")}}</a></li>
+        <li><a href='statistics.php?year={{dateStart|date("Y")}}'> <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> {{lang.2}} {{dateStart|date("Y")}}</a></li>
       </ul>
       <ul class="nav nav-sidebar">
         <li class="active"><a href="add_case.php"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{lang.3}}</a></li>
@@ -32,7 +32,7 @@ $(document).ready(function (){
 });
 
 function validate(){
-    if ($('#case_file_number').val().length  >   7   &&
+    if ($('#case_file_number').val().length  >   0   &&
         $('#classification').val().length  >   0   &&
         $('#case_suspect').val().length  >   0   &&
         $('#case_investigation_lead').val().length  >   0   &&
@@ -43,14 +43,14 @@ function validate(){
         $('#case_request_description').val().length  >   0   &&
         $('#case_requested_action').val().length  >   0   &&
         $('#case_crime').val().length    >   0) {
-        $("#tallennusnappi").prop("disabled", false);
-        $("#tallennusnappi").addClass("btn-success");
+        $("#save_button").prop("disabled", false);
+        $("#save_button").addClass("btn-success");
         $("#ohje").hide();
 
     }
     else {
-        $("#tallennusnappi").prop("disabled", true);
-        $("#tallennusnappi").removeClass("btn-success");
+        $("#save_button").prop("disabled", true);
+        $("#save_button").removeClass("btn-success");
     }
 }
 </script>
@@ -75,7 +75,7 @@ function showHint(str) {
 
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
   <h1 class="page-header">{{lang.133}}</h1>
-  <form class="form-horizontal" role="form" method="post" action="save.php?type=juttu">
+  <form class="form-horizontal" role="form" method="post" action="submit.php?type=juttu">
     <div class="form-group">
       <label for="juttu" class="col-sm-2 control-label">{{lang.134}}</label>
       <div class="col-sm-6">
@@ -85,7 +85,7 @@ function showHint(str) {
     <div class="form-group">
       <label for="case_file_number" class="col-sm-2 control-label">{{lang.135}} <span style="color:red;">*</span></label>
       <div class="col-sm-6">
-        <input type="text" class="form-control" id="case_file_number" name="case_file_number" placeholder="{{settings.police_precinct_prefix}}" value="{{settings.police_precinct_prefix}}" maxlength="32" onkeyup="showHint(this.value)">
+        <input type="text" class="form-control" id="case_file_number" name="case_file_number" placeholder="{{settings.organization_specific_prefix}}" value="{{settings.organization_specific_prefix}}" maxlength="32" onkeyup="showHint(this.value)">
         <span id="txtHint"></span>
       </div>
     </div>
@@ -185,7 +185,7 @@ function showHint(str) {
     </div>
     <div class="form-group">
       <div class="col-sm-offset-2 col-sm-10">
-        <button type="submit" class="btn btn-success" id="tallennusnappi"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{lang.137}}</button>
+        <button type="submit" class="btn btn-success" id="save_button"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{lang.137}}</button>
         &nbsp;&nbsp;<input type="reset" class="btn btn-danger" value="{{lang.138}}">
       </div>
     </div>

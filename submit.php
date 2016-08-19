@@ -1,5 +1,5 @@
 <?php
-require_once("./main.php");
+require_once("./include_functions.php");
 $dateStart = date("Y") . ":01:01 00:00:00";
 $dateStop = (date("Y") + 1) . ":01:01 00:00:00";
 $kirjuri_database = db('kirjuri-database');
@@ -136,9 +136,9 @@ if ($_GET['type'] === 'set_removed')
     ));
     $devicecount = $sql->fetch(PDO::FETCH_ASSOC);
     $devicecount = $devicecount['count(id)'];
-    $sql = $kirjuri_database->prepare('UPDATE exam_requests SET case_devicecount = :laitemaara, last_updated = NOW() where id=:id');
+    $sql = $kirjuri_database->prepare('UPDATE exam_requests SET case_devicecount = :devicecount, last_updated = NOW() where id=:id');
     $sql->execute(array(
-        ':laitemaara' => $devicecount,
+        ':devicecount' => $devicecount,
         ':id' => $_GET['returnid']
     ));
     echo $twig->render('return.html', array(
@@ -229,7 +229,7 @@ if ($_GET['type'] === 'set_removed_case')
   }
 if ($_GET['type'] === 'move_all')
   {
-    if ($_POST['device_action'] != "EI_MUUTOSTA")
+    if ($_POST['device_action'] != "NO_CHANGE")
       {
         $sql = $kirjuri_database->prepare('UPDATE exam_requests SET device_action = :device_action, last_updated = NOW() WHERE parent_id=:parent_id');
         $sql->execute(array(
@@ -237,7 +237,7 @@ if ($_GET['type'] === 'move_all')
             ':device_action' => $_POST['device_action']
         ));
       }
-    if ($_POST['device_location'] != "EI_MUUTOSTA")
+    if ($_POST['device_location'] != "NO_CHANGE")
       {
         $sql = $kirjuri_database->prepare('UPDATE exam_requests SET device_location = :device_location, last_updated = NOW() WHERE parent_id=:parent_id');
         $sql->execute(array(
@@ -269,7 +269,7 @@ if ($_GET['type'] === 'paatos')
         'returnid' => $_POST['returnid'],
         'anchor' => "#tila"
     ));
-    logline("Action", "Muutettu jutun " . $_POST['returnid'] . " tila: " . $_POST['case_status'] . "");
+    logline("Action", "Changed request " . $_POST['returnid'] . " status: " . $_POST['case_status'] . "");
     exit;
   }
 if ($_GET['type'] === 'devicememo')
@@ -321,10 +321,10 @@ if ($_GET['type'] === 'devicememo')
         'returnid' => $_GET['returnid'],
         'returnpage' => 'devicememo'
     ));
-    logline("Action", "Päivitetty devicememo " . $_POST['id'] . "");
+    logline("Action", "Updated device memo " . $_POST['id'] . "");
     exit;
   }
-if ($_GET['type'] === 'laite')
+if ($_GET['type'] === 'device')
   {
     if ($_POST['device_host_id'] === "0")
       {
@@ -364,10 +364,10 @@ if ($_GET['type'] === 'laite')
         'returnid' => $_POST['parent_id'],
         'anchor' => "&tab=devices"
     ));
-    logline("Action", "Lisätty laite " . $_POST['device_type'] . " " . $_POST['device_manuf'] . " " . $_POST['device_model'] . " tunnisteella [" . $_POST[device_identifier] . "] juttuun " . $_POST['parent_id'] . "");
+    logline("Action", "Added device " . $_POST['device_type'] . " " . $_POST['device_manuf'] . " " . $_POST['device_model'] . " tunnisteella [" . $_POST[device_identifier] . "] juttuun " . $_POST['parent_id'] . "");
     exit;
   }
-echo "Welp, nyt sattui virhe!";
-logline("virhe", "Etusivu palautti tyhjän tulokset");
+echo "Index page error.";
+logline("Error", "Index page error");
 exit;
 ?>

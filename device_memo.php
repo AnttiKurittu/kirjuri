@@ -1,5 +1,5 @@
 <?php
-require_once("./main.php");
+require_once("./include_functions.php");
 $kirjuri_database = db('kirjuri-database');
 $query = $kirjuri_database->prepare('select * FROM exam_requests WHERE id = :db_row LIMIT 1');
 $query->execute(array(

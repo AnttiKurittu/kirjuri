@@ -1,5 +1,5 @@
 <?php
-require_once("./main.php");
+require_once("./include_functions.php");
 ?>
 <html>
   <head>
@@ -26,11 +26,10 @@ if ($_GET['type'] === "juttu")
 <b>" . $row['case_crime'] . "</b>
 Tech <b>" . $row['forensic_investigator'] . "</b>
 Inv. " . $row['case_investigator'] . " (" . $row['case_investigator_unit'] . ")" . "</b> " . $row['case_investigator_tel'] . "";
-    logline("info", "Tulostettu juttutarra " . $row['case_id'] . "");
     exit;
   }
 
-if ($_GET['type'] === "laite")
+if ($_GET['type'] === "device")
   {
     $kirjuri_database = db('kirjuri-database');
     $query = $kirjuri_database->prepare('select parent_id FROM exam_requests WHERE id=:db_row');
@@ -54,7 +53,6 @@ if ($_GET['type'] === "laite")
     $row = $query->fetch(PDO::FETCH_ASSOC);
     echo $row['device_type'] . "<br>" . $row['device_manuf'] . " " . $row['device_model'] . " " . $row['device_size_in_gb'] . " GB<br>";
     echo $row['device_document'] . " Esine " . $row['device_item_number'] . "<br>";
-    logline("info", "Tulostettu laitetarra " . $row['case_id'] . "");
     exit;
   }
 ?>

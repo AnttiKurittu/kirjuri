@@ -24,7 +24,7 @@
         </td>
         <td style="padding-left:50px;">
           <h2>Tietoteknisen tutkinnan raportti</h2>
-          <h3>{{ settings.police_precinct }}</h3>
+          <h3>{{ settings.organization }}</h3>
           <h3>{{ entry.case_file_number }}</h3>
           <h3>
           Esitutkintapöytäkirjan liite ____</h1>
@@ -49,7 +49,7 @@
           {{ entry.phone_investigator }}<br>
           {% endif %}
           <br>
-          <p>{{ settings.report_city }} {{ "now"|date("d.m.Y") }}</p>
+          <p>{{ settings.signature_location }} {{ "now"|date("d.m.Y") }}</p>
         </td>
       </tr>
     </table>

@@ -20,16 +20,16 @@
     <table>
       <tr>
         <td>
-          <img src="views/img/logo.png" width="130px" style="horizontal-align:left;vertical-align:top;">
+          <img src="{{ settings.report_logo }}" width="{{ settings.report_logo_width }}" style="horizontal-align:left;vertical-align:top;">
         </td>
         <td style="padding-left:50px;">
           <h2>{{lang.155}}</h2>
-          <h3>{{settings.police_precinct}}</h3>
+          <h3>{{settings.organization}}</h3>
           <h3>{{entry.case_file_number}}</h3>
           <h3>
           {{lang.156}}</h1>
           <p>{{lang.19}}: {{entry.case_crime}}</p>
-          <p>{{lang.d20}}: {{entry.case_suspect}}<br>
+          <p>{{lang.b20}}: {{entry.case_suspect}}<br>
           <p>{{lang.56}}: {{entry.case_investigation_lead}}.</p>
           <p>{{lang.57}}: {{entry.case_investigator}} (p. {{entry.case_investigator_tel}})<br>
           <p>{{lang.b22}}: {{entry.forensic_investigator}}</p>
@@ -49,7 +49,7 @@
           {{entry.phone_investigator}}<br>
           {% endif %}
           <br>
-          <p>{{settings.report_city}} {{"now"|date("d.m.Y")}}</p>
+          <p>{{settings.signature_location}} {{"now"|date("d.m.Y")}}</p>
         </td>
       </tr>
     </table>

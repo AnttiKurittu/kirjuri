@@ -4,7 +4,7 @@
 {% endblock title %}
 {% block navi %}
 <ul class="nav nav-sidebar">
-  <li><a href='index.php?vuosi={{dateStart|date("Y")}}'><span class="glyphicon glyphicon-home" aria-hidden="true"></span> {{lang.1}} {{dateStart|date("Y")}}<span class="sr-only">(current)</span></a></li>
+  <li><a href='index.php?year={{dateStart|date("Y")}}'><span class="glyphicon glyphicon-home" aria-hidden="true"></span> {{lang.1}} {{dateStart|date("Y")}}<span class="sr-only">(current)</span></a></li>
 </ul>
 <ul class="nav nav-sidebar">
   <li role="presentation"{% if not returntab %} class="active"{% endif %}><a href="#tab-juttu" aria-controls="tab-juttu" role="tab" data-toggle="tab">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {{caserow.0.case_id}}/{{caserow.0.case_added_date|date("Y")}} {{caserow.0.case_name}}</a></li>
@@ -15,7 +15,7 @@
 </ul>
 <ul class="nav nav-sidebar">
   <li>
-    <a href='statistics.php?vuosi={{dateStart|date("Y")}}'> <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> {{lang.2}} {{dateStart|date("Y")}}</a>
+    <a href='statistics.php?year={{dateStart|date("Y")}}'> <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> {{lang.2}} {{dateStart|date("Y")}}</a>
   </li>
 </ul>
 <ul class="nav nav-sidebar">
@@ -38,7 +38,7 @@
 {% for entry in caserow %}
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
   <ol class="breadcrumb">
-    <li><a href="index.php?vuosi={{caserow.0.case_added_date|date("Y")}}">{{lang.1}} {{caserow.0.case_added_date|date("Y")}}</a></li>
+    <li><a href="index.php?year={{caserow.0.case_added_date|date("Y")}}">{{lang.1}} {{caserow.0.case_added_date|date("Y")}}</a></li>
     <li>{{caserow.0.case_id}}/{{caserow.0.case_added_date|date("Y")}} {{caserow.0.case_name}} {{caserow.0.case_file_number}}</li>
   </ol>
   <div>
@@ -59,7 +59,7 @@
               <div class="modal-body">
                 <b>{{lang.49}}</b>
                 <p>{{lang.50}}</p>
-                <form name="lisaaTekninenTutkija" class="form" role="form" method="post" action="save.php?type=case_update&db_row={{entry.parent_id}}">
+                <form name="lisaaTekninenTutkija" class="form" role="form" method="post" action="submit.php?type=case_update&db_row={{entry.parent_id}}">
                   <div class="form-group">
                     <select style="text-align:left;width:100%;" class="btn btn-default" name="forensic_investigator" id="forensic_investigator">
                       <option selected disabled>{{lang.b22}}</option>
@@ -134,9 +134,9 @@
           {% endif%}
           {% endfor %}
           {% endif %}
-        <form class="form form-inline" role="form" method="post" action="save.php?type=paatos">
+        <form class="form form-inline" role="form" method="post" action="submit.php?type=paatos">
           {% for entry in caserow %}{% if entry.case_status != "3" %}<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#perustiedot"><i class="fa fa-info-circle"></i> {{lang.65}}</button>{% endif %}{% endfor %}
-          <a href="sticker.php?db_row={{entry.id}}&type=juttu" target="_BLANK" type="button" class="btn btn-info"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> {{lang.66}}</a>
+          <a href="print_sticker.php?db_row={{entry.id}}&type=juttu" target="_BLANK" type="button" class="btn btn-info"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> {{lang.66}}</a>
           <a type="button" class="btn btn-info" href="case_report.php?case={% for entry in caserow %}{{entry.id}}{% endfor %}" target="_BLANK"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> {{lang.67}}</a>
           <div class="form-group">
             <input type="hidden" value="{{entry.id}}" name="returnid">
@@ -177,11 +177,11 @@
             {% endif%}
         </form>
         </div>
-        {% if samacase_file_number %}
+        {% if samerequest_file_number %}
           <hr>
           <p><i class="fa fa-exclamation" style="color:red;"></i> {{ lang.175 }}
-          {% for entry in samacase_file_number %}
-            <a style="font-size:0.9em;" href="view_case.php?case={{entry.id}}" class="label label-primary">{{ entry.case_id }}/{{entry.case_added_date|date("Y")}}</a>&nbsp;
+          {% for entry in samerequest_file_number %}
+            <a style="font-size:0.9em;" href="edit_request.php?case={{entry.id}}" class="label label-primary">{{ entry.case_id }}/{{entry.case_added_date|date("Y")}}</a>&nbsp;
           {% endfor %}
         </p>
         {% endif %}
@@ -190,7 +190,7 @@
 {% if (caserow.0.case_status == "1") %}
 {% if not mediarow %}
 <div class="col-sm-12">
-<form method="POST" class="form-inline pull-left" action="save.php?type=set_removed_case">
+<form method="POST" class="form-inline pull-left" action="submit.php?type=set_removed_case">
   <div class="form-group">
     <input type="hidden" name="remove_exam_request" value="{{caserow.0.id}}">
   </div>
@@ -240,7 +240,7 @@
             </div>
             <div class="modal-body">
               <!--- perustiedot -->
-              <form class="form form-horizontal" role="form" method="post" action="save.php?type=case_update&db_row={{entry.parent_id}}">
+              <form class="form form-horizontal" role="form" method="post" action="submit.php?type=case_update&db_row={{entry.parent_id}}">
                 <div class="form-group">
                   <label for="juttu" class="col-sm-2 control-label">{{lang.73}}</label>
                   <div class="col-sm-10">
@@ -250,7 +250,7 @@
                 <div class="form-group">
                   <label for="case_file_number" class="col-sm-2 control-label">{{lang.74}}</label>
                   <div class="col-sm-10">
-                    <input {% if entry.case_status=="3" %}disabled{% endif %} type="text" class="form-control" id="case_file_number" name="case_file_number" placeholder="{{settings.police_precinct_prefix}}" value="{{entry.case_file_number}}">
+                    <input {% if entry.case_status=="3" %}disabled{% endif %} type="text" class="form-control" id="case_file_number" name="case_file_number" placeholder="{{settings.organization_specific_prefix}}" value="{{entry.case_file_number}}">
                   </div>
                 </div>
                 <div class="form-group">
@@ -391,14 +391,14 @@
 {% endif %}
 {% if mediarow %}
 <div class="pull-right">{{lang.88}}:
-  {% if sort_order == "id" %}<b><i class="fa fa-sort"></i> {{lang.a88}}</b>{% else %}<a href="view_case.php?case={{caserow.0.id}}&tab=devices&j=id{% if dev_owner %}&dev_owner={{dev_owner|url_encode}}{% endif %}">{{lang.a88}}</a>{% endif %} |
-  {% if sort_order == "device_type" %}<b><i class="fa fa-sort"></i> {{lang.b88}}</b>{% else %}<a href="view_case.php?case={{caserow.0.id}}&tab=devices&j=type{% if dev_owner %}&dev_owner={{dev_owner|url_encode}}{% endif %}">{{lang.b88}}</a>{% endif %} |
-  {% if sort_order == "device_manuf" %}<b><i class="fa fa-sort"></i> {{lang.c88}}</b>{% else %}<a href="view_case.php?case={{caserow.0.id}}&tab=devices&j=dev_manuf{% if dev_owner %}&dev_owner={{dev_owner|url_encode}}{% endif %}">{{lang.c88}}</a>{% endif %} |
-  {% if sort_order == "device_model" %}<b><i class="fa fa-sort"></i> {{lang.d88}}</b>{% else %}<a href="view_case.php?case={{caserow.0.id}}&tab=devices&j=dev_model{% if dev_owner %}&dev_owner={{dev_owner|url_encode}}{% endif %}">{{lang.d88}}</a>{% endif %} |
-  {% if sort_order == "device_owner" %}<b><i class="fa fa-sort"></i> {{lang.e88}}</b>{% else %}<a href="view_case.php?case={{caserow.0.id}}&tab=devices&j=dev_owner{% if dev_owner %}&dev_owner={{dev_owner|url_encode}}{% endif %}">{{lang.e88}}</a>{% endif %} |
-  {% if sort_order == "device_location" %}<b><i class="fa fa-sort"></i> {{lang.f88}}</b>{% else %}<a href="view_case.php?case={{caserow.0.id}}&tab=devices&j=dev_location{% if dev_owner %}&dev_owner={{dev_owner|url_encode}}{% endif %}">{{lang.f88}}</a>{% endif %} |
-  {% if sort_order == "device_action" %}<b><i class="fa fa-sort"></i> {{lang.g88}}</b>{% else %}<a href="view_case.php?case={{caserow.0.id}}&tab=devices&j=device_action{% if dev_owner %}&dev_owner={{dev_owner|url_encode}}{% endif %}">{{lang.g88}}</a>{% endif %} |
-  {% if sort_order == "device_document, device_item_number" %}<b><i class="fa fa-sort"></i> {{lang.113}}</b>{% else %}<a href="view_case.php?case={{caserow.0.id}}&tab=devices&j=tvp{% if dev_owner %}&dev_owner={{dev_owner|url_encode}}{% endif %}">{{lang.113}}</a>{% endif %}
+  {% if sort_order == "id" %}<b><i class="fa fa-sort"></i> {{lang.a88}}</b>{% else %}<a href="edit_request.php?case={{caserow.0.id}}&tab=devices&j=id{% if dev_owner %}&dev_owner={{dev_owner|url_encode}}{% endif %}">{{lang.a88}}</a>{% endif %} |
+  {% if sort_order == "device_type" %}<b><i class="fa fa-sort"></i> {{lang.b88}}</b>{% else %}<a href="edit_request.php?case={{caserow.0.id}}&tab=devices&j=type{% if dev_owner %}&dev_owner={{dev_owner|url_encode}}{% endif %}">{{lang.b88}}</a>{% endif %} |
+  {% if sort_order == "device_manuf" %}<b><i class="fa fa-sort"></i> {{lang.c88}}</b>{% else %}<a href="edit_request.php?case={{caserow.0.id}}&tab=devices&j=dev_manuf{% if dev_owner %}&dev_owner={{dev_owner|url_encode}}{% endif %}">{{lang.c88}}</a>{% endif %} |
+  {% if sort_order == "device_model" %}<b><i class="fa fa-sort"></i> {{lang.d88}}</b>{% else %}<a href="edit_request.php?case={{caserow.0.id}}&tab=devices&j=dev_model{% if dev_owner %}&dev_owner={{dev_owner|url_encode}}{% endif %}">{{lang.d88}}</a>{% endif %} |
+  {% if sort_order == "device_owner" %}<b><i class="fa fa-sort"></i> {{lang.e88}}</b>{% else %}<a href="edit_request.php?case={{caserow.0.id}}&tab=devices&j=dev_owner{% if dev_owner %}&dev_owner={{dev_owner|url_encode}}{% endif %}">{{lang.e88}}</a>{% endif %} |
+  {% if sort_order == "device_location" %}<b><i class="fa fa-sort"></i> {{lang.f88}}</b>{% else %}<a href="edit_request.php?case={{caserow.0.id}}&tab=devices&j=dev_location{% if dev_owner %}&dev_owner={{dev_owner|url_encode}}{% endif %}">{{lang.f88}}</a>{% endif %} |
+  {% if sort_order == "device_action" %}<b><i class="fa fa-sort"></i> {{lang.g88}}</b>{% else %}<a href="edit_request.php?case={{caserow.0.id}}&tab=devices&j=device_action{% if dev_owner %}&dev_owner={{dev_owner|url_encode}}{% endif %}">{{lang.g88}}</a>{% endif %} |
+  {% if sort_order == "device_document, device_item_number" %}<b><i class="fa fa-sort"></i> {{lang.113}}</b>{% else %}<a href="edit_request.php?case={{caserow.0.id}}&tab=devices&j=tvp{% if dev_owner %}&dev_owner={{dev_owner|url_encode}}{% endif %}">{{lang.113}}</a>{% endif %}
 
 </div>
 {% endif %}
@@ -437,7 +437,7 @@
       {% set check = "1" %}
       {% else %}
       {% for media in media_objs if (entry.device_type == media) and (check != "1") %}
-      <form class="form form-inline" role="form" method="post" action="save.php?type=device_attach&db_row={{entry.id}}&returnid={{entry.parent_id}}">
+      <form class="form form-inline" role="form" method="post" action="submit.php?type=device_attach&db_row={{entry.id}}&returnid={{entry.parent_id}}">
         <select style="text-align:left;" class="btn btn-xs btn-default" name="isanta">
           <option selected disabled value="0">{{lang.95}}</option>
           {% for target in mediarow %}
@@ -455,7 +455,7 @@
     </td>
     <td style="vertical-align:middle;">
       {% if entry.device_owner %}
-      {% if dev_owner == entry.device_owner %}<i class="fa fa-user"></i> <a href="view_case.php?case={{caserow.0.id}}&tab=devices{% if j %}&j={{j}}{% endif %}#{{entry.id}}">{{entry.device_owner}} <span class="pull-right"><i class="fa fa-remove"></i> {{lang.96}}</a>{% else %}<i class="fa fa-user"></i> <a href="view_case.php?case={{caserow.0.id}}&tab=devices{% if j %}&j={{j}}{% endif%}&dev_owner={{entry.device_owner|url_encode}}#{{entry.id}}">{{entry.device_owner}}</a></span>{% endif %}<br>
+      {% if dev_owner == entry.device_owner %}<i class="fa fa-user"></i> <a href="edit_request.php?case={{caserow.0.id}}&tab=devices{% if j %}&j={{j}}{% endif %}#{{entry.id}}">{{entry.device_owner}} <span class="pull-right"><i class="fa fa-remove"></i> {{lang.96}}</a>{% else %}<i class="fa fa-user"></i> <a href="edit_request.php?case={{caserow.0.id}}&tab=devices{% if j %}&j={{j}}{% endif%}&dev_owner={{entry.device_owner|url_encode}}#{{entry.id}}">{{entry.device_owner}}</a></span>{% endif %}<br>
       {% set isannan_dev_owner = entry.device_owner %}
       {% else %}
       <span style="color:red;"> <i class="fa fa-exclamation-triangle"></i> {{lang.97}}</span><br>
@@ -494,7 +494,7 @@
       {% endif %}
       </td style="vertical-align:middle;">
     <td style="vertical-align:middle;">
-      <form class="form form-inline" role="form" method="post" action="save.php?type=move_case&db_row={{entry.id}}&returnid={{entry.parent_id}}">
+      <form class="form form-inline" role="form" method="post" action="submit.php?type=move_case&db_row={{entry.id}}&returnid={{entry.parent_id}}">
         {% if entry.case_status != "3" %}
         <select style="text-align:left;" class="btn btn-xs btn-{% if entry.device_action %}default{% else %}danger{% endif %}" name="device_action" id="device_action">
           {% if entry.device_action %}
@@ -546,7 +546,7 @@
         {% else %}<br><span style="color:orange;"><i class="fa fa-square-o"></i> {{lang.c94}}</span><br>
         {% endif %}</small>
       </h4>
-      <a href="save.php?type=device_detach&db_row={{entry.id}}&returnid={{entry.parent_id}}" onclick="return confirm('{{ lang.177 }}')"><i class="fa fa-unlink"></i> {{lang.100}}</a>
+      <a href="submit.php?type=device_detach&db_row={{entry.id}}&returnid={{entry.parent_id}}" onclick="return confirm('{{ lang.177 }}')"><i class="fa fa-unlink"></i> {{lang.100}}</a>
     </td>
     <td style="vertical-align:middle;">
       {% if isannan_dev_owner != entry.device_owner %}<span style="color:darkred;"><i class="fa fa-user"></i> {{entry.device_owner}} {{lang.101}}</span><br>{% endif %}
@@ -584,7 +584,7 @@
       {% endif %}
       </td style="vertical-align:middle;">
     <td style="vertical-align:middle;">
-      <form class="form form-inline" role="form" method="post" action="save.php?type=move_case&db_row={{entry.id}}&returnid={{entry.parent_id}}">
+      <form class="form form-inline" role="form" method="post" action="submit.php?type=move_case&db_row={{entry.id}}&returnid={{entry.parent_id}}">
         {% if entry.case_status != "3" %}
         <select style="text-align:left;" class="btn btn-xs btn-{% if entry.device_action %}default{% else %}danger{% endif %}" name="device_action" id="device_action">
           {% if entry.device_action %}
@@ -640,7 +640,7 @@
         <h4 class="modal-title" id="myModalLabel">{{lang.103}}</h4>
       </div>
       <div class="modal-body">
-        <form class="form" role="form" method="post" action="save.php?type=laite">
+        <form class="form" role="form" method="post" action="submit.php?type=device">
           <div class="form-group">
             <select style="text-align:left;" class="btn btn-default" name="device_type" id="device_type_2">
               <option selected disabled>{{lang.104}}:</option>
@@ -713,7 +713,7 @@
       </div>
       <div class="modal-footer">
       <button type="button" class="btn btn-default" data-dismiss="modal">{{ lang.53}}</button>
-      <button id="tallennusnappi_2" type="submit" class="btn btn-success"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{lang.54}}</button>
+      <button id="save_button_2" type="submit" class="btn btn-success"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{lang.54}}</button>
       </form>
       </div>
     </div>
@@ -730,7 +730,7 @@
         <h4 class="modal-title" id="myModalLabel">{{lang.114}}</h4>
       </div>
       <div class="modal-body">
-        <form class="form" role="form" method="post" action="save.php?type=laite">
+        <form class="form" role="form" method="post" action="submit.php?type=device">
           <div class="form-group">
             <select style="text-align:left;" class="btn btn-default" name="device_type" id="device_type_1">
               <option selected disabled value="">{{lang.115}}</option>
@@ -807,28 +807,28 @@
       </div>
       <div class="modal-footer">
       <button type="button" class="btn btn-default" data-dismiss="modal">{{ lang.53}}</button>
-      <button id="tallennusnappi_1" type="submit" class="btn btn-success"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{lang.54}}</button>
+      <button id="save_button_1" type="submit" class="btn btn-success"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{lang.54}}</button>
       </form>
       </div>
     </div>
   </div>
 </div>
 {% if mediarow %}
-<form class="form form-inline pull-right" role="form" method="post" action="save.php?type=move_all&returnid={{caserow.0.parent_id}}">
+<form class="form form-inline pull-right" role="form" method="post" action="submit.php?type=move_all&returnid={{caserow.0.parent_id}}">
   {% if caserow.0.case_status != "3" %}
   <select style="text-align:left;" class="btn btn-xs btn-default" name="device_action" id="device_action">
-    <option value="EI_MUUTOSTA" selected>{{lang.g88}}</option>
-    <option value="EI_MUUTOSTA" disabled>----</option>
+    <option value="NO_CHANGE" selected>{{lang.g88}}</option>
+    <option value="NO_CHANGE" disabled>----</option>
     {% for entry in device_actions %}
     <option value="{{entry}}">{% set jutun_vaihe = entry|split('|') %}{{jutun_vaihe.1}}</option>
     {% endfor %}
   </select>
   {% else %}
-  <input type="hidden" name="device_action" value="EI_MUUTOSTA">
+  <input type="hidden" name="device_action" value="NO_CHANGE">
   {% endif %}
   <select style="text-align:left;" class="btn btn-xs btn-default" name="device_location" id="device_location">
-    <option value="EI_MUUTOSTA" selected>{{lang.f88}}</option>
-    <option value="EI_MUUTOSTA" disabled>----</option>
+    <option value="NO_CHANGE" selected>{{lang.f88}}</option>
+    <option value="NO_CHANGE" disabled>----</option>
     {% for entry in device_locations %}
     <option value="{{entry}}">{{entry}}</option>
     {% endfor %}
@@ -842,7 +842,7 @@
 {% if caserow.0.case_status
 <="2" %}
 <h3 class="page-heading">{{lang.119}}</h3>
-<form class="form" role="form" method="post" action="save.php?type=report_notes">
+<form class="form" role="form" method="post" action="submit.php?type=report_notes">
 <div class="form-group form-horizontal">
 <textarea id="richeditor" class="textarea form-control" rows="25" style="height:500px;" name="report_notes">{% if caserow.0.report_notes %}{{caserow.0.report_notes}}{% else %}{{settings.report_notes_footer}}{% endif %}</textarea>
 </div>
@@ -865,7 +865,7 @@
 <div role="tabpanel" class="tab-pane{% if returntab == "examiners_notes" %} active{% endif %}" id="tab-examiners_notes">
 {% if caserow.0.case_status <= "2" %}
 <h3 class="page-heading">{{lang.b121}}</h3>
-<form class="form" role="form" method="post" action="save.php?type=examiners_notes">
+<form class="form" role="form" method="post" action="submit.php?type=examiners_notes">
 <div class="form-group form-horizontal">
 <textarea id="richeditor2" class="textarea form-control" rows="25" style="height:500px;" name="examiners_notes">{{caserow.0.examiners_notes}}</textarea>
 </div>

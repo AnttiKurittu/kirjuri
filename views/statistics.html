@@ -2,11 +2,11 @@
 <title>Tilastoraportti - {{asetukset.otsikko}}</title>
 {% endblock title %} {% block navi %}
 <ul class="nav nav-sidebar">
-  <li><a href='index.php?vuosi={{dateStart|date("Y")}}'><span class="glyphicon glyphicon-home" aria-hidden="true"></span> {{lang.1}} {{dateStart|date("Y")}}<span class="sr-only">(current)</span></a></li>
+  <li><a href='index.php?year={{dateStart|date("Y")}}'><span class="glyphicon glyphicon-home" aria-hidden="true"></span> {{lang.1}} {{dateStart|date("Y")}}<span class="sr-only">(current)</span></a></li>
 </ul>
 <ul class="nav nav-sidebar">
   <li class="active">
-    <a href='statistics.php?vuosi={{dateStart|date("Y")}}'>
+    <a href='statistics.php?year={{dateStart|date("Y")}}'>
     <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> {{lang.2}} {{dateStart|date("Y")}}</a>
   </li>
 </ul>
@@ -22,7 +22,7 @@
 </div> {% endblock navi %} {% block content %}
 <div class="col-sm-9 col-sm-offset-3
   col-md-10 col-md-offset-2 main">
-<h1 class="page-header">{{lang.2}} {{dateStart|date("Y")}} <a href='statistics.php?vuosi={{(dateStart|date("Y") - 1 )}}'><span class="glyphicon glyphicon-triangle-left" aria-hidden="true"></span></a> <a href='statistics.php?vuosi={{(dateStart|date("Y") + 1 )}}'><span class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span></a> </h1>
+<h1 class="page-header">{{lang.2}} {{dateStart|date("Y")}} <a href='statistics.php?year={{(dateStart|date("Y") - 1 )}}'><span class="glyphicon glyphicon-triangle-left" aria-hidden="true"></span></a> <a href='statistics.php?year={{(dateStart|date("Y") + 1 )}}'><span class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span></a> </h1>
 <div class="col-md-3 text-center">
   <h4>{{lang.141}}</h4>
   <canvas id="statusKaavio" style="width:200px;height:200px;"></canvas>
@@ -362,9 +362,9 @@
 </table>
 <div class="col-md-12" style="height:40px;"></div>
 <div class="col-sm-12">
-  <canvas id="laitehimmeli" style="width:100%;"></canvas>
+  <canvas id="devicespiderweb" style="width:100%;"></canvas>
   <script>
-    var ctx = document.getElementById("laitehimmeli").getContext("2d");
+    var ctx = document.getElementById("devicespiderweb").getContext("2d");
     var data = {
       labels: [{% for devtype in devices %}"Laite: {{devtype}} ", {% endfor %}{% for media in media_objs %}"Media: {{media}} ", {% endfor %}],
       datasets: [

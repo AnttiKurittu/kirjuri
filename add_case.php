@@ -1,5 +1,5 @@
 <?php
-require_once("./main.php");
+require_once("./include_functions.php");
 logline("info", "Page view - add request");
 $confCrimes = file_get_contents('conf/crimes_autofill.conf');
 echo $twig->render('add_case.html', array(

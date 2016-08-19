@@ -6,18 +6,18 @@
 {% endblock title %}
 {% block navi %}
 <ul class="nav nav-sidebar">
-  <li><a href='index.php?vuosi={{dateStart|date("Y")}}'><span class="glyphicon glyphicon-home" aria-hidden="true"></span> {{lang.1}} {{dateStart|date("Y")}}<span class="sr-only">(current)</span></a></li>
+  <li><a href='index.php?year={{dateStart|date("Y")}}'><span class="glyphicon glyphicon-home" aria-hidden="true"></span> {{lang.1}} {{dateStart|date("Y")}}<span class="sr-only">(current)</span></a></li>
 </ul>
 <ul class="nav nav-sidebar">
-  <li role="presentation"><a href="view_case.php?case={{caserow.0.id}}">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {{caserow.0.case_id}}/{{caserow.0.case_added_date|date("Y")}} {{caserow.0.case_name}}</a></li>
-  <li role="presentation"><a href="view_case.php?case={{caserow.0.id}}&tab=devices">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {% if caserow.0.case_devicecount >= "1" %}<b>{% endif %}{{lang.43}} {% if caserow.0.case_devicecount >= "1" %}</b><span class="badge pull-right">{{caserow.0.case_devicecount}}</span>{% endif %}</a></li>
-  <li role="presentation"><a href="view_case.php?case={{caserow.0.id}}&tab=report_notes">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {% if caserow.0.report_notes %}<b>{% endif %}{{lang.44}}{% if caserow.0.report_notes %}</b>{% endif %}</a></li>
-  <li role="presentation"><a href="view_case.php?case={{caserow.0.id}}&tab=examiners_notes">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {% if caserow.0.examiners_notes %}<b>{% endif %}{{lang.b121}}{% if caserow.0.examiners_notes %}</b>{% endif %}</a></li>
-  <li role="presentation"><a href="view_case.php?case={{caserow.0.id}}&tab=ohjeet">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {{lang.46}}</a></li>
+  <li role="presentation"><a href="edit_request.php?case={{caserow.0.id}}">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {{caserow.0.case_id}}/{{caserow.0.case_added_date|date("Y")}} {{caserow.0.case_name}}</a></li>
+  <li role="presentation"><a href="edit_request.php?case={{caserow.0.id}}&tab=devices">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {% if caserow.0.case_devicecount >= "1" %}<b>{% endif %}{{lang.43}} {% if caserow.0.case_devicecount >= "1" %}</b><span class="badge pull-right">{{caserow.0.case_devicecount}}</span>{% endif %}</a></li>
+  <li role="presentation"><a href="edit_request.php?case={{caserow.0.id}}&tab=report_notes">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {% if caserow.0.report_notes %}<b>{% endif %}{{lang.44}}{% if caserow.0.report_notes %}</b>{% endif %}</a></li>
+  <li role="presentation"><a href="edit_request.php?case={{caserow.0.id}}&tab=examiners_notes">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {% if caserow.0.examiners_notes %}<b>{% endif %}{{lang.b121}}{% if caserow.0.examiners_notes %}</b>{% endif %}</a></li>
+  <li role="presentation"><a href="edit_request.php?case={{caserow.0.id}}&tab=ohjeet">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {{lang.46}}</a></li>
 </ul>
 <ul class="nav nav-sidebar">
   <li>
-    <a href='statistics.php?vuosi={{dateStart|date("Y")}}'> <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> {{lang.2}} {{dateStart|date("Y")}}</a>
+    <a href='statistics.php?year={{dateStart|date("Y")}}'> <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> {{lang.2}} {{dateStart|date("Y")}}</a>
   </li>
 </ul>
 <ul class="nav nav-sidebar">
@@ -38,13 +38,13 @@
 {% block content %}
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
   <ol class="breadcrumb">
-    <li><a href="index.php?vuosi={{caserow.0.case_added_date|date("Y")}}">{{lang.1}} {{caserow.0.case_added_date|date("Y")}}</a></li>
-    <li><a href="view_case.php?case={{mediarow.0.parent_id}}">{{caserow.0.case_id}}/{{caserow.0.case_added_date|date("Y")}} {{caserow.0.case_name}} {{caserow.0.case_file_number}}</a></li>
+    <li><a href="index.php?year={{caserow.0.case_added_date|date("Y")}}">{{lang.1}} {{caserow.0.case_added_date|date("Y")}}</a></li>
+    <li><a href="edit_request.php?case={{mediarow.0.parent_id}}">{{caserow.0.case_id}}/{{caserow.0.case_added_date|date("Y")}} {{caserow.0.case_name}} {{caserow.0.case_file_number}}</a></li>
     <li class="active">{{mediarow.0.device_type}} {{mediarow.0.device_manuf}} {{mediarow.0.device_model}}</li>
   </ol>
   {% for entry in mediarow %}
   {% if (entry.is_removed == "0") %}
-  <form class="form form-horizontal" role="form" method="post" action="save.php?type=devicememo&returnid={{entry.id}}&tab=devices">
+  <form class="form form-horizontal" role="form" method="post" action="submit.php?type=devicememo&returnid={{entry.id}}&tab=devices">
     <table class="table table-condensed" style="border: 1px solid #AAA">
       <thead style="background-color:#CDE;">
         <th style="width:1px;"></th>
@@ -159,7 +159,7 @@
 <div class="col-md-6 text-left pull-left">
 <input type="checkbox" name="device_contains_evidence" value="1" {% if entry.device_contains_evidence == "1" %}checked{% endif %}> {{lang.98}}
 &nbsp;&nbsp;&nbsp;<input name="device_include_in_report" value="1" type="checkbox" {% if entry.device_include_in_report == "1" %}checked{% endif %}> {{lang.126}}</div>
-<div class="col-md-6 text-right"><a type="button" class="btn btn-xs btn-danger" href="save.php?type=set_removed&db_row={{entry.id}}&returnid={{entry.parent_id}}" onclick="return confirm('
+<div class="col-md-6 text-right"><a type="button" class="btn btn-xs btn-danger" href="submit.php?type=set_removed&db_row={{entry.id}}&returnid={{entry.parent_id}}" onclick="return confirm('
   Confirm removal: {% if entry.device_is_host == "0"%} and attached media {% endif %}?')">
 <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span> {{lang.a127}} {% if entry.device_is_host == "1"%}{{lang.b127}}{% endif %}</a>{% endif %}</div>
 </td>
@@ -239,7 +239,7 @@
 <input type="hidden" name="parent_id" value="{{entry.parent_id}}">
 {% else %}
 <div class="form-group">
-<label for="laite_juttu" class="col-sm-1 control-label">{{lang.129}}</label>
+<label for="device_case" class="col-sm-1 control-label">{{lang.129}}</label>
 <div class="col-sm-10">
 <select style="text-align:left;" class="btn btn-default" name="parent_id" id="parent_id">
 <option selected value="{{caserow.0.id}}">{{lang.130}}</option>
@@ -256,12 +256,12 @@
 </tr>
 </table>
 <div class="form-group" style="width:100%;margin-left:0px;">
-<a type="button" class="btn btn-default btn-sm" href="view_case.php?case={{entry.parent_id}}&tab=devices#{{entry.id}}"><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> {{lang.131}}</a>
+<a type="button" class="btn btn-default btn-sm" href="edit_request.php?case={{entry.parent_id}}&tab=devices#{{entry.id}}"><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> {{lang.131}}</a>
 {% if caserow.0.case_status
 <="2" %}<button
-  type="submit" id="tallennusnappi" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{lang.132}}</button>
+  type="submit" id="save_button" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{lang.132}}</button>
 {% endif %}
-<a type="button" class="btn btn-info btn-sm" href="sticker.php?db_row={{entry.id}}&type=laite" target="_BLANK"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> {{lang.66}}</a>
+<a type="button" class="btn btn-info btn-sm" href="print_sticker.php?db_row={{entry.id}}&type=device" target="_BLANK"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> {{lang.66}}</a>
 </div>
 <div class="form-group" style="width:100%;margin-left:0px;">
 <textarea id="richeditor" rows="25" name="report_notes">{{entry.report_notes}}</textarea>

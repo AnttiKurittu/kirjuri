@@ -1,18 +1,18 @@
 <?php
-require_once("./main.php");
-if (empty($_GET['vuosi']))
+require_once("./include_functions.php");
+if (empty($_GET['year']))
   {
-    $vuosi = date("Y");
+    $year = date("Y");
   }
 else
   {
-    $vuosi = $_GET['vuosi'];
+    $year = $_GET['year'];
   }
-$dateStart = $vuosi . "-01-01 00:00:00";
-$dateStop = ($vuosi + 1) . "-01-01 00:00:00";
+$dateStart = $year . "-01-01 00:00:00";
+$dateStop = ($year + 1) . "-01-01 00:00:00";
 $order_by = "case_status ASC, case_id DESC";
 $order_direction = $statuslimit = "";
-$hakutermi = "";
+$search_term = "";
 $kirjuri_database = db('kirjuri-database');
 if (isset($_GET['d']))
   {
@@ -79,12 +79,12 @@ if (isset($_GET['s']))
         $statuslimit = 'AND case_status = "3" ';
       }
   }
-if (isset($_GET['hae']))
+if (isset($_GET['search']))
   {
-    $hakusana = substr($_GET['hae'], 0, 128);
-    $query = $kirjuri_database->prepare('SELECT * FROM exam_requests WHERE id = id ' . $statuslimit . 'AND is_removed = "0" AND MATCH (case_name,case_suspect,case_file_number,case_investigator,forensic_investigator,phone_investigator,case_investigation_lead,case_investigator_unit,case_crime,case_requested_action,case_request_description,report_notes,examiners_notes,device_manuf,device_model,device_identifier,device_owner) AGAINST (:hakusana IN BOOLEAN MODE) AND case_added_date BETWEEN :dateStart AND :dateStop ORDER BY ' . $order_by);
+    $search_term = substr($_GET['search'], 0, 128);
+    $query = $kirjuri_database->prepare('SELECT * FROM exam_requests WHERE id = id ' . $statuslimit . 'AND is_removed = "0" AND MATCH (case_name,case_suspect,case_file_number,case_investigator,forensic_investigator,phone_investigator,case_investigation_lead,case_investigator_unit,case_crime,case_requested_action,case_request_description,report_notes,examiners_notes,device_manuf,device_model,device_identifier,device_owner) AGAINST (:search_term IN BOOLEAN MODE) AND case_added_date BETWEEN :dateStart AND :dateStop ORDER BY ' . $order_by);
     $query->execute(array(
-        ':hakusana' => $hakusana,
+        ':search_term' => $search_term,
         ':dateStart' => $dateStart,
         ':dateStop' => $dateStop
     ));
@@ -125,7 +125,7 @@ $query->execute(array(
 ));
 $row_devices = $query->fetchAll(PDO::FETCH_ASSOC);
 echo $twig->render('index.html', array(
-    'hakusana' => $hakusana,
+    'search_term' => $search_term,
     'query_d' => $_GET['d'],
     'query_j' => $_GET['j'],
     'query_s' => $_GET['s'],

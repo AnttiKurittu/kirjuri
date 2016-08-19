@@ -7,11 +7,11 @@ $twig = new Twig_Environment($loader, array(
 ));
 $twig->addExtension(new Twig_Extension_Debug());
 session_start();
-if ($_SESSION['settings_haettu'] !== "1")
+if ($_SESSION['settings_fetched'] !== "1")
   {
     $_SESSION['getsettings'] = parse_ini_file("conf/settings.conf", true);
     $_SESSION['lang'] = parse_ini_file("conf/" . $_SESSION['getsettings']['settings']['lang'], true);
-    $_SESSION['settings_haettu'] = "1";
+    $_SESSION['settings_fetched'] = "1";
   }
 if ($getSettings === FALSE)
   {
@@ -53,7 +53,7 @@ function db($database)
           }
         catch (PDOException $e)
           {
-            die("VIRHE: " . $e->getMessage());
+            die("KIRJURI_ERROR: " . $e->getMessage());
             return FALSE;
           }
       }
@@ -76,7 +76,7 @@ function logline($event_level, $description)
       }
     catch (PDOException $e)
       {
-        die("VIRHE: " . $e->getMessage());
+        die("KIRJURI_ERROR: " . $e->getMessage());
         return FALSE;
       }
   }

@@ -32,7 +32,7 @@ $(document).ready(function (){
 });
 
 function validate(){
-    if ($('#case_file_number').val().length  >   0   &&
+    if ($('#case_file_number').val().length  > {{settings.organization_specific_prefix|length}}  &&
         $('#classification').val().length  >   0   &&
         $('#case_suspect').val().length  >   0   &&
         $('#case_investigation_lead').val().length  >   0   &&
@@ -43,14 +43,14 @@ function validate(){
         $('#case_request_description').val().length  >   0   &&
         $('#case_requested_action').val().length  >   0   &&
         $('#case_crime').val().length    >   0) {
-        $("#save_button").prop("disabled", false);
-        $("#save_button").addClass("btn-success");
+        $("#request_save_button").prop("disabled", false);
+        $("#request_save_button").addClass("btn-success");
         $("#ohje").hide();
 
     }
     else {
-        $("#save_button").prop("disabled", true);
-        $("#save_button").removeClass("btn-success");
+        $("#request_save_button").prop("disabled", true);
+        $("#request_save_button").removeClass("btn-success");
     }
 }
 </script>
@@ -185,7 +185,7 @@ function showHint(str) {
     </div>
     <div class="form-group">
       <div class="col-sm-offset-2 col-sm-10">
-        <button type="submit" class="btn btn-success" id="save_button"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{lang.137}}</button>
+        <button type="submit" class="btn btn-success" id="request_save_button" disabled><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{lang.137}}</button>
         &nbsp;&nbsp;<input type="reset" class="btn btn-danger" value="{{lang.138}}">
       </div>
     </div>

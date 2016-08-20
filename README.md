@@ -1,14 +1,19 @@
 # kirjuri
 Kirjuri is a simple php/mysql web application for managing physical forensic evidence.
 
-LICENSE
+OVERVIEW & LICENSE
 ------------
 
 Kirjuri is developed by Antti Kurittu at the Helsinki Police Department as an internal tool. Original development released under the GPL v3.0 license. Some components are distributed with their own licenses, please see folders & help for details.
 
 Kirjuri requires PHP5 and MySQL and uses Twig (http://twig.sensiolabs.org), Bootstrap (http://getbootstrap.com), Font Awesome (http://fontawesome.io), Freepik image resources (http://www.freepik.com) and jQuery (https://jquery.com).
 
-Kirjuri is NOT designed to be installed on an internet-facing machines except for testing and development purposes. It is INHERENTLY INSECURE, and designed to be used in an air-gapped network by trusted operators. If you wish to implement user management and security features, you are welcome to submit a pull request.
+WARNING
+------------
+
+Kirjuri is NOT designed to be installed on an internet-facing machines except for testing and development purposes. It is INHERENTLY INSECURE, and designed to be used in an air-gapped network by trusted operators in a secure location. If you wish to implement user management and security features, you are welcome to collaborate with this project.
+
+Familiarize yourself with the software prior to installing it into a production environment. The developers accept no liability on security incidents following from the use of this software. The software is provided as-is.
 
 INSTALLATION
 ------------

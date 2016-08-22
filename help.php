@@ -16,7 +16,7 @@ if (isset($_GET['settings']))
       }
   }
 $kirjuri_database = db('kirjuri-database');
-$query = $kirjuri_database->prepare('SELECT * FROM event_log ORDER BY id DESC LIMIT 200');
+$query = $kirjuri_database->prepare('SELECT * FROM event_log ORDER BY id DESC LIMIT 100');
 $query->execute();
 $event_log = $query->fetchAll(PDO::FETCH_ASSOC);
 $settings_filedump = file_get_contents("conf/settings.conf");

@@ -25,7 +25,7 @@
   <h4>conf/settings.conf</h4>
   <form class="form form-horizontal" role="form" method="post" action="help.php?settings=1&save=settings">
     <div class="form-group">
-      <textarea style="background-color:#EEE;" rows="10" class="mceNoEditor textarea col-md-12" name="settings_conf">{{ settings_filedump }}</textarea>
+      <textarea style="background-color:#EEE;" rows="30" class="mceNoEditor textarea col-md-12" name="settings_conf">{{ settings_filedump }}</textarea>
     </div>
     <div class="form-group">
       <button type="submit" class="btn btn-sm btn-success">{{ lang.save_changes }}</button>
@@ -45,8 +45,10 @@
   <h4>{{ lang.event_log }}</h4>
   <form class="form form-horizontal">
     <div class="form-group">
-      <textarea style="background-color:#EEE;" rows="10" class="mceNoEditor textarea col-md-12" name="crimes_conf">{% for entry in event_log %}{{ entry.id }} {{ entry.event_level }} {{ entry.event_timestamp }} {{ entry.event_descr }} {{ entry.ip }}
-      {% endfor %}</textarea>
+<pre>
+{% for entry in event_log %}{{ entry.id }} {{ entry.event_level }} {{ entry.event_timestamp }} {{ entry.event_descr }} {{ entry.ip }}
+{% endfor %}
+</pre>
     </div>
   </form>
   {% else %}

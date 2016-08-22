@@ -40,8 +40,9 @@ CHANGELOG
 2016-08-22: Changes
 
 * Fixed the language file to use natural language variables for more readable code.
-* Moved the MySQL credentials from the config file to source code
-* Cleaned up the inconsistent use of Twig brackets
-* Fixed page titles
-* Removed unused files
-* Other small bugfixes
+* Moved the MySQL credentials from the config file to source code.
+* Cleaned up the inconsistent use of Twig brackets.
+* Fixed page titles.
+* Removed unused files.
+* Added an icon to stalled cases (counting from latest update), stall threshold can be set from settings.
+* Other small bugfixes.

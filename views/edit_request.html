@@ -116,7 +116,7 @@
         {% if entry.phone_investigator %}
         <p>{{ lang.mobile_examiner_long }} <b>{{ entry.phone_investigator }}</b></p>
         {% endif %}
-        <p>{{ lang.requested }} <b>{{ entry.case_added_date|date("d.m.Y") }}</b>, {{ lang.confiscation_date }} <b>{{ entry.case_confiscation_date|date("d.m.Y") }}</b>, {{ lang.latest_update }} <b>{{ entry.last_updated|date("d.m.Y") }}</b></p>
+        <p>{{ lang.requested }} <b>{{ entry.case_added_date|date("d.m.Y") }}</b>, {{ lang.confiscation_date }} <b>{{ entry.case_confiscation_date|date("d.m.Y") }}</b>, {{ lang.latest_update }} {% if (entry.last_updated|date("U") < settings.stalled_case|date("U")) and (entry.case_status == "2")%}<i style="color:red;" class="fa fa-moon-o"></i> <b style="color:red;">{{ entry.last_updated|date("d.m.Y") }}</b>{% else %}<b>{{ entry.last_updated|date("d.m.Y") }}</b>{% endif %}</p>
         <p>{{ lang.target }}: <b>{{ entry.case_request_description }}</b>, {{ lang.request_details }}: <b>{{ entry.case_requested_action }}</b></p>
         <p>{{ lang.urgency }}: <b>{% if entry.case_urgency == "1" %}<a style="color:red;">{{ lang.urgency_urgent }}</a>{%endif %}{% if entry.case_urgency == "2" %}{{ lang.urgency_normal }}{%endif %}{% if entry.case_urgency == "3" %}{{ lang.urgency_can_wait }}{%endif %}</b></p>
         {% if entry.case_urg_justification %}

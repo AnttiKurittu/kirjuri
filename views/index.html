@@ -130,7 +130,7 @@
       {% for entry in row_cases %}
       {% if (entry.id == entry.parent_id) and (entry.is_removed == "0") %}
       {% set counter = counter + 1 %}
-      <tr title="{{ lang.requested }} {{ entry.case_added_date|date("d.m.Y") }}, {{ lang.started }} {{ entry.case_start_date|date("d.m.Y") }}{% if entry.case_ready_date %}, valmistui {{ entry.case_ready_date|date("d.m.Y") }}{% endif %}" {% if entry.case_status == "1" %}class="danger"{% set new_counter = new_counter + 1 %}{% elseif entry.case_status == "2"  %}class="warning"{% set open_counter = open_counter + 1%}{% elseif entry.case_status == "3" %}class="default"{% set ready_counter = ready_counter + 1%}{% endif %}>
+      <tr title="{{ lang.requested }} {{ entry.case_added_date|date("d.m.Y") }}, {{ lang.started }} {{ entry.case_start_date|date("d.m.Y") }}{% if entry.case_ready_date %}, {{lang.ready_at}} {{ entry.case_ready_date|date("d.m.Y") }}{% endif %}" {% if entry.case_status == "1" %}class="danger"{% set new_counter = new_counter + 1 %}{% elseif entry.case_status == "2"  %}class="warning"{% set open_counter = open_counter + 1%}{% elseif entry.case_status == "3" %}class="default"{% set ready_counter = ready_counter + 1%}{% endif %}>
       <td style="width:1%;white-space:nowrap;"><a style="font-weight:bold;" href="edit_request.php?case={{ entry.id }}">{{ entry.case_id }}/{{ entry.case_added_date|date("y") }}</a></td>
       <td>
         {% set has_new = false %}
@@ -145,7 +145,9 @@
         {% endif %}
         {% endfor %}
         {% if has_new == true %}<span class="label label-danger pull-right">{{ newcount }}</span>{% endif %}
-        {% if (entry.case_urgency == "1") and ( entry.case_status <= "2") %}<i style="color:red;" class="fa fa-bolt"></i>&nbsp;{% endif %}<a style="font-weight:bold;" href="edit_request.php?case={{ entry.id }}">{% if entry.case_name %}{{ entry.case_name }}{% elseif entry.case_suspect %}{{ lang.suspect_abbrev }} {{ entry.case_suspect }}{% else %}{{ lang.suspect_short }}{% endif %}</a>
+        {% if (entry.case_urgency == "1") and ( entry.case_status <= "2") %}<i style="color:red;" class="fa fa-bolt"></i>&nbsp;{% endif %}<a style="font-weight:bold;" href="edit_request.php?case={{ entry.id }}">{% if entry.case_name %}{{ entry.case_name }}{% elseif entry.case_suspect %}{{ lang.suspect_abbrev }} {{ entry.case_suspect }}{% else %}{{ lang.suspect_short }}{% endif %}
+        {% if (entry.last_updated|date("U") < settings.stalled_case|date("U")) and (entry.case_status == "2")%}<span class="pull-right"><i style="color:blue;" class="fa fa-moon-o"></i>&nbsp;</span>{% endif %}
+        </a>
       </td>
       <td style="width:1%;white-space:nowrap;"><a style="font-weight:bold;" href="edit_request.php?case={{ entry.id }}">{{ entry.case_file_number }}</a>{% if settings.notify_after_4_months == "1" and (entry.case_confiscation_date != "0000-00-00") and ((entry.case_confiscation_date|date("U")) < ("-4 months"|date("U"))) %} &nbsp;<i class="fa fa-calendar-times-o" style="color:red;"></i><i class="fa fa-exclamation" style="color:red;"></i>{%endif%}</td>
       <td><a href="index.php?search={{ entry.case_crime|url_encode }}&year={{ entry.case_added_date|date("Y") }}">{{ entry.case_crime|length > 20 ? entry.case_crime|slice(0, 20) ~ '...' : entry.case_crime }}</a></td>

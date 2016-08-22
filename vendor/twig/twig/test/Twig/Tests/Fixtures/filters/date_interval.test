@@ -3,9 +3,9 @@
 --CONDITION--
 version_compare(phpversion(), '5.3.0', '>=')
 --TEMPLATE--
-{{ date1|date }}
-{{ date1|date('%d days %h hours') }}
-{{ date1|date('%d days %h hours', timezone1) }}
+{{date1|date}}
+{{date1|date('%d days %h hours')}}
+{{date1|date('%d days %h hours', timezone1)}}
 --DATA--
 date_default_timezone_set('UTC');
 return array(

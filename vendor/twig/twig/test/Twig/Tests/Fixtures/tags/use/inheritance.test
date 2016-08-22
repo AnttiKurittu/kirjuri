@@ -3,7 +3,7 @@
 --TEMPLATE--
 {% use "parent.twig" %}
 
-{{ block('container') }}
+{{block('container')}}
 --TEMPLATE(parent.twig)--
 {% use "ancestor.twig" %}
 
@@ -12,7 +12,7 @@
 {% endblock %}
 --TEMPLATE(ancestor.twig)--
 {% block container %}
-    <div class="container">{{ block('sub_container') }}</div>
+    <div class="container">{{block('sub_container')}}</div>
 {% endblock %}
 
 {% block sub_container %}

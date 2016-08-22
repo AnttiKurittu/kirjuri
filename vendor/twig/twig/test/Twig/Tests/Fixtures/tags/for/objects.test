@@ -2,18 +2,18 @@
 "for" tag iterates over iterable objects
 --TEMPLATE--
 {% for item in items %}
-  * {{ item }}
-  * {{ loop.index }}/{{ loop.index0 }}
-  * {{ loop.first }}
+  * {{item}}
+  * {{loop.index}}/{{loop.index0}}
+  * {{loop.first}}
 
 {% endfor %}
 
 {% for key, value in items %}
-  * {{ key }}/{{ value }}
+  * {{key}}/{{value}}
 {% endfor %}
 
 {% for key in items|keys %}
-  * {{ key }}
+  * {{key}}
 {% endfor %}
 --DATA--
 class ItemsIterator implements Iterator

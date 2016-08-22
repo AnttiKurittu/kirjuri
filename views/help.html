@@ -1,82 +1,76 @@
 {% extends 'base.html' %} {% block title %}
-<title>{{lang.169}} - {{ settings.title_text }}</title>
+<title>{{ lang.help_settings }} - {{ settings.title_text }}</title>
 {% endblock title %} {% block navi %}
-      <ul class="nav nav-sidebar">
-        <li><a href='index.php?year={{ dateStart|date("Y") }}'><span class="glyphicon glyphicon-home" aria-hidden="true"></span> {{lang.1}} {{ dateStart|date("Y") }}<span class="sr-only">(current)</span></a></li>
-      </ul>
-      <ul class="nav nav-sidebar">
-        <li>
-          <a href='statistics.php?year={{ dateStart|date("Y") }}'> <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> {{lang.2}} {{ dateStart|date("Y") }}</a>
-        </li>
-      </ul>
-      <ul class="nav nav-sidebar">
-        <li><a href="add_case.php"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{lang.3}}</a></li>
-      </ul>
-      <ul class="nav nav-sidebar">
-        <li {% if not debug %}class="active" {% endif %}><a href="help.php"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> {{lang.4}}</a></li>
-      </ul>
-      <ul class="nav nav-sidebar">
-        <li {% if debug%}class="active" {% endif %}><a href="help.php?settings=1"><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> {{lang.5}}</a></li>
-      </ul>
+<ul class="nav nav-sidebar">
+  <li><a href='index.php?year={{ dateStart|date("Y") }}'><span class="glyphicon glyphicon-home" aria-hidden="true"></span> {{ lang.front_page }} {{ dateStart|date("Y") }}<span class="sr-only">(current)</span></a></li>
+</ul>
+<ul class="nav nav-sidebar">
+  <li>
+    <a href='statistics.php?year={{ dateStart|date("Y") }}'> <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> {{ lang.statistics }} {{ dateStart|date("Y") }}</a>
+  </li>
+</ul>
+<ul class="nav nav-sidebar">
+  <li><a href="add_case.php"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{ lang.add_a_request }}</a></li>
+</ul>
+<ul class="nav nav-sidebar">
+  <li {% if not debug %}class="active" {% endif %}><a href="help.php"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> {{ lang.help_licenses }}</a></li>
+</ul>
+<ul class="nav nav-sidebar">
+  <li {% if debug%}class="active" {% endif %}><a href="help.php?settings=1"><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> {{ lang.settings }}</a></li>
+</ul>
+</div>
+{% endblock navi %} {% block content %}
+<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+  {% if debug %}
+  <h4>conf/settings.conf</h4>
+  <form class="form form-horizontal" role="form" method="post" action="help.php?settings=1&save=settings">
+    <div class="form-group">
+      <textarea style="background-color:#EEE;" rows="10" class="mceNoEditor textarea col-md-12" name="settings_conf">{{ settings_filedump }}</textarea>
     </div>
-    {% endblock navi %} {% block content %}
-    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-      {% if debug %}
-      <h4>conf/settings.conf</h4>
-      <form class="form form-horizontal" role="form" method="post" action="help.php?settings=1&save=settings">
-        <div class="form-group">
-          <textarea style="background-color:#EEE;" rows="10" class="mceNoEditor textarea col-md-12" name="settings_conf">{{ settings_filedump }}</textarea>
-        </div>
-        <div class="form-group">
-          <button type="submit" class="btn btn-sm btn-success">{{lang.166}}</button>
-          <button type="reset" class="btn btn-sm btn-warning">{{lang.167}}</button>
-        </div>
-      </form>
-      <h4>conf/crimes_autofill.conf</h4>
-      <form class="form form-horizontal" role="form" method="post" action="help.php?settings=1&save=crimes">
-        <div class="form-group">
-          <textarea style="background-color:#EEE;" rows="10" class="mceNoEditor textarea col-md-12" name="crimes_conf">{{ crimes_filedump }}</textarea>
-        </div>
-        <div class="form-group">
-          <button type="submit" class="btn btn-sm btn-success">{{lang.166}}</button>
-          <button type="reset" class="btn btn-sm btn-warning">{{lang.167}}</button>
-        </div>
-      </form>
-      <h4>{{lang.168}}</h4>
-      <form class="form form-horizontal">
-        <div class="form-group">
-          <textarea style="background-color:#EEE;" rows="10" class="mceNoEditor textarea col-md-12" name="crimes_conf">{% for entry in event_log %}{{ entry.id }} {{entry.event_level }} {{ entry.event_timestamp }} {{ entry.event_descr }} {{ entry.ip }}
-{% endfor %}</textarea>
-        </div>
-      </form>
-
-      {% else %}
-      <h1 class="page-header">Help for Kirjuri {{ settings.software_version }}</h1>
-
-
-      <a type="button" class="btn btn-default" href="#"><i class="fa fa-arrow-left"></i> {{lang.178}} </a>
-      <a type="button" class="btn btn-primary" href="#"><i class="fa fa-info-circle"></i> {{lang.179}}</a>
-      <a type="button" class="btn btn-info" href="#"><i class="fa fa-print"></i> {{lang.180}}</a>
-      <a type="button" class="btn btn-success" href="#"><i class="fa fa-save"></i> {{lang.181}}</a>
-      <a type="button" class="btn btn-danger" href="#"><i class="fa fa-remove"></i> {{lang.182}}</a>
-
-      <h3>{{lang.183}}</h3>
-      <pre>
+    <div class="form-group">
+      <button type="submit" class="btn btn-sm btn-success">{{ lang.save_changes }}</button>
+      <button type="reset" class="btn btn-sm btn-warning">{{ lang.cancel_changes }}</button>
+    </div>
+  </form>
+  <h4>conf/crimes_autofill.conf</h4>
+  <form class="form form-horizontal" role="form" method="post" action="help.php?settings=1&save=crimes">
+    <div class="form-group">
+      <textarea style="background-color:#EEE;" rows="10" class="mceNoEditor textarea col-md-12" name="crimes_conf">{{ crimes_filedump }}</textarea>
+    </div>
+    <div class="form-group">
+      <button type="submit" class="btn btn-sm btn-success">{{ lang.save_changes }}</button>
+      <button type="reset" class="btn btn-sm btn-warning">{{ lang.cancel_changes }}</button>
+    </div>
+  </form>
+  <h4>{{ lang.event_log }}</h4>
+  <form class="form form-horizontal">
+    <div class="form-group">
+      <textarea style="background-color:#EEE;" rows="10" class="mceNoEditor textarea col-md-12" name="crimes_conf">{% for entry in event_log %}{{ entry.id }} {{ entry.event_level }} {{ entry.event_timestamp }} {{ entry.event_descr }} {{ entry.ip }}
+      {% endfor %}</textarea>
+    </div>
+  </form>
+  {% else %}
+  <h1 class="page-header">Help for Kirjuri {{ settings.software_version }}</h1>
+  <a type="button" class="btn btn-default" href="#"><i class="fa fa-arrow-left"></i> {{ lang.help_button_navigation }} </a>
+  <a type="button" class="btn btn-primary" href="#"><i class="fa fa-info-circle"></i> {{ lang.help_button_modal }}</a>
+  <a type="button" class="btn btn-info" href="#"><i class="fa fa-print"></i> {{ lang.help_button_print }}</a>
+  <a type="button" class="btn btn-success" href="#"><i class="fa fa-save"></i> {{ lang.help_button_save }}</a>
+  <a type="button" class="btn btn-danger" href="#"><i class="fa fa-remove"></i> {{ lang.help_button_delete }}</a>
+  <h3>{{ lang.licenses }}</h3>
+  <pre>
 Kirjuri has been built using the following software modules:
 
 Debian 8, PHP 5, MySQL server, Bootstrap CSS/HTML/JS framework, Font Awesome,
 jQuery, Twig template engine.
 
 Original code for Kirjuri is released under the GPL v3 license.</pre>
-
-<pre>Icons made by Freepik, Icomoon, Revicon from www.flaticon.com is licensed by CC BY 3.0
+  <pre>Icons made by Freepik, Icomoon, Revicon from www.flaticon.com is licensed by CC BY 3.0
 http://www.freepik.com/
 http://www.flaticon.com/authors/icomoon
 http://www.flaticon.com/authors/revicon
 http://creativecommons.org/licenses/by/3.0/
 </pre>
-
-      <pre>Twig license
+  <pre>Twig license
 
 Copyright (c) 2009-2014 by the Twig Team, see AUTHORS for more details.
 
@@ -106,8 +100,7 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 </pre>
-
-      <pre>Bootstrap License
+  <pre>Bootstrap License
 
 The MIT License (MIT)
 
@@ -131,8 +124,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 </pre>
-
-      <pre>Font Awesome License
+  <pre>Font Awesome License
 
 This Font Software is licensed under the SIL Open Font License, Version 1.1.
 This license is copied below, and is also available with a FAQ at:
@@ -226,11 +218,8 @@ DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM
 OTHER DEALINGS IN THE FONT SOFTWARE.
 </pre>
-      {% endif %}
-    </div>
-
-  </div>
+  {% endif %}
 </div>
-
-
+</div>
+</div>
 {% endblock %}

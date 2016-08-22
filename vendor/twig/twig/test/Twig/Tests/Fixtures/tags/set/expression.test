@@ -3,8 +3,8 @@
 --TEMPLATE--
 {% set foo, bar = 'foo' ~ 'bar', 'bar' ~ 'foo' %}
 
-{{ foo }}
-{{ bar }}
+{{foo}}
+{{bar}}
 --DATA--
 return array()
 --EXPECT--

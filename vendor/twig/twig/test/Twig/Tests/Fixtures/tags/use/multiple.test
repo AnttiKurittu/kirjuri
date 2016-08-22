@@ -4,9 +4,9 @@
 {% use "foo.twig" %}
 {% use "bar.twig" %}
 
-{{ block('content') }}
-{{ block('foo') }}
-{{ block('bar') }}
+{{block('content')}}
+{{block('foo')}}
+{{block('bar')}}
 --TEMPLATE(foo.twig)--
 {% block content 'foo' %}
 {% block foo 'foo' %}

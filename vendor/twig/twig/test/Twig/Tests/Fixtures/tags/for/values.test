@@ -2,7 +2,7 @@
 "for" tag iterates over item values
 --TEMPLATE--
 {% for item in items %}
-  * {{ item }}
+  * {{item}}
 {% endfor %}
 --DATA--
 return array('items' => array('a', 'b'))

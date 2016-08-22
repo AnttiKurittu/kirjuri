@@ -1,7 +1,7 @@
 --TEST--
 "format" filter
 --TEMPLATE--
-{{ string|format(foo, 3) }}
+{{string|format(foo, 3)}}
 --DATA--
 return array('string' => '%s/%d', 'foo' => 'bar')
 --EXPECT--

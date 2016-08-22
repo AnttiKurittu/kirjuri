@@ -6,7 +6,7 @@ Returns a list containing an arithmetic progression of integers:
 .. code-block:: jinja
 
     {% for i in range(0, 3) %}
-        {{ i }},
+        {{i}},
     {% endfor %}
 
     {# outputs 0, 1, 2, 3, #}
@@ -17,7 +17,7 @@ decrement):
 .. code-block:: jinja
 
     {% for i in range(0, 6, 2) %}
-        {{ i }},
+        {{i}},
     {% endfor %}
 
     {# outputs 0, 2, 4, 6, #}
@@ -28,7 +28,7 @@ function (with a step of 1):
 .. code-block:: jinja
 
     {% for i in 0..3 %}
-        {{ i }},
+        {{i}},
     {% endfor %}
 
 .. tip::

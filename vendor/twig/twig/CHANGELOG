@@ -177,7 +177,7 @@
 
  * fixed getting a numeric-like item on a variable ('09' for instance)
  * fixed getting a boolean or float key on an array, so it is consistent with PHP's array access:
-   `{{ array[false] }}` behaves the same as `echo $array[false];` (equals `$array[0]`)
+   `{{array[false]}}` behaves the same as `echo $array[false];` (equals `$array[0]`)
  * made the escape filter 20% faster for happy path (escaping string for html with UTF-8)
  * changed ☃ to § in tests
  * enforced usage of named arguments after positional ones
@@ -200,7 +200,7 @@
 
  * added support for object instances as the second argument of the constant function
  * relaxed globals management to avoid a BC break
- * added support for {{ some_string[:2] }}
+ * added support for {{some_string[:2]}}
 
 * 1.12.0 (2013-01-08)
 
@@ -461,7 +461,7 @@ no changes
 * 1.1.2 (2011-07-30)
 
  * fixed json_encode filter on PHP 5.2
- * fixed regression introduced in 1.1.1 ({{ block(foo|lower) }})
+ * fixed regression introduced in 1.1.1 ({{block(foo|lower)}})
  * fixed inheritance when using conditional parents
  * fixed compilation of templates when the body of a child template is not empty
  * fixed output when a macro throws an exception
@@ -526,12 +526,12 @@ Backward incompatibilities:
 
  * the "items" filter, which has been deprecated for quite a long time now, has been removed
  * the "range" filter has been converted to a function: 0|range(10) -> range(0, 10)
- * the "constant" filter has been converted to a function: {{ some_date|date('DATE_W3C'|constant) }} -> {{ some_date|date(constant('DATE_W3C')) }}
- * the "cycle" filter has been converted to a function: {{ ['odd', 'even']|cycle(i) }} -> {{ cycle(['odd', 'even'], i) }}
+ * the "constant" filter has been converted to a function: {{some_date|date('DATE_W3C'|constant)}} -> {{some_date|date(constant('DATE_W3C'))}}
+ * the "cycle" filter has been converted to a function: {{['odd', 'even']|cycle(i)}} -> {{cycle(['odd', 'even'], i)}}
  * the "for" tag does not support "joined by" anymore
  * the "autoescape" first argument is now "true"/"false" (instead of "on"/"off")
- * the "parent" tag has been replaced by a "parent" function ({{ parent() }} instead of {% parent %})
- * the "display" tag has been replaced by a "block" function ({{ block('title') }} instead of {% display title %})
+ * the "parent" tag has been replaced by a "parent" function ({{parent()}} instead of {% parent %})
+ * the "display" tag has been replaced by a "block" function ({{block('title')}} instead of {% display title %})
  * removed the grammar and simple token parser (moved to the Twig Extensions repository)
 
 Changes:
@@ -586,7 +586,7 @@ Changes:
 Backward incompatibilities:
  * the self special variable has been renamed to _self
  * the odd and even filters are now tests:
-     {{ foo|odd }} must now be written {{ foo is odd }}
+     {{foo|odd}} must now be written {{foo is odd}}
  * the "safe" filter has been renamed to "raw"
  * in Node classes,
         sub-nodes are now accessed via getNode() (instead of property access)
@@ -595,8 +595,8 @@ Backward incompatibilities:
  * the include tag now merges the passed variables with the current context by default
    (the old behavior is still possible by adding the "only" keyword)
  * moved Exceptions to Twig_Error_* (Twig_SyntaxError/Twig_RuntimeError are now Twig_Error_Syntax/Twig_Error_Runtime)
- * removed support for {{ 1 < i < 3 }} (use {{ i > 1 and i < 3 }} instead)
- * the "in" filter has been removed ({{ a|in(b) }} should now be written {{ a in b }})
+ * removed support for {{1 < i < 3}} (use {{i > 1 and i < 3}} instead)
+ * the "in" filter has been removed ({{a|in(b)}} should now be written {{a in b}})
 
 Changes:
  * added file and line to Twig_Error_Runtime exceptions thrown from Twig_Template
@@ -608,9 +608,9 @@ Changes:
  * removed trim_blocks option
  * added support for is*() methods for attributes (foo.bar now looks for foo->getBar() or foo->isBar())
  * changed all exceptions to extend Twig_Error
- * fixed unary expressions ({{ not(1 or 0) }})
+ * fixed unary expressions ({{not(1 or 0)}})
  * fixed child templates (with an extend tag) that uses one or more imports
- * added support for {{ 1 not in [2, 3] }} (more readable than the current {{ not (1 in [2, 3]) }})
+ * added support for {{1 not in [2, 3]}} (more readable than the current {{not (1 in [2, 3])}})
  * escaping has been rewritten
  * the implementation of template inheritance has been rewritten
    (blocks can now be called individually and still work with inheritance)
@@ -669,7 +669,7 @@ Backward incompatibilities:
  * added a way to add token parsers, filters, and visitors without creating an extension
  * added three interfaces: Twig_NodeInterface, Twig_TokenParserInterface, and Twig_FilterInterface
  * changed the generated code to match the new coding standards
- * fixed sandbox mode (__toString() method check was not enforced if called implicitly from a simple statement like {{ article }})
+ * fixed sandbox mode (__toString() method check was not enforced if called implicitly from a simple statement like {{article}})
  * added an exception when a child template has a non-empty body (as it is always ignored when rendering)
 
 * 0.9.6 (2010-05-12)
@@ -790,7 +790,7 @@ This release is NOT backward compatible with the previous releases.
 
   * fixed a bug in PHP 5.2.6
   * fixed numbers with one than one decimal
-  * added support for method calls with arguments ({{ foo.bar('a', 43) }})
+  * added support for method calls with arguments ({{foo.bar('a', 43)}})
   * made small speed optimizations
   * made minor tweaks to allow better extensibility and flexibility
 

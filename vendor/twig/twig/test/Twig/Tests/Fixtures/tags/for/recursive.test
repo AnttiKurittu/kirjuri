@@ -2,9 +2,9 @@
 "for" tags can be nested
 --TEMPLATE--
 {% for key, item in items %}
-* {{ key }} ({{ loop.length }}):
+* {{key}} ({{loop.length}}):
 {% for value in item %}
-  * {{ value }} ({{ loop.length }})
+  * {{value}} ({{loop.length}})
 {% endfor %}
 {% endfor %}
 --DATA--

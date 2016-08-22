@@ -129,7 +129,7 @@ class Twig_Tests_ParserTest extends PHPUnit_Framework_TestCase
 {% from _self import foo %}
 
 {% macro foo() %}
-    {{ foo }}
+    {{foo}}
 {% endmacro %}
 EOF
         ));

@@ -3,7 +3,7 @@ global variables
 --TEMPLATE--
 {% include "included.twig" %}
 {% from "included.twig" import foobar %}
-{{ foobar() }}
+{{foobar()}}
 --TEMPLATE(included.twig)--
 {% macro foobar() %}
 called foobar

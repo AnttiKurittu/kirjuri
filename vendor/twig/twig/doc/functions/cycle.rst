@@ -9,7 +9,7 @@ The ``cycle`` function cycles on an array of values:
     {% set end_year = start_year + 5 %}
 
     {% for year in start_year..end_year %}
-        {{ cycle(['odd', 'even'], loop.index0) }}
+        {{cycle(['odd', 'even'], loop.index0)}}
     {% endfor %}
 
 The array can contain any number of values:
@@ -19,7 +19,7 @@ The array can contain any number of values:
     {% set fruits = ['apple', 'orange', 'citrus'] %}
 
     {% for i in 0..10 %}
-        {{ cycle(fruits, i) }}
+        {{cycle(fruits, i)}}
     {% endfor %}
 
 Arguments

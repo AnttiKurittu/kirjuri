@@ -1,7 +1,7 @@
 --TEST--
 "include" function is safe for auto-escaping
 --TEMPLATE--
-{{ include("foo.twig") }}
+{{include("foo.twig")}}
 --TEMPLATE(foo.twig)--
 <p>Test</p>
 --DATA--

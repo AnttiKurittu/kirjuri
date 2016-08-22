@@ -94,7 +94,7 @@ template:
     {% use "blocks.html" %}
 
     {% block sidebar %}
-        {{ parent() }}
+        {{parent()}}
     {% endblock %}
 
     {% block title %}{% endblock %}
@@ -115,7 +115,7 @@ the ``blocks.html`` template.
         {% use "blocks.html" with sidebar as parent_sidebar %}
 
         {% block sidebar %}
-            {{ block('parent_sidebar') }}
+            {{block('parent_sidebar')}}
         {% endblock %}
 
 .. note::

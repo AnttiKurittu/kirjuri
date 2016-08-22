@@ -2,9 +2,9 @@
 "raw" tag
 --TEMPLATE--
 {% raw %}
-{{ foo }}
+{{foo}}
 {% endraw %}
 --DATA--
 return array()
 --EXPECT--
-{{ foo }}
+{{foo}}

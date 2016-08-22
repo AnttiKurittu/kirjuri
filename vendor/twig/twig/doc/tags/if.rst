@@ -19,7 +19,7 @@ You can also test if an array is not empty:
     {% if users %}
         <ul>
             {% for user in users %}
-                <li>{{ user.username|e }}</li>
+                <li>{{user.username|e}}</li>
             {% endfor %}
         </ul>
     {% endif %}

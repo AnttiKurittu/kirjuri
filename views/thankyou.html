@@ -4,14 +4,14 @@
 {% endblock reroute %}
 {% block content %}
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-  <h1>{{lang.157}}, {{lang.163|lower}} {{ case_id }}.</h1>
+  <h1>{{ lang.examination_request_submitted }}, {{ lang.request_number }} {{ case_id }}.</h1>
   <hr>
-  <a class="btn btn-success" href="add_case.php" role="button"><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> {{lang.170}}</a>
-  <a class="btn btn-info" href="print_sticker.php?db_row={{ id }}&type=juttu" target="_blank" role="button"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> {{lang.66}}</a>
+  <a class="btn btn-success" href="add_case.php" role="button"><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> {{ lang.return_to_submit_request }}</a>
+  <a class="btn btn-info" href="print_sticker.php?db_row={{ id }}&type=juttu" target="_blank" role="button"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> {{ lang.print_sticker }}</a>
   <p>
   <div class="well">
-    <p><b>{{lang.171}}</b>
-    <p>{{lang.172}}</p>
+    <p><b>{{ lang.notice|upper }}</b>
+    <p>{{ lang.print_sticker_reminder }}</p>
   </div>
   </p>
 </div>

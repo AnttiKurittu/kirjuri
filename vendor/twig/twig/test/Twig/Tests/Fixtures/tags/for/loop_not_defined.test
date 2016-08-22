@@ -2,7 +2,7 @@
 "for" tag
 --TEMPLATE--
 {% for i, item in items if i > 0 %}
-    {{ loop.last }}
+    {{loop.last}}
 {% endfor %}
 --DATA--
 return array('items' => array('a', 'b'))

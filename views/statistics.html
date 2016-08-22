@@ -1,48 +1,48 @@
 {% extends 'base.html' %} {% block title %}
-<title>Tilastoraportti - {{asetukset.otsikko}}</title>
+<title>{{ lang.statistics }} - {{ settings.title_text }}</title>
 {% endblock title %} {% block navi %}
 <ul class="nav nav-sidebar">
-  <li><a href='index.php?year={{dateStart|date("Y")}}'><span class="glyphicon glyphicon-home" aria-hidden="true"></span> {{lang.1}} {{dateStart|date("Y")}}<span class="sr-only">(current)</span></a></li>
+  <li><a href='index.php?year={{ dateStart|date("Y") }}'><span class="glyphicon glyphicon-home" aria-hidden="true"></span> {{ lang.front_page }} {{ dateStart|date("Y") }}<span class="sr-only">(current)</span></a></li>
 </ul>
 <ul class="nav nav-sidebar">
   <li class="active">
-    <a href='statistics.php?year={{dateStart|date("Y")}}'>
-    <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> {{lang.2}} {{dateStart|date("Y")}}</a>
+    <a href='statistics.php?year={{ dateStart|date("Y") }}'>
+    <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> {{ lang.statistics }} {{ dateStart|date("Y") }}</a>
   </li>
 </ul>
 <ul class="nav nav-sidebar">
-  <li><a href="add_case.php"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{lang.3}}</a></li>
+  <li><a href="add_case.php"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{ lang.add_a_request }}</a></li>
 </ul>
 <ul class="nav nav-sidebar">
-  <li><a href="help.php"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> {{lang.4}}</a></li>
+  <li><a href="help.php"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> {{ lang.help_licenses }}</a></li>
 </ul>
 <ul class="nav nav-sidebar">
-  <li><a href="help.php?asetukset=1"><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> {{lang.5}}</a></li>
+  <li><a href="help.php?asetukset=1"><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> {{ lang.settings }}</a></li>
 </ul>
 </div> {% endblock navi %} {% block content %}
 <div class="col-sm-9 col-sm-offset-3
   col-md-10 col-md-offset-2 main">
-<h1 class="page-header">{{lang.2}} {{dateStart|date("Y")}} <a href='statistics.php?year={{(dateStart|date("Y") - 1 )}}'><span class="glyphicon glyphicon-triangle-left" aria-hidden="true"></span></a> <a href='statistics.php?year={{(dateStart|date("Y") + 1 )}}'><span class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span></a> </h1>
+<h1 class="page-header">{{ lang.statistics }} {{ dateStart|date("Y") }} <a href='statistics.php?year={{ (dateStart|date("Y") - 1 ) }}'><span class="glyphicon glyphicon-triangle-left" aria-hidden="true"></span></a> <a href='statistics.php?year={{ (dateStart|date("Y") + 1 ) }}'><span class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span></a> </h1>
 <div class="col-md-3 text-center">
-  <h4>{{lang.141}}</h4>
+  <h4>{{ lang.status_of_requests }}</h4>
   <canvas id="statusKaavio" style="width:200px;height:200px;"></canvas>
   <script>
     var ctx = document.getElementById("statusKaavio").getContext("2d");
     var data = [
     {
-      value: {{count_finished}},
+      value: {{ count_finished }},
       color: "#5BC764",
       highlight: "#FF5A5E",
       label: "Valmis"
     },
     {
-      value: {{count_open}},
+      value: {{ count_open }},
       color: "#E8D861",
       highlight: "#FF5A5E",
       label: "Kesken"
     },
     {
-      value: {{count_new}},
+      value: {{ count_new }},
       color: "#E8747C",
       highlight: "#FF5A5E",
       label: "Uusi"
@@ -52,19 +52,19 @@
   </script>
 </div>
 <div class="col-md-3 text-center">
-  <h4>{{lang.142}}</h4>
+  <h4>{{ lang.requests_containing_phones }}</h4>
   <canvas id="puhelinKaavio" style="width:200px;height:200px;"></canvas>
   <script>
     var ctx = document.getElementById("puhelinKaavio").getContext("2d");
     var data = [
     {
-      value: {{(count_phones / (count_new + count_open + count_finished) * 100)|round}},
-      color:"{{interface_colors.1}}",
+      value: {{ (count_phones / (count_new + count_open + count_finished) * 100)|round }},
+      color:"{{ interface_colors.1 }}",
       highlight: "#FF5A5E",
       label: "Puhelimia"
     },
     {
-      value: {{(100 - (count_phones / (count_new + count_open + count_finished) * 100)|round)}},
+      value: {{ (100 - (count_phones / (count_new + count_open + count_finished) * 100)|round) }},
       color:"#F0F0F0",
       highlight: "#FF5A5E",
       label: "Ei puhelimia"
@@ -74,17 +74,17 @@
   </script>
 </div>
 <div class="col-sm-3 text-center">
-  <h4>{{lang.143}}</h4>
+  <h4>{{ lang.requests_by_classification }}</h4>
   <canvas id="classificationKaavio" style="width:200px;height:200px;"></canvas>
   <script>
     var ctx = document.getElementById("classificationKaavio").getContext("2d");
     var data = [
     {% for classification in classifications %}{% set laskuri = "0"%}
     {
-      value: {% for entry in all_cases %}{% if entry.classification == classification %}{% set laskuri = laskuri + 1 %}{% endif %}{% if loop.last == true %}{{laskuri}}{% endif %}{% endfor %},
-      color:"#{{random(['B7','C4','E8','D1','CF','E7'])}}{{random(['B7','C4','E8','D1','CF','E7'])}}{{random(['B7','C4','E8','D1','CF','E7'])}}",
+      value: {% for entry in all_cases %}{% if entry.classification == classification %}{% set laskuri = laskuri + 1 %}{% endif %}{% if loop.last == true %}{{ laskuri }}{% endif %}{% endfor %},
+      color:"#{{ random(['B7','C4','E8','D1','CF','E7']) }}{{ random(['B7','C4','E8','D1','CF','E7']) }}{{ random(['B7','C4','E8','D1','CF','E7']) }}",
       highlight: "#FF5A5E",
-      label: "{{classification}}"
+      label: "{{ classification }}"
     }{% if loop.last == true %}{% else %},{% endif %}
     {% endfor %}
     ]
@@ -92,17 +92,17 @@
   </script>
 </div>
 <div class="col-sm-3 text-center">
-  <h4>{{lang.144}}</h4>
+  <h4>{{ lang.requests_by_unit }}</h4>
   <canvas id="yksikkoKaavio" style="width:200px;height:200px;"></canvas>
   <script>
     var ctx = document.getElementById("yksikkoKaavio").getContext("2d");
     var data = [
     {% for yksikko in inv_units %}{% set laskuri = "0"%}
     {
-      value: {% for entry in all_cases %}{% if entry.case_investigator_unit == yksikko %}{% set laskuri = laskuri + 1 %}{% endif %}{% if loop.last == true %}{{laskuri}}{% endif %}{% endfor %},
-      color:"#{{random(['B7','C4','E8','D1','CF','E7'])}}{{random(['B7','C4','E8','D1','CF','E7'])}}{{random(['B7','C4','E8','D1','CF','E7'])}}",
+      value: {% for entry in all_cases %}{% if entry.case_investigator_unit == yksikko %}{% set laskuri = laskuri + 1 %}{% endif %}{% if loop.last == true %}{{ laskuri }}{% endif %}{% endfor %},
+      color:"#{{ random(['B7','C4','E8','D1','CF','E7']) }}{{ random(['B7','C4','E8','D1','CF','E7']) }}{{ random(['B7','C4','E8','D1','CF','E7']) }}",
       highlight: "#FF5A5E",
-      label: "{{yksikko}}"
+      label: "{{ yksikko }}"
     }{% if loop.last == true %}{% else %},{% endif %}
     {% endfor %}
     ]
@@ -110,64 +110,64 @@
   </script>
 </div>
 <div class="col-md-12" style="height:40px;"></div>
-<h3>{{lang.145}}</h3>
+<h3>{{ lang.examined_devices_for_calendar_year }}</h3>
 <table class="table table-striped">
   <thead>
     <td></td>
-    <td>{{lang.m1}} {{tammimonthBeginsAt}}</td>
-    <td>{{lang.m2}}</td>
-    <td>{{lang.m3}}</td>
-    <td>{{lang.m4}}</td>
-    <td>{{lang.m5}}</td>
-    <td>{{lang.m6}}</td>
-    <td>{{lang.m7}}</td>
-    <td>{{lang.m8}}</td>
-    <td>{{lang.m9}}</td>
-    <td>{{lang.m10}}</td>
-    <td>{{lang.m11}}</td>
-    <td>{{lang.m12}}</td>
-    <td><b>{{lang.140}}</b></td>
+    <td>{{ lang.month_1 }}</td>
+    <td>{{ lang.month_2 }}</td>
+    <td>{{ lang.month_3 }}</td>
+    <td>{{ lang.month_4 }}</td>
+    <td>{{ lang.month_5 }}</td>
+    <td>{{ lang.month_6 }}</td>
+    <td>{{ lang.month_7 }}</td>
+    <td>{{ lang.month_8 }}</td>
+    <td>{{ lang.month_9 }}</td>
+    <td>{{ lang.month_10 }}</td>
+    <td>{{ lang.month_11 }}</td>
+    <td>{{ lang.month_12 }}</td>
+    <td><b>{{ lang.total }}</b></td>
   </thead>
   <tr>
-    <td>{{lang.146}}
+    <td>{{ lang.examined_devices }}
     </td>
     {% for month_col in 1..12 %}
     <td>
       {% set laskuri = "0" %}{% set monthBeginsAt = "01." ~ month_col ~ "." ~ dateStart|date("Y") %}{% set monthStopsAt = "31." ~ month_col ~ "." ~ dateStart|date("Y") %}{% for entry in all_cases %}{% if (entry.case_added_date|date("U") >= monthBeginsAt|date("U")) and (entry.case_added_date|date("U") <= monthStopsAt|date("U")) %}
-      {% set laskuri = laskuri + entry.case_devicecount %}{% endif %}{% if loop.last == true %}{% if laskuri >= "1" %}{{laskuri}}{% else %}<span style="color:#D0D0D0;">{{laskuri}}</span>{% endif %}{% endif %}{% endfor %}
+      {% set laskuri = laskuri + entry.case_devicecount %}{% endif %}{% if loop.last == true %}{% if laskuri >= "1" %}{{ laskuri }}{% else %}<span style="color:#D0D0D0;">{{ laskuri }}</span>{% endif %}{% endif %}{% endfor %}
     </td>
     {% endfor %}
     <td>
-      <b>{{count_devices}}</b>
+      <b>{{ count_devices }}</b>
     </td>
   </tr>
   <tr>
-    <td>{{lang.147}}
+    <td>{{ lang.examination_requests }}
     </td>
     {% for month_col in 1..12 %}
     <td>
       {% set laskuri = "0" %}{% set monthBeginsAt = "01." ~ month_col ~ "." ~ dateStart|date("Y") %}{% set monthStopsAt = "31." ~ month_col ~ "." ~ dateStart|date("Y") %}{% for entry in all_cases %}{% if (entry.case_added_date|date("U") >= monthBeginsAt|date("U")) and (entry.case_added_date|date("U") <= monthStopsAt|date("U")) %}
-      {% set laskuri = laskuri + 1 %}{% endif %}{% if loop.last == true %}{% if laskuri >= "1" %}{{laskuri}}{% else %}<span style="color:#D0D0D0;">{{laskuri}}</span>{% endif %}{% endif %}{% endfor %}
+      {% set laskuri = laskuri + 1 %}{% endif %}{% if loop.last == true %}{% if laskuri >= "1" %}{{ laskuri }}{% else %}<span style="color:#D0D0D0;">{{ laskuri }}</span>{% endif %}{% endif %}{% endfor %}
     </td>
     {% endfor %}
-    <td><b>{{count_new + count_open + count_finished}}</b>
+    <td><b>{{ count_new + count_open + count_finished }}</b>
     </td>
   </tr>
   <tr>
-    <td>{{lang.148}}
+    <td>{{ lang.urgent_requests }}
     </td>
     {% for month_col in 1..13 %}
     {% if month_col != "13" %}
     {% set laskuri = "0" %}{% set monthBeginsAt = "01." ~ month_col ~ "." ~ dateStart|date("Y") %}{% set monthStopsAt = "31." ~ month_col ~ "." ~ dateStart|date("Y") %}{% for entry in all_cases %}{% if (entry.case_added_date|date("U") >= monthBeginsAt|date("U")) and (entry.case_added_date|date("U") <= monthStopsAt|date("U")) %}
     {% if entry.case_urgency == "1"%}{% set laskuri = laskuri + 1 %}{% endif %}{% endif %}{% if loop.last == true %}
-    <td>{% if laskuri >= "1" %}{{laskuri}}{% else %}<span style="color:#D0D0D0;">{{laskuri}}</span>{% endif %}</td>
+    <td>{% if laskuri >= "1" %}{{ laskuri }}{% else %}<span style="color:#D0D0D0;">{{ laskuri }}</span>{% endif %}</td>
     {% endif %}{% endfor %}
     {% else %}
     {% set laskuri = "0"%}
     {% for entry in all_cases %}
     {% if entry.case_urgency == "1"%}{% set laskuri = laskuri + 1 %}{% endif %}
     {% if loop.last == true %}
-    <td><b>{% if laskuri >= "1" %}{{laskuri}}{% else %}<span style="color:#D0D0D0;">{{laskuri}}</span>{% endif %}</b></td>
+    <td><b>{% if laskuri >= "1" %}{{ laskuri }}{% else %}<span style="color:#D0D0D0;">{{ laskuri }}</span>{% endif %}</b></td>
     {% endif %}
     {% endfor %}
     {% endif %}
@@ -179,37 +179,37 @@
   <script>
     var ctx = document.getElementById("juttuKaavio").getContext("2d");
     var data = {
-      labels: ["{{lang.m1}}", "{{lang.m2}}", "{{lang.m3}}", "{{lang.m4}}", "{{lang.m5}}", "{{lang.m6}}", "{{lang.m7}}", "{{lang.m8}}", "{{lang.m9}}", "{{lang.m10}}", "{{lang.m11}}", "{{lang.m12}}"],
+      labels: ["{{ lang.month_1 }}", "{{ lang.month_2 }}", "{{ lang.month_3 }}", "{{ lang.month_4 }}", "{{ lang.month_5 }}", "{{ lang.month_6 }}", "{{ lang.month_7 }}", "{{ lang.month_8 }}", "{{ lang.month_9 }}", "{{ lang.month_10 }}", "{{ lang.month_11 }}", "{{ lang.month_12 }}"],
       datasets: [
       {
         label: "Laitteita",
         fillColor: "rgba(151,151,151,0.1)",
-        strokeColor: "{{interface_colors.2}}",
-        pointColor: "{{interface_colors.2}}",
+        strokeColor: "{{ interface_colors.2 }}",
+        pointColor: "{{ interface_colors.2 }}",
         pointStrokeColor: "#fff",
         pointHighlightFill: "#fff",
         pointHighlightStroke: "rgba(220,220,220,1)",
-        data: [{% for month_col in 1..12 %}{% set laskuri = "0" %}{% set monthBeginsAt = "01." ~ month_col ~ "." ~ dateStart|date("Y") %}{% set monthStopsAt = "31." ~ month_col ~ "." ~ dateStart|date("Y") %}{% for entry in all_cases %}{% if (entry.case_added_date|date("U") >= monthBeginsAt|date("U")) and (entry.case_added_date|date("U") <= monthStopsAt|date("U")) %}{% set laskuri = laskuri + entry.case_devicecount %}{% endif %}{% if loop.last == true %}{{laskuri}}, {% endif %}{% endfor %}{% endfor %}]
+        data: [{% for month_col in 1..12 %}{% set laskuri = "0" %}{% set monthBeginsAt = "01." ~ month_col ~ "." ~ dateStart|date("Y") %}{% set monthStopsAt = "31." ~ month_col ~ "." ~ dateStart|date("Y") %}{% for entry in all_cases %}{% if (entry.case_added_date|date("U") >= monthBeginsAt|date("U")) and (entry.case_added_date|date("U") <= monthStopsAt|date("U")) %}{% set laskuri = laskuri + entry.case_devicecount %}{% endif %}{% if loop.last == true %}{{ laskuri }}, {% endif %}{% endfor %}{% endfor %}]
       },
       {
         label: "Juttuja",
         fillColor: "rgba(151,151,205,0.1)",
-        strokeColor: "{{interface_colors.1}}",
-        pointColor: "{{interface_colors.1}}",
+        strokeColor: "{{ interface_colors.1 }}",
+        pointColor: "{{ interface_colors.1 }}",
         pointStrokeColor: "#fff",
         pointHighlightFill: "#fff",
         pointHighlightStroke: "rgba(220,220,220,1)",
-        data: [{% for month_col in 1..12 %}{% set laskuri = "0" %}{% set monthBeginsAt = "01." ~ month_col ~ "." ~ dateStart|date("Y") %}{% set monthStopsAt = "31." ~ month_col ~ "." ~ dateStart|date("Y") %}{% for entry in all_cases %}{% if (entry.case_added_date|date("U") >= monthBeginsAt|date("U")) and (entry.case_added_date|date("U") <= monthStopsAt|date("U")) %}{% set laskuri = laskuri + 1 %}{% endif %}{% if loop.last == true %}{{laskuri}}, {% endif %}{% endfor %}{% endfor %}]
+        data: [{% for month_col in 1..12 %}{% set laskuri = "0" %}{% set monthBeginsAt = "01." ~ month_col ~ "." ~ dateStart|date("Y") %}{% set monthStopsAt = "31." ~ month_col ~ "." ~ dateStart|date("Y") %}{% for entry in all_cases %}{% if (entry.case_added_date|date("U") >= monthBeginsAt|date("U")) and (entry.case_added_date|date("U") <= monthStopsAt|date("U")) %}{% set laskuri = laskuri + 1 %}{% endif %}{% if loop.last == true %}{{ laskuri }}, {% endif %}{% endfor %}{% endfor %}]
       },
       {
         label: "Kiireellisiä",
         fillColor: "rgba(151,151,205,0.1)",
-        strokeColor: "{{interface_colors.3}}",
-        pointColor: "{{interface_colors.3}}",
+        strokeColor: "{{ interface_colors.3 }}",
+        pointColor: "{{ interface_colors.3 }}",
         pointStrokeColor: "#fff",
         pointHighlightFill: "#fff",
         pointHighlightStroke: "rgba(220,220,220,1)",
-        data: [{% for month_col in 1..12 %}{% set laskuri = "0" %}{% set monthBeginsAt = "01." ~ month_col ~ "." ~ dateStart|date("Y") %}{% set monthStopsAt = "31." ~ month_col ~ "." ~ dateStart|date("Y") %}{% for entry in all_cases %}{% if (entry.case_added_date|date("U") >= monthBeginsAt|date("U")) and (entry.case_added_date|date("U") <= monthStopsAt|date("U")) %}{% if entry.case_urgency == "1"%}{% set laskuri = laskuri + 1 %}{% endif %}{% endif %}{% if loop.last == true %}{{laskuri}}, {% endif %}{% endfor %}{% endfor %}]
+        data: [{% for month_col in 1..12 %}{% set laskuri = "0" %}{% set monthBeginsAt = "01." ~ month_col ~ "." ~ dateStart|date("Y") %}{% set monthStopsAt = "31." ~ month_col ~ "." ~ dateStart|date("Y") %}{% for entry in all_cases %}{% if (entry.case_added_date|date("U") >= monthBeginsAt|date("U")) and (entry.case_added_date|date("U") <= monthStopsAt|date("U")) %}{% if entry.case_urgency == "1"%}{% set laskuri = laskuri + 1 %}{% endif %}{% endif %}{% if loop.last == true %}{{ laskuri }}, {% endif %}{% endfor %}{% endfor %}]
       }
       ]
     };
@@ -217,34 +217,34 @@
   </script>
 </div>
 <div class="col-md-12" style="height:40px;"></div>
-<h3>{{lang.149}}</h3>
+<h3>{{ lang.examined_data_as_gb_per_month }}</h3>
 <table class="table">
   <thead>
     <td></td>
-    <td>{{lang.m1}} {{tammimonthBeginsAt}}</td>
-    <td>{{lang.m2}}</td>
-    <td>{{lang.m3}}</td>
-    <td>{{lang.m4}}</td>
-    <td>{{lang.m5}}</td>
-    <td>{{lang.m6}}</td>
-    <td>{{lang.m7}}</td>
-    <td>{{lang.m8}}</td>
-    <td>{{lang.m9}}</td>
-    <td>{{lang.m10}}</td>
-    <td>{{lang.m11}}</td>
-    <td>{{lang.m12}}</td>
-    <td><b>{{lang.140}}</b></td>
+    <td>{{ lang.month_1 }}</td>
+    <td>{{ lang.month_2 }}</td>
+    <td>{{ lang.month_3 }}</td>
+    <td>{{ lang.month_4 }}</td>
+    <td>{{ lang.month_5 }}</td>
+    <td>{{ lang.month_6 }}</td>
+    <td>{{ lang.month_7 }}</td>
+    <td>{{ lang.month_8 }}</td>
+    <td>{{ lang.month_9 }}</td>
+    <td>{{ lang.month_10 }}</td>
+    <td>{{ lang.month_11 }}</td>
+    <td>{{ lang.month_12 }}</td>
+    <td><b>{{ lang.total }}</b></td>
   </thead>
   <tr>
-    <td>{{lang.150}}
+    <td>{{ lang.data_gb }}
     </td>
     {% for month_col in 1..12 %}
     <td>
       {% set laskuri = "0" %}{% set monthBeginsAt = "01." ~ month_col ~ "." ~ dateStart|date("Y") %}{% set monthStopsAt = "31." ~ month_col ~ "." ~ dateStart|date("Y") %}{% for entry in all_devices %}{% if (entry.case_added_date|date("U") >= monthBeginsAt|date("U")) and (entry.case_added_date|date("U") <= monthStopsAt|date("U")) %}
-      {% set laskuri = laskuri + entry.device_size_in_gb %}{% endif %}{% if loop.last == true %}{% if laskuri >= "1" %}{{laskuri|number_format}}{% else %}<span style="color:#D0D0D0;">{{laskuri}}</span>{% endif %}{% endif %}{% endfor %}
+      {% set laskuri = laskuri + entry.device_size_in_gb %}{% endif %}{% if loop.last == true %}{% if laskuri >= "1" %}{{ laskuri|number_format }}{% else %}<span style="color:#D0D0D0;">{{ laskuri }}</span>{% endif %}{% endif %}{% endfor %}
     </td>
     {% endfor %}
-    <td><b>{{(summed_size / 1000)|number_format}} TB</b>
+    <td><b>{{ (summed_size / 1000)|number_format }} TB</b>
     </td>
   </tr>
 </table>
@@ -253,17 +253,17 @@
   <script>
     var ctx = document.getElementById("dataKaavio").getContext("2d");
     var data = {
-      labels: ["{{lang.m1}}", "{{lang.m2}}", "{{lang.m3}}", "{{lang.m4}}", "{{lang.m5}}", "{{lang.m6}}", "{{lang.m7}}", "{{lang.m8}}", "{{lang.m9}}", "{{lang.m10}}", "{{lang.m11}}", "{{lang.m12}}"],
+      labels: ["{{ lang.month_1 }}", "{{ lang.month_2 }}", "{{ lang.month_3 }}", "{{ lang.month_4 }}", "{{ lang.month_5 }}", "{{ lang.month_6 }}", "{{ lang.month_7 }}", "{{ lang.month_8 }}", "{{ lang.month_9 }}", "{{ lang.month_10 }}", "{{ lang.month_11 }}", "{{ lang.month_12 }}"],
       datasets: [
       {
         label: "Tutkittu data per kk",
         fillColor: "rgba(151,151,151,0.1)",
-        strokeColor: "{{interface_colors.2}}",
-        pointColor: "{{interface_colors.2}}",
+        strokeColor: "{{ interface_colors.2 }}",
+        pointColor: "{{ interface_colors.2 }}",
         pointStrokeColor: "#fff",
         pointHighlightFill: "#fff",
         pointHighlightStroke: "rgba(220,220,220,1)",
-        data: [{% for month_col in 1..12 %}{% set laskuri = "0" %}{% set monthBeginsAt = "01." ~ month_col ~ "." ~ dateStart|date("Y") %}{% set monthStopsAt = "31." ~ month_col ~ "." ~ dateStart|date("Y") %}{% for entry in all_devices %}{% if (entry.case_added_date|date("U") >= monthBeginsAt|date("U")) and (entry.case_added_date|date("U") <= monthStopsAt|date("U")) %}{% set laskuri = laskuri + entry.device_size_in_gb %}{% endif %}{% if loop.last == true %}{{laskuri}}, {% endif %}{% endfor %}{% endfor %}]
+        data: [{% for month_col in 1..12 %}{% set laskuri = "0" %}{% set monthBeginsAt = "01." ~ month_col ~ "." ~ dateStart|date("Y") %}{% set monthStopsAt = "31." ~ month_col ~ "." ~ dateStart|date("Y") %}{% for entry in all_devices %}{% if (entry.case_added_date|date("U") >= monthBeginsAt|date("U")) and (entry.case_added_date|date("U") <= monthStopsAt|date("U")) %}{% set laskuri = laskuri + entry.device_size_in_gb %}{% endif %}{% if loop.last == true %}{{ laskuri }}, {% endif %}{% endfor %}{% endfor %}]
       }
       ]
     };
@@ -271,13 +271,13 @@
   </script>
 </div>
 <div class="col-md-12" style="height:40px;"></div>
-<h3>{{lang.154}}</h3>
+<h3>{{ lang.cumulative_data_from_start_of_year }}</h3>
 <div class="col-sm-12">
   <canvas id="dataKaavio2" style="width:100%;height:400px;"></canvas>
   <script>
     var ctx = document.getElementById("dataKaavio2").getContext("2d");
     var data = {
-      labels: ["{{lang.m1}}", "{{lang.m2}}", "{{lang.m3}}", "{{lang.m4}}", "{{lang.m5}}", "{{lang.m6}}", "{{lang.m7}}", "{{lang.m8}}", "{{lang.m9}}", "{{lang.m10}}", "{{lang.m11}}", "{{lang.m12}}"],
+      labels: ["{{ lang.month_1 }}", "{{ lang.month_2 }}", "{{ lang.month_3 }}", "{{ lang.month_4 }}", "{{ lang.month_5 }}", "{{ lang.month_6 }}", "{{ lang.month_7 }}", "{{ lang.month_8 }}", "{{ lang.month_9 }}", "{{ lang.month_10 }}", "{{ lang.month_11 }}", "{{ lang.month_12 }}"],
       datasets: [
       {
         label: "Kumulatiivinen data",
@@ -285,7 +285,7 @@
         strokeColor: "rgba(151,187,205,1)",
         highlightFill: "rgba(220,220,220,0.75)",
         highlightStroke: "rgba(220,220,220,1)",
-        data: [{% set laskuri = "0" %}{% for month_col in 1..12 %}{% set monthBeginsAt = "01." ~ month_col ~ "." ~ dateStart|date("Y") %}{% set monthStopsAt = "31." ~ month_col ~ "." ~ dateStart|date("Y") %}{% for entry in all_devices %}{% if (entry.case_added_date|date("U") >= monthBeginsAt|date("U")) and (entry.case_added_date|date("U") <= monthStopsAt|date("U")) %}{% set laskuri = laskuri + entry.device_size_in_gb %}{% endif %}{% if loop.last == true %}{{(laskuri / 1000)|round}}, {% endif %}{% endfor %}{% endfor %}]
+        data: [{% set laskuri = "0" %}{% for month_col in 1..12 %}{% set monthBeginsAt = "01." ~ month_col ~ "." ~ dateStart|date("Y") %}{% set monthStopsAt = "31." ~ month_col ~ "." ~ dateStart|date("Y") %}{% for entry in all_devices %}{% if (entry.case_added_date|date("U") >= monthBeginsAt|date("U")) and (entry.case_added_date|date("U") <= monthStopsAt|date("U")) %}{% set laskuri = laskuri + entry.device_size_in_gb %}{% endif %}{% if loop.last == true %}{{ (laskuri / 1000)|round }}, {% endif %}{% endfor %}{% endfor %}]
       }
       ]
     };
@@ -293,40 +293,40 @@
   </script>
 </div>
 <div class="col-md-12" style="height:40px;"></div>
-<h3>{{lang.151}}</h3>
+<h3>{{ lang.examined_devices_by_type }}</h3>
 <table class="table table-striped">
   <thead>
     <td></td>
-    <td>{{lang.m1}} {{tammimonthBeginsAt}}</td>
-    <td>{{lang.m2}}</td>
-    <td>{{lang.m3}}</td>
-    <td>{{lang.m4}}</td>
-    <td>{{lang.m5}}</td>
-    <td>{{lang.m6}}</td>
-    <td>{{lang.m7}}</td>
-    <td>{{lang.m8}}</td>
-    <td>{{lang.m9}}</td>
-    <td>{{lang.m10}}</td>
-    <td>{{lang.m11}}</td>
-    <td>{{lang.m12}}</td>
-    <td><b>{{lang.140}}</b></td>
+    <td>{{ lang.month_1 }}</td>
+    <td>{{ lang.month_2 }}</td>
+    <td>{{ lang.month_3 }}</td>
+    <td>{{ lang.month_4 }}</td>
+    <td>{{ lang.month_5 }}</td>
+    <td>{{ lang.month_6 }}</td>
+    <td>{{ lang.month_7 }}</td>
+    <td>{{ lang.month_8 }}</td>
+    <td>{{ lang.month_9 }}</td>
+    <td>{{ lang.month_10 }}</td>
+    <td>{{ lang.month_11 }}</td>
+    <td>{{ lang.month_12 }}</td>
+    <td><b>{{ lang.total }}</b></td>
   </thead>
   {% for devtype in devices %}
-  <tr id="solu-{{devtype|replace({' ': '_'})}}">
-    <td><img src="views/img/svg/{{devtype|lower|replace({" ": "_", "ä": "a", "ö": "o"})}}.svg" width="32px" style="float:left;padding-left:5px;padding-right:5px;"> {{devtype}}
+  <tr id="solu-{{ devtype|replace({' ': '_'}) }}">
+    <td><img src="views/img/svg/{{ devtype|lower|replace({" ": "_", "ä": "a", "ö": "o"}) }}.svg" width="32px" style="float:left;padding-left:5px;padding-right:5px;"> {{ devtype }}
     </td>
     {% for month_col in 1..13 %}
     <td>
       {% if month_col != "13" %}
       {% set laskuri = "0" %}{% set monthBeginsAt = "01." ~ month_col ~ "." ~ dateStart|date("Y") %}{% set monthStopsAt = "31." ~ month_col ~ "." ~ dateStart|date("Y") %}{% for entry in all_devices %}{% if (entry.case_added_date|date("U") >= monthBeginsAt|date("U")) and (entry.case_added_date|date("U") <= monthStopsAt|date("U")) %}
-      {% if entry.device_type == devtype %}{% set laskuri = laskuri + 1%}{% endif%}{% endif %}{% if loop.last == true %}{% if laskuri >= "1" %}{{laskuri}}{% else %}<span style="color:#D0D0D0;">{{laskuri}}</span>{% endif %}{% endif %}{% endfor %}
+      {% if entry.device_type == devtype %}{% set laskuri = laskuri + 1%}{% endif%}{% endif %}{% if loop.last == true %}{% if laskuri >= "1" %}{{ laskuri }}{% else %}<span style="color:#D0D0D0;">{{ laskuri }}</span>{% endif %}{% endif %}{% endfor %}
       {% else %}
       {% set laskuri = "0"%}
       {% for entry in all_devices %}
       {% if entry.device_type == devtype %}{% set laskuri = laskuri + 1 %}{% endif %}
       {% if loop.last == true %}
       <b>
-        {% if laskuri >= "1" %}{{laskuri}}{% else %}<span style="color:#D0D0D0;">{{laskuri}}</span><script>$( "#solu-{{devtype|replace({' ': '_'})}}" ).hide();</script>{% endif %}
+        {% if laskuri >= "1" %}{{ laskuri }}{% else %}<span style="color:#D0D0D0;">{{ laskuri }}</span><script>$( "#solu-{{ devtype|replace({' ': '_'}) }}" ).hide();</script>{% endif %}
       </b>
       {% endif %}
       {% endfor %}
@@ -336,21 +336,21 @@
   </tr>
   {% endfor %}
   {% for devtype in media_objs %}
-  <tr id="solu-{{devtype|replace({' ': '_'})}}">
-    <td><img src="views/img/svg/{{devtype|lower|replace({" ": "_", "ä": "a", "ö": "o"})}}.svg" width="32px" style="float:left;padding-left:5px;padding-right:5px;"> {{devtype}}
+  <tr id="solu-{{ devtype|replace({' ': '_'}) }}">
+    <td><img src="views/img/svg/{{ devtype|lower|replace({" ": "_", "ä": "a", "ö": "o"}) }}.svg" width="32px" style="float:left;padding-left:5px;padding-right:5px;"> {{ devtype }}
     </td>
     {% for month_col in 1..13 %}
     <td>
       {% if month_col != "13" %}
       {% set laskuri = "0" %}{% set monthBeginsAt = "01." ~ month_col ~ "." ~ dateStart|date("Y") %}{% set monthStopsAt = "31." ~ month_col ~ "." ~ dateStart|date("Y") %}{% for entry in all_devices %}{% if (entry.case_added_date|date("U") >= monthBeginsAt|date("U")) and (entry.case_added_date|date("U") <= monthStopsAt|date("U")) %}
-      {% if entry.device_type == devtype %}{% set laskuri = laskuri + 1%}{% endif%}{% endif %}{% if loop.last == true %}{% if laskuri >= "1" %}{{laskuri}}{% else %}<span style="color:#D0D0D0;">{{laskuri}}</span>{% endif %}{% endif %}{% endfor %}
+      {% if entry.device_type == devtype %}{% set laskuri = laskuri + 1%}{% endif%}{% endif %}{% if loop.last == true %}{% if laskuri >= "1" %}{{ laskuri }}{% else %}<span style="color:#D0D0D0;">{{ laskuri }}</span>{% endif %}{% endif %}{% endfor %}
       {% else %}
       {% set laskuri = "0"%}
       {% for entry in all_devices %}
       {% if entry.device_type == devtype %}{% set laskuri = laskuri + 1 %}{% endif %}
       {% if (loop.last == true) %}
       <b>
-        {% if laskuri >= "1" %}{{laskuri}}{% else %}<span style="color:#D0D0D0;">{{laskuri}}</span><script>$( "#solu-{{devtype|replace({' ': '_'})}}" ).hide();</script>{% endif %}
+        {% if laskuri >= "1" %}{{ laskuri }}{% else %}<span style="color:#D0D0D0;">{{ laskuri }}</span><script>$( "#solu-{{ devtype|replace({' ': '_'}) }}" ).hide();</script>{% endif %}
       </b>
       {% endif %}
       {% endfor %}
@@ -366,7 +366,7 @@
   <script>
     var ctx = document.getElementById("devicespiderweb").getContext("2d");
     var data = {
-      labels: [{% for devtype in devices %}"Laite: {{devtype}} ", {% endfor %}{% for media in media_objs %}"Media: {{media}} ", {% endfor %}],
+      labels: [{% for devtype in devices %}"Laite: {{ devtype }} ", {% endfor %}{% for media in media_objs %}"Media: {{ media }} ", {% endfor %}],
       datasets: [
       {
         label: "devices",
@@ -376,46 +376,46 @@
         pointStrokeColor: "#fff",
         pointHighlightFill: "#fff",
         pointHighlightStroke: "rgba(151,187,205,1)",
-        data: [{% for devtype in devices %}{% set laskuri = "0" %}{%for entry in all_devices %}{% if devtype == entry.device_type %}{% set laskuri = laskuri + 1 %}{% endif %}{% endfor %}{{laskuri}}, {% endfor%}
-        {% for media in media_objs %}{% set laskuri = "0" %}{%for entry in all_devices %}{% if media == entry.device_type %}{% set laskuri = laskuri + 1 %}{% endif %}{% endfor %}{{laskuri}}, {% endfor%}]
+        data: [{% for devtype in devices %}{% set laskuri = "0" %}{%for entry in all_devices %}{% if devtype == entry.device_type %}{% set laskuri = laskuri + 1 %}{% endif %}{% endfor %}{{ laskuri }}, {% endfor%}
+        {% for media in media_objs %}{% set laskuri = "0" %}{%for entry in all_devices %}{% if media == entry.device_type %}{% set laskuri = laskuri + 1 %}{% endif %}{% endfor %}{{ laskuri }}, {% endfor%}]
       }
       ]
     };
     var myRadarChart = new Chart(ctx).Radar(data);
   </script>
   <div class="col-md-12" style="height:40px;"></div>
-  <h3>{{lang.152}}</h3>
+  <h3>{{ lang.requests_by_classification }}</h3>
   <table class="table table-striped">
     <thead>
       <td></td>
-      <td>{{lang.m1}} {{tammimonthBeginsAt}}</td>
-      <td>{{lang.m2}}</td>
-      <td>{{lang.m3}}</td>
-      <td>{{lang.m4}}</td>
-      <td>{{lang.m5}}</td>
-      <td>{{lang.m6}}</td>
-      <td>{{lang.m7}}</td>
-      <td>{{lang.m8}}</td>
-      <td>{{lang.m9}}</td>
-      <td>{{lang.m10}}</td>
-      <td>{{lang.m11}}</td>
-      <td>{{lang.m12}}</td>
-      <td><b>{{lang.140}}</b></td>
+      <td>{{ lang.month_1 }}</td>
+      <td>{{ lang.month_2 }}</td>
+      <td>{{ lang.month_3 }}</td>
+      <td>{{ lang.month_4 }}</td>
+      <td>{{ lang.month_5 }}</td>
+      <td>{{ lang.month_6 }}</td>
+      <td>{{ lang.month_7 }}</td>
+      <td>{{ lang.month_8 }}</td>
+      <td>{{ lang.month_9 }}</td>
+      <td>{{ lang.month_10 }}</td>
+      <td>{{ lang.month_11 }}</td>
+      <td>{{ lang.month_12 }}</td>
+      <td><b>{{ lang.total }}</b></td>
     </thead>
     {% for classification in classifications %}
     <tr>
-      <td>{{classification}}
+      <td>{{ classification }}
       </td>
       {% for month_col in 1..13 %}
       <td>
         {% if month_col != "13" %}
         {% set laskuri = "0" %}{% set monthBeginsAt = "01." ~ month_col ~ "." ~ dateStart|date("Y") %}{% set monthStopsAt = "31." ~ month_col ~ "." ~ dateStart|date("Y") %}{% for entry in all_cases %}{% if (entry.case_added_date|date("U") >= monthBeginsAt|date("U")) and (entry.case_added_date|date("U") <= monthStopsAt|date("U")) %}
-        {% if entry.classification == classification %}{% set laskuri = laskuri + 1%}{% endif%}{% endif %}{% if loop.last == true %}{% if laskuri >= "1" %}{{laskuri}}{% else %}<span style="color:#D0D0D0;">{{laskuri}}</span>{% endif %}{% endif %}{% endfor %}
+        {% if entry.classification == classification %}{% set laskuri = laskuri + 1%}{% endif%}{% endif %}{% if loop.last == true %}{% if laskuri >= "1" %}{{ laskuri }}{% else %}<span style="color:#D0D0D0;">{{ laskuri }}</span>{% endif %}{% endif %}{% endfor %}
         {% else %}
         {% set laskuri = "0"%}
         {% for entry in all_cases %}
         {% if entry.classification == classification %}{% set laskuri = laskuri + 1 %}{% endif %}
-        {% if loop.last == true %}<b>{% if laskuri >= "1" %}{{laskuri}}{% else %}<span style="color:#D0D0D0;">{{laskuri}}</span>{% endif %}</b>{% endif %}
+        {% if loop.last == true %}<b>{% if laskuri >= "1" %}{{ laskuri }}{% else %}<span style="color:#D0D0D0;">{{ laskuri }}</span>{% endif %}</b>{% endif %}
         {% endfor %}
         {% endif %}
       </td>
@@ -424,38 +424,38 @@
     {% endfor %}
   </table>
   <div class="col-md-12" style="height:40px;"></div>
-  <h3>{{lang.153}}</h3>
+  <h3>{{ lang.requests_by_unit }}</h3>
   <table class="table table-striped">
     <thead>
       <td></td>
-      <td>{{lang.m1}} {{tammimonthBeginsAt}}</td>
-      <td>{{lang.m2}}</td>
-      <td>{{lang.m3}}</td>
-      <td>{{lang.m4}}</td>
-      <td>{{lang.m5}}</td>
-      <td>{{lang.m6}}</td>
-      <td>{{lang.m7}}</td>
-      <td>{{lang.m8}}</td>
-      <td>{{lang.m9}}</td>
-      <td>{{lang.m10}}</td>
-      <td>{{lang.m11}}</td>
-      <td>{{lang.m12}}</td>
-      <td><b>{{lang.140}}</b></td>
+      <td>{{ lang.month_1 }}</td>
+      <td>{{ lang.month_2 }}</td>
+      <td>{{ lang.month_3 }}</td>
+      <td>{{ lang.month_4 }}</td>
+      <td>{{ lang.month_5 }}</td>
+      <td>{{ lang.month_6 }}</td>
+      <td>{{ lang.month_7 }}</td>
+      <td>{{ lang.month_8 }}</td>
+      <td>{{ lang.month_9 }}</td>
+      <td>{{ lang.month_10 }}</td>
+      <td>{{ lang.month_11 }}</td>
+      <td>{{ lang.month_12 }}</td>
+      <td><b>{{ lang.total }}</b></td>
     </thead>
     {% for yksikko in inv_units %}
     <tr>
-      <td>{{yksikko}}
+      <td>{{ yksikko }}
       </td>
       {% for month_col in 1..13 %}
       <td>
         {% if month_col != "13" %}
         {% set laskuri = "0" %}{% set monthBeginsAt = "01." ~ month_col ~ "." ~ dateStart|date("Y") %}{% set monthStopsAt = "31." ~ month_col ~ "." ~ dateStart|date("Y") %}{% for entry in all_cases %}{% if (entry.case_added_date|date("U") >= monthBeginsAt|date("U")) and (entry.case_added_date|date("U") <= monthStopsAt|date("U")) %}
-        {% if entry.case_investigator_unit == yksikko %}{% set laskuri = laskuri + 1%}{% endif%}{% endif %}{% if loop.last == true %}{% if laskuri >= "1" %}{{laskuri}}{% else %}<span style="color:#D0D0D0;">{{laskuri}}</span>{% endif %}{% endif %}{% endfor %}
+        {% if entry.case_investigator_unit == yksikko %}{% set laskuri = laskuri + 1%}{% endif%}{% endif %}{% if loop.last == true %}{% if laskuri >= "1" %}{{ laskuri }}{% else %}<span style="color:#D0D0D0;">{{ laskuri }}</span>{% endif %}{% endif %}{% endfor %}
         {% else %}
         {% set laskuri = "0"%}
         {% for entry in all_cases %}
         {% if entry.case_investigator_unit == yksikko %}{% set laskuri = laskuri + 1 %}{% endif %}
-        {% if loop.last == true %}<b>{% if laskuri >= "1" %}{{laskuri}}{% else %}<span style="color:#D0D0D0;">{{laskuri}}</span>{% endif %}</b>{% endif %}
+        {% if loop.last == true %}<b>{% if laskuri >= "1" %}{{ laskuri }}{% else %}<span style="color:#D0D0D0;">{{ laskuri }}</span>{% endif %}</b>{% endif %}
         {% endfor %}
         {% endif %}
       </td>

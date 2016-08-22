@@ -4,7 +4,7 @@ Exception for an undefined template in a child template
 {% extends 'base.twig' %}
 
 {% block sidebar %}
-    {{ include('include.twig') }}
+    {{include('include.twig')}}
 {% endblock %}
 --TEMPLATE(base.twig)--
 {% block sidebar %}

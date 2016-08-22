@@ -8,7 +8,7 @@ times, use the ``block`` function:
 
     <title>{% block title %}{% endblock %}</title>
 
-    <h1>{{ block('title') }}</h1>
+    <h1>{{block('title')}}</h1>
 
     {% block body %}{% endblock %}
 

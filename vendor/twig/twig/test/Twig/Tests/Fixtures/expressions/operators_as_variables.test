@@ -2,10 +2,10 @@
 Twig allows to use named operators as variable names
 --TEMPLATE--
 {% for match in matches %}
-    {{- match }}
+    {{- match}}
 {% endfor %}
-{{ in }}
-{{ is }}
+{{in}}
+{{is}}
 --DATA--
 return array('matches' => array(1, 2, 3), 'in' => 'in', 'is' => 'is')
 --EXPECT--

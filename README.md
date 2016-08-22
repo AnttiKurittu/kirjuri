@@ -21,7 +21,8 @@ INSTALLATION
 * Clone the repository to your server.
 * Copy the files to your webroot directory (for example /usr/share/nginx/html/)
 * Run conf/create_tables.sql against your database to create the tables needed for operation. (mysql -u root -pyourpassword < create_tables.sql)
-* Set your mysql root/user password at conf/settings.conf.
+* Set your mysql root/user password by editing include_functions.php
+* Set other settings by editing conf/settings.conf
 * Set folder permissions for the web server process to own cache/
 * If you wish to enable editing the autofill crime list and settings from the web UI, set the server process to own conf/settings.conf and conf/crimes_autofill.conf. This is insecure, and not recommended but might be preferable in some circumstances.
 * If you run Kirjuri in your organization, drop me a line via email or a shoutout at Twitter: https://twitter.com/AnttiKurittu
@@ -33,3 +34,13 @@ SCREENSHOTS
 ![Index page](https://github.com/AnttiKurittu/kirjuri/blob/master/conf/screenshot_index.png)
 ![Case overview](https://github.com/AnttiKurittu/kirjuri/blob/master/conf/screenshot_overview.png)
 ![Device listing in case](https://github.com/AnttiKurittu/kirjuri/blob/master/conf/screenshot_devices.png)
+
+CHANGELOG
+------------
+2016-08-22: Changes
+
+* Fixed the language file to use natural language variables for more readable code.
+* Moved the MySQL credentials from the config file to source code
+* Cleaned up the inconsistent use of Twig brackets
+* Fixed page titles
+* Other small bugfixes

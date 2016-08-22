@@ -28,16 +28,16 @@ details later on:
         <body>
             <ul id="navigation">
             {% for item in navigation %}
-                <li><a href="{{ item.href }}">{{ item.caption }}</a></li>
+                <li><a href="{{item.href}}">{{item.caption}}</a></li>
             {% endfor %}
             </ul>
 
             <h1>My Webpage</h1>
-            {{ a_variable }}
+            {{a_variable}}
         </body>
     </html>
 
-There are two kinds of delimiters: ``{% ... %}`` and ``{{ ... }}``. The first
+There are two kinds of delimiters: ``{% ... %}`` and ``{{...}}``. The first
 one is used to execute statements such as for-loops, the latter prints the
 result of an expression to the template.
 
@@ -77,8 +77,8 @@ properties of a PHP object, or items of a PHP array), or the so-called
 
 .. code-block:: jinja
 
-    {{ foo.bar }}
-    {{ foo['bar'] }}
+    {{foo.bar}}
+    {{foo['bar']}}
 
 When the attribute contains special characters (like ``-`` that would be
 interpreted as the minus operator), use the ``attribute`` function instead to
@@ -87,7 +87,7 @@ access the variable attribute:
 .. code-block:: jinja
 
     {# equivalent to the non-working foo.data-foo #}
-    {{ attribute(foo, 'data-foo') }}
+    {{attribute(foo, 'data-foo')}}
 
 .. note::
 
@@ -156,14 +156,14 @@ it:
 
 .. code-block:: jinja
 
-    {{ name|striptags|title }}
+    {{name|striptags|title}}
 
 Filters that accept arguments have parentheses around the arguments. This
 example will join a list by commas:
 
 .. code-block:: jinja
 
-    {{ list|join(', ') }}
+    {{list|join(', ')}}
 
 To apply a filter on a section of code, wrap it in the
 :doc:`filter<tags/filter>` tag:
@@ -189,7 +189,7 @@ progression of integers:
 .. code-block:: jinja
 
     {% for i in range(0, 3) %}
-        {{ i }},
+        {{i}},
     {% endfor %}
 
 Go to the :doc:`functions<functions/index>` page to learn more about the
@@ -204,7 +204,7 @@ Named Arguments
 .. code-block:: jinja
 
     {% for i in range(low=1, high=10, step=2) %}
-        {{ i }},
+        {{i}},
     {% endfor %}
 
 Using named arguments makes your templates more explicit about the meaning of
@@ -212,11 +212,11 @@ the values you pass as arguments:
 
 .. code-block:: jinja
 
-    {{ data|convert_encoding('UTF-8', 'iso-2022-jp') }}
+    {{data|convert_encoding('UTF-8', 'iso-2022-jp')}}
 
     {# versus #}
 
-    {{ data|convert_encoding(from='iso-2022-jp', to='UTF-8') }}
+    {{data|convert_encoding(from='iso-2022-jp', to='UTF-8')}}
 
 Named arguments also allow you to skip some arguments for which you don't want
 to change the default value:
@@ -224,17 +224,17 @@ to change the default value:
 .. code-block:: jinja
 
     {# the first argument is the date format, which defaults to the global date format if null is passed #}
-    {{ "now"|date(null, "Europe/Paris") }}
+    {{"now"|date(null, "Europe/Paris")}}
 
     {# or skip the format value by using a named argument for the time zone #}
-    {{ "now"|date(timezone="Europe/Paris") }}
+    {{"now"|date(timezone="Europe/Paris")}}
 
 You can also use both positional and named arguments in one call, in which
 case positional arguments must always come before named arguments:
 
 .. code-block:: jinja
 
-    {{ "now"|date('d/m/Y H:i', timezone="Europe/Paris") }}
+    {{"now"|date('d/m/Y H:i', timezone="Europe/Paris")}}
 
 .. tip::
 
@@ -257,7 +257,7 @@ For example, to display a list of users provided in a variable called
     <h1>Members</h1>
     <ul>
         {% for user in users %}
-            <li>{{ user.username|e }}</li>
+            <li>{{user.username|e}}</li>
         {% endfor %}
     </ul>
 
@@ -268,7 +268,7 @@ The :doc:`if<tags/if>` tag can be used to test an expression:
     {% if users|length > 0 %}
         <ul>
             {% for user in users %}
-                <li>{{ user.username|e }}</li>
+                <li>{{user.username|e}}</li>
             {% endfor %}
         </ul>
     {% endif %}
@@ -370,7 +370,7 @@ A child template might look like this:
 
     {% block title %}Index{% endblock %}
     {% block head %}
-        {{ parent() }}
+        {{parent()}}
         <style type="text/css">
             .important { color: #336699; }
         </style>
@@ -399,7 +399,7 @@ parent block:
     {% block sidebar %}
         <h3>Table Of Contents</h3>
         ...
-        {{ parent() }}
+        {{parent()}}
     {% endblock %}
 
 .. tip::
@@ -440,7 +440,7 @@ Escaping works by piping the variable through the
 
 .. code-block:: jinja
 
-    {{ user.username|e }}
+    {{user.username|e}}
 
 By default, the ``escape`` filter uses the ``html`` strategy, but depending on
 the escaping context, you might want to explicitly use any other available
@@ -448,10 +448,10 @@ strategies:
 
 .. code-block:: jinja
 
-    {{ user.username|e('js') }}
-    {{ user.username|e('css') }}
-    {{ user.username|e('url') }}
-    {{ user.username|e('html_attr') }}
+    {{user.username|e('js')}}
+    {{user.username|e('css')}}
+    {{user.username|e('url')}}
+    {{user.username|e('html_attr')}}
 
 Working with Automatic Escaping
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -489,7 +489,7 @@ expression:
 
 .. code-block:: jinja
 
-    {{ '{{' }}
+    {{'{{'}}
 
 For bigger sections it makes sense to mark a block
 :doc:`verbatim<tags/verbatim>`.
@@ -509,7 +509,7 @@ A macro is defined via the :doc:`macro<tags/macro>` tag. Here is a small example
 .. code-block:: jinja
 
     {% macro input(name, value, type, size) %}
-        <input type="{{ type|default('text') }}" name="{{ name }}" value="{{ value|e }}" size="{{ size|default(20) }}" />
+        <input type="{{type|default('text')}}" name="{{name}}" value="{{value|e}}" size="{{size|default(20)}}" />
     {% endmacro %}
 
 Macros can be defined in any template, and need to be "imported" via the
@@ -519,7 +519,7 @@ Macros can be defined in any template, and need to be "imported" via the
 
     {% import "forms.html" as forms %}
 
-    <p>{{ forms.input('username') }}</p>
+    <p>{{forms.input('username')}}</p>
 
 Alternatively, you can import individual macro names from a template into the
 current namespace via the :doc:`from<tags/from>` tag and optionally alias them:
@@ -530,9 +530,9 @@ current namespace via the :doc:`from<tags/from>` tag and optionally alias them:
 
     <dl>
         <dt>Username</dt>
-        <dd>{{ input_field('username') }}</dd>
+        <dd>{{input_field('username')}}</dd>
         <dt>Password</dt>
-        <dd>{{ input_field('password', '', 'password') }}</dd>
+        <dd>{{input_field('password', '', 'password')}}</dd>
     </dl>
 
 A default value can also be defined for macro arguments when not provided in a
@@ -541,7 +541,7 @@ macro call:
 .. code-block:: jinja
 
     {% macro input(name, value = "", type = "text", size = 20) %}
-        <input type="{{ type }}" name="{{ name }}" value="{{ value|e }}" size="{{ size }}" />
+        <input type="{{type}}" name="{{name}}" value="{{value|e}}" size="{{size}}" />
     {% endmacro %}
 
 If extra positional arguments are passed to a macro call, they end up in the
@@ -568,10 +568,10 @@ even if you're not working with PHP you should feel comfortable with it.
         {% set greeting = 'Hello ' %}
         {% set name = 'Fabien' %}
 
-        {{ greeting ~ name|lower }}   {# Hello fabien #}
+        {{greeting ~ name|lower}}   {# Hello fabien #}
 
         {# use parenthesis to change precedence #}
-        {{ (greeting ~ name)|lower }} {# hello fabien #}
+        {{(greeting ~ name)|lower}} {# hello fabien #}
 
 Literals
 ~~~~~~~~
@@ -637,26 +637,26 @@ Twig allows you to calculate with values. This is rarely useful in templates
 but exists for completeness' sake. The following operators are supported:
 
 * ``+``: Adds two objects together (the operands are casted to numbers). ``{{
-  1 + 1 }}`` is ``2``.
+  1 + 1}}`` is ``2``.
 
-* ``-``: Subtracts the second number from the first one. ``{{ 3 - 2 }}`` is
+* ``-``: Subtracts the second number from the first one. ``{{3 - 2}}`` is
   ``1``.
 
 * ``/``: Divides two numbers. The returned value will be a floating point
-  number. ``{{ 1 / 2 }}`` is ``{{ 0.5 }}``.
+  number. ``{{1 / 2}}`` is ``{{0.5}}``.
 
-* ``%``: Calculates the remainder of an integer division. ``{{ 11 % 7 }}`` is
+* ``%``: Calculates the remainder of an integer division. ``{{11 % 7}}`` is
   ``4``.
 
-* ``//``: Divides two numbers and returns the floored integer result. ``{{ 20
-  // 7 }}`` is ``2``, ``{{ -20  // 7 }}`` is ``-3`` (this is just syntactic
+* ``//``: Divides two numbers and returns the floored integer result. ``{{20
+  // 7}}`` is ``2``, ``{{-20  // 7}}`` is ``-3`` (this is just syntactic
   sugar for the :doc:`round<filters/round>` filter).
 
-* ``*``: Multiplies the left operand with the right one. ``{{ 2 * 2 }}`` would
+* ``*``: Multiplies the left operand with the right one. ``{{2 * 2}}`` would
   return ``4``.
 
-* ``**``: Raises the left operand to the power of the right operand. ``{{ 2 **
-  3 }}`` would return ``8``.
+* ``**``: Raises the left operand to the power of the right operand. ``{{2 **
+  3}}`` would return ``8``.
 
 Logic
 ~~~~~
@@ -717,9 +717,9 @@ It returns ``true`` if the left operand is contained in the right:
 
     {# returns true #}
 
-    {{ 1 in [1, 2, 3] }}
+    {{1 in [1, 2, 3]}}
 
-    {{ 'cd' in 'abcde' }}
+    {{'cd' in 'abcde'}}
 
 .. tip::
 
@@ -745,7 +745,7 @@ a common expression. The right operand is name of the test:
 
     {# find out if a variable is odd #}
 
-    {{ name is odd }}
+    {{name is odd}}
 
 Tests can accept arguments too:
 
@@ -780,10 +780,10 @@ The following operators don't fit into any of the other categories:
 
   .. code-block:: jinja
 
-      {{ 1..5 }}
+      {{1..5}}
 
       {# equivalent to #}
-      {{ range(1, 5) }}
+      {{range(1, 5)}}
 
   Note that you must use parentheses when combining it with the filter operator
   due to the :ref:`operator precedence rules <twig-expressions>`:
@@ -792,8 +792,8 @@ The following operators don't fit into any of the other categories:
 
       (1..5)|join(', ')
 
-* ``~``: Converts all operands into strings and concatenates them. ``{{ "Hello
-  " ~ name ~ "!" }}`` would return (assuming ``name`` is ``'John'``) ``Hello
+* ``~``: Converts all operands into strings and concatenates them. ``{{"Hello
+  " ~ name ~ "!"}}`` would return (assuming ``name`` is ``'John'``) ``Hello
   John!``.
 
 * ``.``, ``[]``: Gets an attribute of an object.
@@ -802,11 +802,11 @@ The following operators don't fit into any of the other categories:
 
   .. code-block:: jinja
 
-      {{ foo ? 'yes' : 'no' }}
+      {{foo ? 'yes' : 'no'}}
 
       {# as of Twig 1.12.0 #}
-      {{ foo ?: 'no' }} is the same as {{ foo ? foo : 'no' }}
-      {{ foo ? 'yes' }} is the same as {{ foo ? 'yes' : '' }}
+      {{foo ?: 'no'}} is the same as {{foo ? foo : 'no'}}
+      {{foo ? 'yes'}} is the same as {{foo ? 'yes' : ''}}
 
 String Interpolation
 ~~~~~~~~~~~~~~~~~~~~
@@ -820,8 +820,8 @@ inserted into the string:
 
 .. code-block:: jinja
 
-    {{ "foo #{bar} baz" }}
-    {{ "foo #{1 + 2} baz" }}
+    {{"foo #{bar} baz"}}
+    {{"foo #{1 + 2} baz"}}
 
 .. _templates-whitespace-control:
 
@@ -869,7 +869,7 @@ of a tag:
 .. code-block:: jinja
 
     {% set value = 'no spaces' %}
-    <li>    {{- value }}    </li>
+    <li>    {{- value}}    </li>
 
     {# outputs '<li>no spaces    </li>' #}
 

@@ -5,6 +5,6 @@
 
 .. code-block:: jinja
 
-    {{ var is odd }}
+    {{var is odd}}
 
 .. seealso:: :doc:`even<../tests/even>`

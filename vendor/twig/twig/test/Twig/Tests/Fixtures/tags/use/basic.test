@@ -3,7 +3,7 @@
 --TEMPLATE--
 {% use "blocks.twig" %}
 
-{{ block('content') }}
+{{block('content')}}
 --TEMPLATE(blocks.twig)--
 {% block content 'foo' %}
 --DATA--

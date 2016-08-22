@@ -16,7 +16,7 @@ missing items:
     {% for row in items|batch(3, 'No item') %}
         <tr>
             {% for column in row %}
-                <td>{{ column }}</td>
+                <td>{{column}}</td>
             {% endfor %}
         </tr>
     {% endfor %}

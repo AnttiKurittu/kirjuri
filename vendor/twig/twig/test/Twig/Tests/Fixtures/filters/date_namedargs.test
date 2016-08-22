@@ -1,9 +1,9 @@
 --TEST--
 "date" filter
 --TEMPLATE--
-{{ date|date(format='d/m/Y H:i:s P', timezone='America/Chicago') }}
-{{ date|date(timezone='America/Chicago', format='d/m/Y H:i:s P') }}
-{{ date|date('d/m/Y H:i:s P', timezone='America/Chicago') }}
+{{date|date(format='d/m/Y H:i:s P', timezone='America/Chicago')}}
+{{date|date(timezone='America/Chicago', format='d/m/Y H:i:s P')}}
+{{date|date('d/m/Y H:i:s P', timezone='America/Chicago')}}
 --DATA--
 date_default_timezone_set('UTC');
 return array('date' => mktime(13, 45, 0, 10, 4, 2010))

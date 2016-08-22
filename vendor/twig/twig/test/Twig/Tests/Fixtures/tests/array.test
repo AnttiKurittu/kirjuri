@@ -2,7 +2,7 @@
 array index test
 --TEMPLATE--
 {% for key, value in days %}
-{{ key }}
+{{key}}
 {% endfor %}
 --DATA--
 return array('days' => array(

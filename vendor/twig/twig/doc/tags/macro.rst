@@ -10,7 +10,7 @@ Here is a small example of a macro that renders a form element:
 .. code-block:: jinja
 
     {% macro input(name, value, type, size) %}
-        <input type="{{ type|default('text') }}" name="{{ name }}" value="{{ value|e }}" size="{{ size|default(20) }}" />
+        <input type="{{type|default('text')}}" name="{{name}}" value="{{value|e}}" size="{{size|default(20)}}" />
     {% endmacro %}
 
 Macros differs from native PHP functions in a few ways:
@@ -47,8 +47,8 @@ The macro can then be called at will:
 
 .. code-block:: jinja
 
-    <p>{{ forms.input('username') }}</p>
-    <p>{{ forms.input('password', null, 'password') }}</p>
+    <p>{{forms.input('username')}}</p>
+    <p>{{forms.input('password', null, 'password')}}</p>
 
 If macros are defined and used in the same template, you can use the
 special ``_self`` variable to import them:
@@ -57,7 +57,7 @@ special ``_self`` variable to import them:
 
     {% import _self as forms %}
 
-    <p>{{ forms.input('username') }}</p>
+    <p>{{forms.input('username')}}</p>
 
 .. warning::
 
@@ -72,14 +72,14 @@ import it locally:
 .. code-block:: jinja
 
     {% macro input(name, value, type, size) %}
-        <input type="{{ type|default('text') }}" name="{{ name }}" value="{{ value|e }}" size="{{ size|default(20) }}" />
+        <input type="{{type|default('text')}}" name="{{name}}" value="{{value|e}}" size="{{size|default(20)}}" />
     {% endmacro %}
 
     {% macro wrapped_input(name, value, type, size) %}
         {% import _self as forms %}
 
         <div class="field">
-            {{ forms.input(name, value, type, size) }}
+            {{forms.input(name, value, type, size)}}
         </div>
     {% endmacro %}
 

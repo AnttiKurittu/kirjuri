@@ -1,8 +1,8 @@
 --TEST--
 "odd" test
 --TEMPLATE--
-{{ 1 is odd ? 'ok' : 'ko' }}
-{{ 2 is odd ? 'ko' : 'ok' }}
+{{1 is odd ? 'ok' : 'ko'}}
+{{2 is odd ? 'ko' : 'ok'}}
 --DATA--
 return array()
 --EXPECT--

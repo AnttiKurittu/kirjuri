@@ -54,7 +54,7 @@ the :doc:`raw<../filters/raw>` filter:
 .. code-block:: jinja
 
     {% autoescape %}
-        {{ safe_value|raw }}
+        {{safe_value|raw}}
     {% endautoescape %}
 
 Functions returning template data (like :doc:`macros<macro>` and
@@ -72,8 +72,8 @@ Functions returning template data (like :doc:`macros<macro>` and
     .. code-block:: jinja
 
         {% set hello = "<strong>Hello</strong>" %}
-        {{ hello }}
-        {{ "<strong>world</strong>" }}
+        {{hello}}
+        {{"<strong>world</strong>"}}
 
     Will be rendered "<strong>Hello</strong> **world**".
 

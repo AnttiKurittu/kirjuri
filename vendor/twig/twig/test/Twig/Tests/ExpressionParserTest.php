@@ -63,8 +63,8 @@ class Twig_Tests_ExpressionParserTest extends PHPUnit_Framework_TestCase
     public function getFailingTestsForArray()
     {
         return array(
-            array('{{ [1, "a": "b"] }}'),
-            array('{{ {"a": "b", 2} }}'),
+            array('{{[1, "a": "b"]}}'),
+            array('{{{"a": "b", 2}}}'),
         );
     }
 
@@ -72,7 +72,7 @@ class Twig_Tests_ExpressionParserTest extends PHPUnit_Framework_TestCase
     {
         return array(
             // simple array
-            array('{{ [1, 2] }}', new Twig_Node_Expression_Array(array(
+            array('{{[1, 2]}}', new Twig_Node_Expression_Array(array(
                   new Twig_Node_Expression_Constant(0, 1),
                   new Twig_Node_Expression_Constant(1, 1),
 
@@ -82,7 +82,7 @@ class Twig_Tests_ExpressionParserTest extends PHPUnit_Framework_TestCase
             ),
 
             // array with trailing ,
-            array('{{ [1, 2, ] }}', new Twig_Node_Expression_Array(array(
+            array('{{[1, 2, ]}}', new Twig_Node_Expression_Array(array(
                   new Twig_Node_Expression_Constant(0, 1),
                   new Twig_Node_Expression_Constant(1, 1),
 
@@ -92,7 +92,7 @@ class Twig_Tests_ExpressionParserTest extends PHPUnit_Framework_TestCase
             ),
 
             // simple hash
-            array('{{ {"a": "b", "b": "c"} }}', new Twig_Node_Expression_Array(array(
+            array('{{{"a": "b", "b": "c"}}}', new Twig_Node_Expression_Array(array(
                   new Twig_Node_Expression_Constant('a', 1),
                   new Twig_Node_Expression_Constant('b', 1),
 
@@ -102,7 +102,7 @@ class Twig_Tests_ExpressionParserTest extends PHPUnit_Framework_TestCase
             ),
 
             // hash with trailing ,
-            array('{{ {"a": "b", "b": "c", } }}', new Twig_Node_Expression_Array(array(
+            array('{{{"a": "b", "b": "c", }}}', new Twig_Node_Expression_Array(array(
                   new Twig_Node_Expression_Constant('a', 1),
                   new Twig_Node_Expression_Constant('b', 1),
 
@@ -112,7 +112,7 @@ class Twig_Tests_ExpressionParserTest extends PHPUnit_Framework_TestCase
             ),
 
             // hash in an array
-            array('{{ [1, {"a": "b", "b": "c"}] }}', new Twig_Node_Expression_Array(array(
+            array('{{[1, {"a": "b", "b": "c"}]}}', new Twig_Node_Expression_Array(array(
                   new Twig_Node_Expression_Constant(0, 1),
                   new Twig_Node_Expression_Constant(1, 1),
 
@@ -128,7 +128,7 @@ class Twig_Tests_ExpressionParserTest extends PHPUnit_Framework_TestCase
             ),
 
             // array in a hash
-            array('{{ {"a": [1, 2], "b": "c"} }}', new Twig_Node_Expression_Array(array(
+            array('{{{"a": [1, 2], "b": "c"}}}', new Twig_Node_Expression_Array(array(
                   new Twig_Node_Expression_Constant('a', 1),
                   new Twig_Node_Expression_Array(array(
                         new Twig_Node_Expression_Constant(0, 1),
@@ -150,7 +150,7 @@ class Twig_Tests_ExpressionParserTest extends PHPUnit_Framework_TestCase
     public function testStringExpressionDoesNotConcatenateTwoConsecutiveStrings()
     {
         $env = new Twig_Environment($this->getMock('Twig_LoaderInterface'), array('cache' => false, 'autoescape' => false, 'optimizations' => 0));
-        $stream = $env->tokenize('{{ "a" "b" }}', 'index');
+        $stream = $env->tokenize('{{"a" "b"}}', 'index');
         $parser = new Twig_Parser($env);
 
         $parser->parse($stream);
@@ -172,17 +172,17 @@ class Twig_Tests_ExpressionParserTest extends PHPUnit_Framework_TestCase
     {
         return array(
             array(
-                '{{ "foo" }}', new Twig_Node_Expression_Constant('foo', 1),
+                '{{"foo"}}', new Twig_Node_Expression_Constant('foo', 1),
             ),
             array(
-                '{{ "foo #{bar}" }}', new Twig_Node_Expression_Binary_Concat(
+                '{{"foo #{bar}"}}', new Twig_Node_Expression_Binary_Concat(
                     new Twig_Node_Expression_Constant('foo ', 1),
                     new Twig_Node_Expression_Name('bar', 1),
                     1
                 ),
             ),
             array(
-                '{{ "foo #{bar} baz" }}', new Twig_Node_Expression_Binary_Concat(
+                '{{"foo #{bar} baz"}}', new Twig_Node_Expression_Binary_Concat(
                     new Twig_Node_Expression_Binary_Concat(
                         new Twig_Node_Expression_Constant('foo ', 1),
                         new Twig_Node_Expression_Name('bar', 1),
@@ -194,7 +194,7 @@ class Twig_Tests_ExpressionParserTest extends PHPUnit_Framework_TestCase
             ),
 
             array(
-                '{{ "foo #{"foo #{bar} baz"} baz" }}', new Twig_Node_Expression_Binary_Concat(
+                '{{"foo #{"foo #{bar} baz"} baz"}}', new Twig_Node_Expression_Binary_Concat(
                     new Twig_Node_Expression_Binary_Concat(
                         new Twig_Node_Expression_Constant('foo ', 1),
                         new Twig_Node_Expression_Binary_Concat(
@@ -223,7 +223,7 @@ class Twig_Tests_ExpressionParserTest extends PHPUnit_Framework_TestCase
         $env = new Twig_Environment($this->getMock('Twig_LoaderInterface'), array('cache' => false, 'autoescape' => false));
         $parser = new Twig_Parser($env);
 
-        $parser->parse($env->tokenize('{{ foo.bar(name="Foo") }}', 'index'));
+        $parser->parse($env->tokenize('{{foo.bar(name="Foo")}}', 'index'));
     }
 
     /**
@@ -234,7 +234,7 @@ class Twig_Tests_ExpressionParserTest extends PHPUnit_Framework_TestCase
         $env = new Twig_Environment($this->getMock('Twig_LoaderInterface'), array('cache' => false, 'autoescape' => false));
         $parser = new Twig_Parser($env);
 
-        $parser->parse($env->tokenize('{% from _self import foo %}{% macro foo() %}{% endmacro %}{{ foo(name="Foo") }}', 'index'));
+        $parser->parse($env->tokenize('{% from _self import foo %}{% macro foo() %}{% endmacro %}{{foo(name="Foo")}}', 'index'));
     }
 
     /**
@@ -303,7 +303,7 @@ class Twig_Tests_ExpressionParserTest extends PHPUnit_Framework_TestCase
         $env = new Twig_Environment($this->getMock('Twig_LoaderInterface'), array('cache' => false, 'autoescape' => false));
         $parser = new Twig_Parser($env);
 
-        $parser->parse($env->tokenize('{{ cycl() }}', 'index'));
+        $parser->parse($env->tokenize('{{cycl()}}', 'index'));
     }
 
     /**
@@ -315,7 +315,7 @@ class Twig_Tests_ExpressionParserTest extends PHPUnit_Framework_TestCase
         $env = new Twig_Environment($this->getMock('Twig_LoaderInterface'), array('cache' => false, 'autoescape' => false));
         $parser = new Twig_Parser($env);
 
-        $parser->parse($env->tokenize('{{ 1|lowe }}', 'index'));
+        $parser->parse($env->tokenize('{{1|lowe}}', 'index'));
     }
 
     /**
@@ -327,6 +327,6 @@ class Twig_Tests_ExpressionParserTest extends PHPUnit_Framework_TestCase
         $env = new Twig_Environment($this->getMock('Twig_LoaderInterface'), array('cache' => false, 'autoescape' => false));
         $parser = new Twig_Parser($env);
 
-        $parser->parse($env->tokenize('{{ 1 is nul }}', 'index'));
+        $parser->parse($env->tokenize('{{1 is nul}}', 'index'));
     }
 }

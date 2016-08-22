@@ -49,7 +49,7 @@ A child template might look like this:
 
     {% block title %}Index{% endblock %}
     {% block head %}
-        {{ parent() }}
+        {{parent()}}
         <style type="text/css">
             .important { color: #336699; }
         </style>
@@ -82,7 +82,7 @@ If you want to print a block multiple times you can however use the
 .. code-block:: jinja
 
     <title>{% block title %}{% endblock %}</title>
-    <h1>{{ block('title') }}</h1>
+    <h1>{{block('title')}}</h1>
     {% block body %}{% endblock %}
 
 Parent Blocks
@@ -97,7 +97,7 @@ the parent block:
     {% block sidebar %}
         <h3>Table Of Contents</h3>
         ...
-        {{ parent() }}
+        {{parent()}}
     {% endblock %}
 
 Named Block End-Tags
@@ -125,7 +125,7 @@ to variables from outer scopes:
 .. code-block:: jinja
 
     {% for item in seq %}
-        <li>{% block loop_item %}{{ item }}{% endblock %}</li>
+        <li>{% block loop_item %}{{item}}{% endblock %}</li>
     {% endfor %}
 
 Block Shortcuts
@@ -137,7 +137,7 @@ following constructs do the same:
 .. code-block:: jinja
 
     {% block title %}
-        {{ page_title|title }}
+        {{page_title|title}}
     {% endblock %}
 
 .. code-block:: jinja
@@ -201,8 +201,8 @@ importantly, how it does not work:
 
     {% for post in posts %}
         {% block post %}
-            <h1>{{ post.title }}</h1>
-            <p>{{ post.body }}</p>
+            <h1>{{post.title}}</h1>
+            <p>{{post.body}}</p>
         {% endblock %}
     {% endfor %}
 
@@ -218,8 +218,8 @@ to make it overridable by a child template:
 
     {% block post %}
         <article>
-            <header>{{ post.title }}</header>
-            <section>{{ post.text }}</section>
+            <header>{{post.title}}</header>
+            <section>{{post.text}}</section>
         </article>
     {% endblock %}
 
@@ -231,8 +231,8 @@ executed template is then equivalent to the following one:
 
     {% for post in posts %}
         <article>
-            <header>{{ post.title }}</header>
-            <section>{{ post.text }}</section>
+            <header>{{post.title}}</header>
+            <section>{{post.text}}</section>
         </article>
     {% endfor %}
 
@@ -242,7 +242,7 @@ Let's take another example: a block included within an ``if`` statement:
 
     {% if posts is empty %}
         {% block head %}
-            {{ parent() }}
+            {{parent()}}
 
             <meta name="robots" content="noindex, follow">
         {% endblock head %}
@@ -258,7 +258,7 @@ instead:
 .. code-block:: jinja
 
     {% block head %}
-        {{ parent() }}
+        {{parent()}}
 
         {% if posts is empty %}
             <meta name="robots" content="noindex, follow">

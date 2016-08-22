@@ -9,11 +9,11 @@ and end of a string:
 
 .. code-block:: jinja
 
-    {{ '  I like Twig.  '|trim }}
+    {{'  I like Twig.  '|trim}}
 
     {# outputs 'I like Twig.' #}
 
-    {{ '  I like Twig.'|trim('.') }}
+    {{'  I like Twig.'|trim('.')}}
 
     {# outputs '  I like Twig' #}
 

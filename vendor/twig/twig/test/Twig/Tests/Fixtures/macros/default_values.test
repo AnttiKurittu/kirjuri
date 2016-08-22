@@ -4,11 +4,11 @@ macro
 {% from _self import test %}
 
 {% macro test(a, b = 'bar') -%}
-{{ a }}{{ b }}
+{{a}}{{b}}
 {%- endmacro %}
 
-{{ test('foo') }}
-{{ test('bar', 'foo') }}
+{{test('foo')}}
+{{test('bar', 'foo')}}
 --DATA--
 return array();
 --EXPECT--

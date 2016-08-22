@@ -9,7 +9,7 @@ provided in a variable called ``users``:
     <h1>Members</h1>
     <ul>
         {% for user in users %}
-            <li>{{ user.username|e }}</li>
+            <li>{{user.username|e}}</li>
         {% endfor %}
     </ul>
 
@@ -24,7 +24,7 @@ operator:
 .. code-block:: jinja
 
     {% for i in 0..10 %}
-        * {{ i }}
+        * {{i}}
     {% endfor %}
 
 The above snippet of code would print all numbers from 0 to 10.
@@ -34,7 +34,7 @@ It can be also useful with letters:
 .. code-block:: jinja
 
     {% for letter in 'a'..'z' %}
-        * {{ letter }}
+        * {{letter}}
     {% endfor %}
 
 The ``..`` operator can take any expression at both sides:
@@ -42,7 +42,7 @@ The ``..`` operator can take any expression at both sides:
 .. code-block:: jinja
 
     {% for letter in 'a'|upper..'z'|upper %}
-        * {{ letter }}
+        * {{letter}}
     {% endfor %}
 
 .. tip:
@@ -71,7 +71,7 @@ Variable              Description
 .. code-block:: jinja
 
     {% for user in users %}
-        {{ loop.index }} - {{ user.username }}
+        {{loop.index}} - {{user.username}}
     {% endfor %}
 
 .. note::
@@ -95,7 +95,7 @@ items. The following example skips all the users which are not active:
 
     <ul>
         {% for user in users if user.active %}
-            <li>{{ user.username|e }}</li>
+            <li>{{user.username|e}}</li>
         {% endfor %}
     </ul>
 
@@ -121,7 +121,7 @@ replacement block by using ``else``:
 
     <ul>
         {% for user in users %}
-            <li>{{ user.username|e }}</li>
+            <li>{{user.username|e}}</li>
         {% else %}
             <li><em>no user found</em></li>
         {% endfor %}
@@ -138,7 +138,7 @@ on keys by using the ``keys`` filter:
     <h1>Members</h1>
     <ul>
         {% for key in users|keys %}
-            <li>{{ key }}</li>
+            <li>{{key}}</li>
         {% endfor %}
     </ul>
 
@@ -152,7 +152,7 @@ You can also access both keys and values:
     <h1>Members</h1>
     <ul>
         {% for key, user in users %}
-            <li>{{ key }}: {{ user.username|e }}</li>
+            <li>{{key}}: {{user.username|e}}</li>
         {% endfor %}
     </ul>
 
@@ -167,6 +167,6 @@ the :doc:`slice <../filters/slice>` filter:
     <h1>Top Ten Members</h1>
     <ul>
         {% for user in users|slice(0, 10) %}
-            <li>{{ user.username|e }}</li>
+            <li>{{user.username|e}}</li>
         {% endfor %}
     </ul>

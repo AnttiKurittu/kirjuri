@@ -2,7 +2,7 @@
 "include" function
 --TEMPLATE--
 FOO
-{{ include("foo.twig") }}
+{{include("foo.twig")}}
 
 BAR
 --TEMPLATE(foo.twig)--

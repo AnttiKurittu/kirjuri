@@ -3,7 +3,7 @@
 --TEMPLATE--
 {% import 'forms.twig' as macros %}
 
-{{ macros.parent() }}
+{{macros.parent()}}
 --TEMPLATE(forms.twig)--
 --DATA--
 return array()

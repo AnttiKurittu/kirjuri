@@ -6,6 +6,13 @@ $twig = new Twig_Environment($loader, array(
 ));
 $twig->addExtension(new Twig_Extension_Debug());
 session_start();
+//
+// There are the default credentials, replace with your own.
+//
+$mysql_username = "root";
+$mysql_password = "devroot";
+$mysql_database = "kirjuri_db";
+
 if ($_SESSION['settings_fetched'] !== "1")
   {
     $_SESSION['getsettings'] = parse_ini_file("conf/settings.conf", true);
@@ -37,14 +44,18 @@ function virhe($title_text, $description)
     ));
     exit;
   }
+
 function db($database)
   {
     global $settings;
+    global $mysql_username;
+    global $mysql_database;
+    global $mysql_password;
     if ($database === 'kirjuri-database')
       {
         try
           {
-            $kirjuri_database = new PDO("mysql:host=localhost;dbname=" . $settings['mysql_database'] . "", $settings['mysql_user'], $settings['mysql_password']);
+            $kirjuri_database = new PDO("mysql:host=localhost;dbname=" . $mysql_database . "", $mysql_username, $mysql_password);
             $kirjuri_database->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $kirjuri_database->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
             $kirjuri_database->exec("SET NAMES utf8");
@@ -60,9 +71,12 @@ function db($database)
 function logline($event_level, $description)
   {
     global $settings;
+    global $mysql_username;
+    global $mysql_database;
+    global $mysql_password;
     try
       {
-        $kirjuri_database = new PDO("mysql:host=localhost;dbname=" . $settings['mysql_database'] . "", $settings['mysql_user'], $settings['mysql_password']);
+        $kirjuri_database = new PDO("mysql:host=localhost;dbname=" . $mysql_database . "", $mysql_username, $mysql_password);
         $kirjuri_database->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $kirjuri_database->exec("SET NAMES utf8");
         $event_insert_row = $kirjuri_database->prepare('INSERT INTO event_log (id,event_timestamp,event_level,event_descr,ip) VALUES ("",NOW(),:event_level,:event_descr,:ip)');

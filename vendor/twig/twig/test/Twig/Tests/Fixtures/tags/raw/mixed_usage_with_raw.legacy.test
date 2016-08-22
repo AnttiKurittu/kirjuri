@@ -2,7 +2,7 @@
 "raw" tag
 --TEMPLATE--
 {% raw %}
-{{ foo }}
+{{foo}}
 {% endverbatim %}
 --DATA--
 return array()

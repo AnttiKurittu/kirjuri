@@ -5,7 +5,7 @@
 
 .. code-block:: jinja
 
-    {{ var is null }}
+    {{var is null}}
 
 .. note::
 

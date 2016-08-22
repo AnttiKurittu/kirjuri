@@ -2,16 +2,16 @@
 "source" function
 --TEMPLATE--
 FOO
-{{ source("foo.twig") }}
+{{source("foo.twig")}}
 
 BAR
 --TEMPLATE(foo.twig)--
-{{ foo }}<br />
+{{foo}}<br />
 --DATA--
 return array()
 --EXPECT--
 FOO
 
-{{ foo }}<br />
+{{foo}}<br />
 
 BAR

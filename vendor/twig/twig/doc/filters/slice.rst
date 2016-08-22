@@ -12,7 +12,7 @@ The ``slice`` filter extracts a slice of a sequence, a mapping, or a string:
         {# will iterate over 2 and 3 #}
     {% endfor %}
 
-    {{ '12345'|slice(1, 2) }}
+    {{'12345'|slice(1, 2)}}
 
     {# outputs 23 #}
 
@@ -32,13 +32,13 @@ As syntactic sugar, you can also use the ``[]`` notation:
         {# ... #}
     {% endfor %}
 
-    {{ '12345'[1:2] }} {# will display "23" #}
+    {{'12345'[1:2]}} {# will display "23" #}
 
     {# you can omit the first argument -- which is the same as 0 #}
-    {{ '12345'[:2] }} {# will display "12" #}
+    {{'12345'[:2]}} {# will display "12" #}
 
     {# you can omit the last argument -- which will select everything till the end #}
-    {{ '12345'[2:] }} {# will display "345" #}
+    {{'12345'[2:]}} {# will display "345" #}
 
 The ``slice`` filter works as the `array_slice`_ PHP function for arrays and
 `mb_substr`_ for strings with a fallback to `substr`_.

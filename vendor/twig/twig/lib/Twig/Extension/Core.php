@@ -448,7 +448,7 @@ function twig_random(Twig_Environment $env, $values = null)
  * Converts a date to the given format.
  *
  * <pre>
- *   {{ post.published_at|date("m/d/Y") }}
+ *   {{post.published_at|date("m/d/Y")}}
  * </pre>
  *
  * @param Twig_Environment                               $env      A Twig_Environment instance
@@ -476,7 +476,7 @@ function twig_date_format_filter(Twig_Environment $env, $date, $format = null, $
  * Returns a new date object modified.
  *
  * <pre>
- *   {{ post.published_at|date_modify("-1day")|date("m/d/Y") }}
+ *   {{post.published_at|date_modify("-1day")|date("m/d/Y")}}
  * </pre>
  *
  * @param Twig_Environment $env      A Twig_Environment instance
@@ -811,10 +811,10 @@ function twig_last(Twig_Environment $env, $item)
  * The separator between elements is an empty string per default, you can define it with the optional parameter.
  *
  * <pre>
- *  {{ [1, 2, 3]|join('|') }}
+ *  {{[1, 2, 3]|join('|')}}
  *  {# returns 1|2|3 #}
  *
- *  {{ [1, 2, 3]|join }}
+ *  {{[1, 2, 3]|join}}
  *  {# returns 123 #}
  * </pre>
  *
@@ -836,16 +836,16 @@ function twig_join_filter($value, $glue = '')
  * Splits the string into an array.
  *
  * <pre>
- *  {{ "one,two,three"|split(',') }}
+ *  {{"one,two,three"|split(',')}}
  *  {# returns [one, two, three] #}
  *
- *  {{ "one,two,three,four,five"|split(',', 3) }}
+ *  {{"one,two,three,four,five"|split(',', 3)}}
  *  {# returns [one, two, "three,four,five"] #}
  *
- *  {{ "123"|split('') }}
+ *  {{"123"|split('')}}
  *  {# returns [1, 2, 3] #}
  *
- *  {{ "aabbcc"|split('', 2) }}
+ *  {{"aabbcc"|split('', 2)}}
  *  {# returns [aa, bb, cc] #}
  * </pre>
  *

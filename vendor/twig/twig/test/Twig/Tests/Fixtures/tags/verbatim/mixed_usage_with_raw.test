@@ -2,7 +2,7 @@
 "verbatim" tag
 --TEMPLATE--
 {% verbatim %}
-{{ foo }}
+{{foo}}
 {% endraw %}
 --DATA--
 return array()

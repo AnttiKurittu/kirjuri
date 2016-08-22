@@ -1,12 +1,12 @@
 --TEST--
 "include" tag sandboxed
 --TEMPLATE--
-{{ include("foo.twig", sandboxed = true) }}
+{{include("foo.twig", sandboxed = true)}}
 --TEMPLATE(foo.twig)--
 
 
-{{ foo|e }}
-{{ foo|e }}
+{{foo|e}}
+{{foo|e}}
 --DATA--
 return array()
 --EXCEPTION--

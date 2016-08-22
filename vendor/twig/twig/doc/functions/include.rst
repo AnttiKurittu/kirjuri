@@ -8,8 +8,8 @@ The ``include`` function returns the rendered content of a template:
 
 .. code-block:: jinja
 
-    {{ include('template.html') }}
-    {{ include(some_var) }}
+    {{include('template.html')}}
+    {{include(some_var)}}
 
 Included templates have access to the variables of the active context.
 
@@ -22,7 +22,7 @@ additional variables:
 .. code-block:: jinja
 
     {# template.html will have access to the variables from the current context and the additional ones provided #}
-    {{ include('template.html', {foo: 'bar'}) }}
+    {{include('template.html', {foo: 'bar'})}}
 
 You can disable access to the context by setting ``with_context`` to
 ``false``:
@@ -30,17 +30,17 @@ You can disable access to the context by setting ``with_context`` to
 .. code-block:: jinja
 
     {# only the foo variable will be accessible #}
-    {{ include('template.html', {foo: 'bar'}, with_context = false) }}
+    {{include('template.html', {foo: 'bar'}, with_context = false)}}
 
 .. code-block:: jinja
 
     {# no variables will be accessible #}
-    {{ include('template.html', with_context = false) }}
+    {{include('template.html', with_context = false)}}
 
 And if the expression evaluates to a ``Twig_Template`` object, Twig will use it
 directly::
 
-    // {{ include(template) }}
+    // {{include(template)}}
 
     $template = $twig->loadTemplate('some_template.twig');
 
@@ -51,14 +51,14 @@ the template does not exist:
 
 .. code-block:: jinja
 
-    {{ include('sidebar.html', ignore_missing = true) }}
+    {{include('sidebar.html', ignore_missing = true)}}
 
 You can also provide a list of templates that are checked for existence before
 inclusion. The first template that exists will be rendered:
 
 .. code-block:: jinja
 
-    {{ include(['page_detailed.html', 'page.html']) }}
+    {{include(['page_detailed.html', 'page.html'])}}
 
 If ``ignore_missing`` is set, it will fall back to rendering nothing if none
 of the templates exist, otherwise it will throw an exception.
@@ -68,7 +68,7 @@ sandboxing it:
 
 .. code-block:: jinja
 
-    {{ include('page.html', sandboxed = true) }}
+    {{include('page.html', sandboxed = true)}}
 
 Arguments
 ---------

@@ -2,9 +2,9 @@
 "if" creates a condition
 --TEMPLATE--
 {% if a is defined %}
-  {{ a }}
+  {{a}}
 {% elseif b is defined %}
-  {{ b }}
+  {{b}}
 {% else %}
   NOTHING
 {% endif %}

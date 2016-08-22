@@ -30,7 +30,7 @@ different possible extension points and when to use them.
 
 First, remember that Twig has two main language constructs:
 
-* ``{{ }}``: used to print the result of an expression evaluation;
+* ``{{}}``: used to print the result of an expression evaluation;
 
 * ``{% %}``: used to execute statements.
 
@@ -53,7 +53,7 @@ three main reasons:
 
   .. code-block:: jinja
 
-      {{ 'some text' ~ {% lipsum 40 %} ~ 'some more text' }}
+      {{'some text' ~ {% lipsum 40 %} ~ 'some more text'}}
 
 In fact, you rarely need to create tags; and that's good news because tags are
 the most complex extension point of Twig.
@@ -62,7 +62,7 @@ Now, let's use a ``lipsum`` *filter*:
 
 .. code-block:: jinja
 
-    {{ 40|lipsum }}
+    {{40|lipsum}}
 
 Again, it works, but it looks weird. A filter transforms the passed value to
 something else but here we use the value to indicate the number of words to
@@ -73,14 +73,14 @@ Next, let's use a ``lipsum`` *function*:
 
 .. code-block:: jinja
 
-    {{ lipsum(40) }}
+    {{lipsum(40)}}
 
 Here we go. For this specific example, the creation of a function is the
 extension point to use. And you can use it anywhere an expression is accepted:
 
 .. code-block:: jinja
 
-    {{ 'some text' ~ lipsum(40) ~ 'some more text' }}
+    {{'some text' ~ lipsum(40) ~ 'some more text'}}
 
     {% set lipsum = lipsum(40) %}
 
@@ -89,7 +89,7 @@ to generate lorem ipsum text:
 
 .. code-block:: jinja
 
-    {{ text.lipsum(40) }}
+    {{text.lipsum(40)}}
 
 As a rule of thumb, use functions for frequently used features and global
 objects for everything else.
@@ -121,7 +121,7 @@ You can then use the ``text`` variable anywhere in a template:
 
 .. code-block:: jinja
 
-    {{ text.lipsum(40) }}
+    {{text.lipsum(40)}}
 
 Filters
 -------
@@ -152,7 +152,7 @@ And here is how to use it in a template:
 
 .. code-block:: jinja
 
-    {{ 'Twig'|rot13 }}
+    {{'Twig'|rot13}}
 
     {# will output Gjvt #}
 
@@ -164,8 +164,8 @@ For instance, the following code:
 
 .. code-block:: jinja
 
-    {{ 'TWIG'|lower }}
-    {{ now|date('d/m/Y') }}
+    {{'TWIG'|lower}}
+    {{now|date('d/m/Y')}}
 
 is compiled to something like the following::
 
@@ -383,7 +383,7 @@ variables from within a template. The tag can be used like follows:
 
     {% set name = "value" %}
 
-    {{ name }}
+    {{name}}
 
     {# should output value #}
 

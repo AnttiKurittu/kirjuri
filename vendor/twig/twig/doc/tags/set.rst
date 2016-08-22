@@ -16,7 +16,7 @@ any other ones:
 .. code-block:: jinja
 
     {# displays bar #}
-    {{ foo }}
+    {{foo}}
 
 The assigned value can be any valid :ref:`Twig expressions
 <twig-expressions>`:

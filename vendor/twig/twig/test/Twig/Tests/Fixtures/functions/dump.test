@@ -3,8 +3,8 @@
 --CONDITION--
 !extension_loaded('xdebug')
 --TEMPLATE--
-{{ dump('foo') }}
-{{ dump('foo', 'bar') }}
+{{dump('foo')}}
+{{dump('foo', 'bar')}}
 --DATA--
 return array('foo' => 'foo', 'bar' => 'bar')
 --CONFIG--

@@ -4,12 +4,12 @@
 {% from 'forms.twig' import foo %}
 {% from 'forms.twig' import foo as foobar, bar %}
 
-{{ foo('foo') }}
-{{ foobar('foo') }}
-{{ bar('foo') }}
+{{foo('foo')}}
+{{foobar('foo')}}
+{{bar('foo')}}
 --TEMPLATE(forms.twig)--
-{% macro foo(name) %}foo{{ name }}{% endmacro %}
-{% macro bar(name) %}bar{{ name }}{% endmacro %}
+{% macro foo(name) %}foo{{name}}{% endmacro %}
+{% macro bar(name) %}bar{{name}}{% endmacro %}
 --DATA--
 return array()
 --EXPECT--

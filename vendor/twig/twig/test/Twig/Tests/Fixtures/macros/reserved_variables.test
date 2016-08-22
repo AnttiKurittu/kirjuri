@@ -4,10 +4,10 @@ macro
 {% from _self import test %}
 
 {% macro test(this) -%}
-    {{ this }}
+    {{this}}
 {%- endmacro %}
 
-{{ test(this) }}
+{{test(this)}}
 --DATA--
 return array('this' => 'foo');
 --EXPECT--

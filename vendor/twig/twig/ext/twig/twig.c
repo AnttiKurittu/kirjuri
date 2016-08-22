@@ -690,7 +690,7 @@ static void twig_add_class_to_cache(zval *cache, zval *object, char *class_name 
 	add_assoc_zval(cache, class_name, class_info);
 }
 
-/* {{{ proto mixed twig_template_get_attributes(TwigTemplate template, mixed object, mixed item, array arguments, string type, boolean isDefinedTest, boolean ignoreStrictCheck)
+/* {{{proto mixed twig_template_get_attributes(TwigTemplate template, mixed object, mixed item, array arguments, string type, boolean isDefinedTest, boolean ignoreStrictCheck)
    A C implementation of TwigTemplate::getAttribute() */
 PHP_FUNCTION(twig_template_get_attributes)
 {

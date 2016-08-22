@@ -8,10 +8,10 @@ The ``round`` filter rounds a number to a given precision:
 
 .. code-block:: jinja
 
-    {{ 42.55|round }}
+    {{42.55|round}}
     {# outputs 43 #}
 
-    {{ 42.55|round(1, 'floor') }}
+    {{42.55|round(1, 'floor')}}
     {# outputs 42.5 #}
 
 The ``round`` filter takes two optional arguments; the first one specifies the

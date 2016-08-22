@@ -7,7 +7,7 @@ The ``abs`` filter returns the absolute value.
 
     {# number = -5 #}
 
-    {{ number|abs }}
+    {{number|abs}}
 
     {# outputs 5 #}
 

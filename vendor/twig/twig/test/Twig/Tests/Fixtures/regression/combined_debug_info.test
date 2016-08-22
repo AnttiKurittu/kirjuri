@@ -2,13 +2,13 @@
 Exception with bad line number
 --TEMPLATE--
 {% block content %}
-    {{ foo }}
-    {{ include("foo") }}
+    {{foo}}
+    {{include("foo")}}
 {% endblock %}
 index
 --TEMPLATE(foo)--
 foo
-{{ foo.bar }}
+{{foo.bar}}
 --DATA--
 return array('foo' => 'foo');
 --EXCEPTION--

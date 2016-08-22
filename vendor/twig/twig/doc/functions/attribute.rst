@@ -9,16 +9,16 @@ variable:
 
 .. code-block:: jinja
 
-    {{ attribute(object, method) }}
-    {{ attribute(object, method, arguments) }}
-    {{ attribute(array, item) }}
+    {{attribute(object, method)}}
+    {{attribute(object, method, arguments)}}
+    {{attribute(array, item)}}
 
 In addition, the ``defined`` test can check for the existence of a dynamic
 attribute:
 
 .. code-block:: jinja
 
-    {{ attribute(object, method) is defined ? 'Method exists' : 'Method does not exist' }}
+    {{attribute(object, method) is defined ? 'Method exists' : 'Method does not exist'}}
 
 .. note::
 

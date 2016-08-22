@@ -1,7 +1,7 @@
 --TEST--
 error in twig extension
 --TEMPLATE--
-{{ object.region is not null ? object.regionChoices[object.region] }}
+{{object.region is not null ? object.regionChoices[object.region]}}
 --DATA--
 class House
 {

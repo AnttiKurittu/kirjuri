@@ -10,7 +10,7 @@ introspecting its variables:
 
 .. code-block:: jinja
 
-    {{ dump(user) }}
+    {{dump(user)}}
 
 .. note::
 
@@ -34,7 +34,7 @@ read:
 .. code-block:: jinja
 
     <pre>
-        {{ dump(user) }}
+        {{dump(user)}}
     </pre>
 
 .. tip::
@@ -47,14 +47,14 @@ You can debug several variables by passing them as additional arguments:
 
 .. code-block:: jinja
 
-    {{ dump(user, categories) }}
+    {{dump(user, categories)}}
 
 If you don't pass any value, all variables from the current context are
 dumped:
 
 .. code-block:: jinja
 
-    {{ dump() }}
+    {{dump()}}
 
 .. note::
 

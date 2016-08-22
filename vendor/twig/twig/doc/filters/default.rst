@@ -6,13 +6,13 @@ undefined or empty, otherwise the value of the variable:
 
 .. code-block:: jinja
 
-    {{ var|default('var is not defined') }}
+    {{var|default('var is not defined')}}
 
-    {{ var.foo|default('foo item on var is not defined') }}
+    {{var.foo|default('foo item on var is not defined')}}
 
-    {{ var['foo']|default('foo item on var is not defined') }}
+    {{var['foo']|default('foo item on var is not defined')}}
 
-    {{ ''|default('passed var is empty')  }}
+    {{''|default('passed var is empty') }}
 
 When using the ``default`` filter on an expression that uses variables in some
 method calls, be sure to use the ``default`` filter whenever a variable can be
@@ -20,7 +20,7 @@ undefined:
 
 .. code-block:: jinja
 
-    {{ var.method(foo|default('foo'))|default('foo') }}
+    {{var.method(foo|default('foo'))|default('foo')}}
 
 .. note::
 

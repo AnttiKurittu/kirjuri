@@ -5,10 +5,10 @@
     foo<br />
 {% endset %}
 
-{{ foo|e('html') -}}
-{{ foo|e('js') }}
+{{foo|e('html') -}}
+{{foo|e('js')}}
 {% autoescape true %}
-    {{ foo }}
+    {{foo}}
 {% endautoescape %}
 --DATA--
 return array()

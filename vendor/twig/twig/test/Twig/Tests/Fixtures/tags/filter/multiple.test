@@ -2,7 +2,7 @@
 "filter" tags accept multiple chained filters
 --TEMPLATE--
 {% filter lower|title %}
-  {{ var }}
+  {{var}}
 {% endfilter %}
 --DATA--
 return array('var' => 'VAR')

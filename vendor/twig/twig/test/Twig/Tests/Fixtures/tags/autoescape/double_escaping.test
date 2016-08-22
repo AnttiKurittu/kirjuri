@@ -2,7 +2,7 @@
 "autoescape" tag does not double-escape
 --TEMPLATE--
 {% autoescape 'html' %}
-{{ var|escape }}
+{{var|escape}}
 {% endautoescape %}
 --DATA--
 return array('var' => '<br />')

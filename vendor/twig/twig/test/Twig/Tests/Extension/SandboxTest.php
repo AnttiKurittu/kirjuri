@@ -22,18 +22,18 @@ class Twig_Tests_Extension_SandboxTest extends PHPUnit_Framework_TestCase
         );
 
         self::$templates = array(
-            '1_basic1' => '{{ obj.foo }}',
-            '1_basic2' => '{{ name|upper }}',
+            '1_basic1' => '{{obj.foo}}',
+            '1_basic2' => '{{name|upper}}',
             '1_basic3' => '{% if name %}foo{% endif %}',
-            '1_basic4' => '{{ obj.bar }}',
-            '1_basic5' => '{{ obj }}',
-            '1_basic6' => '{{ arr.obj }}',
-            '1_basic7' => '{{ cycle(["foo","bar"], 1) }}',
-            '1_basic8' => '{{ obj.getfoobar }}{{ obj.getFooBar }}',
-            '1_basic9' => '{{ obj.foobar }}{{ obj.fooBar }}',
-            '1_basic' => '{% if obj.foo %}{{ obj.foo|upper }}{% endif %}',
+            '1_basic4' => '{{obj.bar}}',
+            '1_basic5' => '{{obj}}',
+            '1_basic6' => '{{arr.obj}}',
+            '1_basic7' => '{{cycle(["foo","bar"], 1)}}',
+            '1_basic8' => '{{obj.getfoobar}}{{obj.getFooBar}}',
+            '1_basic9' => '{{obj.foobar}}{{obj.fooBar}}',
+            '1_basic' => '{% if obj.foo %}{{obj.foo|upper}}{% endif %}',
             '1_layout' => '{% block content %}{% endblock %}',
-            '1_child' => "{% extends \"1_layout\" %}\n{% block content %}\n{{ \"a\"|json_encode }}\n{% endblock %}",
+            '1_child' => "{% extends \"1_layout\" %}\n{% block content %}\n{{\"a\"|json_encode}}\n{% endblock %}",
         );
     }
 
@@ -141,16 +141,16 @@ class Twig_Tests_Extension_SandboxTest extends PHPUnit_Framework_TestCase
     public function testSandboxLocallySetForAnInclude()
     {
         self::$templates = array(
-            '2_basic' => '{{ obj.foo }}{% include "2_included" %}{{ obj.foo }}',
-            '2_included' => '{% if obj.foo %}{{ obj.foo|upper }}{% endif %}',
+            '2_basic' => '{{obj.foo}}{% include "2_included" %}{{obj.foo}}',
+            '2_included' => '{% if obj.foo %}{{obj.foo|upper}}{% endif %}',
         );
 
         $twig = $this->getEnvironment(false, array(), self::$templates);
         $this->assertEquals('fooFOOfoo', $twig->loadTemplate('2_basic')->render(self::$params), 'Sandbox does nothing if disabled globally and sandboxed not used for the include');
 
         self::$templates = array(
-            '3_basic' => '{{ obj.foo }}{% sandbox %}{% include "3_included" %}{% endsandbox %}{{ obj.foo }}',
-            '3_included' => '{% if obj.foo %}{{ obj.foo|upper }}{% endif %}',
+            '3_basic' => '{{obj.foo}}{% sandbox %}{% include "3_included" %}{% endsandbox %}{{obj.foo}}',
+            '3_included' => '{% if obj.foo %}{{obj.foo|upper}}{% endif %}',
         );
 
         $twig = $this->getEnvironment(true, array(), self::$templates);
@@ -166,9 +166,9 @@ class Twig_Tests_Extension_SandboxTest extends PHPUnit_Framework_TestCase
         $twig = $this->getEnvironment(true, array('autoescape' => 'html'), array('index' => <<<EOF
 {%- import _self as macros %}
 
-{%- macro test(text) %}<p>{{ text }}</p>{% endmacro %}
+{%- macro test(text) %}<p>{{text}}</p>{% endmacro %}
 
-{{- macros.test('username') }}
+{{- macros.test('username')}}
 EOF
         ), array('macro', 'import'), array('escape'));
 

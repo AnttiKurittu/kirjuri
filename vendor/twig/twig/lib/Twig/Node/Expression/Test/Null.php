@@ -13,7 +13,7 @@
  * Checks that a variable is null.
  *
  * <pre>
- *  {{ var is none }}
+ *  {{var is none}}
  * </pre>
  *
  * @author Fabien Potencier <fabien@symfony.com>

@@ -1,8 +1,8 @@
 --TEST--
 Twig allows multi-word tests without a custom node class
 --TEMPLATE--
-{{ 'foo' is multi word ? 'yes' : 'no' }}
-{{ 'foo bar' is multi word ? 'yes' : 'no' }}
+{{'foo' is multi word ? 'yes' : 'no'}}
+{{'foo bar' is multi word ? 'yes' : 'no'}}
 --DATA--
 return array()
 --EXPECT--

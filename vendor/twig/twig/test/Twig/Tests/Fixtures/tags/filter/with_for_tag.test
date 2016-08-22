@@ -3,7 +3,7 @@
 --TEMPLATE--
 {% filter upper %}
 {% for item in items %}
-{{ item }}
+{{item}}
 {% endfor %}
 {% endfilter %}
 --DATA--

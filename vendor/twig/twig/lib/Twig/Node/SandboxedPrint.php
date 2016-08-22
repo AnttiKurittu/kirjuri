@@ -13,7 +13,7 @@
  * Twig_Node_SandboxedPrint adds a check for the __toString() method
  * when the variable is an object and the sandbox is activated.
  *
- * When there is a simple Print statement, like {{ article }},
+ * When there is a simple Print statement, like {{article}},
  * and if the sandbox is enabled, we need to check that the __toString()
  * method is allowed if 'article' is an object.
  *

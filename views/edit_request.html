@@ -1,35 +1,35 @@
 {% extends 'base.html' %}
 {% block title %}
-<title>{{lang.42}} - {{settings.title_text}}</title>
+<title>{{ lang.edit_request }} - {{ settings.title_text }}</title>
 {% endblock title %}
 {% block navi %}
 <ul class="nav nav-sidebar">
-  <li><a href='index.php?year={{dateStart|date("Y")}}'><span class="glyphicon glyphicon-home" aria-hidden="true"></span> {{lang.1}} {{dateStart|date("Y")}}<span class="sr-only">(current)</span></a></li>
+  <li><a href='index.php?year={{ dateStart|date("Y") }}'><span class="glyphicon glyphicon-home" aria-hidden="true"></span> {{ lang.front_page }} {{ dateStart|date("Y") }}<span class="sr-only">(current)</span></a></li>
 </ul>
 <ul class="nav nav-sidebar">
-  <li role="presentation"{% if not returntab %} class="active"{% endif %}><a href="#tab-juttu" aria-controls="tab-juttu" role="tab" data-toggle="tab">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {{caserow.0.case_id}}/{{caserow.0.case_added_date|date("Y")}} {{caserow.0.case_name}}</a></li>
-  <li role="presentation"{% if returntab == "devices" %} class="active"{% endif %}><a href="#tab-devices" aria-controls="tab-devices" role="tab" data-toggle="tab">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {% if caserow.0.case_devicecount >= "1" %}<b>{% endif %}{{lang.43}} {% if caserow.0.case_devicecount >= "1" %}</b><span class="badge pull-right">{{caserow.0.case_devicecount}}</span>{% endif %}</a></li>
-  <li role="presentation"{% if returntab == "report_notes" %} class="active"{% endif %}><a href="#tab-report_notes" aria-controls="tab-report_notes" role="tab" data-toggle="tab">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {% if caserow.0.report_notes %}<b>{% endif %}{{lang.44}}{% if caserow.0.report_notes %}</b>{% endif %}</a></li>
-  <li role="presentation"{% if returntab == "examiners_notes" %} class="active"{% endif %}><a href="#tab-examiners_notes" aria-controls="tab-examiners_notes" role="tab" data-toggle="tab">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {% if caserow.0.examiners_notes %}<b>{% endif %}{{lang.45}}{% if caserow.0.examiners_notes %}</b>{% endif %}</a></li>
-  <li role="presentation"{% if returntab == "ohjeet" %} class="active"{% endif %}><a href="#tab-ohjeet" aria-controls="tab-ohjeet" role="tab" data-toggle="tab">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {{lang.46}}</a></li>
+  <li role="presentation"{% if not returntab %} class="active"{% endif %}><a href="#tab-juttu" aria-controls="tab-juttu" role="tab" data-toggle="tab">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {{ caserow.0.case_id }}/{{ caserow.0.case_added_date|date("Y") }} {{ caserow.0.case_name }}</a></li>
+  <li role="presentation"{% if returntab == "devices" %} class="active"{% endif %}><a href="#tab-devices" aria-controls="tab-devices" role="tab" data-toggle="tab">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {% if caserow.0.case_devicecount >= "1" %}<b>{% endif %}{{ lang.devices_and_medias }} {% if caserow.0.case_devicecount >= "1" %}</b><span class="badge pull-right">{{ caserow.0.case_devicecount }}</span>{% endif %}</a></li>
+  <li role="presentation"{% if returntab == "report_notes" %} class="active"{% endif %}><a href="#tab-report_notes" aria-controls="tab-report_notes" role="tab" data-toggle="tab">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {% if caserow.0.report_notes %}<b>{% endif %}{{ lang.examination_report }}{% if caserow.0.report_notes %}</b>{% endif %}</a></li>
+  <li role="presentation"{% if returntab == "examiners_notes" %} class="active"{% endif %}><a href="#tab-examiners_notes" aria-controls="tab-examiners_notes" role="tab" data-toggle="tab">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {% if caserow.0.examiners_notes %}<b>{% endif %}{{ lang.examination_notes }}{% if caserow.0.examiners_notes %}</b>{% endif %}</a></li>
+  <li role="presentation"{% if returntab == "ohjeet" %} class="active"{% endif %}><a href="#tab-ohjeet" aria-controls="tab-ohjeet" role="tab" data-toggle="tab">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {{ lang.crime_type_instructions }}</a></li>
 </ul>
 <ul class="nav nav-sidebar">
   <li>
-    <a href='statistics.php?year={{dateStart|date("Y")}}'> <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> {{lang.2}} {{dateStart|date("Y")}}</a>
+    <a href='statistics.php?year={{ dateStart|date("Y") }}'> <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> {{ lang.statistics }} {{ dateStart|date("Y") }}</a>
   </li>
 </ul>
 <ul class="nav nav-sidebar">
-  <li><a href="add_case.php"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{lang.3}}</a></li>
+  <li><a href="add_case.php"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{ lang.add_a_request }}</a></li>
 </ul>
 <ul class="nav nav-sidebar">
-  <li><a href="help.php"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> {{lang.4}}</a></li>
+  <li><a href="help.php"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> {{ lang.help_licenses }}</a></li>
 </ul>
 <ul class="nav nav-sidebar">
-  <li><a href="help.php?settings=1"><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> {{lang.5}}</a></li>
+  <li><a href="help.php?settings=1"><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> {{ lang.settings }}</a></li>
 </ul>
 {% if showStatus == "OK" %}
 <p>
-<div class="alert alert-success" role="alert" id="alert-success"><span style="color:green;"><i class="fa fa-check"></i> {{lang.47}} {{caserow.0.last_updated|date("H:i")}}.</span></div>
+<div class="alert alert-success" role="alert" id="alert-success"><span style="color:green;"><i class="fa fa-check"></i> {{ lang.request_saved }} {{ caserow.0.last_updated|date("H:i") }}.</span></div>
 </p>
 {% endif %}
 </div>
@@ -38,8 +38,8 @@
 {% for entry in caserow %}
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
   <ol class="breadcrumb">
-    <li><a href="index.php?year={{caserow.0.case_added_date|date("Y")}}">{{lang.1}} {{caserow.0.case_added_date|date("Y")}}</a></li>
-    <li>{{caserow.0.case_id}}/{{caserow.0.case_added_date|date("Y")}} {{caserow.0.case_name}} {{caserow.0.case_file_number}}</li>
+    <li><a href="index.php?year={{ caserow.0.case_added_date|date("Y") }}">{{ lang.front_page }} {{ caserow.0.case_added_date|date("Y") }}</a></li>
+    <li>{{ caserow.0.case_id }}/{{ caserow.0.case_added_date|date("Y") }} {{ caserow.0.case_name }} {{ caserow.0.case_file_number }}</li>
   </ol>
   <div>
     <!-- Tab panes -->
@@ -54,71 +54,73 @@
             <div class="modal-content">
               <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">{{lang.48}} {{entry.case_id}}/{{entry.case_added_date|date("Y")}}</h4>
+                <h4 class="modal-title" id="myModalLabel">{{ lang.new_examination_request }} {{ entry.case_id }}/{{ entry.case_added_date|date("Y") }}</h4>
               </div>
               <div class="modal-body">
-                <b>{{lang.49}}</b>
-                <p>{{lang.50}}</p>
-                <form name="lisaaTekninenTutkija" class="form" role="form" method="post" action="submit.php?type=case_update&db_row={{entry.parent_id}}">
+                <b>{{ lang.no_examiner_assigned }}</b>
+                <p>{{ lang.pick_examiner }}</p>
+                <form name="lisaaTekninenTutkija" class="form" role="form" method="post" action="submit.php?type=case_update&db_row={{ entry.parent_id }}">
                   <div class="form-group">
                     <select style="text-align:left;width:100%;" class="btn btn-default" name="forensic_investigator" id="forensic_investigator">
-                      <option selected disabled>{{lang.b22}}</option>
+                      <option selected disabled>{{ lang.forensic_examiner_long }}</option>
                       {% for entry in forensic_investigators %}
-                      <option value="{{entry}}">{{entry}}</option>
+                      <option value="{{ entry }}">{{ entry }}</option>
                       {% endfor %}
                     </select>
                   </div>
                   {% if entry.case_contains_mob_dev == "1" %}
-                  <b>{{lang.51}}</b>
-                  <p>{{lang.52}}</p>
+                  <b>{{ lang.request_contains_mobile_devices }}</b>
+                  <p>{{ lang.pick_mobile_examiner }}</p>
                   <div class="form-group">
                     <select style="text-align:left;width:100%;" class="btn btn-default" name="phone_investigator" id="phone_investigator">
-                      <option selected disabled>{{lang.b23}}</option>
+                      <option selected disabled>{{ lang.mobile_examiner_long }}</option>
                       {% for entry in phone_investigators %}
-                      <option value="{{entry}}">{{entry}}</option>
+                      <option value="{{ entry }}">{{ entry }}</option>
                       {% endfor %}
                     </select>
                   </div>
                   {% endif %}
               </div>
               <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal">{{lang.53}}</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal">{{ lang.close }}</button>
               {% if entry.case_status == "1" %}
-              <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{lang.54}}</button>
+              <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{ lang.save }}</button>
               {% elseif entry.case_status == "2" %}
-              <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{lang.55}}</button>
+              <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{ lang.update }}</button>
               {% endif %}
-              <input type="hidden" name="case_request_description" value="{{entry.case_request_description}}">
-              <input type="hidden" name="case_crime" value="{{entry.case_crime}}">
-              <input type="hidden" name="classification" value="{{entry.classification}}">
-              <input type="hidden" name="case_file_number" value="{{entry.case_file_number}}">
-              <input type="hidden" name="case_urgency" value="{{entry.case_urgency}}">
-              <input type="hidden" name="case_investigator" value="{{entry.case_investigator}}">
-              <input type="hidden" name="case_investigation_lead" value="{{entry.case_investigation_lead}}">
-              <input type="hidden" name="case_investigator_tel" value="{{entry.case_investigator_tel}}">
-              <input type="hidden" name="case_investigator_unit" value="{{entry.case_investigator_unit}}">
-              <input type="hidden" name="case_confiscation_date" value="{{entry.case_confiscation_date}}">
-              <input type="hidden" name="case_suspect" value="{{entry.case_suspect}}">
-              <input type="hidden" name="case_name" value="{{entry.case_name}}">
-              <input type="hidden" name="case_contains_mob_dev" value="{{entry.case_contains_mob_dev}}">
+              <input type="hidden" name="case_request_description" value="{{ entry.case_request_description }}">
+              <input type="hidden" name="case_crime" value="{{ entry.case_crime }}">
+              <input type="hidden" name="classification" value="{{ entry.classification }}">
+              <input type="hidden" name="case_file_number" value="{{ entry.case_file_number }}">
+              <input type="hidden" name="case_urgency" value="{{ entry.case_urgency }}">
+              <input type="hidden" name="case_investigator" value="{{ entry.case_investigator }}">
+              <input type="hidden" name="case_investigation_lead" value="{{ entry.case_investigation_lead }}">
+              <input type="hidden" name="case_investigator_tel" value="{{ entry.case_investigator_tel }}">
+              <input type="hidden" name="case_investigator_unit" value="{{ entry.case_investigator_unit }}">
+              <input type="hidden" name="case_confiscation_date" value="{{ entry.case_confiscation_date }}">
+              <input type="hidden" name="case_suspect" value="{{ entry.case_suspect }}">
+              <input type="hidden" name="case_name" value="{{ entry.case_name }}">
+              <input type="hidden" name="case_contains_mob_dev" value="{{ entry.case_contains_mob_dev }}">
               </form>
               </div>
             </div>
           </div>
         </div>
         {% endif %}
-        <h1 id="juttu" class="page-header">{% if entry.case_status == "1" %}<i style="color:red;" class="fa fa-circle"></i>{% endif %}{% if entry.case_status == "2" %}<i style="color:gold;" class="fa fa-circle"></i>{% endif %}{% if entry.case_status == "3" %}<i style="color:green;" class="fa fa-circle"></i>{% endif %} {{entry.case_id}}/{{entry.case_added_date|date("Y")}} {% if entry.case_name %}{{entry.case_name}}{% elseif entry.case_suspect %}{{lang.27}} {{entry.case_suspect}}{% else %}{{lang.28}}{% endif %} ({{entry.case_file_number}})</h1>
-
-
-        <p><b>{{entry.case_crime}}, {{entry.classification}}</b>, {{lang.b20}} <b>{{entry.case_suspect}}</b></p>
-        <p>{{lang.56}} <b>{{entry.case_investigation_lead}}</b> ({{entry.case_investigator_unit}}), {{lang.21}} <b>{{entry.case_investigator}}</b>, p. {{entry.case_investigator_tel}}.</p>
-        {% if entry.forensic_investigator%}<p>{{lang.b22}} <b>{{entry.forensic_investigator}}</b> </p>{% endif %}
-        {% if entry.phone_investigator %}<p>{{lang.b23}} <b>{{entry.phone_investigator}}</b></p>{% endif %}
-        <p>{{lang.25}} <b>{{entry.case_added_date|date("d.m.Y")}}</b>, {{lang.58}} <b>{{entry.case_confiscation_date|date("d.m.Y")}}</b>, {{lang.59}} <b>{{entry.last_updated|date("d.m.Y")}}</b></p>
-        <p>{{lang.60}}: <b>{{entry.case_request_description}}</b>, {{lang.61}}: <b>{{entry.case_requested_action}}</b></p>
-        <p>{{lang.62}}: <b>{% if entry.case_urgency == "1" %}<a style="color:red;">{{lang.a62}}</a>{%endif %}{% if entry.case_urgency == "2" %}{{lang.b62}}{%endif %}{% if entry.case_urgency == "3" %}{{lang.c62}}{%endif %}</b></p>
+        <h1 id="juttu" class="page-header">{% if entry.case_status == "1" %}<i style="color:red;" class="fa fa-circle"></i>{% endif %}{% if entry.case_status == "2" %}<i style="color:gold;" class="fa fa-circle"></i>{% endif %}{% if entry.case_status == "3" %}<i style="color:green;" class="fa fa-circle"></i>{% endif %} {{ entry.case_id }}/{{ entry.case_added_date|date("Y") }} {% if entry.case_name %}{{ entry.case_name }}{% elseif entry.case_suspect %}{{ lang.suspect_abbrev }} {{ entry.case_suspect }}{% else %}{{ lang.suspect_short }}{% endif %} ({{ entry.case_file_number }})</h1>
+        <p><b>{{ entry.case_crime }}, {{ entry.classification }}</b>, {{ lang.suspect_target }} <b>{{ entry.case_suspect }}</b></p>
+        <p>{{ lang.head_of_investigation }} <b>{{ entry.case_investigation_lead }}</b> ({{ entry.case_investigator_unit }}), {{ lang.investigator }} <b>{{ entry.case_investigator }}</b>, p. {{ entry.case_investigator_tel }}.</p>
+        {% if entry.forensic_investigator%}
+        <p>{{ lang.forensic_examiner_long }} <b>{{ entry.forensic_investigator }}</b> </p>
+        {% endif %}
+        {% if entry.phone_investigator %}
+        <p>{{ lang.mobile_examiner_long }} <b>{{ entry.phone_investigator }}</b></p>
+        {% endif %}
+        <p>{{ lang.requested }} <b>{{ entry.case_added_date|date("d.m.Y") }}</b>, {{ lang.confiscation_date }} <b>{{ entry.case_confiscation_date|date("d.m.Y") }}</b>, {{ lang.latest_update }} <b>{{ entry.last_updated|date("d.m.Y") }}</b></p>
+        <p>{{ lang.target }}: <b>{{ entry.case_request_description }}</b>, {{ lang.request_details }}: <b>{{ entry.case_requested_action }}</b></p>
+        <p>{{ lang.urgency }}: <b>{% if entry.case_urgency == "1" %}<a style="color:red;">{{ lang.urgency_urgent }}</a>{%endif %}{% if entry.case_urgency == "2" %}{{ lang.urgency_normal }}{%endif %}{% if entry.case_urgency == "3" %}{{ lang.urgency_can_wait }}{%endif %}</b></p>
         {% if entry.case_urg_justification %}
-        <p>{{lang.63}}: <b>{{entry.case_urg_justification}}</b></p>
+        <p>{{ lang.urgency_justification }}: <b>{{ entry.case_urg_justification }}</b></p>
         {% endif %}
         {% if entry.case_status != "3" %}
         {% set progress_counter1 = "0" %}
@@ -130,21 +132,21 @@
         {% set progress_counter2 = (progress_counter2 + jutun_vaihe.0) %}
         {% endif%}
         {% if (loop.last == true) and (progress_counter2 != "0") %}
-        <p>{{lang.64}} <b>{{((100 / progress_counter1) * progress_counter2)|round(0, "ceil")}}%</b></p>
-          {% endif%}
-          {% endfor %}
-          {% endif %}
+        <p>{{ lang.devices_investigated }} <b>{{ ((100 / progress_counter1) * progress_counter2)|round(0, "ceil") }}%</b></p>
+        {% endif%}
+        {% endfor %}
+        {% endif %}
         <form class="form form-inline" role="form" method="post" action="submit.php?type=paatos">
-          {% for entry in caserow %}{% if entry.case_status != "3" %}<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#perustiedot"><i class="fa fa-info-circle"></i> {{lang.65}}</button>{% endif %}{% endfor %}
-          <a href="print_sticker.php?db_row={{entry.id}}&type=juttu" target="_BLANK" type="button" class="btn btn-info"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> {{lang.66}}</a>
-          <a type="button" class="btn btn-info" href="case_report.php?case={% for entry in caserow %}{{entry.id}}{% endfor %}" target="_BLANK"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> {{lang.67}}</a>
+          {% for entry in caserow %}{% if entry.case_status != "3" %}<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#perustiedot"><i class="fa fa-info-circle"></i> {{ lang.edit_request_details }}</button>{% endif %}{% endfor %}
+          <a href="print_sticker.php?db_row={{ entry.id }}&type=juttu" target="_BLANK" type="button" class="btn btn-info"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> {{ lang.print_sticker }}</a>
+          <a type="button" class="btn btn-info" href="case_report.php?case={% for entry in caserow %}{{ entry.id }}{% endfor %}" target="_BLANK"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> {{ lang.print_report }}</a>
           <div class="form-group">
-            <input type="hidden" value="{{entry.id}}" name="returnid">
+            <input type="hidden" value="{{ entry.id }}" name="returnid">
             {% set progress_counter1 = "0" %}
             {% set progress_counter2 = "0" %}
             {% if not mediarow %}
             <input type="hidden" value="1" name="case_status">
-            <button type="submit" class="btn btn-danger"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{lang.68}}</button>
+            <button type="submit" class="btn btn-danger"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{ lang.dismiss_request }}</button>
             {% else %}
             {% for entry in mediarow %}
             {% set jutun_vaihe = entry.device_action|split('|') %}
@@ -156,20 +158,20 @@
             {% for entry in caserow %}
             {% if entry.case_status == "2" %}
             <input type="hidden" value="3" name="case_status">
-            <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{lang.69}}</button>
+            <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{ lang.close_ready_request }}</button>
             {% elseif entry.case_status == "3" %}
             <input type="hidden" value="2" name="case_status">
-            <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{lang.70}}</button>
+            <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{ lang.reopen_closed_request }}</button>
             {% endif %}
             {% endfor %}
             {% elseif (loop.last == true) and (progress_counter1 != progress_counter2) %}
             {% for entry in caserow %}
             {% if entry.case_status == "2" %}
             <!-- <input type="hidden" value="1" name="case_status">
-            <button type="submit" class="btn btn-danger"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{lang.68}}</button> -->
+              <button type="submit" class="btn btn-danger"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{ lang.dismiss_request }}</button> -->
             {% elseif entry.case_status == "1" %}
             <input type="hidden" value="2" name="case_status">
-            <button type="submit" class="btn btn-warning"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{lang.71}}</button>
+            <button type="submit" class="btn btn-warning"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{ lang.start_investigation }}</button>
             {% endif %}
             {% endfor %}
             {% endif %}
@@ -178,194 +180,186 @@
         </form>
         </div>
         {% if samerequest_file_number %}
-          <hr>
-          <p><i class="fa fa-exclamation" style="color:red;"></i> {{ lang.175 }}
+        <hr>
+        <p><i class="fa fa-exclamation" style="color:red;"></i> {{ lang.requests_with_matching_complaint_number }}
           {% for entry in samerequest_file_number %}
-            <a style="font-size:0.9em;" href="edit_request.php?case={{entry.id}}" class="label label-primary">{{ entry.case_id }}/{{entry.case_added_date|date("Y")}}</a>&nbsp;
+          <a style="font-size:0.9em;" href="edit_request.php?case={{ entry.id }}" class="label label-primary">{{ entry.case_id }}/{{ entry.case_added_date|date("Y") }}</a>&nbsp;
           {% endfor %}
         </p>
         {% endif %}
         <hr>
-
-{% if (caserow.0.case_status == "1") %}
-{% if not mediarow %}
-<div class="col-sm-12">
-<form method="POST" class="form-inline pull-left" action="submit.php?type=set_removed_case">
-  <div class="form-group">
-    <input type="hidden" name="remove_exam_request" value="{{caserow.0.id}}">
-  </div>
-  <button type="submit" class="btn btn-xs btn-danger">{{ lang.b68 }}</button>
-</form>
-</div>
-{% endif %}
-{% endif %}
-
-
-{% if caserow.0.report_notes %}
-<h3>{{lang.44}}</h3>
-{{caserow.0.report_notes|raw}}
-<hr>
-{% endif %}
-
-{% if caserow.0.examiners_notes %}
-<h3>{{lang.b121}}</h3>
-{{caserow.0.examiners_notes|raw}}
-<hr>
-{% endif %}
-
+        {% if (caserow.0.case_status == "1") %}
+        {% if not mediarow %}
+        <div class="col-sm-12">
+          <form method="POST" class="form-inline pull-left" action="submit.php?type=set_removed_case">
+            <div class="form-group">
+              <input type="hidden" name="remove_exam_request" value="{{ caserow.0.id }}">
+            </div>
+            <button type="submit" class="btn btn-xs btn-danger">{{ lang.delete_request }}</button>
+          </form>
+        </div>
+        {% endif %}
+        {% endif %}
+        {% if caserow.0.report_notes %}
+        <h3>{{ lang.examination_report }}</h3>
+        {{ caserow.0.report_notes|raw }}
+        <hr>
+        {% endif %}
+        {% if caserow.0.examiners_notes %}
+        <h3>{{ lang.examiners_private_notes }}</h3>
+        {{ caserow.0.examiners_notes|raw }}
+        <hr>
+        {% endif %}
         {% set counter_no = "0" %}
         {% for entry in mediarow %}
         {% set jutun_vaihe = entry.device_action|split('|') %}{% if entry.is_removed != "1" %}
         <div class="col-md-3">
-          <a href="device_memo.php?db_row={{entry.id}}"><img src="views/img/svg/{% if entry.device_type %}{{entry.device_type|lower|replace({" ": "_", "ä": "a", "ö": "o"})}}{% else %}tuntematon{% endif %}.svg" title="UID {{entry.id}} {{entry.device_type}} {{entry.device_model}} {{entry.device_manuf}}" width="42px" style="float:left;padding-left:10px;padding-right:10px;"></a>
-          <div class="progress" style="width:{{settings.progress_bar_size}};">
-            <div class="progress-bar {{settings.progress_bar_style}} progress-bar-{% if settings.device_action_count == jutun_vaihe.0 %}success{% elseif jutun_vaihe.0 == "1" %}danger{% elseif jutun_vaihe.0 == "0" %}info{% else %}warning{% endif %}" role="progressbar"
-            aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:{% if jutun_vaihe.0 == "0" %}100{% else %}{{((100 / settings.device_action_count) * jutun_vaihe.0)|round(0, "ceil")}}{% endif %}%">
-            {{((100 / settings.device_action_count) * jutun_vaihe.0)|round(0, "ceil")}}%
+          <a href="device_memo.php?db_row={{ entry.id }}"><img src="views/img/svg/{% if entry.device_type %}{{ entry.device_type|lower|replace({" ": "_", "ä": "a", "ö": "o"}) }}{% else %}tuntematon{% endif %}.svg" title="UID {{ entry.id }} {{ entry.device_type }} {{ entry.device_model }} {{ entry.device_manuf }}" width="42px" style="float:left;padding-left:10px;padding-right:10px;"></a>
+          <div class="progress" style="width:{{ settings.progress_bar_size }};">
+            <div class="progress-bar {{ settings.progress_bar_style }} progress-bar-{% if settings.device_action_count == jutun_vaihe.0 %}success{% elseif jutun_vaihe.0 == "1" %}danger{% elseif jutun_vaihe.0 == "0" %}info{% else %}warning{% endif %}" role="progressbar"
+            aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:{% if jutun_vaihe.0 == "0" %}100{% else %}{{ ((100 / settings.device_action_count) * jutun_vaihe.0)|round(0, "ceil") }}{% endif %}%">
+            {{ ((100 / settings.device_action_count) * jutun_vaihe.0)|round(0, "ceil") }}%
           </div>
         </div>
       </div>
       {% endif %}
       {% endfor %}
-
-
-
       <!-- Modal -->
       <div class="modal fade" id="perustiedot" role="dialog" aria-labelledby="perustiedot">
         <div class="modal-dialog modal-lg" role="document">
           <div class="modal-content">
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-              <h4 class="modal-title" id="myModalLabel">{{lang.72}}</h4>
+              <h4 class="modal-title" id="myModalLabel">{{ lang.edit_request_details }}</h4>
             </div>
             <div class="modal-body">
               <!--- perustiedot -->
-              <form class="form form-horizontal" role="form" method="post" action="submit.php?type=case_update&db_row={{entry.parent_id}}">
+              <form class="form form-horizontal" role="form" method="post" action="submit.php?type=case_update&db_row={{ entry.parent_id }}">
                 <div class="form-group">
-                  <label for="juttu" class="col-sm-2 control-label">{{lang.73}}</label>
+                  <label for="juttu" class="col-sm-2 control-label">{{ lang.case_name }}</label>
                   <div class="col-sm-10">
-                    <input {% if entry.case_status=="3" %}disabled{% endif %} type="text" class="form-control" id="juttu" name="case_name" value="{{entry.case_name}}" placeholder="{{lang.b73}}">
+                    <input {% if entry.case_status=="3" %}disabled{% endif %} type="text" class="form-control" id="juttu" name="case_name" value="{{ entry.case_name }}" placeholder="{{ lang.specify_case_name }}">
                   </div>
                 </div>
                 <div class="form-group">
-                  <label for="case_file_number" class="col-sm-2 control-label">{{lang.74}}</label>
+                  <label for="case_file_number" class="col-sm-2 control-label">{{ lang.crimnal_compl_number }}</label>
                   <div class="col-sm-10">
-                    <input {% if entry.case_status=="3" %}disabled{% endif %} type="text" class="form-control" id="case_file_number" name="case_file_number" placeholder="{{settings.organization_specific_prefix}}" value="{{entry.case_file_number}}">
+                    <input {% if entry.case_status=="3" %}disabled{% endif %} type="text" class="form-control" id="case_file_number" name="case_file_number" placeholder="{{ settings.organization_specific_prefix }}" value="{{ entry.case_file_number }}">
                   </div>
                 </div>
                 <div class="form-group">
-                  <label for="case_crime" class="col-sm-2 control-label">{{lang.75}}</label>
+                  <label for="case_crime" class="col-sm-2 control-label">{{ lang.main_offense }}</label>
                   <div class="col-sm-10">
-                    <input {% if entry.case_status=="3" %}disabled{% endif %} type="text" class="form-control" id="case_crime" name="case_crime" placeholder="{{lang.76}}" value="{{entry.case_crime}}">
+                    <input {% if entry.case_status=="3" %}disabled{% endif %} type="text" class="form-control" id="case_crime" name="case_crime" placeholder="{{ lang.specify_main_offense }}" value="{{ entry.case_crime }}">
                   </div>
                 </div>
                 <div class="form-group">
-                  <label for="case_crime" class="col-sm-2 control-label">{{lang.77}}</label>
+                  <label for="case_crime" class="col-sm-2 control-label">{{ lang.classification }}</label>
                   <div class="col-sm-2">
                     <select style="text-align:left;" class="btn btn-default" name="classification" id="classification">
                     {% for classification in classifications %}
-                    <option value="{{classification}}" {% if entry.classification == classification %}selected{% endif %}>{{classification}}</option>
+                    <option value="{{ classification }}" {% if entry.classification == classification %}selected{% endif %}>{{ classification }}</option>
                     {% endfor %}
                     </select>
                   </div>
                 </div>
                 <div class="form-group">
-                  <label for="case_suspect" class="col-sm-2 control-label">{{lang.20}}</label>
+                  <label for="case_suspect" class="col-sm-2 control-label">{{ lang.suspect_short }}</label>
                   <div class="col-sm-10">
-                    <input {% if entry.case_status=="3" %}disabled{% endif %} type="text" class="form-control" id="case_suspect" name="case_suspect" placeholder="{{lang.c20}}" value="{{entry.case_suspect}}">
+                    <input {% if entry.case_status=="3" %}disabled{% endif %} type="text" class="form-control" id="case_suspect" name="case_suspect" placeholder="{{ lang.name }}" value="{{ entry.case_suspect }}">
                   </div>
                 </div>
                 <div class="form-group">
-                  <label for="case_investigation_lead" class="col-sm-2 control-label">{{lang.56}}</label>
+                  <label for="case_investigation_lead" class="col-sm-2 control-label">{{ lang.head_of_investigation }}</label>
                   <div class="col-sm-10">
-                    <input {% if entry.case_status=="3" %}disabled{% endif %} type="text" class="form-control" id="case_investigation_lead" name="case_investigation_lead" placeholder="{{lang.56}}" value="{{entry.case_investigation_lead}}">
+                    <input {% if entry.case_status=="3" %}disabled{% endif %} type="text" class="form-control" id="case_investigation_lead" name="case_investigation_lead" placeholder="{{ lang.head_of_investigation }}" value="{{ entry.case_investigation_lead }}">
                   </div>
                 </div>
                 <div class="form-group">
-                  <label for="case_investigator" class="col-sm-2 control-label">{{lang.b21}}</label>
+                  <label for="case_investigator" class="col-sm-2 control-label">{{ lang.case_investigator }}</label>
                   <div class="col-sm-10">
-                    <input {% if entry.case_status=="3" %}disabled{% endif %} type="text" class="form-control" id="case_investigator" name="case_investigator" placeholder="{{lang.c21}}" value="{{entry.case_investigator}}">
+                    <input {% if entry.case_status=="3" %}disabled{% endif %} type="text" class="form-control" id="case_investigator" name="case_investigator" placeholder="{{ lang.name_and_rank }}" value="{{ entry.case_investigator }}">
                   </div>
                 </div>
                 <div class="form-group">
-                  <label for="case_investigator_tel" class="col-sm-2 control-label">{{lang.78}}</label>
+                  <label for="case_investigator_tel" class="col-sm-2 control-label">{{ lang.case_investigators_tel_no }}</label>
                   <div class="col-sm-10">
-                    <input {% if entry.case_status=="3" %}disabled{% endif %} type="text" class="form-control" id="case_investigator_tel" name="case_investigator_tel" placeholder="{{settings.phone_number_prefix}}xxxx" value="{{entry.case_investigator_tel}}">
+                    <input {% if entry.case_status=="3" %}disabled{% endif %} type="text" class="form-control" id="case_investigator_tel" name="case_investigator_tel" placeholder="{{ settings.phone_number_prefix }}xxxx" value="{{ entry.case_investigator_tel }}">
                   </div>
                 </div>
                 <div class="form-group">
-                  <label for="case_crime" class="col-sm-2 control-label">{{lang.79}}</label>
+                  <label for="case_crime" class="col-sm-2 control-label">{{ lang.unit }}</label>
                   <div class="col-sm-2">
                     <select style="text-align:left;" class="btn btn-default" name="case_investigator_unit" id="case_investigator_unit">
-                      <option value="" disabled>{{lang.b79}}</option>
+                      <option value="" disabled>{{ lang.investigating_unit }}</option>
                       {% for yksikko in inv_units %}
-                      <option value="{{yksikko}}" {% if entry.case_investigator_unit == yksikko %}selected{% endif %}>{{yksikko}}</option>
+                      <option value="{{ yksikko }}" {% if entry.case_investigator_unit == yksikko %}selected{% endif %}>{{ yksikko }}</option>
                       {% endfor %}
                     </select>
                   </div>
                 </div>
                 <div class="form-group">
-                  <label for="case_request_description" class="col-sm-2 control-label">{{lang.80}}</label>
+                  <label for="case_request_description" class="col-sm-2 control-label">{{ lang.description }}</label>
                   <div class="col-sm-10">
-                    <input {% if entry.case_status=="3" %}disabled{% endif %} type="text" class="form-control" id="case_request_description" name="case_request_description" placeholder="{{lang.b80}}" value="{{entry.case_request_description}}">
+                    <input {% if entry.case_status=="3" %}disabled{% endif %} type="text" class="form-control" id="case_request_description" name="case_request_description" placeholder="{{ lang.evidence_description }}" value="{{ entry.case_request_description }}">
                   </div>
                 </div>
                 <div class="form-group {% if (settings.notify_after_4_months == " 1 ") and (entry.case_confiscation_date != " 0000-00-00 ") and ((entry.case_confiscation_date|date("U ")) < ("-4 months "|date("U "))) %}has-error{%endif%}">
-                <label for="case_confiscation_date" class="col-sm-2 control-label">{{lang.81}}</label>
+                <label for="case_confiscation_date" class="col-sm-2 control-label">{{ lang.confiscation_date_abbrev }}</label>
                 <div class="col-sm-10">
-                  <input {% if entry.case_status=="3" %}disabled{% endif %} type="text" class="form-control warning" id="case_confiscation_date" name="case_confiscation_date" placeholder="{{lang.b81}}" value="{{entry.case_confiscation_date}}">
+                  <input {% if entry.case_status=="3" %}disabled{% endif %} type="text" class="form-control warning" id="case_confiscation_date" name="case_confiscation_date" placeholder="{{ lang.date_format }}" value="{{ entry.case_confiscation_date }}">
                 </div>
             </div>
             <div class="form-group">
-            <label for="forensic_investigator" class="col-sm-2 control-label"><a style="color:green;">{{lang.b22}}</a></label>
+            <label for="forensic_investigator" class="col-sm-2 control-label"><a style="color:green;">{{ lang.forensic_examiner_long }}</a></label>
             <div class="col-sm-10">
             <select style="text-align:left;" class="btn btn-default" name="forensic_investigator" id="forensic_investigator">
             {% if not entry.forensic_investigator %}<option selected disabled value =""></option>{% endif %}
             {% for tutkija in forensic_investigators %}
-            <option value="{{tutkija}}" {% if tutkija == entry.forensic_investigator %}selected{% endif %}>{{tutkija}}</option>
+            <option value="{{ tutkija }}" {% if tutkija == entry.forensic_investigator %}selected{% endif %}>{{ tutkija }}</option>
             {% endfor %}
             </select>
             </div>
             </div>
             <div class="form-group">
-            <label for="phone_investigator" class="col-sm-2 control-label"><a style="color:green;">{{lang.b23}}</a></label>
+            <label for="phone_investigator" class="col-sm-2 control-label"><a style="color:green;">{{ lang.mobile_examiner_long }}</a></label>
             <div class="col-sm-10">
             <select style="text-align:left;" class="btn btn-default" name="phone_investigator" id="phone_investigator">
             {% if not entry.phone_investigator %}<option selected disabled value=""></option>{% endif %}
             {% for tutkija in phone_investigators %}
-            <option value="{{tutkija}}" {% if tutkija == entry.phone_investigator %}selected{% endif %}>{{tutkija}}</option>
+            <option value="{{ tutkija }}" {% if tutkija == entry.phone_investigator %}selected{% endif %}>{{ tutkija }}</option>
             {% endfor %}
             </select>
             </div>
             </div>
             <div class="form-group">
             <div class="col-sm-10 col-sm-offset-2">
-            <input {% if entry.case_status=="3" %}disabled{% endif %} type="checkbox" name="case_contains_mob_dev" value="1" {% if entry.case_contains_mob_dev=="1" %}checked{%endif%}> {{lang.82}}
+            <input {% if entry.case_status=="3" %}disabled{% endif %} type="checkbox" name="case_contains_mob_dev" value="1" {% if entry.case_contains_mob_dev=="1" %}checked{%endif%}> {{ lang.contains_mobile_devices }}
             </div>
             </div>
             <div class="form-group">
-            <label for="case_urgency" class="col-sm-2 control-label"><a style="color:green;">{{lang.83}}</a></label>
+            <label for="case_urgency" class="col-sm-2 control-label"><a style="color:green;">{{ lang.urgency }}</a></label>
             <div class="col-sm-10">
             <select style="text-align:left;" class="btn btn-default" name="case_urgency" id="case_urgency">
-            <option value="1" {% if entry.case_urgency == "1" %}selected{% endif %}>{{lang.a83}}</option>
-            <option value="2" {% if entry.case_urgency == "2" %}selected{% endif %}>{{lang.b83}}</option>
-            <option value="3" {% if entry.case_urgency == "3" %}selected{% endif %}>{{lang.c83}}</option>
+            <option value="1" {% if entry.case_urgency == "1" %}selected{% endif %}>{{ lang.urgency_urgent }}</option>
+            <option value="2" {% if entry.case_urgency == "2" %}selected{% endif %}>{{ lang.urgency_normal }}</option>
+            <option value="3" {% if entry.case_urgency == "3" %}selected{% endif %}>{{ lang.urgency_can_wait }}</option>
             </select>
             </div>
             </div>
-            <input type="hidden" name="is_removed" value="{{entry.is_removed}}">
-            <input type="hidden" name="parent_id" value="{{entry.id}}">
+            <input type="hidden" name="is_removed" value="{{ entry.is_removed }}">
+            <input type="hidden" name="parent_id" value="{{ entry.id }}">
             <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
             </div>
             </div>
           </div>
           <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">{{lang.53}}</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">{{ lang.close }}</button>
           {% if entry.case_status == "1" %}
-          <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{lang.84}}</button>
+          <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{ lang.save_case_details }}</button>
           {% elseif entry.case_status == "2" %}
-          <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{lang.85}}</button>
+          <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{ lang.update_case_details }}</button>
           {% endif %}
           </form>
           {% endfor %}
@@ -374,62 +368,57 @@
       </div>
     </div>
   </div>
-
-
-
-
   <div role="tabpanel" class="tab-pane{% if returntab == "devices" %} active{% endif %}" id="tab-devices">
   <div class="form-group"
   <!-- Button trigger modal -->
   {% if caserow.0.case_status == "2" %}
-  <button type="button" class="btn btn-primary btn-md" data-toggle="modal" data-target="#medialisays{{entry.id}}">
-  <i class="fa fa-plus"></i> {{lang.86}}
+  <button type="button" class="btn btn-primary btn-md" data-toggle="modal" data-target="#medialisays{{ entry.id }}">
+  <i class="fa fa-plus"></i> {{ lang.add_device_or_media }}
   </button>{% endif %}
 </div>
 {% if not mediarow %}
-<h1 class="page-header">{{lang.87}}</h1>
+<h1 class="page-header">{{ lang.no_devices_add_device }}</h1>
 {% endif %}
 {% if mediarow %}
-<div class="pull-right">{{lang.88}}:
-  {% if sort_order == "id" %}<b><i class="fa fa-sort"></i> {{lang.a88}}</b>{% else %}<a href="edit_request.php?case={{caserow.0.id}}&tab=devices&j=id{% if dev_owner %}&dev_owner={{dev_owner|url_encode}}{% endif %}">{{lang.a88}}</a>{% endif %} |
-  {% if sort_order == "device_type" %}<b><i class="fa fa-sort"></i> {{lang.b88}}</b>{% else %}<a href="edit_request.php?case={{caserow.0.id}}&tab=devices&j=type{% if dev_owner %}&dev_owner={{dev_owner|url_encode}}{% endif %}">{{lang.b88}}</a>{% endif %} |
-  {% if sort_order == "device_manuf" %}<b><i class="fa fa-sort"></i> {{lang.c88}}</b>{% else %}<a href="edit_request.php?case={{caserow.0.id}}&tab=devices&j=dev_manuf{% if dev_owner %}&dev_owner={{dev_owner|url_encode}}{% endif %}">{{lang.c88}}</a>{% endif %} |
-  {% if sort_order == "device_model" %}<b><i class="fa fa-sort"></i> {{lang.d88}}</b>{% else %}<a href="edit_request.php?case={{caserow.0.id}}&tab=devices&j=dev_model{% if dev_owner %}&dev_owner={{dev_owner|url_encode}}{% endif %}">{{lang.d88}}</a>{% endif %} |
-  {% if sort_order == "device_owner" %}<b><i class="fa fa-sort"></i> {{lang.e88}}</b>{% else %}<a href="edit_request.php?case={{caserow.0.id}}&tab=devices&j=dev_owner{% if dev_owner %}&dev_owner={{dev_owner|url_encode}}{% endif %}">{{lang.e88}}</a>{% endif %} |
-  {% if sort_order == "device_location" %}<b><i class="fa fa-sort"></i> {{lang.f88}}</b>{% else %}<a href="edit_request.php?case={{caserow.0.id}}&tab=devices&j=dev_location{% if dev_owner %}&dev_owner={{dev_owner|url_encode}}{% endif %}">{{lang.f88}}</a>{% endif %} |
-  {% if sort_order == "device_action" %}<b><i class="fa fa-sort"></i> {{lang.g88}}</b>{% else %}<a href="edit_request.php?case={{caserow.0.id}}&tab=devices&j=device_action{% if dev_owner %}&dev_owner={{dev_owner|url_encode}}{% endif %}">{{lang.g88}}</a>{% endif %} |
-  {% if sort_order == "device_document, device_item_number" %}<b><i class="fa fa-sort"></i> {{lang.113}}</b>{% else %}<a href="edit_request.php?case={{caserow.0.id}}&tab=devices&j=tvp{% if dev_owner %}&dev_owner={{dev_owner|url_encode}}{% endif %}">{{lang.113}}</a>{% endif %}
-
+<div class="pull-right">{{ lang.sorted_by }}:
+  {% if sort_order == "id" %}<b><i class="fa fa-sort"></i> {{ lang.sort_label_UID }}</b>{% else %}<a href="edit_request.php?case={{ caserow.0.id }}&tab=devices&j=id{% if dev_owner %}&dev_owner={{ dev_owner|url_encode }}{% endif %}">{{ lang.sort_label_UID }}</a>{% endif %} |
+  {% if sort_order == "device_type" %}<b><i class="fa fa-sort"></i> {{ lang.sort_label_type }}</b>{% else %}<a href="edit_request.php?case={{ caserow.0.id }}&tab=devices&j=type{% if dev_owner %}&dev_owner={{ dev_owner|url_encode }}{% endif %}">{{ lang.sort_label_type }}</a>{% endif %} |
+  {% if sort_order == "device_manuf" %}<b><i class="fa fa-sort"></i> {{ lang.sort_label_brand }}</b>{% else %}<a href="edit_request.php?case={{ caserow.0.id }}&tab=devices&j=dev_manuf{% if dev_owner %}&dev_owner={{ dev_owner|url_encode }}{% endif %}">{{ lang.sort_label_brand }}</a>{% endif %} |
+  {% if sort_order == "device_model" %}<b><i class="fa fa-sort"></i> {{ lang.sort_label_model }}</b>{% else %}<a href="edit_request.php?case={{ caserow.0.id }}&tab=devices&j=dev_model{% if dev_owner %}&dev_owner={{ dev_owner|url_encode }}{% endif %}">{{ lang.sort_label_model }}</a>{% endif %} |
+  {% if sort_order == "device_owner" %}<b><i class="fa fa-sort"></i> {{ lang.sort_label_owner }}</b>{% else %}<a href="edit_request.php?case={{ caserow.0.id }}&tab=devices&j=dev_owner{% if dev_owner %}&dev_owner={{ dev_owner|url_encode }}{% endif %}">{{ lang.sort_label_owner }}</a>{% endif %} |
+  {% if sort_order == "device_location" %}<b><i class="fa fa-sort"></i> {{ lang.sort_label_location }}</b>{% else %}<a href="edit_request.php?case={{ caserow.0.id }}&tab=devices&j=dev_location{% if dev_owner %}&dev_owner={{ dev_owner|url_encode }}{% endif %}">{{ lang.sort_label_location }}</a>{% endif %} |
+  {% if sort_order == "device_action" %}<b><i class="fa fa-sort"></i> {{ lang.sort_label_status }}</b>{% else %}<a href="edit_request.php?case={{ caserow.0.id }}&tab=devices&j=device_action{% if dev_owner %}&dev_owner={{ dev_owner|url_encode }}{% endif %}">{{ lang.sort_label_status }}</a>{% endif %} |
+  {% if sort_order == "device_document, device_item_number" %}<b><i class="fa fa-sort"></i> {{ lang.device_document }}</b>{% else %}<a href="edit_request.php?case={{ caserow.0.id }}&tab=devices&j=tvp{% if dev_owner %}&dev_owner={{ dev_owner|url_encode }}{% endif %}">{{ lang.device_document }}</a>{% endif %}
 </div>
 {% endif %}
 {% for entry in mediarow %}
-<a name="{{entry.id}}"></a>
+<a name="{{ entry.id }}"></a>
 {% if (entry.device_host_id == "0") and (entry.is_removed != "1") %}
 {% set isanta_id = entry.id %}
 <table class="table table-condensed" style="border: {% if dev_owner and (entry.device_owner == dev_owner) %}{% set korostus = True %}1px solid #F00{% else %}1px solid #AAA{% endif %}">
   <thead style="background-color:{% if dev_owner and (entry.device_owner == dev_owner) %}#FCC{% else %}#CDE{% endif %};">
     <th style="width:1px;" class="text-center"><i class="fa fa-cube"></i></th>
-    <th style="width:350px">{{lang.a89}}</th>
-    <th>{{lang.b89}}</th>
-    <th style="width:1px">{{lang.c89}}</th>
-    <th style="width:1px;">{{lang.d89}}</th>
-    <th style="width:1px;">{{lang.f88}}</th>
+    <th style="width:350px">{{ lang.device_or_media }}</th>
+    <th>{{ lang.info }}</th>
+    <th style="width:1px">{{ lang.status }}</th>
+    <th style="width:1px;">{{ lang.status }}</th>
+    <th style="width:1px;">{{ lang.sort_label_location }}</th>
     <th style="width:1px;" class="text-center"><i class="fa fa-floppy-o"></i></th>
   </thead>
   <tr class="active">
     <td style="vertical-align:middle;" {% if entry.device_contains_evidence %}class="success"{% endif %}>
-    <img src="views/img/svg/{% if entry.device_type %}{{entry.device_type|lower|replace({" ": "_", "ä": "a", "ö": "o"})}}{% else %}{{lang.90}}{% endif %}.svg"  style="vertical-align:middle;float:left;padding:10px;width:64px;">
+    <img src="views/img/svg/{% if entry.device_type %}{{ entry.device_type|lower|replace({" ": "_", "ä": "a", "ö": "o"}) }}{% else %}{{ lang.unknown }}{% endif %}.svg"  style="vertical-align:middle;float:left;padding:10px;width:64px;">
     </td>
     <td style="vertical-align:middle;">
-      <h4><a href="device_memo.php?db_row={{entry.id}}">{% if entry.device_type %}{{entry.device_type}}{% else %}<span style="color:red;">{{lang.91}}</span>{% endif %} {{entry.device_manuf}} {{entry.device_model}} {% if entry.device_size_in_gb > "0" %}{{entry.device_size_in_gb}} GB{% endif %}</a> <br><small>{{lang.92}} {{entry.id}}, {{entry.device_document}} {{lang.93}} {{entry.device_item_number}}
+      <h4><a href="device_memo.php?db_row={{ entry.id }}">{% if entry.device_type %}{{ entry.device_type }}{% else %}<span style="color:red;">{{ lang.undefined_device_or_media_type }}</span>{% endif %} {{ entry.device_manuf }} {{ entry.device_model }} {% if entry.device_size_in_gb > "0" %}{{ entry.device_size_in_gb }} GB{% endif %}</a> <br><small>{{ lang.device_uid }} {{ entry.id }}, {{ entry.device_document }} {{ lang.object_no }} {{ entry.device_item_number }}
         {% if entry.report_notes %}<br>
         {% if entry.device_include_in_report == "1" %}
-        <span style="color:green;"><i class="fa fa-check-square-o"></i> {{lang.a94}}</span><br>
+        <span style="color:green;"><i class="fa fa-check-square-o"></i> {{ lang.examination_notes_shown }}</span><br>
         {% endif %}
         {% if entry.device_include_in_report == "0" %}
-        <span style="color:red;"><i class="fa fa-close"></i> {{lang.b94}}</span><br>
+        <span style="color:red;"><i class="fa fa-close"></i> {{ lang.examination_notes_hidden }}</span><br>
         {% endif %}
-        {% else %}<br><span style="color:orange;"><i class="fa fa-square-o"></i> {{lang.c94}}</span><br>
+        {% else %}<br><span style="color:orange;"><i class="fa fa-square-o"></i> {{ lang.examination_notes_empty }}</span><br>
         {% endif %}</small>
       </h4>
       {% set check = "0" %}
@@ -437,13 +426,13 @@
       {% set check = "1" %}
       {% else %}
       {% for media in media_objs if (entry.device_type == media) and (check != "1") %}
-      <form class="form form-inline" role="form" method="post" action="submit.php?type=device_attach&db_row={{entry.id}}&returnid={{entry.parent_id}}">
+      <form class="form form-inline" role="form" method="post" action="submit.php?type=device_attach&db_row={{ entry.id }}&returnid={{ entry.parent_id }}">
         <select style="text-align:left;" class="btn btn-xs btn-default" name="isanta">
-          <option selected disabled value="0">{{lang.95}}</option>
+          <option selected disabled value="0">{{ lang.associate_with_device }}</option>
           {% for target in mediarow %}
           {% if (target.is_removed == "0") and (target.device_host_id == "0") and (target.id != entry.id) %}
           {% set valinta = ("[UID " ~ target.id ~ "] " ~ target.device_type ~ " " ~ target.device_manuf) %}
-          <option value="{{target.id}}">{{valinta|length > 27 ? valinta|slice(0, 27) ~ '...' : valinta}}</a>
+          <option value="{{ target.id }}">{{ valinta|length > 27 ? valinta|slice(0, 27) ~ '...' : valinta }}</a>
           </option>
           {% endif %}
           {% endfor %}
@@ -455,13 +444,13 @@
     </td>
     <td style="vertical-align:middle;">
       {% if entry.device_owner %}
-      {% if dev_owner == entry.device_owner %}<i class="fa fa-user"></i> <a href="edit_request.php?case={{caserow.0.id}}&tab=devices{% if j %}&j={{j}}{% endif %}#{{entry.id}}">{{entry.device_owner}} <span class="pull-right"><i class="fa fa-remove"></i> {{lang.96}}</a>{% else %}<i class="fa fa-user"></i> <a href="edit_request.php?case={{caserow.0.id}}&tab=devices{% if j %}&j={{j}}{% endif%}&dev_owner={{entry.device_owner|url_encode}}#{{entry.id}}">{{entry.device_owner}}</a></span>{% endif %}<br>
-      {% set isannan_dev_owner = entry.device_owner %}
+      {% if dev_owner == entry.device_owner %}<i class="fa fa-user"></i> <a href="edit_request.php?case={{ caserow.0.id }}&tab=devices{% if j %}&j={{ j }}{% endif %}#{{ entry.id }}">{{ entry.device_owner }} <span class="pull-right"><i class="fa fa-remove"></i> {{ lang.remove_accent }}</a>{% else %}<i class="fa fa-user"></i> <a href="edit_request.php?case={{ caserow.0.id }}&tab=devices{% if j %}&j={{ j }}{% endif%}&dev_owner={{ entry.device_owner|url_encode }}#{{ entry.id }}">{{ entry.device_owner }}</a></span>{% endif %}<br>
+      {% set hosting_dev_owner = entry.device_owner %}
       {% else %}
-      <span style="color:red;"> <i class="fa fa-exclamation-triangle"></i> {{lang.97}}</span><br>
+      <span style="color:red;"> <i class="fa fa-exclamation-triangle"></i> {{ lang.owner_info_missing }}</span><br>
       {% endif %}
       {% if entry.case_request_description %}
-      <i class="fa fa-info-circle"></i> {{entry.case_request_description}}<br>
+      <i class="fa fa-info-circle"></i> {{ entry.case_request_description }}<br>
       {% endif %}
       {% if entry.device_os %}
       {% if "windows" in entry.device_os|lower %}<i class="fa fa-windows"></i>
@@ -469,57 +458,57 @@
       {% elseif "os x" in entry.device_os|lower or "apple" in entry.device_os|lower or "ios" in entry.device_os|lower or "macos" in entry.device_os|lower or "tvos" in entry.device_os|lower %}<i class="fa fa-apple"></i>
       {% elseif "android" in entry.device_os|lower %}<i class="fa fa-android"></i>
       {% elseif "chrome" in entry.device_os|lower %}<i class="fa fa-chrome"></i>
-      {% else %}<i class="fa fa-mouse-pointer"></i>{% endif %} {{entry.device_os}}<br>
+      {% else %}<i class="fa fa-mouse-pointer"></i>{% endif %} {{ entry.device_os }}<br>
       {% endif %}
       {% if entry.device_time_deviation %}
-      <i class="fa fa-clock-o"></i> {{entry.device_time_deviation}}<br>
+      <i class="fa fa-clock-o"></i> {{ entry.device_time_deviation }}<br>
       {% endif %}
       {% if entry.device_identifier %}
-      <i class="fa fa-barcode"></i> {{entry.device_identifier}}<br>
+      <i class="fa fa-barcode"></i> {{ entry.device_identifier }}<br>
       {% endif %}
       {% if entry.device_contains_evidence %}
-      <span style="color:green;"><i class="fa fa-search"></i> {{lang.98}}</span><br>
+      <span style="color:green;"><i class="fa fa-search"></i> {{ lang.contains_evidence }}</span><br>
       {% endif %}
       <small>
-        <p>{{lang.a99}} {{entry.case_added_date|date("d.m.Y H:i")}}{% if entry.case_added_date != entry.last_updated %}, {{lang.b99}} {{entry.last_updated|date("d.m.Y H:i")}}{% endif %}</p>
+        <p>{{ lang.added }} {{ entry.case_added_date|date("d.m.Y H:i") }}{% if entry.case_added_date != entry.last_updated %}, {{ lang.updated }} {{ entry.last_updated|date("d.m.Y H:i") }}{% endif %}</p>
       </small>
     </td>
     <td style="vertical-align:middle;">
       {% set jutun_vaihe = entry.device_action|split('|') %}
       {% if (jutun_vaihe.0 <= settings.device_action_count) %}
       <div class="progress" style="width:100px;height:15px;margin-bottom:0px;">
-        <div class="progress-bar {{settings.progress_bar_style}} progress-bar-{% if settings.device_action_count == jutun_vaihe.0 %}success{% elseif jutun_vaihe.0 == "1" %}danger{% elseif jutun_vaihe.0 == "0" %}info{% else %}warning{% endif %}" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:{% if jutun_vaihe.0 != "0" %}{{((100 / settings.device_action_count) * jutun_vaihe.0)|round(0, "ceil")}}{% else %}100{% endif %}%">
+        <div class="progress-bar {{ settings.progress_bar_style }} progress-bar-{% if settings.device_action_count == jutun_vaihe.0 %}success{% elseif jutun_vaihe.0 == "1" %}danger{% elseif jutun_vaihe.0 == "0" %}info{% else %}warning{% endif %}" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:{% if jutun_vaihe.0 != "0" %}{{ ((100 / settings.device_action_count) * jutun_vaihe.0)|round(0, "ceil") }}{% else %}100{% endif %}%">
       </div>
       </div>
       {% endif %}
       </td style="vertical-align:middle;">
     <td style="vertical-align:middle;">
-      <form class="form form-inline" role="form" method="post" action="submit.php?type=move_case&db_row={{entry.id}}&returnid={{entry.parent_id}}">
+      <form class="form form-inline" role="form" method="post" action="submit.php?type=move_case&db_row={{ entry.id }}&returnid={{ entry.parent_id }}">
         {% if entry.case_status != "3" %}
         <select style="text-align:left;" class="btn btn-xs btn-{% if entry.device_action %}default{% else %}danger{% endif %}" name="device_action" id="device_action">
           {% if entry.device_action %}
-          <option value="{{entry.device_action}}" selected>{% set jutun_vaihe = entry.device_action|split('|') %}{{jutun_vaihe.1}}</option>
+          <option value="{{ entry.device_action }}" selected>{% set jutun_vaihe = entry.device_action|split('|') %}{{ jutun_vaihe.1 }}</option>
           {% endif %}
           <option {% if not entry.device_action %}selected {% endif %}disabled>&nbsp;</option>
           {% for entry in device_actions %}
           {% if entry == ""%}
           <option disabled>----</option>
           {% else %}
-          <option value="{{entry}}">{% set jutun_vaihe = entry|split('|') %}{{jutun_vaihe.1}}</option>
+          <option value="{{ entry }}">{% set jutun_vaihe = entry|split('|') %}{{ jutun_vaihe.1 }}</option>
           {% endif %}
           {% endfor %}
         </select>
         {% endif %}
-        {% if entry.case_status == "3" %}{{jutun_vaihe.1}}
-        <input type="hidden" name="device_action" value="{{entry.device_action}}">{% endif %}
+        {% if entry.case_status == "3" %}{{ jutun_vaihe.1 }}
+        <input type="hidden" name="device_action" value="{{ entry.device_action }}">{% endif %}
     </td>
     <td style="vertical-align:middle;">
     <select style="text-align:left;" class="btn btn-xs btn-{% if entry.device_location %}default{% else %}danger{% endif %}" name="device_location" id="device_location">
     {% if entry.device_location %}
-    <option selected value="{{entry.device_location}}">{{entry.device_location}}</option>{% endif %}
+    <option selected value="{{ entry.device_location }}">{{ entry.device_location }}</option>{% endif %}
     <option {% if not entry.device_location %}selected {% endif %}disabled>&nbsp;</option>
     {% for entry in device_locations %}
-    <option value="{{entry}}">{{entry}}</option>
+    <option value="{{ entry }}">{{ entry }}</option>
     {% endfor %}
     </select>
     <td style="vertical-align:middle;">
@@ -529,29 +518,29 @@
   </tr>
   {% for entry in mediarow %}
   {% if (entry.device_host_id == isanta_id) and (entry.is_removed != "1") %}
-  <a name="{{entry.id}}"></a>
+  <a name="{{ entry.id }}"></a>
   <tr>
     <td style="vertical-align:middle;" {% if entry.device_contains_evidence %}class="success"{% endif %}>
-    <img src="views/img/svg/{% if entry.device_type %}{{entry.device_type|lower|replace({" ": "_", "ä": "a", "ö": "o"})}}{% else %}tuntematon{% endif %}.svg"  style="vertical-align:middle;float:left;padding:10px;width:64px;">
+    <img src="views/img/svg/{% if entry.device_type %}{{ entry.device_type|lower|replace({" ": "_", "ä": "a", "ö": "o"}) }}{% else %}tuntematon{% endif %}.svg"  style="vertical-align:middle;float:left;padding:10px;width:64px;">
     </td>
     <td style="vertical-align:middle;">
-      <h4><a href="device_memo.php?db_row={{entry.id}}">{% if entry.device_type %}{{entry.device_type}}{% else %}<span style="color:red;">{{lang.91}}</span>{% endif %} {{entry.device_manuf}} {{entry.device_model}} {% if entry.device_size_in_gb > "0" %}{{entry.device_size_in_gb}} GB{% endif %}</a> <br><small>{{lang.92}} {{entry.id}}, {{entry.device_document}} {{lang.93}} {{entry.device_item_number}}
+      <h4><a href="device_memo.php?db_row={{ entry.id }}">{% if entry.device_type %}{{ entry.device_type }}{% else %}<span style="color:red;">{{ lang.undefined_device_or_media_type }}</span>{% endif %} {{ entry.device_manuf }} {{ entry.device_model }} {% if entry.device_size_in_gb > "0" %}{{ entry.device_size_in_gb }} GB{% endif %}</a> <br><small>{{ lang.device_uid }} {{ entry.id }}, {{ entry.device_document }} {{ lang.object_no }} {{ entry.device_item_number }}
         {% if entry.report_notes %}<br>
         {% if entry.device_include_in_report == "1" %}
-        <span style="color:green;"><i class="fa fa-check-square-o"></i> {{lang.a94}}</span><br>
+        <span style="color:green;"><i class="fa fa-check-square-o"></i> {{ lang.examination_notes_shown }}</span><br>
         {% endif %}
         {% if entry.device_include_in_report == "0" %}
-        <span style="color:red;"><i class="fa fa-close"></i> {{lang.b94}}</span><br>
+        <span style="color:red;"><i class="fa fa-close"></i> {{ lang.examination_notes_hidden }}</span><br>
         {% endif %}
-        {% else %}<br><span style="color:orange;"><i class="fa fa-square-o"></i> {{lang.c94}}</span><br>
+        {% else %}<br><span style="color:orange;"><i class="fa fa-square-o"></i> {{ lang.examination_notes_empty }}</span><br>
         {% endif %}</small>
       </h4>
-      <a href="submit.php?type=device_detach&db_row={{entry.id}}&returnid={{entry.parent_id}}" onclick="return confirm('{{ lang.177 }}')"><i class="fa fa-unlink"></i> {{lang.100}}</a>
+      <a href="submit.php?type=device_detach&db_row={{ entry.id }}&returnid={{ entry.parent_id }}" onclick="return confirm('{{ lang.remove_association_warning }}')"><i class="fa fa-unlink"></i> {{ lang.remove_association }}</a>
     </td>
     <td style="vertical-align:middle;">
-      {% if isannan_dev_owner != entry.device_owner %}<span style="color:darkred;"><i class="fa fa-user"></i> {{entry.device_owner}} {{lang.101}}</span><br>{% endif %}
+      {% if hosting_dev_owner != entry.device_owner %}<span style="color:darkred;"><i class="fa fa-user"></i> {{ entry.device_owner }} {{ lang.different_owner }}</span><br>{% endif %}
       {% if entry.case_request_description %}
-      <i class="fa fa-info-circle"></i> {{entry.case_request_description}}<br>
+      <i class="fa fa-info-circle"></i> {{ entry.case_request_description }}<br>
       {% endif %}
       {% if entry.device_os %}
       {% if "windows" in entry.device_os|lower %}<i class="fa fa-windows"></i>
@@ -559,57 +548,57 @@
       {% elseif "os x" in entry.device_os|lower or "apple" in entry.device_os|lower or "ios" in entry.device_os|lower or "macos" in entry.device_os|lower or "tvos" in entry.device_os|lower %}<i class="fa fa-apple"></i>
       {% elseif "android" in entry.device_os|lower %}<i class="fa fa-android"></i>
       {% elseif "chrome" in entry.device_os|lower %}<i class="fa fa-chrome"></i>
-      {% else %}<i class="fa fa-mouse-pointer"></i>{% endif %} {{entry.device_os}}<br>
+      {% else %}<i class="fa fa-mouse-pointer"></i>{% endif %} {{ entry.device_os }}<br>
       {% endif %}
       {% if entry.device_time_deviation %}
-      <i class="fa fa-clock-o"></i> {{entry.device_time_deviation}}<br>
+      <i class="fa fa-clock-o"></i> {{ entry.device_time_deviation }}<br>
       {% endif %}
       {% if entry.device_identifier %}
-      <i class="fa fa-barcode"></i> {{entry.device_identifier}}<br>
+      <i class="fa fa-barcode"></i> {{ entry.device_identifier }}<br>
       {% endif %}
       {% if entry.device_contains_evidence %}
-      <span style="color:green;"><i class="fa fa-search"></i> {{lang.98}}</span><br>
+      <span style="color:green;"><i class="fa fa-search"></i> {{ lang.contains_evidence }}</span><br>
       {% endif %}
       <small>
-        <p>{{lang.a99}} {{entry.case_added_date|date("d.m.Y H:i")}}{% if entry.case_added_date != entry.last_updated %}, {{lang.b99}} {{entry.last_updated|date("d.m.Y H:i")}}{% endif %}</p>
+        <p>{{ lang.added }} {{ entry.case_added_date|date("d.m.Y H:i") }}{% if entry.case_added_date != entry.last_updated %}, {{ lang.updated }} {{ entry.last_updated|date("d.m.Y H:i") }}{% endif %}</p>
       </small>
     </td>
     <td style="vertical-align:middle;">
       {% set jutun_vaihe = entry.device_action|split('|') %}
       {% if (jutun_vaihe.0 <= settings.device_action_count) %}
       <div class="progress" style="width:100px;height:15px;margin-bottom:0px;">
-        <div class="progress-bar {{settings.progress_bar_style}} progress-bar-{% if settings.device_action_count == jutun_vaihe.0 %}success{% elseif jutun_vaihe.0 == "1" %}danger{% elseif jutun_vaihe.0 == "0" %}info{% else %}warning{% endif %}" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:{% if jutun_vaihe.0 != "0" %}{{((100 / settings.device_action_count) * jutun_vaihe.0)|round(0, "ceil")}}{% else %}100{% endif %}%">
+        <div class="progress-bar {{ settings.progress_bar_style }} progress-bar-{% if settings.device_action_count == jutun_vaihe.0 %}success{% elseif jutun_vaihe.0 == "1" %}danger{% elseif jutun_vaihe.0 == "0" %}info{% else %}warning{% endif %}" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:{% if jutun_vaihe.0 != "0" %}{{ ((100 / settings.device_action_count) * jutun_vaihe.0)|round(0, "ceil") }}{% else %}100{% endif %}%">
       </div>
       </div>
       {% endif %}
       </td style="vertical-align:middle;">
     <td style="vertical-align:middle;">
-      <form class="form form-inline" role="form" method="post" action="submit.php?type=move_case&db_row={{entry.id}}&returnid={{entry.parent_id}}">
+      <form class="form form-inline" role="form" method="post" action="submit.php?type=move_case&db_row={{ entry.id }}&returnid={{ entry.parent_id }}">
         {% if entry.case_status != "3" %}
         <select style="text-align:left;" class="btn btn-xs btn-{% if entry.device_action %}default{% else %}danger{% endif %}" name="device_action" id="device_action">
           {% if entry.device_action %}
-          <option value="{{entry.device_action}}" selected>{% set jutun_vaihe = entry.device_action|split('|') %}{{jutun_vaihe.1}}</option>
+          <option value="{{ entry.device_action }}" selected>{% set jutun_vaihe = entry.device_action|split('|') %}{{ jutun_vaihe.1 }}</option>
           {% endif %}
           <option {% if not entry.device_action %}selected {% endif %}disabled>&nbsp;</option>
           {% for entry in device_actions %}
           {% if entry == ""%}
           <option disabled>----</option>
           {% else %}
-          <option value="{{entry}}">{% set jutun_vaihe = entry|split('|') %}{{jutun_vaihe.1}}</option>
+          <option value="{{ entry }}">{% set jutun_vaihe = entry|split('|') %}{{ jutun_vaihe.1 }}</option>
           {% endif %}
           {% endfor %}
         </select>
         {% endif %}
-        {% if entry.case_status == "3" %}{{jutun_vaihe.1}}
-        <input type="hidden" name="device_action" value="{{entry.device_action}}">{% endif %}
+        {% if entry.case_status == "3" %}{{ jutun_vaihe.1 }}
+        <input type="hidden" name="device_action" value="{{ entry.device_action }}">{% endif %}
     </td>
     <td style="vertical-align:middle;">
     <select style="text-align:left;" class="btn btn-xs btn-{% if entry.device_location %}default{% else %}danger{% endif %}" name="device_location" id="device_location">
     {% if entry.device_location %}
-    <option selected value="{{entry.device_location}}">{{entry.device_location}}</option>{% endif %}
+    <option selected value="{{ entry.device_location }}">{{ entry.device_location }}</option>{% endif %}
     <option {% if not entry.device_location %}selected {% endif %}disabled>&nbsp;</option>
     {% for entry in device_locations %}
-    <option value="{{entry}}">{{entry}}</option>
+    <option value="{{ entry }}">{{ entry }}</option>
     {% endfor %}
     </select>
     <td style="vertical-align:middle;">
@@ -620,100 +609,98 @@
   {% endif %}
   {% endfor %}
   {% if caserow.0.case_status == "2" %}
-
   <tr>
     <td></td>
     <td colspan="6">
-      <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#medialisays{{entry.id}}"><i class="fa fa-plus"></i> {{lang.102}}</button>
+      <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#medialisays{{ entry.id }}"><i class="fa fa-plus"></i> {{ lang.add_an_assoc_media }}</button>
     </td>
   </tr>
   {% endif %}
-
 </table>
 <!-- Button trigger modal -->
 <!-- Modal -->
-<div class="modal fade" id="medialisays{{entry.id}}" role="dialog" aria-labelledby="medialisays{{entry.id}}">
+<div class="modal fade" id="medialisays{{ entry.id }}" role="dialog" aria-labelledby="medialisays{{ entry.id }}">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">{{lang.103}}</h4>
+        <h4 class="modal-title" id="myModalLabel">{{ lang.add_media }}</h4>
       </div>
       <div class="modal-body">
         <form class="form" role="form" method="post" action="submit.php?type=device">
           <div class="form-group">
             <select style="text-align:left;" class="btn btn-default" name="device_type" id="device_type_2">
-              <option selected disabled>{{lang.104}}:</option>
+              <option selected disabled>{{ lang.choose_media_type }}:</option>
               {% for entry in media_objs %}
-              <option value="{{entry}}">{{entry}}</option>
+              <option value="{{ entry }}">{{ entry }}</option>
               {% endfor %}
             </select>
           </div>
           <div class="form-group">
             <select style="text-align:left;" class="btn btn-default" name="device_action" id="device_action">
-              <option selected disabled>{{lang.105}}</option>
+              <option selected disabled>{{ lang.action_status }}</option>
               {% for entry in device_actions %}
               {% if entry == ""%}
               <option disabled>----</option>
               {% else %}
-              <option value="{{entry}}">{% set jutun_vaihe = entry|split('|') %}{{jutun_vaihe.1}}</option>
+              <option value="{{ entry }}">{% set jutun_vaihe = entry|split('|') %}{{ jutun_vaihe.1 }}</option>
               {% endif %}
               {% endfor %}
             </select>
           </div>
           <div class="form-group">
             <select style="text-align:left;" class="btn btn-default" name="device_location" id="device_location">
-              <option selected disabled>{{lang.106}}</option>
+              <option selected disabled>{{ lang.location }}</option>
               {% for entry in device_locations %}
-              <option value="{{entry}}">{{entry}}</option>
+              <option value="{{ entry }}">{{ entry }}</option>
               {% endfor %}
             </select>
           </div>
           <div class="form-group">
-            <label class="sr-only" for="device_manuf">{{lang.c88}}</label>
-            <input type="text" class="form-control" id="device_manuf" name="device_manuf" placeholder="{{lang.c88}}">
+            <label class="sr-only" for="device_manuf">{{ lang.sort_label_brand }}</label>
+            <input type="text" class="form-control" id="device_manuf" name="device_manuf" placeholder="{{ lang.sort_label_brand }}">
           </div>
           <div class="form-group">
-            <label class="sr-only" for="device_model">{{lang.d88}}</label>
-            <input type="text" class="form-control" id="device_model" name="device_model" placeholder="{{lang.d88}}">
+            <label class="sr-only" for="device_model">{{ lang.sort_label_model }}</label>
+            <input type="text" class="form-control" id="device_model" name="device_model" placeholder="{{ lang.sort_label_model }}">
           </div>
           <div class="form-group">
-            <label class="sr-only" for="device_size_in_gb">{{lang.107}}</label>
-            <input type="text" class="form-control" id="device_size_in_gb" name="device_size_in_gb" placeholder="{{lang.107}}" onKeyPress="return numbersonly(this, event)">
+            <label class="sr-only" for="device_size_in_gb">{{ lang.size_in_gb_long }}</label>
+            <input type="text" class="form-control" id="device_size_in_gb" name="device_size_in_gb" placeholder="{{ lang.size_in_gb_long }}" onKeyPress="return numbersonly(this, event)">
           </div>
           <div class="form-group">
-            <label class="sr-only" for="device_identifier">{{lang.e88}}</label>
-            <input type="text" class="form-control" id="device_owner" name="device_owner" placeholder="{{ lang.e88}}" value="{{entry.device_owner}}">
+            <label class="sr-only" for="device_identifier">{{ lang.sort_label_owner }}</label>
+            <input type="text" class="form-control" id="device_owner" name="device_owner" placeholder="{{ lang.sort_label_owner }}" value="{{ entry.device_owner }}">
           </div>
           <div class="form-group">
-            <input type="text" class="form-control" id="device_os" name="device_os" placeholder="{{lang.108}}">
+            <input type="text" class="form-control" id="device_os" name="device_os" placeholder="{{ lang.operating_system_long }}">
           </div>
           <div class="form-group">
-            <input type="text" class="form-control" id="device_time_deviation" name="device_time_deviation" placeholder="{{lang.109}}">
+            <input type="text" class="form-control" id="device_time_deviation" name="device_time_deviation" placeholder="{{ lang.time_deviation }}">
           </div>
           <div class="form-group">
             <label class="sr-only" for="case_request_description">Kuvaus</label>
-            <input type="text" class="form-control" id="case_request_description" name="case_request_description" placeholder="{{lang.110}}">
+            <input type="text" class="form-control" id="case_request_description" name="case_request_description" placeholder="{{ lang.device_description }}">
           </div>
           <div class="form-group">
-            <label class="sr-only" for="device_identifier">{{lang.111}}</label>
-            <input type="text" class="form-control" id="device_identifier" name="device_identifier" placeholder="{{lang.111}}">
+            <label class="sr-only" for="device_identifier">{{ lang.device_identifier }}</label>
+            <input type="text" class="form-control" id="device_identifier" name="device_identifier" placeholder="{{ lang.device_identifier }}">
           </div>
           <div class="form-group">
-            <input type="text" class="form-control" id="device_item_number" name="device_item_number" placeholder="{{lang.112}}" onKeyPress="return numbersonly(this, event)" value="{{entry.device_item_number}}">
+            <input type="text" class="form-control" id="device_item_number" name="device_item_number" placeholder="{{ lang.device_item_number }}" onKeyPress="return numbersonly(this, event)" value="{{ entry.device_item_number }}">
           </div>
           <div class="form-group">
-            <input type="text" class="form-control" id="device_document" name="device_document" placeholder="{{lang.113}}" value="{{entry.device_document}}">
+            <input type="text" class="form-control" id="device_document" name="device_document" placeholder="{{ lang.device_document }}" value="{{ entry.device_document }}">
           </div>
           <div class="form-group">
-            <input type="hidden" name="parent_id" value="{{caserow.0.id}}">
+            <input type="hidden" name="parent_id" value="{{ caserow.0.id }}">
             <input type="hidden" name="is_removed" value="0">
-            <input type="hidden" value="{{entry.id}}" name="device_host_id">
+            <input type="hidden" value="{{ entry.id }}" name="device_host_id">
           </div>
       </div>
       <div class="modal-footer">
-      <button type="button" class="btn btn-default" data-dismiss="modal">{{ lang.53}}</button>
-      <button id="save_button_2" type="submit" class="btn btn-success"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{lang.54}}</button>
+      <button type="button" class="btn btn-default" data-dismiss="modal">{{ lang.close }}</button>
+      <button id="save_button_2" type="submit" class="btn btn-success"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{ lang.save }}</button>
       </form>
       </div>
     </div>
@@ -722,171 +709,170 @@
 {% endif %}
 {% endfor %}
 <!-- Modal -->
-<div class="modal fade" id="medialisays{{entry.id}}" role="dialog" aria-labelledby="medialisays{{entry.id}}">
+<div class="modal fade" id="medialisays{{ entry.id }}" role="dialog" aria-labelledby="medialisays{{ entry.id }}">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">{{lang.114}}</h4>
+        <h4 class="modal-title" id="myModalLabel">{{ lang.add_new_device_or_media }}</h4>
       </div>
       <div class="modal-body">
         <form class="form" role="form" method="post" action="submit.php?type=device">
           <div class="form-group">
             <select style="text-align:left;" class="btn btn-default" name="device_type" id="device_type_1">
-              <option selected disabled value="">{{lang.115}}</option>
+              <option selected disabled value="">{{ lang.device_type }}</option>
               {% for entry in devices %}
-              <option value="{{entry}}">{{entry}}</option>
+              <option value="{{ entry }}">{{ entry }}</option>
               {% endfor %}
-              <option disabled value="">&nbsp;&nbsp;{{lang.116}}:</option>
+              <option disabled value="">&nbsp;&nbsp;{{ lang.medias }}:</option>
               {% for entry in media_objs %}
-              <option value="{{entry}}">{{entry}}</option>
+              <option value="{{ entry }}">{{ entry }}</option>
               {% endfor %}
             </select>
           </div>
           <div class="form-group">
             <select style="text-align:left;" class="btn btn-default" name="device_action" id="device_action">
-              <option selected disabled>{{lang.105}}</option>
+              <option selected disabled>{{ lang.action_status }}</option>
               {% for entry in device_actions %}
               {% if entry == ""%}
               <option disabled>----</option>
               {% else %}
-              <option value="{{entry}}">{% set jutun_vaihe = entry|split('|') %}{{jutun_vaihe.1}}</option>
+              <option value="{{ entry }}">{% set jutun_vaihe = entry|split('|') %}{{ jutun_vaihe.1 }}</option>
               {% endif %}
               {% endfor %}
             </select>
           </div>
           <div class="form-group">
             <select style="text-align:left;" class="btn btn-default" name="device_location" id="device_location">
-              <option selected disabled>{{lang.117}}</option>
+              <option selected disabled>{{ lang.device_location }}</option>
               {% for entry in device_locations %}
-              <option value="{{entry}}">{{entry}}</option>
+              <option value="{{ entry }}">{{ entry }}</option>
               {% endfor %}
             </select>
           </div>
           <div class="form-group">
-            <label class="sr-only" for="device_manuf">{{lang.c88}}</label>
-            <input type="text" class="form-control" id="device_manuf" name="device_manuf" placeholder="{{ lang.c88}}">
+            <label class="sr-only" for="device_manuf">{{ lang.sort_label_brand }}</label>
+            <input type="text" class="form-control" id="device_manuf" name="device_manuf" placeholder="{{ lang.sort_label_brand }}">
           </div>
           <div class="form-group">
-            <label class="sr-only" for="device_model">{{ lang.d88}}</label>
-            <input type="text" class="form-control" id="device_model" name="device_model" placeholder="{{ lang.d88}}">
+            <label class="sr-only" for="device_model">{{ lang.sort_label_model }}</label>
+            <input type="text" class="form-control" id="device_model" name="device_model" placeholder="{{ lang.sort_label_model }}">
           </div>
           <div class="form-group">
-            <label class="sr-only" for="device_size_in_gb">{{lang.107}}</label>
-            <input type="text" class="form-control" id="device_size_in_gb" name="device_size_in_gb" placeholder="{{lang.107}}" onKeyPress="return numbersonly(this, event)">
+            <label class="sr-only" for="device_size_in_gb">{{ lang.size_in_gb_long }}</label>
+            <input type="text" class="form-control" id="device_size_in_gb" name="device_size_in_gb" placeholder="{{ lang.size_in_gb_long }}" onKeyPress="return numbersonly(this, event)">
           </div>
           <div class="form-group">
-            <label class="sr-only" for="device_identifier">{{lang.e88}}</label>
-            <input type="text" class="form-control" id="device_owner" name="device_owner" placeholder="{{lang.e88}}">
+            <label class="sr-only" for="device_identifier">{{ lang.sort_label_owner }}</label>
+            <input type="text" class="form-control" id="device_owner" name="device_owner" placeholder="{{ lang.sort_label_owner }}">
           </div>
           <div class="form-group">
-            <input type="text" class="form-control" id="device_os" name="device_os" placeholder="{{ lang.108}}" value="{{entry.device_os}}">
+            <input type="text" class="form-control" id="device_os" name="device_os" placeholder="{{ lang.operating_system_long }}" value="{{ entry.device_os }}">
           </div>
           <div class="form-group">
-            <input type="text" class="form-control" id="device_time_deviation" name="device_time_deviation" placeholder="{{lang.109}}" value="{{entry.device_time_deviation}}">
+            <input type="text" class="form-control" id="device_time_deviation" name="device_time_deviation" placeholder="{{ lang.time_deviation }}" value="{{ entry.device_time_deviation }}">
           </div>
           <div class="form-group">
-            <label class="sr-only" for="case_request_description">{{lang.80}}</label>
-            <input type="text" class="form-control" id="case_request_description" name="case_request_description" placeholder="{{lang.110}}">
+            <label class="sr-only" for="case_request_description">{{ lang.description }}</label>
+            <input type="text" class="form-control" id="case_request_description" name="case_request_description" placeholder="{{ lang.device_description }}">
           </div>
           <div class="form-group">
-            <label class="sr-only" for="device_identifier">{{lang.111}}</label>
-            <input type="text" class="form-control" id="device_identifier" name="device_identifier" placeholder="{{lang.b111}}">
+            <label class="sr-only" for="device_identifier">{{ lang.device_identifier }}</label>
+            <input type="text" class="form-control" id="device_identifier" name="device_identifier" placeholder="{{ lang.device_identifier_serial }}">
           </div>
           <div class="form-group">
-            <input type="text" class="form-control" id="device_item_number" name="device_item_number" placeholder="{{ lang.112}}" onKeyPress="return numbersonly(this, event)">
+            <input type="text" class="form-control" id="device_item_number" name="device_item_number" placeholder="{{ lang.device_item_number }}" onKeyPress="return numbersonly(this, event)">
           </div>
           <div class="form-group">
-            <input type="text" class="form-control" id="device_document" name="device_document" placeholder="{{lang.113}}">
+            <input type="text" class="form-control" id="device_document" name="device_document" placeholder="{{ lang.device_document }}">
           </div>
           <div class="form-group">
-            <input type="hidden" name="parent_id" value="{{caserow.0.id}}">
+            <input type="hidden" name="parent_id" value="{{ caserow.0.id }}">
             <input type="hidden" name="is_removed" value="0">
             <input type="hidden" name="device_host_id" value="0">
           </div>
       </div>
       <div class="modal-footer">
-      <button type="button" class="btn btn-default" data-dismiss="modal">{{ lang.53}}</button>
-      <button id="save_button_1" type="submit" class="btn btn-success"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{lang.54}}</button>
+      <button type="button" class="btn btn-default" data-dismiss="modal">{{ lang.close }}</button>
+      <button id="save_button_1" type="submit" class="btn btn-success"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{ lang.save }}</button>
       </form>
       </div>
     </div>
   </div>
 </div>
 {% if mediarow %}
-<form class="form form-inline pull-right" role="form" method="post" action="submit.php?type=move_all&returnid={{caserow.0.parent_id}}">
+<form class="form form-inline pull-right" role="form" method="post" action="submit.php?type=move_all&returnid={{ caserow.0.parent_id }}">
   {% if caserow.0.case_status != "3" %}
   <select style="text-align:left;" class="btn btn-xs btn-default" name="device_action" id="device_action">
-    <option value="NO_CHANGE" selected>{{lang.g88}}</option>
+    <option value="NO_CHANGE" selected>{{ lang.sort_label_status }}</option>
     <option value="NO_CHANGE" disabled>----</option>
     {% for entry in device_actions %}
-    <option value="{{entry}}">{% set jutun_vaihe = entry|split('|') %}{{jutun_vaihe.1}}</option>
+    <option value="{{ entry }}">{% set jutun_vaihe = entry|split('|') %}{{ jutun_vaihe.1 }}</option>
     {% endfor %}
   </select>
   {% else %}
   <input type="hidden" name="device_action" value="NO_CHANGE">
   {% endif %}
   <select style="text-align:left;" class="btn btn-xs btn-default" name="device_location" id="device_location">
-    <option value="NO_CHANGE" selected>{{lang.f88}}</option>
+    <option value="NO_CHANGE" selected>{{ lang.sort_label_location }}</option>
     <option value="NO_CHANGE" disabled>----</option>
     {% for entry in device_locations %}
-    <option value="{{entry}}">{{entry}}</option>
+    <option value="{{ entry }}">{{ entry }}</option>
     {% endfor %}
   </select>
   <td style="vertical-align:middle;">
-    <button type="submit" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{lang.118}}</button>
+    <button type="submit" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{ lang.update_all }}</button>
 </form>
 {% endif %}
 </div>
 <div role="tabpanel" class="tab-pane{% if returntab == "report_notes" %} active{% endif %}" id="tab-report_notes">
-{% if caserow.0.case_status
-<="2" %}
-<h3 class="page-heading">{{lang.119}}</h3>
+{% if (caserow.0.case_status <= "2") and (caserow.0.forensic_investigator or caserow.0.phone_investigator) %}
+<h3 class="page-heading">{{ lang.forensic_examination_report }}</h3>
 <form class="form" role="form" method="post" action="submit.php?type=report_notes">
 <div class="form-group form-horizontal">
-<textarea id="richeditor" class="textarea form-control" rows="25" style="height:500px;" name="report_notes">{% if caserow.0.report_notes %}{{caserow.0.report_notes}}{% else %}{{settings.report_notes_footer}}{% endif %}</textarea>
+<textarea id="richeditor" class="textarea form-control" rows="25" style="height:500px;" name="report_notes">{% if caserow.0.report_notes %}{{ caserow.0.report_notes }}{% else %}{{ settings.report_notes_footer }}{% endif %}</textarea>
 </div>
-<input type="hidden" value="{{caserow.0.parent_id}}" name="returnid">
+<input type="hidden" value="{{ caserow.0.parent_id }}" name="returnid">
 <div class="form-group">
-<button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{lang.120}}</button>
+<button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{ lang.save_examination_report }}</button>
 </div>
 </form>
 {% else %}
 <div class="panel panel-default">
 <div class="panel-heading">
-<h3 id="report_notes" class="panel-title">{{lang.44}}</h3>
+<h3 id="report_notes" class="panel-title">{{ lang.examination_report }}</h3>
 </div>
 <div class="panel-body">
-{{caserow.0.report_notes|raw}}
+{{ caserow.0.report_notes|raw }}
 </div>
 </div>
 {% endif %}
 </div>
 <div role="tabpanel" class="tab-pane{% if returntab == "examiners_notes" %} active{% endif %}" id="tab-examiners_notes">
-{% if caserow.0.case_status <= "2" %}
-<h3 class="page-heading">{{lang.b121}}</h3>
+{% if (caserow.0.case_status <= "2") and (caserow.0.forensic_investigator or caserow.0.phone_investigator) %}
+<h3 class="page-heading">{{ lang.examiners_private_notes }}</h3>
 <form class="form" role="form" method="post" action="submit.php?type=examiners_notes">
 <div class="form-group form-horizontal">
-<textarea id="richeditor2" class="textarea form-control" rows="25" style="height:500px;" name="examiners_notes">{{caserow.0.examiners_notes}}</textarea>
+<textarea id="richeditor2" class="textarea form-control" rows="25" style="height:500px;" name="examiners_notes">{{ caserow.0.examiners_notes }}</textarea>
 </div>
-<input type="hidden" value="{{caserow.0.parent_id}}" name="returnid">
+<input type="hidden" value="{{ caserow.0.parent_id }}" name="returnid">
 <div class="form-group">
-<button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{lang.122}}</button>
+<button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{ lang.save_notes }}</button>
 </div>
 </form>
 {% else %}
 <div class="panel panel-default">
 <div class="panel-heading">
-<h3 id="report_notes" class="panel-title">{{lang.b121}}</h3>
+<h3 id="report_notes" class="panel-title">{{ lang.examiners_private_notes }}</h3>
 </div>
 <div class="panel-body">
-{{caserow.0.examiners_notes|raw}}
+{{ caserow.0.examiners_notes|raw }}
 </div>
 </div>
 {% endif %}
 </div>
 <div role="tabpanel" class="tab-pane" id="tab-ohjeet">
-<div class="col-md-12">{{instructions_text}}</div>
+<div class="col-md-12">{{ instructions_text }}</div>
 </div>
 </div>
 </div>

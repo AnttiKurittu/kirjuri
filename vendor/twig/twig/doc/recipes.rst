@@ -245,9 +245,9 @@ And the following template to display all messages in all topics:
 .. code-block:: jinja
 
     {% for topic, messages in topics %}
-        * {{ loop.index }}: {{ topic }}
+        * {{loop.index}}: {{topic}}
       {% for message in messages %}
-          - {{ loop.parent.loop.index }}.{{ loop.index }}: {{ message }}
+          - {{loop.parent.loop.index}}.{{loop.index}}: {{message}}
       {% endfor %}
     {% endfor %}
 
@@ -402,7 +402,7 @@ First, let's create a temporary in-memory SQLite3 database to work with::
     $base = '{% block content %}{% endblock %}';
     $index = '
     {% extends "base.twig" %}
-    {% block content %}Hello {{ name }}{% endblock %}
+    {% block content %}Hello {{name}}{% endblock %}
     ';
     $now = time();
     $dbh->exec("INSERT INTO templates (name, source, last_modified) VALUES ('base.twig', '$base', $now)");
@@ -503,12 +503,12 @@ From a template, you can easily load a template stored in a string via the
 
 .. code-block:: jinja
 
-    {{ include(template_from_string("Hello {{ name }}")) }}
+    {{include(template_from_string("Hello {{name}}"))}}
 
 From PHP, it's also possible to load a template stored in a string via
 ``Twig_Environment::createTemplate()`` (available as of Twig 1.18)::
 
-    $template = $twig->createTemplate('hello {{ name }}');
+    $template = $twig->createTemplate('hello {{name}}');
     echo $template->render(array('name' => 'Fabien'));
 
 .. note::

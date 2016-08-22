@@ -9,7 +9,7 @@
   {% endblock %}
 
   BEFORE
-  {{ parent() }}
+  {{parent()}}
   AFTER
 {% endblock %}
 --TEMPLATE(foo.twig)--

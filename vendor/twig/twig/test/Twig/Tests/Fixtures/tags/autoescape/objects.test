@@ -2,9 +2,9 @@
 "autoescape" tag applies escaping to object method calls
 --TEMPLATE--
 {% autoescape 'html' %}
-{{ user.name }}
-{{ user.name|lower }}
-{{ user }}
+{{user.name}}
+{{user.name|lower}}
+{{user}}
 {% endautoescape %}
 --DATA--
 class UserForAutoEscapeTest

@@ -25,8 +25,8 @@ class Twig_Tests_EnvironmentTest extends PHPUnit_Framework_TestCase
     public function testAutoescapeOption()
     {
         $loader = new Twig_Loader_Array(array(
-            'html' => '{{ foo }} {{ foo }}',
-            'js' => '{{ bar }} {{ bar }}',
+            'html' => '{{foo}} {{foo}}',
+            'js' => '{{bar}} {{bar}}',
         ));
 
         $twig = new Twig_Environment($loader, array(
@@ -156,10 +156,10 @@ class Twig_Tests_EnvironmentTest extends PHPUnit_Framework_TestCase
         $options = array('cache' => $cache, 'auto_reload' => false, 'debug' => false);
 
         // force compilation
-        $twig = new Twig_Environment($loader = new Twig_Loader_Array(array('index' => '{{ foo }}')), $options);
+        $twig = new Twig_Environment($loader = new Twig_Loader_Array(array('index' => '{{foo}}')), $options);
 
         $key = $cache->generateKey('index', $twig->getTemplateClass('index'));
-        $cache->write($key, $twig->compileSource('{{ foo }}', 'index'));
+        $cache->write($key, $twig->compileSource('{{foo}}', 'index'));
 
         // check that extensions won't be initialized when rendering a template that is already in the cache
         $twig = $this

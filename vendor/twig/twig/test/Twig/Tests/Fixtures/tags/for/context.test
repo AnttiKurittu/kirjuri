@@ -3,9 +3,9 @@
 --TEMPLATE--
 {% for item in items %}
   {% for item in items %}
-    * {{ item }}
+    * {{item}}
   {% endfor %}
-  * {{ item }}
+  * {{item}}
 {% endfor %}
 --DATA--
 return array('items' => array('a', 'b'))

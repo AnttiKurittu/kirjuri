@@ -12,11 +12,11 @@ Imagine we have a helper module that renders forms (called ``forms.html``):
 .. code-block:: jinja
 
     {% macro input(name, value, type, size) %}
-        <input type="{{ type|default('text') }}" name="{{ name }}" value="{{ value|e }}" size="{{ size|default(20) }}" />
+        <input type="{{type|default('text')}}" name="{{name}}" value="{{value|e}}" size="{{size|default(20)}}" />
     {% endmacro %}
 
     {% macro textarea(name, value, rows, cols) %}
-        <textarea name="{{ name }}" rows="{{ rows|default(10) }}" cols="{{ cols|default(40) }}">{{ value|e }}</textarea>
+        <textarea name="{{name}}" rows="{{rows|default(10)}}" cols="{{cols|default(40)}}">{{value|e}}</textarea>
     {% endmacro %}
 
 The easiest and most flexible is importing the whole module into a variable.
@@ -28,11 +28,11 @@ That way you can access the attributes:
 
     <dl>
         <dt>Username</dt>
-        <dd>{{ forms.input('username') }}</dd>
+        <dd>{{forms.input('username')}}</dd>
         <dt>Password</dt>
-        <dd>{{ forms.input('password', null, 'password') }}</dd>
+        <dd>{{forms.input('password', null, 'password')}}</dd>
     </dl>
-    <p>{{ forms.textarea('comment') }}</p>
+    <p>{{forms.textarea('comment')}}</p>
 
 Alternatively you can import names from the template into the current
 namespace:
@@ -43,11 +43,11 @@ namespace:
 
     <dl>
         <dt>Username</dt>
-        <dd>{{ input_field('username') }}</dd>
+        <dd>{{input_field('username')}}</dd>
         <dt>Password</dt>
-        <dd>{{ input_field('password', '', 'password') }}</dd>
+        <dd>{{input_field('password', '', 'password')}}</dd>
     </dl>
-    <p>{{ textarea('comment') }}</p>
+    <p>{{textarea('comment')}}</p>
 
 .. tip::
 

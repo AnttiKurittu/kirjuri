@@ -2,7 +2,7 @@
 $case_number = preg_replace("/[^0-9]/", "", (substr($_GET['case'], 0, 5)));
 header('Content-Description: File Transfer');
 header('Content-Encoding: UTF-8');
-header('Content-Type: text/html; charset=utf-8');
+header('Content-Type: text; charset=utf-8');
 header('Content-Disposition: attachment; filename=Kirjuri_request_' . $case_number . '.csv');
 require_once("./include_functions.php");
 $kirjuri_database = db('kirjuri-database');

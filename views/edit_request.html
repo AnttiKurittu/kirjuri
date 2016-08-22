@@ -137,7 +137,9 @@
         {% endfor %}
         {% endif %}
         <form class="form form-inline" role="form" method="post" action="submit.php?type=paatos">
-          {% for entry in caserow %}{% if entry.case_status != "3" %}<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#perustiedot"><i class="fa fa-info-circle"></i> {{ lang.edit_request_details }}</button>{% endif %}{% endfor %}
+          {% for entry in caserow %}
+          <a href="download_csv.php?case={{entry.id}}" type="button" class="btn btn-warning"><i class="fa fa-download"></i> {{ lang.download_csv }}</a>
+          {% if entry.case_status != "3" %}<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#perustiedot"><i class="fa fa-info-circle"></i> {{ lang.edit_request_details }}</button>{% endif %}{% endfor %}
           <a href="print_sticker.php?db_row={{ entry.id }}&type=juttu" target="_BLANK" type="button" class="btn btn-info"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> {{ lang.print_sticker }}</a>
           <a type="button" class="btn btn-info" href="case_report.php?case={% for entry in caserow %}{{ entry.id }}{% endfor %}" target="_BLANK"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> {{ lang.print_report }}</a>
           <div class="form-group">

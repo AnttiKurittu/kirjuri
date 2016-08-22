@@ -1,4 +1,4 @@
-# kirjuri
+# Kirjuri
 Kirjuri is a simple php/mysql web application for managing physical forensic evidence items. It is intended to be used as a workflow tool from receiving, booking, note-taking and possibly reporting findings. It simplifies and helps in case management when dealing with a large (or small!) number of devices submitted for forensic analysis.
 
 OVERVIEW & LICENSE
@@ -20,16 +20,16 @@ INSTALLATION
 
 * Clone the repository to your server.
 * Copy the files to your webroot directory (for example /usr/share/nginx/html/)
-* Run conf/create_tables.sql against your database to create the tables needed for operation. (mysql -u root -pyourpassword < create_tables.sql)
-* Set your mysql root/user password by editing include_functions.php
-* Set other settings by editing conf/settings.conf
-* Set folder permissions for the web server process to own cache/
-* If you wish to enable editing the autofill crime list and settings from the web UI, set the server process to own conf/settings.conf and conf/crimes_autofill.conf. This is insecure, and not recommended but might be preferable in some circumstances.
+* Run conf/create_tables.sql against your database to create the tables needed for operation. (```mysql -u root -pyourpassword < create_tables.sql```)
+* Set your mysql root/user password by editing ```include_functions.php```
+* Set other settings by editing ```conf/settings.conf```
+* Set folder permissions for the web server process to own ```cache/```
+* If you wish to enable editing the autofill crime list and settings from the web UI, set the server process to own ```conf/settings.conf``` and ```conf/crimes_autofill.conf```. This is insecure, and not recommended but might be preferable in some circumstances.
 * If you run Kirjuri in your organization, drop me a line via email or a shoutout at Twitter: https://twitter.com/AnttiKurittu
 
 UPDATING FROM A PREVIOUS VERSION
 ------------
-* If you are updating Kirjuri from the limit release version to this version, you can migrate your databases by running migrate_old_tables.sql against your MySQL backend. This will create the new tables and insert data from the old tables to the new one. It will also truncate your event log, as there was a bug in the old event log structure where the ID accidentally didn't auto-increment.
+* If you are updating Kirjuri from the limit release version to this version, you can migrate your databases by running ```migrate_old_tables.sql``` against your MySQL backend. This will create the new tables and insert data from the old tables to the new one. It will also truncate your event log, as there was a bug in the old event log structure where the ID accidentally didn't auto-increment.
 
 LOOKING TO PARTICIPATE?
 ------------

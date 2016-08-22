@@ -43,4 +43,5 @@ CHANGELOG
 * Moved the MySQL credentials from the config file to source code
 * Cleaned up the inconsistent use of Twig brackets
 * Fixed page titles
+* Removed unused files
 * Other small bugfixes

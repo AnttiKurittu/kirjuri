@@ -7,7 +7,7 @@ $twig = new Twig_Environment($loader, array(
 $twig->addExtension(new Twig_Extension_Debug());
 session_start();
 //
-// There are the default credentials, replace with your own.
+// These are the default credentials, replace with your own.
 //
 $mysql_username = "root";
 $mysql_password = "devroot";
@@ -15,27 +15,29 @@ $mysql_database = "kirjuri_db";
 
 if ($_SESSION['settings_fetched'] !== "1")
   {
-    $_SESSION['getsettings'] = parse_ini_file("conf/settings.conf", true);
+    if (file_exists("conf/settings.local") === True) {
+      $settings_file = "conf/settings.local";
+    } else {
+      $settings_file = "conf/settings.conf";
+    };
+    $_SESSION['getsettings'] = parse_ini_file($settings_file, true);
     $_SESSION['lang'] = parse_ini_file("conf/" . $_SESSION['getsettings']['settings']['lang'], true);
     $_SESSION['settings_fetched'] = "1";
   }
 if ($getSettings === FALSE)
   {
-    echo "Tiedostoa ei löydy: conf/settings.conf.";
+    echo "File not found: conf/settings.conf";
     exit;
   }
+
 $getSettings = $_SESSION['getsettings'];
 $settings = $getSettings['settings'];
-$devices = $getSettings['devices'];
-$media_objs = $getSettings['media_objs'];
-$device_locations = $getSettings['device_locations'];
-$device_actions = $getSettings['device_actions'];
 $forensic_investigators = $getSettings['forensic_investigators'];
 $phone_investigators = $getSettings['phone_investigators'];
-$classifications = $getSettings['classifications'];
 $inv_units = $getSettings['inv_units'];
-$interface_colors = $getSettings['interface_colors'];
-function virhe($title_text, $description)
+$statistics_chart_colors = $getSettings['statistics_chart_colors'];
+
+function kirjuri_error($title_text, $description)
   {
     global $twig;
     echo $twig->render('error.html', array(

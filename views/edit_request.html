@@ -7,7 +7,7 @@
   <li><a href='index.php?year={{ dateStart|date("Y") }}'><span class="glyphicon glyphicon-home" aria-hidden="true"></span> {{ lang.front_page }} {{ dateStart|date("Y") }}<span class="sr-only">(current)</span></a></li>
 </ul>
 <ul class="nav nav-sidebar">
-  <li role="presentation"{% if not returntab %} class="active"{% endif %}><a href="#tab-juttu" aria-controls="tab-juttu" role="tab" data-toggle="tab">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {{ caserow.0.case_id }}/{{ caserow.0.case_added_date|date("Y") }} {{ caserow.0.case_name }}</a></li>
+  <li role="presentation"{% if not returntab %} class="active"{% endif %}><a href="#tab-exam-request" aria-controls="tab-exam-request" role="tab" data-toggle="tab">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {{ caserow.0.case_id }}/{{ caserow.0.case_added_date|date("Y") }} {{ caserow.0.case_name }}</a></li>
   <li role="presentation"{% if returntab == "devices" %} class="active"{% endif %}><a href="#tab-devices" aria-controls="tab-devices" role="tab" data-toggle="tab">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {% if caserow.0.case_devicecount >= "1" %}<b>{% endif %}{{ lang.devices_and_medias }} {% if caserow.0.case_devicecount >= "1" %}</b><span class="badge pull-right">{{ caserow.0.case_devicecount }}</span>{% endif %}</a></li>
   <li role="presentation"{% if returntab == "report_notes" %} class="active"{% endif %}><a href="#tab-report_notes" aria-controls="tab-report_notes" role="tab" data-toggle="tab">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {% if caserow.0.report_notes %}<b>{% endif %}{{ lang.examination_report }}{% if caserow.0.report_notes %}</b>{% endif %}</a></li>
   <li role="presentation"{% if returntab == "examiners_notes" %} class="active"{% endif %}><a href="#tab-examiners_notes" aria-controls="tab-examiners_notes" role="tab" data-toggle="tab">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {% if caserow.0.examiners_notes %}<b>{% endif %}{{ lang.examination_notes }}{% if caserow.0.examiners_notes %}</b>{% endif %}</a></li>
@@ -44,7 +44,7 @@
   <div>
     <!-- Tab panes -->
     <div class="tab-content">
-      <div role="tabpanel" class="tab-pane{% if not returntab %} active{% endif %}" id="tab-juttu">
+      <div role="tabpanel" class="tab-pane{% if not returntab %} active{% endif %}" id="tab-exam-request">
         {% if ((not entry.forensic_investigator) and (not entry.phone_investigator)) and (entry.case_status <="2" )%}
         <script type="text/javascript">
           $(document).ready(function() { $('#lisaaTutkija').modal('show'); });
@@ -107,7 +107,7 @@
           </div>
         </div>
         {% endif %}
-        <h1 id="juttu" class="page-header">{% if entry.case_status == "1" %}<i style="color:red;" class="fa fa-circle"></i>{% endif %}{% if entry.case_status == "2" %}<i style="color:gold;" class="fa fa-circle"></i>{% endif %}{% if entry.case_status == "3" %}<i style="color:green;" class="fa fa-circle"></i>{% endif %} {{ entry.case_id }}/{{ entry.case_added_date|date("Y") }} {% if entry.case_name %}{{ entry.case_name }}{% elseif entry.case_suspect %}{{ lang.suspect_abbrev }} {{ entry.case_suspect }}{% else %}{{ lang.suspect_short }}{% endif %} ({{ entry.case_file_number }})</h1>
+        <h1 id="examination_request" class="page-header">{% if entry.case_status == "1" %}<i style="color:red;" class="fa fa-circle"></i>{% endif %}{% if entry.case_status == "2" %}<i style="color:gold;" class="fa fa-circle"></i>{% endif %}{% if entry.case_status == "3" %}<i style="color:green;" class="fa fa-circle"></i>{% endif %} {{ entry.case_id }}/{{ entry.case_added_date|date("Y") }} {% if entry.case_name %}{{ entry.case_name }}{% elseif entry.case_suspect %}{{ lang.suspect_abbrev }} {{ entry.case_suspect }}{% else %}{{ lang.suspect_short }}{% endif %} ({{ entry.case_file_number }})</h1>
         <p><b>{{ entry.case_crime }}, {{ entry.classification }}</b>, {{ lang.suspect_target }} <b>{{ entry.case_suspect }}</b></p>
         <p>{{ lang.head_of_investigation }} <b>{{ entry.case_investigation_lead }}</b> ({{ entry.case_investigator_unit }}), {{ lang.investigator }} <b>{{ entry.case_investigator }}</b>, p. {{ entry.case_investigator_tel }}.</p>
         {% if entry.forensic_investigator%}
@@ -140,7 +140,7 @@
           {% for entry in caserow %}
           <a href="download_csv.php?case={{entry.id}}" type="button" class="btn btn-warning"><i class="fa fa-download"></i> {{ lang.download_csv }}</a>
           {% if entry.case_status != "3" %}<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#perustiedot"><i class="fa fa-info-circle"></i> {{ lang.edit_request_details }}</button>{% endif %}{% endfor %}
-          <a href="print_sticker.php?db_row={{ entry.id }}&type=juttu" target="_BLANK" type="button" class="btn btn-info"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> {{ lang.print_sticker }}</a>
+          <a href="print_sticker.php?db_row={{ entry.id }}&type=examination_request" target="_BLANK" type="button" class="btn btn-info"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> {{ lang.print_sticker }}</a>
           <a type="button" class="btn btn-info" href="case_report.php?case={% for entry in caserow %}{{ entry.id }}{% endfor %}" target="_BLANK"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> {{ lang.print_report }}</a>
           <div class="form-group">
             <input type="hidden" value="{{ entry.id }}" name="returnid">
@@ -238,9 +238,9 @@
               <!--- perustiedot -->
               <form class="form form-horizontal" role="form" method="post" action="submit.php?type=case_update&db_row={{ entry.parent_id }}">
                 <div class="form-group">
-                  <label for="juttu" class="col-sm-2 control-label">{{ lang.case_name }}</label>
+                  <label for="examination_request" class="col-sm-2 control-label">{{ lang.case_name }}</label>
                   <div class="col-sm-10">
-                    <input {% if entry.case_status=="3" %}disabled{% endif %} type="text" class="form-control" id="juttu" name="case_name" value="{{ entry.case_name }}" placeholder="{{ lang.specify_case_name }}">
+                    <input {% if entry.case_status=="3" %}disabled{% endif %} type="text" class="form-control" id="examination_request" name="case_name" value="{{ entry.case_name }}" placeholder="{{ lang.specify_case_name }}">
                   </div>
                 </div>
                 <div class="form-group">
@@ -829,7 +829,7 @@
 </div>
 <div role="tabpanel" class="tab-pane{% if returntab == "report_notes" %} active{% endif %}" id="tab-report_notes">
 {% if (caserow.0.case_status <= "2") and (caserow.0.forensic_investigator or caserow.0.phone_investigator) %}
-<h3 class="page-heading">{{ lang.forensic_examination_report }}</h3>
+<h3 class="page-heading">{{ lang.examination_report }}</h3>
 <form class="form" role="form" method="post" action="submit.php?type=report_notes">
 <div class="form-group form-horizontal">
 <textarea id="richeditor" class="textarea form-control" rows="25" style="height:500px;" name="report_notes">{% if caserow.0.report_notes %}{{ caserow.0.report_notes }}{% else %}{{ settings.report_notes_footer }}{% endif %}</textarea>

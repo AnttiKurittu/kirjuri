@@ -3,11 +3,11 @@ require_once("./include_functions.php");
 $dateStart = date("Y") . ":01:01 00:00:00";
 $dateStop = (date("Y") + 1) . ":01:01 00:00:00";
 $kirjuri_database = db('kirjuri-database');
-if ($_GET['type'] === 'juttu')
+if ($_GET['type'] === 'examination_request')
   {
     if (empty($_POST['case_file_number']) || empty($_POST['case_investigator']) || empty($_POST['case_investigator_unit']) || empty($_POST['case_investigator_tel']) || empty($_POST['case_investigation_lead']) || empty($_POST['case_confiscation_date']) || empty($_POST['case_crime']) || empty($_POST['case_suspect']) || empty($_POST['case_request_description']) || empty($_POST['case_urgency']) || empty($_POST['case_requested_action']))
       {
-        virhe("Error", "Fill all required fields.");
+        kirjuri_error("Error", "Fill all required fields.");
         logline("Error", "Not all fields filled.");
       }
     $query = $kirjuri_database->prepare('select case_id FROM exam_requests WHERE case_added_date BETWEEN :dateStart AND :dateStop ORDER BY case_id DESC LIMIT 1 ');
@@ -88,7 +88,7 @@ if ($_GET['type'] === 'case_update')
     echo $twig->render('return.html', array(
         'returnid' => $_GET['db_row'],
         'showStatus' => 'OK',
-        'anchor' => "#juttu"
+        'anchor' => "#examination_request"
     ));
     exit;
   }
@@ -364,7 +364,7 @@ if ($_GET['type'] === 'device')
         'returnid' => $_POST['parent_id'],
         'anchor' => "&tab=devices"
     ));
-    logline("Action", "Added device " . $_POST['device_type'] . " " . $_POST['device_manuf'] . " " . $_POST['device_model'] . " tunnisteella [" . $_POST[device_identifier] . "] juttuun " . $_POST['parent_id'] . "");
+    logline("Action", "Added device " . $_POST['device_type'] . " " . $_POST['device_manuf'] . " " . $_POST['device_model'] . " with id [" . $_POST[device_identifier] . "] to case " . $_POST['parent_id'] . "");
     exit;
   }
 echo "Index page error.";

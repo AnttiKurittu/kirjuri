@@ -13,7 +13,7 @@ require_once("./include_functions.php");
 <body>
     <pre>
 <?php
-if ($_GET['type'] === "juttu")
+if ($_GET['type'] === "examination_request")
   {
     $kirjuri_database = db('kirjuri-database');
     $query = $kirjuri_database->prepare('select * FROM exam_requests WHERE id=:id AND parent_id=id');

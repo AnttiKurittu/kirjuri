@@ -29,15 +29,15 @@ $query = $kirjuri_database->prepare('select id, case_id, case_name, case_suspect
 $query->execute();
 $allcases = $query->fetchAll(PDO::FETCH_ASSOC);
 echo $twig->render('device_memo.html', array(
-    'device_actions' => $device_actions,
-    'device_locations' => $device_locations,
+    'device_actions' => $_SESSION['lang']['device_actions'],
+    'device_locations' => $_SESSION['lang']['device_locations'],
     'connectedmediarow' => $connectedmediarow,
     'hostdevice' => $hostdevice,
     'mediarow' => $mediarow,
     'allcases' => $allcases,
     'caserow' => $caserow,
-    'devices' => $devices,
-    'media_objs' => $media_objs,
+    'devices' => $_SESSION['lang']['devices'],
+    'media_objs' => $_SESSION['lang']['media_objs'],
     'settings' => $settings,
     'showStatus' => $_GET['showStatus'],
     'lang' => $_SESSION['lang']

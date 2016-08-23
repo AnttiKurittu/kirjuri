@@ -44,6 +44,18 @@
   </ol>
   {% for entry in mediarow %}
   {% if (entry.is_removed == "0") %}
+
+<p>
+    <select onchange="location = this.options[this.selectedIndex].value;">
+      <option>{{lang.jump_to_device}}</option>
+  {% for device in case_device_id_list %}
+  {% if mediarow.0.id != device.id %}
+  <option value="device_memo.php?db_row={{ device.id }}">[{{device.id}}] {{device.device_type}} {{device.device_manuf}} {{device.device_model}}</option>
+  {% endif %}
+  {% endfor %}
+  </select>​
+</p>
+
   <form class="form form-horizontal" role="form" method="post" action="submit.php?type=devicememo&returnid={{ entry.id }}&tab=devices">
     <table class="table table-condensed" style="border: 1px solid #AAA">
       <thead style="background-color:#CDE;">

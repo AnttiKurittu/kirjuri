@@ -35,6 +35,7 @@
 </div>
 {% endblock %}
 {% block content %}
+
 {% for entry in caserow %}
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
   <ol class="breadcrumb">
@@ -134,8 +135,6 @@
         {% endif %}
 </div>
 </div>
-
-
         {% if entry.case_status != "3" %}
         {% set progress_counter1 = "0" %}
         {% set progress_counter2 = "0" %}
@@ -419,7 +418,6 @@
     <th style="width:1px">{{ lang.status }}</th>
     <th style="width:1px;">{{ lang.status }}</th>
     <th style="width:1px;">{{ lang.sort_label_location }}</th>
-    <th style="width:1px;" class="text-center"><i class="fa fa-floppy-o"></i></th>
   </thead>
   <tr class="active">
     <td style="vertical-align:middle;" {% if entry.device_contains_evidence %}class="success"{% endif %}>
@@ -490,46 +488,29 @@
       </small>
     </td>
     <td style="vertical-align:middle;">
-      {% set jutun_vaihe = entry.device_action|split('|') %}
-      {% if (jutun_vaihe.0 <= settings.device_action_count) %}
-      <div class="progress" style="width:100px;height:15px;margin-bottom:0px;">
-        <div class="progress-bar {{ settings.progress_bar_style }} progress-bar-{% if settings.device_action_count == jutun_vaihe.0 %}success{% elseif jutun_vaihe.0 == "1" %}danger{% elseif jutun_vaihe.0 == "0" %}info{% else %}warning{% endif %}" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:{% if jutun_vaihe.0 != "0" %}{{ ((100 / settings.device_action_count) * jutun_vaihe.0)|round(0, "ceil") }}{% else %}100{% endif %}%">
-      </div>
-      </div>
-      {% endif %}
+      <iframe name="submit_iframe{{entry.id}}" allowtransparency="true" style="overflow:hidden; width:115px; height:18px; border:0px solid red; margin: 0 auto; display:block;" src="progress_bar_static.php?db_row={{entry.id}}"></iframe>
+      <iframe name="submit_iframe{{entry.id}}_void" style="display:none;"></iframe>
       </td style="vertical-align:middle;">
     <td style="vertical-align:middle;">
-      <form class="form form-inline" role="form" method="post" action="submit.php?type=move_case&db_row={{ entry.id }}&returnid={{ entry.parent_id }}">
-        {% if entry.case_status != "3" %}
-        <select style="text-align:left;" class="btn btn-xs btn-{% if entry.device_action %}default{% else %}danger{% endif %}" name="device_action" id="device_action">
-          {% if entry.device_action %}
-          <option value="{{ entry.device_action }}" selected>{% set jutun_vaihe = entry.device_action|split('|') %}{{ jutun_vaihe.1 }}</option>
-          {% endif %}
-          <option {% if not entry.device_action %}selected {% endif %}disabled>&nbsp;</option>
-          {% for entry in device_actions %}
-          {% if entry == ""%}
-          <option disabled>----</option>
-          {% else %}
-          <option value="{{ entry }}">{% set jutun_vaihe = entry|split('|') %}{{ jutun_vaihe.1 }}</option>
-          {% endif %}
-          {% endfor %}
-        </select>
-        {% endif %}
-        {% if entry.case_status == "3" %}{{ jutun_vaihe.1 }}
-        <input type="hidden" name="device_action" value="{{ entry.device_action }}">{% endif %}
+      <form class="form form-horizontal" role="form" method="post" action="submit.php?type=change_device_status&db_row={{ entry.id }}" target="submit_iframe{{entry.id}}">
+      <select style="text-align:left;" class="btn btn-{% if not entry.device_action %}danger{% else %}default{% endif %}" name="device_action" onchange="this.form.submit()">
+      <option disabled {% if not entry.device_action %}selected="selected{% endif %}">?</option>
+      {% for dev_act in device_actions %}
+      {% set device_current_action = dev_act|split('|') %}
+      <option {% if dev_act == entry.device_action %}selected="selected"{% endif %} value="{{dev_act}}">{{device_current_action.1}} </option>
+      {% endfor %}
+      </select>​
+      </form>
     </td>
     <td style="vertical-align:middle;">
-    <select style="text-align:left;" class="btn btn-xs btn-{% if entry.device_location %}default{% else %}danger{% endif %}" name="device_location" id="device_location">
-    {% if entry.device_location %}
-    <option selected value="{{ entry.device_location }}">{{ entry.device_location }}</option>{% endif %}
-    <option {% if not entry.device_location %}selected {% endif %}disabled>&nbsp;</option>
-    {% for entry in device_locations %}
-    <option value="{{ entry }}">{{ entry }}</option>
-    {% endfor %}
-    </select>
-    <td style="vertical-align:middle;">
-    <button type="submit" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-save" aria-hidden="true"></span></button>
-    </form>
+      <form class="form form-horizontal" role="form" method="post" action="submit.php?type=change_device_location&db_row={{ entry.id }}" target="submit_iframe{{entry.id}}_void">
+      <select style="text-align:left;" class="btn btn-{% if not entry.device_action %}danger{% else %}default{% endif %}" name="device_location" onchange="this.form.submit()">
+      <option disabled {% if not entry.device_location %}selected="selected{% endif %}">?</option>
+      {% for dev_loc in device_locations %}
+      <option {% if dev_loc == entry.device_location %}selected="selected"{% endif %} value="{{dev_loc}}">{{dev_loc}} </option>
+      {% endfor %}
+      </select>​
+      </form>
     </td>
   </tr>
   {% for entry in mediarow %}
@@ -580,54 +561,39 @@
       </small>
     </td>
     <td style="vertical-align:middle;">
-      {% set jutun_vaihe = entry.device_action|split('|') %}
-      {% if (jutun_vaihe.0 <= settings.device_action_count) %}
-      <div class="progress" style="width:100px;height:15px;margin-bottom:0px;">
-        <div class="progress-bar {{ settings.progress_bar_style }} progress-bar-{% if settings.device_action_count == jutun_vaihe.0 %}success{% elseif jutun_vaihe.0 == "1" %}danger{% elseif jutun_vaihe.0 == "0" %}info{% else %}warning{% endif %}" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:{% if jutun_vaihe.0 != "0" %}{{ ((100 / settings.device_action_count) * jutun_vaihe.0)|round(0, "ceil") }}{% else %}100{% endif %}%">
-      </div>
-      </div>
-      {% endif %}
+      <iframe name="submit_iframe{{entry.id}}" allowtransparency="true" style="overflow:hidden; width:115px; height:18px; border:0px solid red; margin: 0 auto; display:block;" src="progress_bar_static.php?db_row={{entry.id}}"></iframe>
+      <iframe name="submit_iframe{{entry.id}}_void" style="display:none;"></iframe>
       </td style="vertical-align:middle;">
     <td style="vertical-align:middle;">
-      <form class="form form-inline" role="form" method="post" action="submit.php?type=move_case&db_row={{ entry.id }}&returnid={{ entry.parent_id }}">
-        {% if entry.case_status != "3" %}
-        <select style="text-align:left;" class="btn btn-xs btn-{% if entry.device_action %}default{% else %}danger{% endif %}" name="device_action" id="device_action">
-          {% if entry.device_action %}
-          <option value="{{ entry.device_action }}" selected>{% set jutun_vaihe = entry.device_action|split('|') %}{{ jutun_vaihe.1 }}</option>
-          {% endif %}
-          <option {% if not entry.device_action %}selected {% endif %}disabled>&nbsp;</option>
-          {% for entry in device_actions %}
-          {% if entry == ""%}
-          <option disabled>----</option>
-          {% else %}
-          <option value="{{ entry }}">{% set jutun_vaihe = entry|split('|') %}{{ jutun_vaihe.1 }}</option>
-          {% endif %}
-          {% endfor %}
-        </select>
-        {% endif %}
-        {% if entry.case_status == "3" %}{{ jutun_vaihe.1 }}
-        <input type="hidden" name="device_action" value="{{ entry.device_action }}">{% endif %}
+      <form class="form form-horizontal" role="form" method="post" action="submit.php?type=change_device_status&db_row={{ entry.id }}" target="submit_iframe{{entry.id}}">
+      <select style="text-align:left;" class="btn btn-{% if not entry.device_action %}danger{% else %}default{% endif %}" name="device_action" onchange="this.form.submit()">
+      <option disabled {% if not entry.device_action %}selected="selected{% endif %}">?</option>
+      {% for dev_act in device_actions %}
+      {% set device_current_action = dev_act|split('|') %}
+      <option {% if dev_act == entry.device_action %}selected="selected"{% endif %} value="{{dev_act}}">{{device_current_action.1}} </option>
+      {% endfor %}
+      </select>​
+      </form>
     </td>
     <td style="vertical-align:middle;">
-    <select style="text-align:left;" class="btn btn-xs btn-{% if entry.device_location %}default{% else %}danger{% endif %}" name="device_location" id="device_location">
-    {% if entry.device_location %}
-    <option selected value="{{ entry.device_location }}">{{ entry.device_location }}</option>{% endif %}
-    <option {% if not entry.device_location %}selected {% endif %}disabled>&nbsp;</option>
-    {% for entry in device_locations %}
-    <option value="{{ entry }}">{{ entry }}</option>
-    {% endfor %}
-    </select>
-    <td style="vertical-align:middle;">
-    <button type="submit" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-save" aria-hidden="true"></span></button>
-    </form>
+      <form class="form form-horizontal" role="form" method="post" action="submit.php?type=change_device_location&db_row={{ entry.id }}" target="submit_iframe{{entry.id}}_void">
+      <select style="text-align:left;" class="btn btn-{% if not entry.device_action %}danger{% else %}default{% endif %}" name="device_location" onchange="this.form.submit()">
+      <option disabled {% if not entry.device_location %}selected="selected{% endif %}">?</option>
+      {% for dev_loc in device_locations %}
+      <option {% if dev_loc == entry.device_location %}selected="selected"{% endif %} value="{{dev_loc}}">{{dev_loc}} </option>
+      {% endfor %}
+      </select>​
+      </form>
     </td>
+
+
   </tr>
   {% endif %}
   {% endfor %}
   {% if caserow.0.case_status == "2" %}
   <tr>
     <td></td>
-    <td colspan="6">
+    <td colspan="5">
       <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#medialisays{{ entry.id }}"><i class="fa fa-plus"></i> {{ lang.add_an_assoc_media }}</button>
     </td>
   </tr>

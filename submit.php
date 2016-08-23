@@ -272,6 +272,33 @@ if ($_GET['type'] === 'paatos')
     logline("Action", "Changed request " . $_POST['returnid'] . " status: " . $_POST['case_status'] . "");
     exit;
   }
+
+  if ($_GET['type'] === 'change_device_status')
+    {
+      $sql = $kirjuri_database->prepare('UPDATE exam_requests SET device_action = :device_action, last_updated = NOW() where id=:id AND parent_id != id');
+      $sql->execute(array(
+          ':device_action' => $_POST['device_action'],
+          ':id' => $_GET['db_row']
+      ));
+
+      echo $twig->render('progress_bar.html', array(
+          'device_action' => $_POST['device_action'],
+          'settings' => $settings
+      ));
+      exit;
+    }
+
+    if ($_GET['type'] === 'change_device_location')
+      {
+        $sql = $kirjuri_database->prepare('UPDATE exam_requests SET device_location = :device_location, last_updated = NOW() where id=:id AND parent_id != id');
+        $sql->execute(array(
+            ':device_location' => $_POST['device_location'],
+            ':id' => $_GET['db_row']
+        ));
+        exit;
+      }
+
+
 if ($_GET['type'] === 'devicememo')
   {
     if ($_POST['device_contains_evidence'] === "1")

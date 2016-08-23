@@ -60,4 +60,5 @@ CHANGELOG
 * Removed unused files.
 * Added an icon to stalled cases (counting from latest update), stall threshold can be set from settings.
 * Added possibility to download case data as a CSV file.
+* Made the device listing droplists dynamic - no need to save one by one, changes effect immediately.
 * Other small bugfixes.

@@ -124,6 +124,7 @@ $query->execute(array(
     ':dateStop' => $dateStop
 ));
 $row_devices = $query->fetchAll(PDO::FETCH_ASSOC);
+
 echo $twig->render('index.html', array(
     'search_term' => $search_term,
     'query_d' => $_GET['d'],
@@ -133,11 +134,6 @@ echo $twig->render('index.html', array(
     'dateStart' => $dateStart,
     'row_cases' => $row_cases,
     'row_devices' => $row_devices,
-    'count_new' => $count_new,
-    'count_open' => $count_open,
-    'count_finished' => $count_finished,
-    'count_devices' => $count_devices,
-    'summed_size' => $summed_size,
     'settings' => $settings,
     'lang' => $_SESSION['lang']
 ));

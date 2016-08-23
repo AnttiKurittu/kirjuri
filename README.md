@@ -45,7 +45,13 @@ SCREENSHOTS
 
 CHANGELOG
 ------------
-2016-08-22: Changes
+2016-08-23:
+
+* Moved the listings from settings to the language files where they belong.
+* Translated some finnish named variables to english.
+* Made it possible to copy ```settings.conf``` to ```settings.local``` and added it to gitignore so that pulling changes doesn't reset settings.
+
+2016-08-22:
 
 * Fixed the language file to use natural language variables for more readable code.
 * Moved the MySQL credentials from the config file to source code.

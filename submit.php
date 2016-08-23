@@ -255,7 +255,7 @@ if ($_GET['type'] === 'paatos')
   {
     if ($_POST['case_status'] === '1')
       {
-        $sql = $kirjuri_database->prepare('UPDATE exam_requests SET case_status = :case_status, forensic_investigator = "", case_ready_date = NOW(), last_updated = NOW() WHERE parent_id = :id');
+        $sql = $kirjuri_database->prepare('UPDATE exam_requests SET case_status = :case_status, forensic_investigator = "", phone_investigator = "", case_ready_date = NOW(), last_updated = NOW() WHERE parent_id = :id');
       }
     else
       {
@@ -290,7 +290,7 @@ if ($_GET['type'] === 'devicememo')
       {
         $device_include_in_report = "0";
       }
-    $sql = $kirjuri_database->prepare('UPDATE exam_requests SET report_notes = :report_notes, device_type = :device_type, device_manuf = :device_manuf, device_model = :device_model, device_size_in_gb = :device_size_in_gb,
+    $sql = $kirjuri_database->prepare('UPDATE exam_requests SET report_notes = :report_notes, examiners_notes = :examiners_notes, device_type = :device_type, device_manuf = :device_manuf, device_model = :device_model, device_size_in_gb = :device_size_in_gb,
       device_owner = :device_owner, device_os = :device_os, device_time_deviation = :device_time_deviation, last_updated = NOW(),
       case_request_description = :case_request_description, device_item_number = :device_item_number, device_document = :device_document, device_identifier = :device_identifier,
       device_contains_evidence = :device_contains_evidence, device_include_in_report = :device_include_in_report, device_location = :device_location,
@@ -299,6 +299,7 @@ if ($_GET['type'] === 'devicememo')
         UPDATE exam_requests SET parent_id = :parent_id WHERE id = :id OR device_host_id = :id;');
     $sql->execute(array(
         ':report_notes' => $_POST['report_notes'],
+        ':examiners_notes' => $_POST['examiners_notes'],
         ':device_type' => $_POST['device_type'],
         ':device_manuf' => $_POST['device_manuf'],
         ':device_model' => $_POST['device_model'],

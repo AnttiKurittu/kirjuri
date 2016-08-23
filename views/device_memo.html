@@ -263,7 +263,10 @@ Confirm removal: {% if entry.device_is_host == "0"%} and attached media {% endif
 <a type="button" class="btn btn-info btn-sm" href="print_sticker.php?db_row={{ entry.id }}&type=device" target="_BLANK"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> {{ lang.print_sticker }}</a>
 </div>
 <div class="form-group" style="width:100%;margin-left:0px;">
-<textarea id="richeditor" rows="25" name="report_notes">{{ entry.report_notes }}</textarea>
+<h3>{{lang.report_notes}} ({% if entry.device_include_in_report == "1" %}{{lang.will_be_shown}}{% else %}{{lang.will_not_be_shown}}{% endif %})</h3>
+<textarea id="richeditor" rows="25" name="report_notes">{{entry.report_notes}}</textarea>
+<h3>{{lang.examiners_private_notes}}</h3>
+<textarea id="richeditor" rows="10" name="examiners_notes">{{entry.examiners_notes}}</textarea>
 <input type="hidden" name="returnid" value="{{ entry.id }}">
 <input type="hidden" name="id" value="{{ entry.id }}">
 </div>

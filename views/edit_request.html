@@ -570,18 +570,16 @@
         <p>{{ lang.added }} {{ entry.case_added_date|date("d.m.Y H:i") }}{% if entry.case_added_date != entry.last_updated %}, {{ lang.updated }} {{ entry.last_updated|date("d.m.Y H:i") }}{% endif %}</p>
       </small>
     </td>
+
     <td style="vertical-align:middle;">
       <iframe name="submit_iframe{{entry.id}}" allowtransparency="true" style="overflow:hidden; width:115px; height:18px; border:0px solid red; margin: 0 auto; display:block;" src="progress_bar_static.php?db_row={{entry.id}}"></iframe>
       <iframe name="submit_iframe{{entry.id}}_void" style="display:none;"></iframe>
       </td style="vertical-align:middle;">
-
     <td style="vertical-align:middle;">
       <form class="form form-horizontal" role="form" method="post" action="submit.php?type=change_device_status&db_row={{ entry.id }}" target="submit_iframe{{entry.id}}">
       <select style="text-align:left;" class="btn btn-{% if not entry.device_action %}danger{% else %}default{% endif %}" name="device_action" onchange="this.form.submit()">
       <option value="{{entry.device_action}}" selected="selected">{% set device_current_action = entry.device_action|split('|') %}{{device_current_action.1}}</option>
-
       <option disabled>---</option>
-
       {% for dev_act in device_actions %}
       {% set device_current_action = dev_act|split('|') %}
       <option value="{{dev_act}}">{{device_current_action.1}} </option>
@@ -589,11 +587,10 @@
       </select>​
       </form>
     </td>
-
     <td style="vertical-align:middle;">
       <form class="form form-horizontal" role="form" method="post" action="submit.php?type=change_device_location&db_row={{ entry.id }}" target="submit_iframe{{entry.id}}_void">
       <select style="text-align:left;" class="btn btn-{% if not entry.device_action %}danger{% else %}default{% endif %}" name="device_location" onchange="this.form.submit()">
-      <option value="{{device_current_location.1}}" selected="selected">{{device_current_location.1}}</option>
+      <option value="{{entry.device_location}}" selected="selected">{{entry.device_location}}</option>
       <option disabled>---</option>
       {% for dev_loc in device_locations %}
       <option value="{{dev_loc}}">{{dev_loc}} </option>
@@ -601,7 +598,6 @@
       </select>​
       </form>
     </td>
-
 
   </tr>
   {% endif %}

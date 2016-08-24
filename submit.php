@@ -320,8 +320,7 @@ if ($_GET['type'] === 'devicememo')
     $sql = $kirjuri_database->prepare('UPDATE exam_requests SET report_notes = :report_notes, examiners_notes = :examiners_notes, device_type = :device_type, device_manuf = :device_manuf, device_model = :device_model, device_size_in_gb = :device_size_in_gb,
       device_owner = :device_owner, device_os = :device_os, device_time_deviation = :device_time_deviation, last_updated = NOW(),
       case_request_description = :case_request_description, device_item_number = :device_item_number, device_document = :device_document, device_identifier = :device_identifier,
-      device_contains_evidence = :device_contains_evidence, device_include_in_report = :device_include_in_report, device_location = :device_location,
-      device_action = :device_action WHERE id = :id AND parent_id != id;
+      device_contains_evidence = :device_contains_evidence, device_include_in_report = :device_include_in_report WHERE id = :id AND parent_id != id;
         UPDATE exam_requests SET last_updated = NOW() where id = :parent_id;
         UPDATE exam_requests SET parent_id = :parent_id WHERE id = :id OR device_host_id = :id;');
     $sql->execute(array(
@@ -341,9 +340,7 @@ if ($_GET['type'] === 'devicememo')
         ':parent_id' => $_POST['parent_id'],
         ':id' => $_POST['id'],
         ':device_include_in_report' => $device_include_in_report,
-        ':device_contains_evidence' => $device_contains_evidence,
-        ':device_location' => $_POST['device_location'],
-        ':device_action' => $_POST['device_action']
+        ':device_contains_evidence' => $device_contains_evidence
     ));
     echo $twig->render('return.html', array(
         'returnid' => $_GET['returnid'],

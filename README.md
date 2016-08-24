@@ -1,6 +1,8 @@
 # Kirjuri
 Kirjuri is a simple php/mysql web application for managing physical forensic evidence items. It is intended to be used as a workflow tool from receiving, booking, note-taking and possibly reporting findings. It simplifies and helps in case management when dealing with a large (or small!) number of devices submitted for forensic analysis.
 
+You can try the demo installation of Kirjuri here: http://kirjuri.kurittu.org/
+
 OVERVIEW & LICENSE
 ------------
 

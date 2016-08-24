@@ -6,13 +6,35 @@ $twig = new Twig_Environment($loader, array(
 ));
 $twig->addExtension(new Twig_Extension_Debug());
 session_start();
-//
-// These are the default credentials, replace with your own.
-//
-$mysql_username = "root";
-$mysql_password = "devroot";
-$mysql_database = "kirjuri_db";
 
+/*
+ If you wish to add your credentials and update kirjuri with git (not recommended)
+ or by copying new version files into the folder, create this file as conf/mysql_credentials.conf:
+-----------
+ <?php
+ return array(
+   'mysql_username' => "root",
+   'mysql_password' => "devroot",
+   'mysql_database' => "kirjuri_db",
+ );
+ ?>
+-----------
+
+Git will ignore this file, and if it's not found, use the default credentials in the source code.
+ */
+
+if (file_exists('conf/mysql_credentials.php')) { // Read credentials
+  $mysql_config = include('conf/mysql_credentials.php');
+  $mysql_username = $mysql_config['mysql_username'];
+  $mysql_password = $mysql_config['mysql_password'];
+  $mysql_database = $mysql_config['mysql_database'];
+}
+else
+{
+  $mysql_username = "root";
+  $mysql_password = "devroot";
+  $mysql_database = "kirjuri_db";
+}
 if ($_SESSION['settings_fetched'] !== "1")
   {
     if (file_exists("conf/settings.local") === True) {

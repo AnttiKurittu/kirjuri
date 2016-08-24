@@ -49,6 +49,7 @@ CHANGELOG
 ------------
 2016-08-24:
 
+* More elegant handling of mysql credentials, you can use an optional ignored file which will allow pulling/pushing changes.
 * Made the device action and device location jump lists dynamic - choosing a value automatically saves it. This works in both device memo and devices overview.
 * Added examiners private notes as an editable field in the device memo
 

@@ -46,6 +46,11 @@ SCREENSHOTS
 
 CHANGELOG
 ------------
+2016-08-24:
+
+* Made the device action and device location jump lists dynamic - choosing a value automatically saves it. This works in both device memo and devices overview.
+* Added examiners private notes as an editable field in the device memo
+
 2016-08-23:
 
 * Moved the listings from settings to the language files where they belong.

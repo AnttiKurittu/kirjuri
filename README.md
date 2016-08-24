@@ -6,7 +6,7 @@ You can try the demo installation of Kirjuri here: http://kirjuri.kurittu.org/
 OVERVIEW & LICENSE
 ------------
 
-Kirjuri is developed by Antti Kurittu at the Helsinki Police Department as an internal tool. Original development released under the GPL v3.0 license. Some components are distributed with their own licenses, please see folders & help for details.
+Kirjuri is developed by Antti Kurittu at the Helsinki Police Department as an internal tool. Original development released under the MIT license. Some components are distributed with their own licenses, please see folders & help for details.
 
 Kirjuri requires PHP5 and MySQL and uses Twig (http://twig.sensiolabs.org), Bootstrap (http://getbootstrap.com), Font Awesome (http://fontawesome.io), Freepik image resources (http://www.freepik.com), Chart.js (http://www.chartjs.org), TinyMCE editor (https://www.tinymce.com) and jQuery (https://jquery.com). You can install Kirjuri on a LAMP/WAMP/LEMP stack with just a few commands.
 
@@ -25,7 +25,7 @@ INSTALLATION
 * Run conf/create_tables.sql against your database to create the tables needed for operation. (```mysql -u root -pyourpassword < create_tables.sql```)
 * Set your mysql root/user password by editing ```include_functions.php```
 * Set other settings by editing ```conf/settings.conf```
-* Set ```cache``` folder permissions so that the www-server process can write into it.
+* Set ```cache``` folder permissions so that the www-server process can write into it or disable caching by commenting it out on ```include_functions.php```.
 * If you wish to enable editing the autofill crime list and settings from the web UI, set the server process to own ```conf/settings.conf``` and ```conf/crimes_autofill.conf```. This is insecure, and not recommended but might be preferable in some circumstances.
 * If you run Kirjuri in your organization, drop me a line via email or a shoutout at Twitter: https://twitter.com/AnttiKurittu
 
@@ -50,6 +50,7 @@ CHANGELOG
 ------------
 2016-08-24:
 
+* Changed licensing to the simpler MIT license.
 * More elegant handling of mysql credentials, you can use an optional ignored file which will allow pulling/pushing changes.
 * Made the device action and device location jump lists dynamic - choosing a value automatically saves it. This works in both device memo and devices overview.
 * Added examiners private notes as an editable field in the device memo

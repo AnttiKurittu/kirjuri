@@ -13,6 +13,10 @@ $mysql_username = "root";
 $mysql_password = "devroot";
 $mysql_database = "kirjuri_db";
 
+if (!file_exists('cache')) {
+  mkdir('cache', 0755);
+};
+
 if ($_SESSION['settings_fetched'] !== "1")
   {
     if (file_exists("conf/settings.local") === True) {

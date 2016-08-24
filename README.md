@@ -49,7 +49,6 @@ CHANGELOG
 ------------
 2016-08-24:
 
-* Cache directory is autocreated, no more need to mess with permissions on install
 * Made the device action and device location jump lists dynamic - choosing a value automatically saves it. This works in both device memo and devices overview.
 * Added examiners private notes as an editable field in the device memo
 

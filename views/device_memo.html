@@ -117,8 +117,10 @@
   <iframe name="submit_iframe{{entry.id}}" allowtransparency="true" style="overflow:hidden; width:100px; height:16px; border:0px solid red; margin: 0 auto; display:block;" src="progress_bar_static.php?db_row={{entry.id}}"></iframe>
   <iframe name="submit_iframe{{entry.id}}_void" style="display:none;"></iframe>
   </td style="vertical-align:middle;">
+
 <td style="vertical-align:middle;">
   <form class="form form-horizontal" role="form" method="post" action="submit.php?type=change_device_status&db_row={{ entry.id }}" target="submit_iframe{{entry.id}}">
+  {% if caserow.0.case_status != 3 %}
   <select style="text-align:left;" class="btn btn-{% if not entry.device_action %}danger{% else %}default{% endif %}" name="device_action" onchange="this.form.submit()">
   <option value="{{entry.device_action}}" selected="selected">{% set device_current_action = entry.device_action|split('|') %}{{device_current_action.1}}</option>
   <option disabled>---</option>
@@ -127,6 +129,11 @@
   <option value="{{dev_act}}">{{device_current_action.1}} </option>
   {% endfor %}
   </select>​
+  {% else %}
+  {% set show_action_status = entry.device_action|split('|') %}
+  <div style="width:100px;">{{ show_action_status.1 }}</div>
+  <input type="hidden" name="device_action" value="{{ entry.device_action }}">
+  {% endif %}
   </form>
 </td>
 <td style="vertical-align:middle;">

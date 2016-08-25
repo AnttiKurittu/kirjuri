@@ -48,6 +48,13 @@ SCREENSHOTS
 
 CHANGELOG
 ------------
+2016-08-25:
+
+* Fixed page titles.
+* Added removed items to CSV download.
+* Fixed the statistics page counting removed items and cases.
+* Slight UI enhancements.
+
 2016-08-24:
 
 * Changed licensing to the simpler MIT license.

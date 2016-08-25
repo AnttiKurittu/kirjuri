@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}
 <title>
-  Etusivu - {{ settings.title_text }}
+{{caserow.0.case_id}}/{{ caserow.0.case_added_date|date("Y") }}/{{mediarow.0.id}} {{ mediarow.0.device_type }}: {{ mediarow.0.device_manuf }} {{ mediarow.0.device_model }} - {{ settings.title_text }}
 </title>
 {% endblock title %}
 {% block navi %}

@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block title %}
-<title>{{ lang.edit_request }} - {{ settings.title_text }}</title>
+<title>{{caserow.0.case_id}}/{{ caserow.0.case_added_date|date("Y") }} {{ lang.edit_request }} - {{ settings.title_text }}</title>
 {% endblock title %}
 {% block navi %}
 <ul class="nav nav-sidebar">
@@ -416,8 +416,8 @@
     <th style="width:1px;" class="text-center"><i class="fa fa-cube"></i></th>
     <th style="width:350px">{{ lang.device_or_media }}</th>
     <th>{{ lang.info }}</th>
-    <th style="width:1px">{{ lang.status }}</th>
-    <th style="width:1px;">{{ lang.status }}</th>
+    <th style="width:1px"></th>
+    <th style="width:1px;">{{ lang.action_status }}</th>
     <th style="width:1px;">{{ lang.sort_label_location }}</th>
   </thead>
   <tr class="active">

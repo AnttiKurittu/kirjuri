@@ -22,12 +22,14 @@ if (isset($_GET['settings']))
         logline("Admin", "Crime list changed.");
       }
   }
+  if ($settings['show_log'] === "1") {
 $kirjuri_database = db('kirjuri-database');
 $query = $kirjuri_database->prepare('SELECT * FROM event_log ORDER BY id DESC LIMIT 100');
 $query->execute();
 $event_log = $query->fetchAll(PDO::FETCH_ASSOC);
-
-
+} else {
+  $event_log = "";
+};
 
 $settings_filedump = file_get_contents($settings_file);
 $crimes_filedump = file_get_contents("conf/crimes_autofill.conf");

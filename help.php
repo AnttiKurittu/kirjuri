@@ -10,7 +10,7 @@ if (file_exists("conf/settings.local") === True) {
 
 if (isset($_GET['settings']))
   {
-    logline("Admin", "Log & settings viewed");
+    //logline("Admin", "Log & settings viewed"); // Too much noise
     if (($_GET['save'] === "settings") && (isset($_POST['settings_conf'])))
       {
         file_put_contents($settings_file, $_POST['settings_conf']);

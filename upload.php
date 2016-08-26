@@ -29,6 +29,7 @@ $uploadstatus = "ok";
 
     if ($_FILES["fileToUpload"]["size"][$i] > $settings['max_attachment_size']) {
       $uploadstatus = "filesize_too_large";
+      logline('Error', 'Attachment upload failure (size): '.$target_file);
       $skip = True;
       continue;
     };
@@ -43,6 +44,7 @@ $uploadstatus = "ok";
     };
 
     if ((move_uploaded_file($_FILES["fileToUpload"]["tmp_name"][$i], $target_file)) && ($skip !== True)) {
+        logline('Action', 'Attachment uploaded: '.$target_file);
         $upload_error = False;
       } else {
         $upload_error = True;
@@ -50,10 +52,11 @@ $uploadstatus = "ok";
 }
 
 if ($upload_error === False) {
-header('Location: ' . preg_replace('/\?.*/', '', $_SERVER['HTTP_REFERER'])."?case=".substr($_GET['case'], 0, 5)."&upload_status=".$uploadstatus);
+  header('Location: ' . preg_replace('/\?.*/', '', $_SERVER['HTTP_REFERER'])."?case=".substr($_GET['case'], 0, 5)."&upload_status=".$uploadstatus);
 die;
 } else {
-header('Location: ' . preg_replace('/\?.*/', '', $_SERVER['HTTP_REFERER'])."?case=".substr($_GET['case'], 0, 5)."&upload_status=error");
+  logline('Error', 'Attachment upload failure (other): '.$target_file);
+  header('Location: ' . preg_replace('/\?.*/', '', $_SERVER['HTTP_REFERER'])."?case=".substr($_GET['case'], 0, 5)."&upload_status=error");
 die;
 };
 

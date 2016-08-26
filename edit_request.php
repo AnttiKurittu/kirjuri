@@ -65,6 +65,7 @@ else
 
 $drop_file_target = "attachments/".$case_number."/".stripslashes(str_replace("./", "", str_replace("../", "", urldecode($_GET['drop_file']))));
 if ( (!empty($_GET['drop_file']) && (file_exists ($drop_file_target) ) )) {
+  logline('Action', 'Attachment deleted: '.$drop_file_target);
   unlink($drop_file_target);
 }
 

@@ -1,4 +1,28 @@
 {% extends 'base.html' %}
+
+{% macro bytesToSize(bytes) %}
+{% spaceless %}
+    {% set kilobyte = 1024 %}
+    {% set megabyte = kilobyte * 1024 %}
+    {% set gigabyte = megabyte * 1024 %}
+    {% set terabyte = gigabyte * 1024 %}
+
+    {% if bytes < kilobyte %}
+        {{ bytes ~ ' B' }}
+    {% elseif bytes < megabyte %}
+        {{ (bytes / kilobyte)|number_format(2, '.') ~ ' KB' }}
+    {% elseif bytes < gigabyte %}
+        {{ (bytes / megabyte)|number_format(2, '.') ~ ' MB' }}
+    {% elseif bytes < terabyte %}
+        {{ (bytes / gigabyte)|number_format(2, '.') ~ ' GB' }}
+    {% else %}
+        {{ (bytes / terabyte)|number_format(2, '.') ~ ' TB' }}
+    {% endif %}
+{% endspaceless %}
+{% endmacro %}
+
+{% import _self as filesize_calc %}
+
 {% block title %}
 <title>{{caserow.0.case_id}}/{{ caserow.0.case_added_date|date("Y") }} {{ lang.edit_request }} - {{ settings.title_text }}</title>
 {% endblock title %}
@@ -27,11 +51,40 @@
 <ul class="nav nav-sidebar">
   <li><a href="help.php?settings=1"><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> {{ lang.settings }}</a></li>
 </ul>
+
 {% if showStatus == "OK" %}
 <p>
 <div class="alert alert-success" role="alert" id="alert-success"><span style="color:green;"><i class="fa fa-check"></i> {{ lang.request_saved }} {{ caserow.0.last_updated|date("H:i") }}.</span></div>
 </p>
 {% endif %}
+
+{% if upload_status == "ok" %}
+<p>
+<div class="alert alert-success" role="alert" id="alert-success"><span style="color:green;"><i class="fa fa-check"></i> {{ lang.file_notice_file_upload_succesfull }}</span></div>
+</p>
+{% elseif upload_status == "file_deleted" %}
+<p>
+<div class="alert alert-success" role="alert" id="alert-success"><i class="fa fa-check"></i> {{ lang.file_notice_file_deleted }}</div>
+</p>
+{% elseif upload_status == "filesize_too_large" %}
+<p>
+<div class="alert alert-danger" role="alert" id="alert-success"><i class="fa fa-warning"></i> {{ lang.file_notice_file_too_big }}</div>
+</p>
+{% elseif upload_status == "error" %}
+<p>
+<div class="alert alert-danger" role="alert" id="alert-success"><i class="fa fa-warning"></i> {{ lang.file_notice_error }}</div>
+</p>
+{% elseif upload_status == "file_exists" %}
+<p>
+<div class="alert alert-warning" role="alert" id="alert-success"><i class="fa fa-warning"></i> {{ lang.file_notice_file_exists }}</div>
+</p>
+{% elseif upload_status == "attachments_disabled" %}
+<p>
+<div class="alert alert-success" role="alert" id="alert-success"><i class="fa fa-check"></i> {{ lang.file_notice_attachments_disabled }}</div>
+</p>
+{% endif %}
+
+
 </div>
 {% endblock %}
 {% block content %}
@@ -133,6 +186,69 @@
         {% if entry.case_urg_justification %}
         <p>{{ lang.urgency_justification }}: <b>{{ entry.case_urg_justification }}</b></p>
         {% endif %}
+        <table class="table col-md-12">
+          <thead>
+            <th>Attachment file name</th>
+            <th>{% if settings.show_thumbnails == "1"%}Thumbnail{% endif %}</th>
+            <th>File type</th>
+            <th>Size</th>
+          </thead>
+        {% if filelist %}
+        {% for file in filelist %}<tr><td><a href="/attachments/{{ caserow.0.id }}/{{ file.filename }}" target="_BLANK">
+          {% if "image" in file.filetype %}
+          <i class="fa fa-file-image-o"></i>
+          {% elseif "audio" in file.filetype %}
+          <i class="fa fa-file-audio-o"></i>
+          {% elseif "pdf" in file.filetype %}
+          <i class="fa fa-file-pdf-o"></i>
+          {% elseif "text" in file.filetype %}
+          <i class="fa fa-file-text-o"></i>
+          {% elseif "officedocument.wordprocessing" in file.filetype %}
+          <i class="fa fa-file-word-o"></i>
+          {% elseif "officedocument.spreadsheet" in file.filetype %}
+          <i class="fa fa-file-excel-o"></i>
+          {% elseif "officedocument.presentation" in file.filetype %}
+          <i class="fa fa-file-powerpoint-o"></i>
+          {% elseif "zip" in file.filetype %}
+          <i class="fa fa-file-zip-o"></i>
+          {% else %}
+          <i class="fa fa-file-o"></i>
+          {% endif %}
+          {{file.filename}}</a></td>
+          {% if "image" in file.filetype and settings.show_thumbnails == "1" %}
+          <td><a href="/attachments/{{ caserow.0.id }}/{{ file.filename }}" target="_BLANK"><img src="/attachments/{{ caserow.0.id }}/{{ file.filename }}" class="img-thumbnail" style="width:100px;max-height:200px;"></a></td>
+            {% else %}
+            <td></td>
+          {% endif %}
+          <td style="width:1px;">{{file.filetype}}</td>
+          <td style="width:1px;white-space:nowrap;"><span class="pull-right">
+            {% if file.filesize > 1000000 %}
+            {{(file.filesize / 1000000)|round(1, 'common')}} MB
+            {% elseif file.filesize > 1000 %}
+            {{(file.filesize / 1024)|round(ceil)}} KB
+            {% else %}{{ file.filesize }} bytes
+            {% endif %}
+            <a href="edit_request.php?case={{ caserow.0.id }}&drop_file={{file.filename|url_encode}}&upload_status=file_deleted" onclick="return confirm('{{lang.file_remove_confirm}}')"><i class="fa fa-remove" style="color:red;"></i></span></a>
+          </td>
+
+          {% endfor%}
+          {% else %}
+          <tr><td colspan="4">No attachments.</td></tr>
+          {% endif %}
+          {% if settings.allow_attachments == "1" %}
+          <tr><td colspan="4">
+          <form class="form-inline" action="upload.php?case={{caserow.0.id}}" method="post" enctype="multipart/form-data">
+
+              <div class="form-group">
+                <input type="file" name="fileToUpload" id="fileToUpload" class="btn btn-default btn-xs">
+              </div>
+              <button type="submit" class="btn btn-success btn-xs"><i class="fa fa-upload"></i> {{ lang.upload_attachment }}</button>
+              <span class="pull-right">Max attachment size {{filesize_calc.bytesToSize(settings.max_attachment_size)}}, {{filesize_calc.bytesToSize(free_disk_space)}} {{ lang.free_space_left }}</span>
+            </form>
+
+          </td></tr>
+          {% endif %}
+        </table>
 </div>
 </div>
         {% if entry.case_status != "3" %}
@@ -216,6 +332,7 @@
         </div>
         {% endif %}
         {% endif %}
+
         {% if caserow.0.report_notes %}
         <h3>{{ lang.examination_report }}</h3>
         {{ caserow.0.report_notes|raw }}

@@ -1,10 +1,11 @@
 <?php
 require_once("./include_functions.php");
+$case_number = preg_replace("/[^0-9]/", "", (substr($_GET['case'], 0, 5)));
 $confCrimes = file_get_contents('conf/crimes_autofill.conf');
 $kirjuri_database = db('kirjuri-database');
 $query = $kirjuri_database->prepare('SELECT * FROM exam_requests WHERE id=:id AND parent_id=:id LIMIT 1');
 $query->execute(array(
-    ':id' => $_GET['case']
+    ':id' => $case_number
 ));
 $caserow = $query->fetchAll(PDO::FETCH_ASSOC);
 $query = $kirjuri_database->prepare('SELECT id, case_id, case_suspect, case_name, case_devicecount FROM exam_requests WHERE case_file_number=:case_file_number AND id = parent_id AND is_removed = 0 AND case_id != :case_id');
@@ -59,7 +60,36 @@ else
   {
     $instructions_text = file_get_contents("conf/instructions_" . str_replace(" ", "_", strtolower($caserow[0]['classification'])) . ".txt");
   }
+
+
+
+$drop_file_target = "attachments/".$case_number."/".stripslashes(str_replace("./", "", str_replace("../", "", urldecode($_GET['drop_file']))));
+if ( (!empty($_GET['drop_file']) && (file_exists ($drop_file_target) ) )) {
+  unlink($drop_file_target);
+}
+
+
+if (file_exists("attachments/".$case_number."/")) {
+   $filelist = array();
+   $i = 0;
+   $case_attachments = scandir("attachments/".$case_number."/", 0);
+   natcasesort($case_attachments);
+   foreach($case_attachments as $file) {
+     if (($file === ".") || ($file === "..")) {
+       continue;
+     } else {
+     $filelist[$i]['filename'] = $file;
+     $filelist[$i]['filesize'] = filesize("attachments/".$case_number."/".$file);
+     $filelist[$i]['filetype'] = mime_content_type("attachments/".$case_number."/".$file);
+     $i++;
+   };
+ };
+ };
+
 echo $twig->render('edit_request.html', array(
+    'free_disk_space' => disk_free_space("/"),
+    'upload_status' => $_GET['upload_status'],
+    'filelist' => $filelist,
     'samerequest_file_number' => $samerequest_file_number,
     'dev_owner' => urldecode($_GET['dev_owner']),
     'j' => $_GET['j'],

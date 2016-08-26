@@ -26,6 +26,8 @@ INSTALLATION
 * Set your mysql root/user password by editing ```include_functions.php```
 * Set other settings by editing ```conf/settings.conf```
 * Set ```cache``` folder permissions so that the www-server process can write into it or disable caching by commenting it out on ```include_functions.php```.
+* Set ```attachments``` folder permissions so that the www-server process can read, create directories and write files into it if you wish to enable attachments.
+* Set the settings, server and PHP directives to match the maximum allowed file size.
 * If you wish to enable editing the autofill crime list and settings from the web UI, set the server process to own ```conf/settings.conf``` and ```conf/crimes_autofill.conf```. This is insecure, and not recommended but might be preferable in some circumstances.
 * If you run Kirjuri in your organization, drop me a line via email or a shoutout at Twitter: https://twitter.com/AnttiKurittu
 
@@ -48,6 +50,10 @@ SCREENSHOTS
 
 CHANGELOG
 ------------
+2016-08-26:
+
+* Added support for attaching files to examination requests. Script upload is prevented by renaming text files not ending in ```.txt```.
+
 2016-08-25:
 
 * Fixed page titles.

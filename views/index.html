@@ -49,7 +49,7 @@
     </h5>
     {% endif %}
     -->
-  <table class="table table-condensed">
+  <table class="table">
     <thead>
       <tr>
         {% if (order_by == "case_id ASC") %}
@@ -115,10 +115,7 @@
         {% else %}
         <th><a href="index.php?year={{ dateStart|date("Y") }}&j=9&d=a{% if query_s %}&s={{ query_s }}{% endif %}{% if search_term %}&search={{ search_term|replace({"\+": "%2B"}) }}{% endif %}">{{ lang.added }} <i class="fa fa-sort"></i></a></th>
         {% endif %}
-        <th></th>
-        <th></th>
-        <th></th>
-        <th></th>
+        <th colspan="4">
       </tr>
     </thead>
     <tbody>
@@ -158,35 +155,28 @@
       </td>
       <td>{% if entry.case_contains_mob_dev == "1" and not entry.phone_investigator %}<b style="color:red">{{ lang.no_examiner_assigner }}</b>{% endif %}<a href="index.php?search={{ "\"" ~ entry.phone_investigator ~ "\""|url_encode }}&year={{ entry.case_added_date|date("Y") }}">{{ entry.phone_investigator|length > 20 ? entry.phone_investigator|slice(0, 20) ~ '...' : entry.phone_investigator }}</a></td>
       <td style="width:1%;white-space:nowrap;">{{ entry.case_added_date|date("d.m.Y") }}</td>
-      <td>
+      <td style="width:1px;">
         {% if entry.case_contains_mob_dev == "1" %}
-        <span class="glyphicon glyphicon-phone" aria-hidden="true" style="color:#090;"></span>
+        <i class="fa fa-mobile" style="color:#090;font-size:1.4em;"></i>
         {% else %}
-        <span class="glyphicon glyphicon-phone" aria-hidden="true" style="color:#DDD;"></span>
+        <i class="fa fa-mobile" style="color:#DDD;font-size;1.1em;"></i>
         {% endif %}
       </td>
-      <td>
+      <td style="width:1px;">
         {% if entry.report_notes %}
-        <span class="glyphicon glyphicon-file" aria-hidden="true" style="color:#090;"></span>
+        <i class="fa fa-comment" style="color:#090;font-size:1.2em;"></i>
         {% else %}
-        <span class="glyphicon glyphicon-file" aria-hidden="true" style="color:#DDD;"></span>
+        <i class="fa fa-comment-o" style="color:#DDD;font-size:1.1em;"></i>
         {% endif %}
       </td>
-      <td>
-        {% if entry.examiners_notes %}
-        <span class="glyphicon glyphicon-comment" aria-hidden="true" style="color:#090;"></span>
-        {% else %}
-        <span class="glyphicon glyphicon-comment" aria-hidden="true" style="color:#DDD;"></span>
-        {% endif %}
-      </td>
-      <td>{{ entry.case_devicecount }}{% set device_counter = device_counter + entry.case_devicecount %}</td>
+      <td style="width:1px;">{{ entry.case_devicecount }}{% set device_counter = device_counter + entry.case_devicecount %}</td>
       </tr>
       {% endif %}
       {% endfor %}
       {% for entry in row_cases %}
       {% if (entry.id != entry.parent_id) and (entry.is_removed == "0") %}
       <tr>
-        <td colspan="11">
+        <td colspan="10">
           <i class="fa fa-cube"></i> {{ lang.search_found_device }}: <a href="device_memo.php?db_row={{ entry.id }}">{{ entry.device_type }}, {{ entry.device_manuf }} {{ entry.device_model }}{% if entry.device_identifier %}, {{ lang.identifier }} {{ entry.device_identifier }}{% endif %}{% if entry.device_owner %}, {{ lang.owner }} {{ entry.device_owner }}{% endif %}</a> (<a href="edit_request.php?case={{ entry.parent_id }}&tab=devices">{{ lang.go_to_request }}</a>)
         </td>
       </tr>
@@ -202,6 +192,7 @@
           {% if search_term %}<a type="button" class="btn btn-danger btn-xs" href="index.php?year={{ dateStart|date("Y") }}{% if query_j %}&j={{ query_j }}{% endif %}{% if query_d %}&d={{ query_d }}{% endif %}{% if query_s %}&s={{ query_s }}{% endif %}"> <i class="fa fa-remove"></i><i class="fa fa-search"></i> {{ lang.remove_search_term }}</a>{% endif %}
         </td>
       </tr>
+      <tr><td colspan="12"><i class="fa fa-info-circle"></i> {{ lang.showing_a_total_of }} {{device_counter}} {{ lang.devices_in }} {{counter}} {{lang.requests}} ({{new_counter}} {{lang.new}}, {{open_counter}} {{lang.open}}, {{ready_counter}} {{lang.ready}}.).</td></tr>
     </tbody>
   </table>
 </div>

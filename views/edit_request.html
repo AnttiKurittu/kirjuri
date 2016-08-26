@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-
 {% macro bytesToSize(bytes) %}
 {% spaceless %}
     {% set kilobyte = 1024 %}
@@ -20,10 +19,9 @@
     {% endif %}
 {% endspaceless %}
 {% endmacro %}
-
 {% import _self as filesize_calc %}
-
 {% block title %}
+<!-- bytesToSize macro by Chausser from Stack Exchange: http://stackoverflow.com/questions/15280310/readable-file-sizes-with-the-twig-templating-system -->
 <title>{{caserow.0.case_id}}/{{ caserow.0.case_added_date|date("Y") }} {{ lang.edit_request }} - {{ settings.title_text }}</title>
 {% endblock title %}
 {% block navi %}
@@ -166,26 +164,25 @@
 
         <h1 id="examination_request" class="page-header">{% if entry.case_status == "1" %}<i style="color:red;" class="fa fa-circle"></i>{% endif %}{% if entry.case_status == "2" %}<i style="color:gold;" class="fa fa-circle"></i>{% endif %}{% if entry.case_status == "3" %}<i style="color:green;" class="fa fa-circle"></i>{% endif %} {{ entry.case_id }}/{{ entry.case_added_date|date("Y") }} {% if entry.case_name %}{{ entry.case_name }}{% elseif entry.case_suspect %}{{ lang.suspect_abbrev }} {{ entry.case_suspect }}{% else %}{{ lang.suspect_short }}{% endif %} ({{ entry.case_file_number }})</h1>
 
-        <h4><span class="label label-default">{{lang.crime}}</span> {{ entry.case_crime }} / {{ entry.classification }}</h4>
-        <h4><span class="label label-default">{{ lang.target }}</span> {{ entry.case_suspect }}</h4>
+        <h4><span class="label label-default">{{lang.crime|capitalize}}</span> {{ entry.case_crime }} / {{ entry.classification }}</h4>
+        <h4><span class="label label-default">{{ lang.target|capitalize }}</span> {{ entry.case_suspect }}</h4>
 
-        <h4><span class="label label-primary">{{ lang.head_of_investigation }}</span> {{ entry.case_investigation_lead }} ({{ entry.case_investigator_unit }})</h4>
-        <h4><span class="label label-primary">{{ lang.investigator }}</span> <b> {{ entry.case_investigator }}</b>, p. {{ entry.case_investigator_tel }}</h4>
+        <h4><span class="label label-primary">{{ lang.head_of_investigation|capitalize }}</span> {{ entry.case_investigation_lead }} ({{ entry.case_investigator_unit }})</h4>
+        <h4><span class="label label-primary">{{ lang.investigator|capitalize }}</span> <b> {{ entry.case_investigator }}</b>, p. {{ entry.case_investigator_tel }}</h4>
 
         {% if entry.forensic_investigator%}
-        <h4><span class="label label-primary">{{ lang.forensic_examiner_long }}</span> {{ entry.forensic_investigator }} </h4>
+        <h4><span class="label label-primary">{{ lang.forensic_examiner_long|capitalize }}</span> {{ entry.forensic_investigator }} </h4>
         {% endif %}
 
         {% if entry.phone_investigator %}
-        <h4><span class="label label-primary">{{ lang.mobile_examiner_long }}</span> {{ entry.phone_investigator }}</h4>
+        <h4><span class="label label-primary">{{ lang.mobile_examiner_long|capitalize }}</span> {{ entry.phone_investigator }}</h4>
         {% endif %}
 
-        <p>{{ lang.requested }} <b>{{ entry.case_added_date|date("d.m.Y") }}</b>, {{ lang.confiscation_date }} <b>{{ entry.case_confiscation_date|date("d.m.Y") }}</b>, {{ lang.latest_update }} {% if (entry.last_updated|date("U") < settings.stalled_case|date("U")) and (entry.case_status == "2")%}<i style="color:red;" class="fa fa-moon-o"></i> <b style="color:red;">{{ entry.last_updated|date("d.m.Y") }}</b>{% else %}<b>{{ entry.last_updated|date("d.m.Y") }}</b>{% endif %}</p>
-        <p>{{ lang.target }}: <b>{{ entry.case_request_description }}</b>, {{ lang.request_details }}: <b>{{ entry.case_requested_action }}</b></p>
-        <p>{{ lang.urgency }}: <b>{% if entry.case_urgency == "1" %}<a style="color:red;">{{ lang.urgency_urgent }}</a>{%endif %}{% if entry.case_urgency == "2" %}{{ lang.urgency_normal }}{%endif %}{% if entry.case_urgency == "3" %}{{ lang.urgency_can_wait }}{%endif %}</b></p>
-        {% if entry.case_urg_justification %}
-        <p>{{ lang.urgency_justification }}: <b>{{ entry.case_urg_justification }}</b></p>
+        <p>{{ lang.requested|capitalize }} <b>{{ entry.case_added_date|date("d.m.Y") }}</b>, {{ lang.confiscation_date }} <b>{{ entry.case_confiscation_date|date("d.m.Y") }}</b>, {{ lang.latest_update }} {% if (entry.last_updated|date("U") < settings.stalled_case|date("U")) and (entry.case_status == "2")%}<i style="color:red;" class="fa fa-moon-o"></i> <b style="color:red;">{{ entry.last_updated|date("d.m.Y") }}</b>{% else %}<b>{{ entry.last_updated|date("d.m.Y") }}</b>{% endif %}</p>
+        <p>{{ lang.evidence_description|capitalize }}: <b>{{ entry.case_request_description }}</b>, {{ lang.request_details }}: <b>{{ entry.case_requested_action }}</b></p>
+        <p>{{ lang.urgency|capitalize }}: <b>{% if entry.case_urgency == "1" %}<a style="color:red;">{{ lang.urgency_urgent }}</a>{%endif %}{% if entry.case_urgency == "2" %}{{ lang.urgency_normal }}{%endif %}{% if entry.case_urgency == "3" %}{{ lang.urgency_can_wait }}{%endif %}</b>{% if entry.case_urg_justification %}, <b>{{ entry.case_urg_justification }}</b>
         {% endif %}
+        </p>
         <table class="table col-md-12">
           <thead>
             <th>{{lang.header_filename}}</th>
@@ -222,12 +219,7 @@
           {% endif %}
           <td style="width:1px;">{{file.filetype}}</td>
           <td style="width:1px;white-space:nowrap;"><span class="pull-right">
-            {% if file.filesize > 1000000 %}
-            {{(file.filesize / 1000000)|round(1, 'common')}} MB
-            {% elseif file.filesize > 1000 %}
-            {{(file.filesize / 1024)|round(ceil)}} KB
-            {% else %}{{ file.filesize }} bytes
-            {% endif %}
+            {{filesize_calc.bytesToSize(file.filesize)}}
             <a href="edit_request.php?case={{ caserow.0.id }}&drop_file={{file.filename|url_encode}}&upload_status=file_deleted" onclick="return confirm('{{lang.file_remove_confirm}}')"><i class="fa fa-remove" style="color:red;"></i></span></a>
           </td>
 
@@ -236,7 +228,7 @@
           <tr><td colspan="4">{{lang.no_attachments}}</td></tr>
           {% endif %}
           {% if settings.allow_attachments == "1" %}
-          <tr><td colspan="4">
+          <tr><td colspan="4" class="active">
           <form class="form-inline" action="upload.php?case={{caserow.0.id}}" method="post" enctype="multipart/form-data">
 
               <div class="form-group">

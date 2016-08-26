@@ -2,7 +2,8 @@
 require __DIR__ . '/vendor/autoload.php';
 $loader = new Twig_Loader_Filesystem('views/');
 $twig = new Twig_Environment($loader, array(
-    'debug' => true, 'cache' => "cache" // This may be a source of errors if the WWW server process does not have ownership of this folder.
+    'debug' => true,   // if you remove the cache directive, remember to remove the trailing comma from this line.
+    'cache' => "cache" // This may be a source of errors if the WWW server process does not have ownership of the cache folder.
 ));
 $twig->addExtension(new Twig_Extension_Debug());
 session_start();
@@ -35,6 +36,7 @@ else
   $mysql_password = "devroot";
   $mysql_database = "kirjuri_db";
 }
+
 if ($_SESSION['settings_fetched'] !== "1")
   {
     if (file_exists("conf/settings.local") === True) {
@@ -87,7 +89,7 @@ function db($database)
           }
         catch (PDOException $e)
           {
-            die("KIRJURI_ERROR: " . $e->getMessage());
+            die("KIRJURI DATABASE ERROR: " . $e->getMessage());
             return FALSE;
           }
       }
@@ -113,7 +115,7 @@ function logline($event_level, $description)
       }
     catch (PDOException $e)
       {
-        die("KIRJURI_ERROR: " . $e->getMessage());
+        die("KIRJURI DATABASE ERROR: " . $e->getMessage());
         return FALSE;
       }
   }

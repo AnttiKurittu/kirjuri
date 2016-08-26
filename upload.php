@@ -9,7 +9,7 @@ if ($settings['allow_attachments'] !== "1") {
 
 if (!file_exists($target_dir)) {
   if (mkdir($target_dir, 0755) !== True) {
-    echo "Can not create directory. Check folder permissions.";
+    echo "Can not create subdirectory to attachments/. Check folder permissions.";
     die;
   };
 };
@@ -34,14 +34,12 @@ $uploadstatus = "ok";
       continue;
     };
 
-    if (strpos(mime_content_type($_FILES["fileToUpload"]["tmp_name"][$i]), "text") !== false) {
-      if (
-         (substr(strtolower($target_file), -4) !== ".txt") ||
-         (substr(strtolower($target_file), -4) !== ".csv")
-         ) {
+    if ( (strtolower(pathinfo($target_file, PATHINFO_EXTENSION)) === "js") ||
+         (strtolower(pathinfo($target_file, PATHINFO_EXTENSION)) === "php") ||
+         (strtolower(pathinfo($target_file, PATHINFO_EXTENSION)) === "html") ||
+         (strtolower(pathinfo($target_file, PATHINFO_EXTENSION)) === "htm")) {
       $target_file = $target_file.".txt";
       }
-    };
 
     if ((move_uploaded_file($_FILES["fileToUpload"]["tmp_name"][$i], $target_file)) && ($skip !== True)) {
         logline('Action', 'Attachment uploaded: '.$target_file);

@@ -33,7 +33,7 @@ INSTALLATION
 
 UPDATING FROM A PREVIOUS VERSION
 ------------
-* If you are updating Kirjuri from the limit release version to this version, you can migrate your databases by running ```migrate_old_tables.sql``` against your MySQL server. This will create the new tables and insert data from the old tables to the new one. It will also truncate your event log, as there was a bug in the old event log structure where the ID didn't auto-increment.
+* If you are updating Kirjuri from the limited release version to this version, you can migrate your databases by running ```migrate_old_tables.sql``` against your MySQL server. This will create the new tables and insert data from the old tables to the new one. It will also truncate your event log, as there was a bug in the old event log structure where the ID didn't auto-increment.
 
 LOOKING TO PARTICIPATE?
 ------------

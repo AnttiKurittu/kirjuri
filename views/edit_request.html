@@ -188,10 +188,10 @@
         {% endif %}
         <table class="table col-md-12">
           <thead>
-            <th>Attachment file name</th>
-            <th>{% if settings.show_thumbnails == "1"%}Thumbnail{% endif %}</th>
-            <th>File type</th>
-            <th>Size</th>
+            <th>{{lang.header_filename}}</th>
+            <th>{% if settings.show_thumbnails == "1"%}{{lang.header_thumbnail}}{% endif %}</th>
+            <th>{{lang.header_filetype}}</th>
+            <th>{{lang.header_filesize}}</th>
           </thead>
         {% if filelist %}
         {% for file in filelist %}<tr><td><a href="/attachments/{{ caserow.0.id }}/{{ file.filename }}" target="_BLANK">
@@ -240,10 +240,10 @@
           <form class="form-inline" action="upload.php?case={{caserow.0.id}}" method="post" enctype="multipart/form-data">
 
               <div class="form-group">
-                <input type="file" name="fileToUpload" id="fileToUpload" class="btn btn-default btn-xs">
+                <input type="file" multiple name="fileToUpload[]" id="fileToUpload" class="btn btn-default btn-xs">
               </div>
               <button type="submit" class="btn btn-success btn-xs"><i class="fa fa-upload"></i> {{ lang.upload_attachment }}</button>
-              <span class="pull-right">Max attachment size {{filesize_calc.bytesToSize(settings.max_attachment_size)}}, {{filesize_calc.bytesToSize(free_disk_space)}} {{ lang.free_space_left }}</span>
+              <span class="pull-right">{{lang.max_attachment_size}} {{filesize_calc.bytesToSize(settings.max_attachment_size)}}, {{filesize_calc.bytesToSize(free_disk_space)}} {{ lang.free_space_left }}</span>
             </form>
 
           </td></tr>

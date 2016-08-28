@@ -42,6 +42,15 @@ USAGE
 * To reload changes made to the settings, visit the "Settings" page on the web app - this will refresh language files and settings.
 * Optionally you can clear the cache to reset your PHPSESSID token, which will reload your settings.
 
+LOCALIZATION
+------------
+* Copy the language file of your choice to the settings folder as lang_XX.conf
+* Translate the variables
+* Copy the appropriate icons in ```views/img/svg/``` to match device names set in [devices] and [media_objs] in the language file
+* Icon file names convert spaces to underscores, lowercase letters and convert the umlauts ```ä ö å Ä Ö Å``` to ```a o a A O A```: using the following Twig filter: ```{{ entry.device_type|lower|replace({" ": "_", "ä": "a", "ö": "o"}) }}```
+* Please be mindful of possible problems with special characters in device names not converting cleanly to file paths.
+* If you localize Kirjuri to a new language, please send me the language file and new icons and I'll gladly add them to the repository and credit you for them.
+
 UPDATING FROM A PREVIOUS VERSION
 ------------
 * If you are updating Kirjuri from the limited release version to the current version, you can migrate your databases by running ```migrate_old_tables.sql``` against your MySQL server. This will create the new tables and insert data from the old tables to the new one. It will also truncate your event log, as there was a bug in the old event log structure where the ID didn't auto-increment. Please back up your existing installation and database before migrating.

@@ -1,0 +1,6 @@
+# You should never deploy Kirjuri anywhere where a robot will find it.
+# This file is here for pure convenience to stop bots from messing
+# with the live demo version hosted at https://kirjuri.kurittu.org.
+
+User-agent: *
+Disallow: /

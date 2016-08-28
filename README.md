@@ -24,16 +24,27 @@ INSTALLATION
 * Copy the files to your webroot directory (for example ```/usr/share/nginx/html```)
 * Run ```conf/create_tables.sql``` against your database to create the tables needed for operation. (```mysql -u root -pyourpassword < create_tables.sql```)
 * Set your mysql root/user password by editing ```include_functions.php``` or copy the commented out php code to ```conf/mysql_credentials.php```. This file is ignored so you can pull updates without having to re-edit the source.
-* Set your preferred settings by editing ```conf/settings.conf```
+* Set your preferred settings by editing ```conf/settings.conf```. Reload the settings page to apply new settings.
 * Set ```cache``` folder permissions so that the www-server process can write into it or disable caching by commenting it out on ```include_functions.php```.
 * Set ```attachments``` folder permissions so that the www-server process can read, create directories and write files into it.
 * If you wish to enable attachments, set the settings, server and PHP directives to match the maximum allowed file size.
 * If you wish to enable editing the crime list or settings from the web UI, set the server process to own ```conf/settings.conf``` and ```conf/crimes_autofill.conf```. This is insecure, and not recommended but might be preferable in some circumstances.
 * If you decide to test or run Kirjuri in your organization, drop me a line via email or a shoutout at Twitter: https://twitter.com/AnttiKurittu
 
+USAGE
+------------
+
+* Add examination requests from the left-hand menu bar.
+* Use the index page to pick an examination request, assign an examiner and add devices.
+* Manipulating device actions and locations takes effect immediately, other information needs to be saved with the save button.
+* When all devices have been marked as "done" or "no action" Kirjuri will allow you to close the request.
+* You can move, remove or edit the devices from the device listing or individual device memo.
+* To reload changes made to the settings, visit the "Settings" page on the web app - this will refresh language files and settings.
+* Optionally you can clear the cache to reset your PHPSESSID token, which will reload your settings.
+
 UPDATING FROM A PREVIOUS VERSION
 ------------
-* If you are updating Kirjuri from the limited release version to this version, you can migrate your databases by running ```migrate_old_tables.sql``` against your MySQL server. This will create the new tables and insert data from the old tables to the new one. It will also truncate your event log, as there was a bug in the old event log structure where the ID didn't auto-increment.
+* If you are updating Kirjuri from the limited release version to the current version, you can migrate your databases by running ```migrate_old_tables.sql``` against your MySQL server. This will create the new tables and insert data from the old tables to the new one. It will also truncate your event log, as there was a bug in the old event log structure where the ID didn't auto-increment. Please back up your existing installation and database before migrating.
 
 LOOKING TO PARTICIPATE?
 ------------
@@ -50,6 +61,10 @@ SCREENSHOTS
 
 CHANGELOG
 ------------
+2016-08-28:
+
+* German translation added, thank you Dennis Schreiber for the language file!
+
 2016-08-26:
 
 * Added support for attaching files to examination requests. Script upload is prevented by renaming text files not ending in ```.txt```.

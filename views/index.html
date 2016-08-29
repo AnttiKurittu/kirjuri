@@ -156,20 +156,36 @@
       <td>{% if entry.case_contains_mob_dev == "1" and not entry.phone_investigator %}<b style="color:red">{{ lang.no_examiner_assigner }}</b>{% endif %}<a href="index.php?search={{ "\"" ~ entry.phone_investigator ~ "\""|url_encode }}&year={{ entry.case_added_date|date("Y") }}">{{ entry.phone_investigator|length > 20 ? entry.phone_investigator|slice(0, 20) ~ '...' : entry.phone_investigator }}</a></td>
       <td style="width:1%;white-space:nowrap;">{{ entry.case_added_date|date("d.m.Y") }}</td>
       <td style="width:1px;">
-        {% if entry.case_contains_mob_dev == "1" %}
-        <i class="fa fa-mobile" style="color:#090;font-size:1.4em;"></i>
+        {% if entry.id in has_attachments %}
+        <i class="fa fa-paperclip" style="color:#000;font-size:1em;"></i>
         {% else %}
-        <i class="fa fa-mobile" style="color:#DDD;font-size;1.1em;"></i>
+        <i class="fa fa-paperclip" style="color:#DDD;font-size;1em;"></i>
         {% endif %}
       </td>
-      <td style="width:1px;">
-        {% if entry.report_notes %}
-        <i class="fa fa-comment" style="color:#090;font-size:1.2em;"></i>
-        {% else %}
-        <i class="fa fa-comment-o" style="color:#DDD;font-size:1.1em;"></i>
-        {% endif %}
-      </td>
-      <td style="width:1px;">{{ entry.case_devicecount }}{% set device_counter = device_counter + entry.case_devicecount %}</td>
+       <td style="width:1px;">
+         {% if entry.case_contains_mob_dev == "1" %}
+         <i class="fa fa-mobile" style="color:#000;font-size:1.4em;"></i>
+         {% else %}
+         <i class="fa fa-mobile" style="color:#DDD;font-size;1.1em;"></i>
+         {% endif %}
+       </td>
+       <td style="width:1px;">
+         {% if entry.report_notes %}
+         <i class="fa fa-comment-o" style="color:#000;font-size:1.2em;"></i>
+         {% else %}
+         <i class="fa fa-comment-o" style="color:#DDD;font-size:1.1em;"></i>
+         {% endif %}
+       </td>
+       <td style="width:1px;">
+         {% set device_counter = device_counter + entry.case_devicecount %}
+
+         {% if entry.case_devicecount > 0 %}
+         <span style="color:#000;font-size:1.2em;">{{ entry.case_devicecount }}</span>
+         {% else %}
+         <span style="color:#DDD;font-size:1.1em;">0</span>
+         {% endif %}
+       </td>
+
       </tr>
       {% endif %}
       {% endfor %}

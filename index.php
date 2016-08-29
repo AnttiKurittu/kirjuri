@@ -125,7 +125,23 @@ $query->execute(array(
 ));
 $row_devices = $query->fetchAll(PDO::FETCH_ASSOC);
 
+// Scan attachment directories and return directories that have files as an array.
+$subdirectories = scandir("attachments/");
+foreach(glob('attachments/*', GLOB_ONLYDIR) as $dir) {
+    $allFiles = scandir($dir); // Or any other directory
+    $files = array_diff($allFiles, array('.', '..'));
+    if(!empty($files)) {
+      $dir_has_files = explode("/", $dir);
+      $has_attachments[] = $dir_has_files[1];
+    } else {
+      logline('Action', 'Empty directory autoremoved: '.$dir);
+      rmdir($dir); // Remove empty directories
+    }
+}
+
+
 echo $twig->render('index.html', array(
+    'has_attachments' => $has_attachments,
     'search_term' => $search_term,
     'query_d' => $_GET['d'],
     'query_j' => $_GET['j'],

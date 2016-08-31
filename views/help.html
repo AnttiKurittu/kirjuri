@@ -16,49 +16,14 @@
   <li {% if not debug %}class="active" {% endif %}><a href="help.php"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> {{ lang.help_licenses }}</a></li>
 </ul>
 <ul class="nav nav-sidebar">
-  <li {% if debug%}class="active" {% endif %}><a href="help.php?settings=1"><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> {{ lang.settings }}</a></li>
+  <li {% if debug%}class="active" {% endif %}><a href="settings.php"><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> {{ lang.settings }}</a></li>
 </ul>
 </div>
 {% endblock navi %} {% block content %}
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-  {% if debug %}
-  <h4>conf/settings.conf</h4>
-  <form class="form form-horizontal" role="form" method="post" action="help.php?settings=1&save=settings">
-    <div class="form-group">
-      <textarea style="background-color:#EEE;" rows="30" class="mceNoEditor textarea col-md-12" name="settings_conf">{{ settings_filedump }}</textarea>
-    </div>
-    <div class="form-group">
-      <button type="submit" class="btn btn-sm btn-success">{{ lang.save_changes }}</button>
-      <button type="reset" class="btn btn-sm btn-warning">{{ lang.cancel_changes }}</button>
-    </div>
-  </form>
-  <h4>conf/crimes_autofill.conf</h4>
-  <form class="form form-horizontal" role="form" method="post" action="help.php?settings=1&save=crimes">
-    <div class="form-group">
-      <textarea style="background-color:#EEE;" rows="10" class="mceNoEditor textarea col-md-12" name="crimes_conf">{{ crimes_filedump }}</textarea>
-    </div>
-    <div class="form-group">
-      <button type="submit" class="btn btn-sm btn-success">{{ lang.save_changes }}</button>
-      <button type="reset" class="btn btn-sm btn-warning">{{ lang.cancel_changes }}</button>
-    </div>
-  </form>
-  <h4>{{ lang.event_log }}</h4>
-  <form class="form form-horizontal">
-    <div class="form-group">
-<pre>
-{% for entry in event_log %}{{ entry.id }} {{ entry.event_level }} {{ entry.event_timestamp }} {{ entry.event_descr }} {{ entry.ip }}
-{% endfor %}
-</pre>
-    </div>
-  </form>
-  {% else %}
-  <h1 class="page-header">Help for Kirjuri</h1>
-  <a type="button" class="btn btn-default" href="#"><i class="fa fa-arrow-left"></i> {{ lang.help_button_navigation }} </a>
-  <a type="button" class="btn btn-primary" href="#"><i class="fa fa-info-circle"></i> {{ lang.help_button_modal }}</a>
-  <a type="button" class="btn btn-info" href="#"><i class="fa fa-print"></i> {{ lang.help_button_print }}</a>
-  <a type="button" class="btn btn-success" href="#"><i class="fa fa-save"></i> {{ lang.help_button_save }}</a>
-  <a type="button" class="btn btn-danger" href="#"><i class="fa fa-remove"></i> {{ lang.help_button_delete }}</a>
-  <h3>{{ lang.licenses }}</h3>
+  <h1 class="page-header">Kirjuri</h1>
+<pre>{{ readme }}</pre>
+  <h2>{{ lang.licenses }}</h2>
   <pre>
 Kirjuri has been built using the following software modules:
 
@@ -242,7 +207,6 @@ DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM
 OTHER DEALINGS IN THE FONT SOFTWARE.
 </pre>
-  {% endif %}
 </div>
 </div>
 </div>

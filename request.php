@@ -2,7 +2,8 @@
 require_once("./include_functions.php");
 $kirjuri_database = db('kirjuri-database');
 $case_file_number = substr($_GET['case_file_number'], 0, 18);
-$search_term = $_GET['search'];
+$search_term = isset($_GET['search']) ? $_GET['search'] : '';
+
 if (!empty($case_file_number))
   {
     $query = $kirjuri_database->prepare('SELECT case_status, case_name, case_suspect, id, case_added_date, case_id FROM exam_requests WHERE case_file_number = :case_file_number AND id = parent_id AND is_removed != "1" ORDER BY case_id');

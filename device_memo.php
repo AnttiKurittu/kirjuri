@@ -1,5 +1,10 @@
 <?php
 require_once("./include_functions.php");
+
+echo $_GET['sapofjpaosfj'];
+
+$get_show_status_message = isset($_GET['show_status_message']) ? $_GET['show_status_message'] : '';
+
 $kirjuri_database = db('kirjuri-database');
 
 $query = $kirjuri_database->prepare('select * FROM exam_requests WHERE is_removed != "1" AND id = :db_row LIMIT 1');
@@ -50,7 +55,7 @@ echo $twig->render('device_memo.html', array(
     'devices' => $_SESSION['lang']['devices'],
     'media_objs' => $_SESSION['lang']['media_objs'],
     'settings' => $settings,
-    'showStatus' => $_GET['showStatus'],
+    'show_status_message' => $get_show_status_message,
     'lang' => $_SESSION['lang']
 ));
 ?>

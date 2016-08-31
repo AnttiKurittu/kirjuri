@@ -6,7 +6,7 @@ echo $twig->render('add_case.html', array(
     'confCrimes' => $confCrimes,
     'settings' => $settings,
     'classifications' => $_SESSION['lang']['classifications'],
-    'inv_units' => $inv_units,
+    'inv_units' => $settings_contents['inv_units'],
     'lang' => $_SESSION['lang']
 ));
 ?>

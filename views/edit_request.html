@@ -47,10 +47,10 @@
   <li><a href="help.php"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> {{ lang.help_licenses }}</a></li>
 </ul>
 <ul class="nav nav-sidebar">
-  <li><a href="help.php?settings=1"><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> {{ lang.settings }}</a></li>
+  <li><a href="settings.php"><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> {{ lang.settings }}</a></li>
 </ul>
 
-{% if showStatus == "OK" %}
+{% if show_status_message == "OK" %}
 <p>
 <div class="alert alert-success" role="alert" id="alert-success"><span style="color:green;"><i class="fa fa-check"></i> {{ lang.request_saved }} {{ caserow.0.last_updated|date("H:i") }}.</span></div>
 </p>
@@ -258,7 +258,8 @@
         {% endif%}
         {% endfor %}
         {% endif %}
-        <form class="form form-inline" role="form" method="post" action="submit.php?type=paatos">
+
+        <form class="form form-inline" role="form" method="post" action="submit.php?type=update_request_status">
           {% for entry in caserow %}
           <a href="download_csv.php?case={{entry.id}}" type="button" class="btn btn-warning"><i class="fa fa-download"></i> {{ lang.download_csv }}</a>
           {% if entry.case_status != "3" %}<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#perustiedot"><i class="fa fa-info-circle"></i> {{ lang.edit_request_details }}</button>{% endif %}{% endfor %}

@@ -62,11 +62,11 @@ $query->execute(array(
 $summa = $query->fetch(PDO::FETCH_ASSOC);
 $summed_size = $summa['SUM(device_size_in_gb)'];
 echo $twig->render('statistics.html', array(
-    'forensic_investigators' => $forensic_investigators,
-    'statistics_chart_colors' => $statistics_chart_colors,
+    'forensic_investigators' => $settings_contents['forensic_investigators'],
+    'statistics_chart_colors' => $settings_contents['statistics_chart_colors'],
     'devices' => $_SESSION['lang']['devices'],
     'media_objs' => $_SESSION['lang']['media_objs'],
-    'inv_units' => $inv_units,
+    'inv_units' => $settings_contents['inv_units'],
     'classifications' => $_SESSION['lang']['classifications'],
     'all_cases' => $all_cases,
     'all_devices' => $all_devices,

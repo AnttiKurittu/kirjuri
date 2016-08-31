@@ -1,6 +1,18 @@
 <?php
 require_once("./include_functions.php");
-$case_number = preg_replace("/[^0-9]/", "", (substr($_GET['case'], 0, 5)));
+
+$sort_j = isset($_GET['j']) ? $_GET['j'] : '';
+
+$get_case = isset($_GET['case']) ? $_GET['case'] : '';
+$get_show_status_message = isset($_GET['show_status_message']) ? $_GET['show_status_message'] : '';
+$get_drop_file = isset($_GET['drop_file']) ? $_GET['drop_file'] : '';
+$upload_status = isset($_GET['upload_status']) ? $_GET['upload_status'] : '';
+$returntab = isset($_GET['tab']) ? $_GET['tab'] : '';
+$dev_owner = urldecode(isset($_GET['dev_owner'])) ? $_GET['dev_owner'] : '';
+
+$filelist = array();
+
+$case_number = preg_replace("/[^0-9]/", "", (substr($get_case, 0, 5)));
 $confCrimes = file_get_contents('conf/crimes_autofill.conf');
 $kirjuri_database = db('kirjuri-database');
 $query = $kirjuri_database->prepare('SELECT * FROM exam_requests WHERE id=:id AND parent_id=:id LIMIT 1');
@@ -14,31 +26,31 @@ $query->execute(array(
     ':case_id' => $caserow[0]['case_id']
 ));
 $samerequest_file_number = $query->fetchAll(PDO::FETCH_ASSOC);
-if ($_GET['j'] === "dev_owner")
+if ($sort_j === "dev_owner")
   {
     $j = "device_owner";
   }
-elseif ($_GET['j'] === "dev_manuf")
+elseif ($sort_j === "dev_manuf")
   {
     $j = "device_manuf";
   }
-elseif ($_GET['j'] === "dev_model")
+elseif ($sort_j === "dev_model")
   {
     $j = "device_model";
   }
-elseif ($_GET['j'] === "id")
+elseif ($sort_j === "id")
   {
     $j = "id";
   }
-elseif ($_GET['j'] === "device_action")
+elseif ($sort_j === "device_action")
   {
     $j = "device_action";
   }
-elseif ($_GET['j'] === "dev_location")
+elseif ($sort_j === "dev_location")
   {
     $j = "device_location";
   }
-elseif ($_GET['j'] === "tvp")
+elseif ($sort_j === "tvp")
   {
     $j = "device_document, device_item_number";
   }
@@ -49,7 +61,7 @@ else
 ;
 $query = $kirjuri_database->prepare('SELECT * FROM exam_requests WHERE id != :id AND parent_id=:id AND is_removed != "1" ORDER BY ' . $j);
 $query->execute(array(
-    ':id' => $_GET['case']
+    ':id' => $get_case
 ));
 $mediarow = $query->fetchAll(PDO::FETCH_ASSOC);
 if (!file_exists("conf/instructions_" . str_replace(" ", "_", strtolower($caserow[0]['classification'])) . ".txt"))
@@ -63,15 +75,14 @@ else
 
 
 
-$drop_file_target = "attachments/".$case_number."/".stripslashes(str_replace("./", "", str_replace("../", "", urldecode($_GET['drop_file']))));
-if ( (!empty($_GET['drop_file']) && (file_exists ($drop_file_target) ) )) {
+$drop_file_target = "attachments/".$case_number."/".stripslashes(str_replace("./", "", str_replace("../", "", urldecode($get_drop_file))));
+if ( (!empty($get_drop_file) && (file_exists ($drop_file_target) ) )) {
   logline('Action', 'Attachment deleted: '.$drop_file_target);
   unlink($drop_file_target);
 }
 
 
 if (file_exists("attachments/".$case_number."/")) {
-   $filelist = array();
    $i = 0;
    $case_attachments = scandir("attachments/".$case_number."/", 0);
    natcasesort($case_attachments);
@@ -89,14 +100,14 @@ if (file_exists("attachments/".$case_number."/")) {
 
 echo $twig->render('edit_request.html', array(
     'free_disk_space' => disk_free_space("/"),
-    'upload_status' => $_GET['upload_status'],
+    'upload_status' => $upload_status,
     'filelist' => $filelist,
     'samerequest_file_number' => $samerequest_file_number,
-    'dev_owner' => urldecode($_GET['dev_owner']),
-    'j' => $_GET['j'],
+    'dev_owner' => $dev_owner,
+    'j' => $sort_j,
     'sort_order' => $j,
-    'returntab' => $_GET['tab'],
-    'showStatus' => $_GET['showStatus'],
+    'returntab' => $returntab,
+    'show_status_message' => $get_show_status_message,
     'caserow' => $caserow,
     'mediarow' => $mediarow,
     'settings' => $settings,
@@ -104,9 +115,9 @@ echo $twig->render('edit_request.html', array(
     'device_actions' => $_SESSION['lang']['device_actions'],
     'media_objs' => $_SESSION['lang']['media_objs'],
     'devices' => $_SESSION['lang']['devices'],
-    'forensic_investigators' => $forensic_investigators,
-    'phone_investigators' => $phone_investigators,
-    'inv_units' => $inv_units,
+    'forensic_investigators' => $settings_contents['forensic_investigators'],
+    'phone_investigators' => $settings_contents['phone_investigators'],
+    'inv_units' => $settings_contents['inv_units'],
     'classifications' => $_SESSION['lang']['classifications'],
     'confCrimes' => $confCrimes,
     'instructions_text' => $instructions_text,

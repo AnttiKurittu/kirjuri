@@ -27,9 +27,9 @@
   <li><a href="help.php"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> {{ lang.help_licenses }}</a></li>
 </ul>
 <ul class="nav nav-sidebar">
-  <li><a href="help.php?settings=1"><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> {{ lang.settings }}</a></li>
+  <li><a href="settings.php"><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> {{ lang.settings }}</a></li>
 </ul>
-{% for entry in caserow %} {% if showStatus == "OK" %}
+{% for entry in caserow %} {% if show_status_message == "OK" %}
 <p>
 <div class="alert alert-success" role="alert" id="alert-success"><span style="color:green;"><i class="fa fa-check"></i> {{ lang.request_saved }} {{ entry.last_updated|date("H:i") }}.</span></div>
 </p>{% endif %} {% endfor %}
@@ -46,7 +46,7 @@
   {% if (entry.is_removed == "0") %}
 
 <p>
-    <select onchange="location = this.options[this.selectedIndex].value;">
+    <select class="btn btn-default" onchange="location = this.options[this.selectedIndex].value;">
       <option>{{lang.jump_to_device}}</option>
   {% for device in case_device_id_list %}
   {% if mediarow.0.id != device.id %}

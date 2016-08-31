@@ -1,5 +1,10 @@
 <?php
 require_once("./include_functions.php");
+
+$sort_j = isset($_GET['j']) ? $_GET['j'] : '';
+$sort_d = isset($_GET['d']) ? $_GET['d'] : '';
+$sort_s = isset($_GET['s']) ? $_GET['s'] : '';
+
 if (empty($_GET['year']))
   {
     $year = date("Y");
@@ -14,67 +19,67 @@ $order_by = "case_status ASC, case_id DESC";
 $order_direction = $statuslimit = "";
 $search_term = "";
 $kirjuri_database = db('kirjuri-database');
-if (isset($_GET['d']))
+
+
+if ($sort_d === "a")
   {
-    if ($_GET['d'] === "a")
-      {
-        $order_direction = " ASC";
-      }
+    $order_direction = " ASC";
   }
 else
   {
     $order_direction = " DESC";
   }
-if (isset($_GET['j']))
+
+if (isset($sort_j))
   {
-    if ($_GET['j'] === "1")
+    if ($sort_j === "1")
       {
         $order_by = "case_id" . $order_direction;
       }
-    if ($_GET['j'] === "2")
+    if ($sort_j === "2")
       {
         $order_by = "case_name" . $order_direction;
       }
-    if ($_GET['j'] === "3")
+    if ($sort_j === "3")
       {
         $order_by = "case_file_number" . $order_direction;
       }
-    if ($_GET['j'] === "4")
+    if ($sort_j === "4")
       {
         $order_by = "case_crime" . $order_direction;
       }
-    if ($_GET['j'] === "5")
+    if ($sort_j === "5")
       {
         $order_by = "case_suspect" . $order_direction;
       }
-    if ($_GET['j'] === "6")
+    if ($sort_j === "6")
       {
         $order_by = "case_investigator" . $order_direction;
       }
-    if ($_GET['j'] === "7")
+    if ($sort_j === "7")
       {
         $order_by = "forensic_investigator" . $order_direction;
       }
-    if ($_GET['j'] === "8")
+    if ($sort_j === "8")
       {
         $order_by = "phone_investigator" . $order_direction;
       }
-    if ($_GET['j'] === "9")
+    if ($sort_j === "9")
       {
         $order_by = "case_added_date" . $order_direction;
       }
   }
-if (isset($_GET['s']))
+if (isset($sort_s))
   {
-    if ($_GET['s'] === "1")
+    if ($sort_s === "1")
       {
         $statuslimit = 'AND case_status = "1" ';
       }
-    if ($_GET['s'] === "2")
+    if ($sort_s === "2")
       {
         $statuslimit = 'AND case_status = "2" ';
       }
-    if ($_GET['s'] === "3")
+    if ($sort_s === "3")
       {
         $statuslimit = 'AND case_status = "3" ';
       }
@@ -139,13 +144,12 @@ foreach(glob('attachments/*', GLOB_ONLYDIR) as $dir) {
     }
 }
 
-
 echo $twig->render('index.html', array(
     'has_attachments' => $has_attachments,
     'search_term' => $search_term,
-    'query_d' => $_GET['d'],
-    'query_j' => $_GET['j'],
-    'query_s' => $_GET['s'],
+    'query_d' => $sort_d,
+    'query_j' => $sort_j,
+    'query_s' => $sort_s,
     'order_by' => $order_by,
     'dateStart' => $dateStart,
     'row_cases' => $row_cases,

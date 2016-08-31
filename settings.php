@@ -1,0 +1,40 @@
+<?php
+require_once("./include_functions.php");
+
+$save_target = isset($_POST['save']) ? $_POST['save'] : '';
+
+if (file_exists("conf/settings.local") === True) {
+  $settings_file = "conf/settings.local";
+} else {
+  $settings_file = "conf/settings.conf";
+};
+
+if (($save_target === "settings") && (isset($_POST['settings_conf'])))
+  {
+
+    if(file_exists($settings_file)) {
+      file_put_contents($settings_file, $_POST['settings_conf']);
+      logline("Admin", "Settings saved.");
+    } else {
+      trigger_error("Settings file ".$settings_file." not found.");
+    }
+  }
+
+if ($settings['show_log'] === "1") {
+  $kirjuri_database = db('kirjuri-database');
+  $query = $kirjuri_database->prepare('SELECT * FROM event_log ORDER BY id DESC LIMIT 100');
+  $query->execute();
+  $event_log = $query->fetchAll(PDO::FETCH_ASSOC);
+} else {
+  $event_log = "";
+};
+
+$settings_filedump = file_get_contents($settings_file);
+$crimes_filedump = file_get_contents("conf/crimes_autofill.conf");
+echo $twig->render('settings.html', array(
+    'settings_filedump' => $settings_filedump,
+    'event_log' => $event_log,
+    'settings' => $settings,
+    'lang' => $_SESSION['lang']
+));
+?>

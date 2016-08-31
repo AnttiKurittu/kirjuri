@@ -2,6 +2,9 @@
 require_once("./include_functions.php");
 $target_dir = "attachments/".preg_replace("/[^0-9]/", "", (substr($_GET['case'], 0, 5)))."/";
 
+$skip = False;
+$upload_error = False;
+
 if ($settings['allow_attachments'] !== "1") {
   header('Location: ' . preg_replace('/\?.*/', '', $_SERVER['HTTP_REFERER'])."?case=".substr($_GET['case'], 0, 5)."&upload_status=attachments_disabled");
   die;

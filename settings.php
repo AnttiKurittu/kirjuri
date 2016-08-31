@@ -3,12 +3,6 @@ require_once("./include_functions.php");
 
 $save_target = isset($_POST['save']) ? $_POST['save'] : '';
 
-if (file_exists("conf/settings.local") === True) {
-  $settings_file = "conf/settings.local";
-} else {
-  $settings_file = "conf/settings.conf";
-};
-
 if (($save_target === "settings") && (isset($_POST['settings_conf'])))
   {
     if(file_exists($settings_file)) {
@@ -39,6 +33,7 @@ $settings_filedump = file_get_contents($settings_file);
 
 echo $twig->render('settings.html', array(
     'settings_filedump' => $settings_filedump,
+    'settings_file' => $settings_file,
     'event_log' => $event_log,
     'event_log_errors' => $event_log_errors,
     'settings' => $settings,

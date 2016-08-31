@@ -110,4 +110,6 @@ $settings_contents = parse_ini_file($settings_file, true);
 $_SESSION['lang'] = parse_ini_file("conf/" . $settings_contents['settings']['lang'], true);
 $settings = $settings_contents['settings'];
 
+echo "<!-- ".$settings_file."-->";
+
 ?>

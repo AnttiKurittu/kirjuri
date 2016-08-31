@@ -12,7 +12,7 @@ if (empty($_GET['year']))
   }
 else
   {
-    $year = $_GET['year'];
+    $year = preg_replace("/[^0-9]/", "", (substr($_GET['year'], 0, 4)));
   }
 $dateStart = $year . "-01-01 00:00:00";
 $dateStop = ($year + 1) . "-01-01 00:00:00";
@@ -20,7 +20,6 @@ $order_by = "case_status ASC, case_id DESC";
 $order_direction = $statuslimit = "";
 $search_term = "";
 $kirjuri_database = db('kirjuri-database');
-
 
 if ($sort_d === "a")
   {
@@ -103,6 +102,7 @@ else
         ':dateStop' => $dateStop
     ));
     $row_aktiiviset = $query->fetchAll(PDO::FETCH_ASSOC);
+
     foreach ($row_aktiiviset as $entry)
       {
         $query = $kirjuri_database->prepare('SELECT COUNT(id) FROM exam_requests WHERE parent_id = :id AND is_removed = "0";');

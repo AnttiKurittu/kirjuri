@@ -88,6 +88,8 @@ set_error_handler(kirjuri_error_handler);
 
 if (file_exists('conf/mysql_credentials.php')) { // Read credentials
   $mysql_config = include('conf/mysql_credentials.php');
+} elseif (file_exists('/etc/kirjuri/mysql_credentials.php')) { // Read credentials
+  $mysql_config = include('/etc/kirjuri/mysql_credentials.php');
 }
 else
 {
@@ -96,9 +98,10 @@ else
   $mysql_config['mysql_database'] = "kirjuri_db";
 }
 
-
-if (file_exists("conf/settings.local") === True) {
-  $settings_file = "conf/settings.local";
+if (file_exists("conf/settings.local")) {
+  $settings_file = "conf/settings.conf";
+} elseif (file_exists("/etc/kirjuri/settings.local")) {
+  $settings_file = "/etc/kirjuri/settings.local";
 } else {
   $settings_file = "conf/settings.conf";
 };

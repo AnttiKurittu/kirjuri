@@ -99,7 +99,7 @@ else
 }
 
 if (file_exists("conf/settings.local")) {
-  $settings_file = "conf/settings.conf";
+  $settings_file = "conf/settings.local";
 } elseif (file_exists("/etc/kirjuri/settings.local")) {
   $settings_file = "/etc/kirjuri/settings.local";
 } else {

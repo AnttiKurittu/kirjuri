@@ -70,6 +70,14 @@ SCREENSHOTS
 
 CHANGELOG
 ------------
+2016-08-31:
+
+* Cleaned up submit.php and got rid of the clumsy return.php.
+* Created a custom error handler that shows and/or logs errors. You can set the error level from your php.ini.
+* Fixed a bunch of undefined indexes that created unnecessary notices and errors.
+* Split up help.php to settings.php and help.php, so that access to settings can be limited with basic HTTP auth
+* Made some small adjustments here and there.
+
 2016-08-28:
 
 * German translation added, thank you Dennis Schreiber for the language file!

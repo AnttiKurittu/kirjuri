@@ -1,8 +1,6 @@
 <?php
 require_once("./include_functions.php");
 
-echo $_GET['sapofjpaosfj'];
-
 $get_show_status_message = isset($_GET['show_status_message']) ? $_GET['show_status_message'] : '';
 
 $kirjuri_database = db('kirjuri-database');

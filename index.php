@@ -4,6 +4,7 @@ require_once("./include_functions.php");
 $sort_j = isset($_GET['j']) ? $_GET['j'] : '';
 $sort_d = isset($_GET['d']) ? $_GET['d'] : '';
 $sort_s = isset($_GET['s']) ? $_GET['s'] : '';
+$has_attachments[] = "";
 
 if (empty($_GET['year']))
   {

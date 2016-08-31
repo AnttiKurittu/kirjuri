@@ -22,12 +22,12 @@ $form_data['case_urg_justification'] = isset($_POST['case_urg_justification']) ?
 $form_data['case_requested_action'] = isset($_POST['case_requested_action']) ? $_POST['case_requested_action'] : '';
 $form_data['case_contains_mob_dev'] = isset($_POST['case_contains_mob_dev']) ? $_POST['case_contains_mob_dev'] : '';
 $form_data['device_type'] = isset($_POST['device_type']) ? $_POST['device_type'] : '';
+$form_data['forensic_investigator'] = isset($_POST['forensic_investigator']) ? $_POST['forensic_investigator'] : '';
 $form_data['phone_investigator'] = isset($_POST['phone_investigator']) ? $_POST['phone_investigator'] : '';
 $form_data['device_location'] = isset($_POST['device_location']) ? $_POST['device_location'] : '?';
 $form_data['device_action'] = isset($_POST['device_action']) ? $_POST['device_action'] : '1|?';
 $form_data['device_contains_evidence'] = isset($_POST['device_contains_evidence']) ? $_POST['device_contains_evidence'] : '0';
 $form_data['device_include_in_report'] = isset($_POST['device_include_in_report']) ? $_POST['device_include_in_report'] : '0';
-
 $form_data['case_urgency'] = substr($form_data['case_urgency'], 0, 1);
 $form_data['device_include_in_report'] = substr($form_data['device_include_in_report'], 0, 1);
 $form_data['device_contains_evidence'] = substr($form_data['device_contains_evidence'], 0, 1);

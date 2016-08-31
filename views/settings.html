@@ -39,6 +39,12 @@
 {% for entry in event_log %}{{ entry.id }} {{ entry.event_level }} {{ entry.event_timestamp }} {{ entry.event_descr }} {{ entry.ip }}
 {% endfor %}
 </pre>
+
+<pre>
+{% for entry in event_log_errors %}{{ entry.id }} {{ entry.event_level }} {{ entry.event_timestamp }} {{ entry.event_descr }} {{ entry.ip }}
+{% endfor %}
+</pre>
+
     </div>
   </form>
 

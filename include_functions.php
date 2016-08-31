@@ -20,13 +20,7 @@ session_start();
  );
  ?>
 -----------
-<<<<<<< 40efd9b601a502fbd2c9550c43608c63756453e8
-<<<<<<< HEAD
-=======
 
->>>>>>> f9416012a7545b71eee55ba5389bc31f5197223a
-=======
->>>>>>> Lots of small fixes, see readme for changelog.
 Git update will ignore this file, and if it's not found, Kirjuri will use the default credentials in the source code.
  */
 

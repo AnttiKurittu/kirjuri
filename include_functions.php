@@ -20,68 +20,35 @@ session_start();
  );
  ?>
 -----------
+<<<<<<< HEAD
+=======
 
+>>>>>>> f9416012a7545b71eee55ba5389bc31f5197223a
 Git update will ignore this file, and if it's not found, Kirjuri will use the default credentials in the source code.
  */
 
-if (file_exists('conf/mysql_credentials.php')) { // Read credentials
-  $mysql_config = include('conf/mysql_credentials.php');
-  $mysql_username = $mysql_config['mysql_username'];
-  $mysql_password = $mysql_config['mysql_password'];
-  $mysql_database = $mysql_config['mysql_database'];
-}
-else
-{
-  $mysql_username = "root";
-  $mysql_password = "devroot";
-  $mysql_database = "kirjuri_db";
-}
-
-if ($_SESSION['settings_fetched'] !== "1")
-  {
-    if (file_exists("conf/settings.local") === True) {
-      $settings_file = "conf/settings.local";
-    } else {
-      $settings_file = "conf/settings.conf";
-    };
-    $_SESSION['getsettings'] = parse_ini_file($settings_file, true);
-    $_SESSION['lang'] = parse_ini_file("conf/" . $_SESSION['getsettings']['settings']['lang'], true);
-    $_SESSION['settings_fetched'] = "1";
-  }
-if ($getSettings === FALSE)
-  {
-    echo "File not found: conf/settings.conf";
-    exit;
-  }
-
-$getSettings = $_SESSION['getsettings'];
-$settings = $getSettings['settings'];
-$forensic_investigators = $getSettings['forensic_investigators'];
-$phone_investigators = $getSettings['phone_investigators'];
-$inv_units = $getSettings['inv_units'];
-$statistics_chart_colors = $getSettings['statistics_chart_colors'];
-
-function kirjuri_error($title_text, $description)
-  {
-    global $twig;
+function kirjuri_error_handler($errno, $errstr, $errfile, $errline) {
+  global $twig;
+  global $settings;
+  if($settings['show_errors'] === "1") {
     echo $twig->render('error.html', array(
-        'title_text' => $title_text,
-        'viesti' => $description
-    ));
-    exit;
-  }
+        'errno' => $errno,
+        'errstr' => $errstr,
+        'errfile' => $errfile,
+        'errline' => $errline));
+    }
+    logline('Error', $errno." ".$errstr.", File: ".$errfile.", line ".$errline);
+}
 
 function db($database)
   {
     global $settings;
-    global $mysql_username;
-    global $mysql_database;
-    global $mysql_password;
+    global $mysql_config;
     if ($database === 'kirjuri-database')
       {
         try
           {
-            $kirjuri_database = new PDO("mysql:host=localhost;dbname=" . $mysql_database . "", $mysql_username, $mysql_password);
+            $kirjuri_database = new PDO("mysql:host=localhost;dbname=" . $mysql_config['mysql_database'] . "", $mysql_config['mysql_username'], $mysql_config['mysql_password']);
             $kirjuri_database->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $kirjuri_database->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
             $kirjuri_database->exec("SET NAMES utf8");
@@ -89,20 +56,20 @@ function db($database)
           }
         catch (PDOException $e)
           {
-            die("KIRJURI DATABASE ERROR: " . $e->getMessage());
+
+            trigger_error($e->getMessage());
             return FALSE;
           }
       }
   }
+
 function logline($event_level, $description)
   {
     global $settings;
-    global $mysql_username;
-    global $mysql_database;
-    global $mysql_password;
+    global $mysql_config;
     try
       {
-        $kirjuri_database = new PDO("mysql:host=localhost;dbname=" . $mysql_database . "", $mysql_username, $mysql_password);
+        $kirjuri_database = new PDO("mysql:host=localhost;dbname=" . $mysql_config['mysql_database'] . "", $mysql_config['mysql_username'], $mysql_config['mysql_password']);
         $kirjuri_database->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $kirjuri_database->exec("SET NAMES utf8");
         $event_insert_row = $kirjuri_database->prepare('INSERT INTO event_log (id,event_timestamp,event_level,event_descr,ip) VALUES ("",NOW(),:event_level,:event_descr,:ip)');
@@ -119,4 +86,28 @@ function logline($event_level, $description)
         return FALSE;
       }
   }
+
+set_error_handler(kirjuri_error_handler);
+
+if (file_exists('conf/mysql_credentials.php')) { // Read credentials
+  $mysql_config = include('conf/mysql_credentials.php');
+}
+else
+{
+  $mysql_config['mysql_username'] = "root";
+  $mysql_config['mysql_password'] = "devroot";
+  $mysql_config['mysql_database'] = "kirjuri_db";
+}
+
+
+if (file_exists("conf/settings.local") === True) {
+  $settings_file = "conf/settings.local";
+} else {
+  $settings_file = "conf/settings.conf";
+};
+
+$settings_contents = parse_ini_file($settings_file, true);
+$_SESSION['lang'] = parse_ini_file("conf/" . $settings_contents['settings']['lang'], true);
+$settings = $settings_contents['settings'];
+
 ?>

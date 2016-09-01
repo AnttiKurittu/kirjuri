@@ -1,6 +1,6 @@
 <?php
 require_once("./include_functions.php");
-
+$session_cache = isset($_SESSION['post_cache']) ? $_SESSION['post_cache'] : '';
 $sort_j = isset($_GET['j']) ? $_GET['j'] : '';
 $get_case = isset($_GET['case']) ? $_GET['case'] : '';
 $get_show_status_message = isset($_GET['show_status_message']) ? $_GET['show_status_message'] : '';
@@ -93,7 +93,7 @@ if (file_exists("attachments/".$case_number."/")) {
  };
 
 echo $twig->render('edit_request.html', array(
-    'session_cache' => $_SESSION['post_cache'],
+    'session_cache' => $session_cache,
     'free_disk_space' => disk_free_space("/"),
     'upload_status' => $upload_status,
     'filelist' => $filelist,

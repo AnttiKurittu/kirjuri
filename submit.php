@@ -5,6 +5,7 @@ $dateStop = (date("Y") + 1) . ":01:01 00:00:00";
 $kirjuri_database = db('kirjuri-database');
 
 $form_data = $_POST;
+$_SESSION['post_cache'] = $form_data;
 
 $form_data['case_name'] = isset($_POST['case_name']) ? $_POST['case_name'] : '';
 $form_data['case_file_number'] = isset($_POST['case_file_number']) ? $_POST['case_file_number'] : '';
@@ -33,12 +34,26 @@ $form_data['device_include_in_report'] = substr($form_data['device_include_in_re
 $form_data['device_contains_evidence'] = substr($form_data['device_contains_evidence'], 0, 1);
 $form_data['case_contains_mob_dev'] = substr($form_data['case_contains_mob_dev'], 0, 1);
 
-if ($_GET['type'] === 'examination_request')
+$save_target = isset($_POST['save']) ? $_POST['save'] : '';
+
+if (($save_target === "settings") && (isset($_POST['settings_conf']))) // Save settings to file
+  {
+    if(file_exists($settings_file)) {
+      file_put_contents($settings_file, $_POST['settings_conf']);
+      logline("Admin", "Settings saved.");
+    } else {
+      trigger_error("Settings file ".$settings_file." not found.");
+    }
+    $_SESSION['post_cache'] = "";
+    header("Location: settings.php");
+    die;
+  }
+
+if ($_GET['type'] === 'examination_request') // Create an examination request.
   {
     if (empty($form_data['case_file_number']) || empty($form_data['case_investigator']) || empty($form_data['case_investigator_unit']) || empty($form_data['case_investigator_tel']) || empty($form_data['case_investigation_lead']) || empty($form_data['case_confiscation_date']) || empty($form_data['case_crime']) || empty($form_data['case_suspect']) || empty($form_data['case_request_description']) || empty($form_data['case_urgency']) || empty($form_data['case_requested_action']))
       {
-        trigger_error("Error", "Fill all required fields.");
-        logline("Error", "Not all fields filled.");
+        trigger_error("Fill all required fields.");
       }
     $query = $kirjuri_database->prepare('select case_id FROM exam_requests WHERE case_added_date BETWEEN :dateStart AND :dateStop ORDER BY case_id DESC LIMIT 1 ');
     $query->execute(array(
@@ -76,6 +91,7 @@ if ($_GET['type'] === 'examination_request')
         ':dateStop' => $dateStop
     ));
     $row = $query->fetch(PDO::FETCH_ASSOC);
+    $_SESSION['post_cache'] = "";
     echo $twig->render('thankyou.html', array(
         'case_id' => $case_id,
         'id' => $row['id'],
@@ -84,9 +100,9 @@ if ($_GET['type'] === 'examination_request')
     ));
     exit;
   }
-if ($_GET['type'] === 'case_update')
+if ($_GET['type'] === 'case_update') // Update examination request.
   {
-    if ($form_data['forensic_investigator'] !== "")
+    if ($form_data['forensic_investigator'] !== "") // Set the case as started if an f.investigator is assigned.
       {
         $case_status = "2";
       }
@@ -116,6 +132,7 @@ if ($_GET['type'] === 'case_update')
     ));
     logline("Action", "Updated request " . $form_data['case_name'] . "");
     $form_data['returnid'] = $_GET['db_row'];
+    $_SESSION['post_cache'] = "";
     header("Location: edit_request.php?case=".$form_data['returnid']."&show_status_message=OK");
     die;
   }
@@ -127,6 +144,7 @@ if ($_GET['type'] === 'report_notes') // Save case report notes.
         ':id' => $form_data['returnid'],
         ':report_notes' => $form_data['report_notes']
     ));
+    $_SESSION['post_cache'] = "";
     header("Location: edit_request.php?case=".$form_data['returnid']."show_status_message=OK&tab=report_notes");
     logline("Action", "Updated report notes, returnid=" . $form_data['returnid'] . "");
     die;
@@ -139,6 +157,7 @@ if ($_GET['type'] === 'examiners_notes') // Save examiners private notes
         ':id' => $form_data['returnid'],
         ':examiners_notes' => $form_data['examiners_notes']
     ));
+    $_SESSION['post_cache'] = "";
     header("Location: edit_request.php?case=".$form_data['returnid']."show_status_message=OK&tab=examiners_notes");
     logline("Action", "Updated examiners notes, returnid=" . $form_data['returnid'] . "");
     die;
@@ -165,6 +184,7 @@ if ($_GET['type'] === 'set_removed') // Remove device from case
         ':id' => $_GET['returnid']
     ));
     $form_data['returnid'] = $_GET['returnid'];
+    $_SESSION['post_cache'] = "";
     header("Location: edit_request.php?case=".$form_data['returnid']."&tab=devices");
     die;
   }
@@ -181,6 +201,7 @@ if ($_GET['type'] === 'device_attach') // Associate a media/device with host dev
         ));
       }
     $form_data['returnid'] = $_GET['returnid'];
+    $_SESSION['post_cache'] = "";
     header("Location: edit_request.php?case=".$form_data['returnid']."&tab=devices");
     die;
   }
@@ -192,6 +213,7 @@ if ($_GET['type'] === 'device_detach') // Remove device association
         ':id' => $_GET['db_row']
     ));
     $form_data['returnid'] = $_GET['returnid'];
+    $_SESSION['post_cache'] = "";
     header("Location: edit_request.php?case=".$form_data['returnid']."&tab=devices");
     die;
   }
@@ -203,11 +225,12 @@ if ($_GET['type'] === 'set_removed_case') // Remove case
         ':id' => $form_data['remove_exam_request']
     ));
     logline("Action", "Removed case ID " . $form_data['remove_exam_request'] . "");
+    $_SESSION['post_cache'] = "";
     header("Location: index.php");
     die;
   }
 
-if ($_GET['type'] === 'move_all') // Change all device locations and actions
+if ($_GET['type'] === 'move_all') // Change all device locations and/or actions
   {
     if ($form_data['device_action'] != "NO_CHANGE")
       {
@@ -226,6 +249,7 @@ if ($_GET['type'] === 'move_all') // Change all device locations and actions
         ));
       }
     $form_data['returnid'] = $_GET['returnid'];
+    $_SESSION['post_cache'] = "";
     header("Location: edit_request.php?case=".$form_data['returnid']."&tab=devices");
     die;
   }
@@ -246,6 +270,7 @@ if ($_GET['type'] === 'update_request_status') // Set case status
     ));
 
     logline("Action", "Changed request " . $form_data['returnid'] . " status: " . $form_data['case_status'] . "");
+    $_SESSION['post_cache'] = "";
     header("Location: edit_request.php?case=".$form_data['returnid']);
     die;
   }
@@ -257,7 +282,7 @@ if ($_GET['type'] === 'update_request_status') // Set case status
           ':device_action' => $form_data['device_action'],
           ':id' => $_GET['db_row']
       ));
-
+      $_SESSION['post_cache'] = "";
       echo $twig->render('progress_bar.html', array(
           'device_action' => $form_data['device_action'],
           'settings' => $settings
@@ -265,17 +290,18 @@ if ($_GET['type'] === 'update_request_status') // Set case status
       exit;
     }
 
-    if ($_GET['type'] === 'change_device_location') // Dynamically set device action
+    if ($_GET['type'] === 'change_device_location') // Dynamically set device location.
       {
         $sql = $kirjuri_database->prepare('UPDATE exam_requests SET device_location = :device_location, last_updated = NOW() where id=:id AND parent_id != id');
         $sql->execute(array(
             ':device_location' => $form_data['device_location'],
             ':id' => $_GET['db_row']
         ));
-        exit;
+        $_SESSION['post_cache'] = "";
+        die;
       }
 
-if ($_GET['type'] === 'devicememo')
+if ($_GET['type'] === 'devicememo') // Update individual device details.
   {
     $sql = $kirjuri_database->prepare('UPDATE exam_requests SET report_notes = :report_notes, examiners_notes = :examiners_notes, device_type = :device_type, device_manuf = :device_manuf, device_model = :device_model, device_size_in_gb = :device_size_in_gb,
       device_owner = :device_owner, device_os = :device_os, device_time_deviation = :device_time_deviation, last_updated = NOW(),
@@ -304,13 +330,14 @@ if ($_GET['type'] === 'devicememo')
     ));
     $form_data['returnid'] = $_GET['returnid'];
     logline("Action", "Updated device memo " . $form_data['id'] . "");
+    $_SESSION['post_cache'] = "";
     header("Location: device_memo.php?db_row=".$form_data['returnid']."&show_status_message=OK");
     die;
   }
 
-if ($_GET['type'] === 'device')
+if ($_GET['type'] === 'device') // Create new device entry
   {
-    if ($form_data['device_host_id'] === "0")
+    if ($form_data['device_host_id'] === "0")  // If new device is an associated media, it is not a host by itself
       {
         $device_is_host = "1";
       }
@@ -318,7 +345,20 @@ if ($_GET['type'] === 'device')
       {
         $device_is_host = "0";
       }
-    $sql = $kirjuri_database->prepare('UPDATE exam_requests SET case_devicecount = case_devicecount + 1, last_updated = NOW() WHERE id = :parent_id');
+    if(empty($form_data['device_type'])) {
+      header("Location: edit_request.php?case=".$form_data['parent_id']."&tab=devices&show_status_message=type_missing");
+      die;
+    }
+    if($form_data['device_action'] === '1|?') {
+      header("Location: edit_request.php?case=".$form_data['parent_id']."&tab=devices&show_status_message=action_missing");
+      die;
+    }
+    if($form_data['device_location'] === '?') {
+      header("Location: edit_request.php?case=".$form_data['parent_id']."&tab=devices&show_status_message=location_missing");
+      die;
+    }
+
+    $sql = $kirjuri_database->prepare('UPDATE exam_requests SET case_devicecount = case_devicecount + 1, last_updated = NOW() WHERE id = :parent_id'); // Update device count
     $sql->execute(array(
         ':parent_id' => $form_data['parent_id']
     ));
@@ -344,15 +384,14 @@ if ($_GET['type'] === 'device')
         ':device_action' => $form_data['device_action'],
         ':is_removed' => $form_data['is_removed']
     ));
-
-
     logline("Action", "Added device " . $form_data['device_type'] . " " . $form_data['device_manuf'] . " " . $form_data['device_model'] . " with id [" . $form_data['device_identifier'] . "] to case " . $form_data['parent_id'] . "");
-    header("Location: edit_request.php?case=".$form_data['parent_id']."&tab=devices");
+    $_SESSION['post_cache'] = "";
+    header("Location: edit_request.php?case=".$form_data['parent_id']."&tab=devices&show_status_message=OK");
     die;
   }
 
 // Default to error if no handlers
 
-header("Location: index.php");
+header("Location: index.php"); // Fall back to index with an error if no conditions are met.
 trigger_error('submit.php called with erroneous value.');
 ?>

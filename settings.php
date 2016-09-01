@@ -1,32 +1,16 @@
 <?php
 require_once("./include_functions.php");
 
-$save_target = isset($_POST['save']) ? $_POST['save'] : '';
-
-if (($save_target === "settings") && (isset($_POST['settings_conf'])))
-  {
-    if(file_exists($settings_file)) {
-      file_put_contents($settings_file, $_POST['settings_conf']);
-      logline("Admin", "Settings saved.");
-      $settings_contents = parse_ini_file($settings_file, true);
-      $_SESSION['lang'] = parse_ini_file("conf/" . $settings_contents['settings']['lang'], true);
-      $settings = $settings_contents['settings'];
-    } else {
-      trigger_error("Settings file ".$settings_file." not found.");
-    }
-  }
+$kirjuri_database = db('kirjuri-database');
 
 if ($settings['show_log'] === "1") {
-  $kirjuri_database = db('kirjuri-database');
   $query = $kirjuri_database->prepare('SELECT * FROM event_log WHERE event_level != "Error" ORDER BY id DESC LIMIT 100');
   $query->execute();
   $event_log = $query->fetchAll(PDO::FETCH_ASSOC);
 
-  $kirjuri_database = db('kirjuri-database');
   $query = $kirjuri_database->prepare('SELECT * FROM event_log WHERE event_level = "Error" ORDER BY id DESC LIMIT 100');
   $query->execute();
   $event_log_errors = $query->fetchAll(PDO::FETCH_ASSOC);
-
 } else {
   $event_log = "";
   $event_log_errors = "";

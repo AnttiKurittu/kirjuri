@@ -56,6 +56,25 @@
 </p>
 {% endif %}
 
+{% if show_status_message == "location_missing" %}
+<p>
+<div class="alert alert-danger" role="alert" id="alert-danger"><span style="color:red;"><i class="fa fa-warning"></i> {{ lang.device_location }}<br>{{ lang.fill_all_fields_warning }}</span></div>
+</p>
+{% endif %}
+
+{% if show_status_message == "action_missing" %}
+<p>
+<div class="alert alert-danger" role="alert" id="alert-danger"><span style="color:red;"><i class="fa fa-warning"></i> {{ lang.action_status }}<br>{{ lang.fill_all_fields_warning }}</span></div>
+</p>
+{% endif %}
+
+{% if show_status_message == "type_missing" %}
+<p>
+<div class="alert alert-danger" role="alert" id="alert-danger"><span style="color:red;"><i class="fa fa-warning"></i> {{ lang.undefined_device_or_media_type}}<br>{{ lang.fill_all_fields_warning }}</span></div>
+</p>
+{% endif %}
+
+
 {% if upload_status == "ok" %}
 <p>
 <div class="alert alert-success" role="alert" id="alert-success"><span style="color:green;"><i class="fa fa-check"></i> {{ lang.file_notice_file_upload_succesfull }}</span></div>
@@ -747,7 +766,7 @@
               {% for entry in media_objs %}
               <option value="{{ entry }}">{{ entry }}</option>
               {% endfor %}
-            </select>
+            </select><span style="color:red;font-size:1.2em">&nbsp;*</span>
           </div>
           <div class="form-group">
             <select style="text-align:left;" class="btn btn-default" name="device_action" id="device_action">
@@ -759,7 +778,7 @@
               <option value="{{ entry }}">{% set jutun_vaihe = entry|split('|') %}{{ jutun_vaihe.1 }}</option>
               {% endif %}
               {% endfor %}
-            </select>
+            </select><span style="color:red;font-size:1.2em">&nbsp;*</span>
           </div>
           <div class="form-group">
             <select style="text-align:left;" class="btn btn-default" name="device_location" id="device_location">
@@ -767,43 +786,43 @@
               {% for entry in device_locations %}
               <option value="{{ entry }}">{{ entry }}</option>
               {% endfor %}
-            </select>
+            </select><span style="color:red;font-size:1.2em">&nbsp;*</span>
           </div>
           <div class="form-group">
             <label class="sr-only" for="device_manuf">{{ lang.sort_label_brand }}</label>
-            <input type="text" class="form-control" id="device_manuf" name="device_manuf" placeholder="{{ lang.sort_label_brand }}">
+            <input type="text" class="form-control" id="device_manuf" name="device_manuf" placeholder="{{ lang.sort_label_brand }}" value="{{ session_cache.device_manuf }}">
           </div>
           <div class="form-group">
             <label class="sr-only" for="device_model">{{ lang.sort_label_model }}</label>
-            <input type="text" class="form-control" id="device_model" name="device_model" placeholder="{{ lang.sort_label_model }}">
+            <input type="text" class="form-control" id="device_model" name="device_model" placeholder="{{ lang.sort_label_model }}" value="{{ session_cache.device_model }}">
           </div>
           <div class="form-group">
             <label class="sr-only" for="device_size_in_gb">{{ lang.size_in_gb_long }}</label>
-            <input type="text" class="form-control" id="device_size_in_gb" name="device_size_in_gb" placeholder="{{ lang.size_in_gb_long }}" onKeyPress="return numbersonly(this, event)">
+            <input type="text" class="form-control" id="device_size_in_gb" name="device_size_in_gb" placeholder="{{ lang.size_in_gb_long }}" value="{{ session_cache.device_size_in_gb }}" onKeyPress="return numbersonly(this, event)">
           </div>
           <div class="form-group">
             <label class="sr-only" for="device_identifier">{{ lang.sort_label_owner }}</label>
-            <input type="text" class="form-control" id="device_owner" name="device_owner" placeholder="{{ lang.sort_label_owner }}" value="{{ entry.device_owner }}">
+            <input type="text" class="form-control" id="device_owner" name="device_owner" placeholder="{{ lang.sort_label_owner }}" value="{{ entry.device_owner }}" value="{{ session_cache.device_owner }}">
           </div>
           <div class="form-group">
-            <input type="text" class="form-control" id="device_os" name="device_os" placeholder="{{ lang.operating_system_long }}">
+            <input type="text" class="form-control" id="device_os" name="device_os" placeholder="{{ lang.operating_system_long }}" value="{{ session_cache.device_os }}">
           </div>
           <div class="form-group">
-            <input type="text" class="form-control" id="device_time_deviation" name="device_time_deviation" placeholder="{{ lang.time_deviation }}">
+            <input type="text" class="form-control" id="device_time_deviation" name="device_time_deviation" placeholder="{{ lang.time_deviation }}" value="{{ session_cache.device_time_deviation }}">
           </div>
           <div class="form-group">
             <label class="sr-only" for="case_request_description">Kuvaus</label>
-            <input type="text" class="form-control" id="case_request_description" name="case_request_description" placeholder="{{ lang.device_description }}">
+            <input type="text" class="form-control" id="case_request_description" name="case_request_description" placeholder="{{ lang.device_description }}" value="{{ session_cache.case_request_description }}">
           </div>
           <div class="form-group">
             <label class="sr-only" for="device_identifier">{{ lang.device_identifier }}</label>
-            <input type="text" class="form-control" id="device_identifier" name="device_identifier" placeholder="{{ lang.device_identifier }}">
+            <input type="text" class="form-control" id="device_identifier" name="device_identifier" placeholder="{{ lang.device_identifier }}" value="{{ session_cache.device_identifier }}">
           </div>
           <div class="form-group">
-            <input type="text" class="form-control" id="device_item_number" name="device_item_number" placeholder="{{ lang.device_item_number }}" onKeyPress="return numbersonly(this, event)" value="{{ entry.device_item_number }}">
+            <input type="text" class="form-control" id="device_item_number" name="device_item_number" placeholder="{{ lang.device_item_number }}" value="{{ session_cache.device_item_number }}" onKeyPress="return numbersonly(this, event)" value="{{ entry.device_item_number }}">
           </div>
           <div class="form-group">
-            <input type="text" class="form-control" id="device_document" name="device_document" placeholder="{{ lang.device_document }}" value="{{ entry.device_document }}">
+            <input type="text" class="form-control" id="device_document" name="device_document" placeholder="{{ lang.device_document }}" value="{{ session_cache.device_document }}">
           </div>
           <div class="form-group">
             <input type="hidden" name="parent_id" value="{{ caserow.0.id }}">
@@ -833,7 +852,7 @@
         <form class="form" role="form" method="post" action="submit.php?type=device">
           <div class="form-group">
             <select style="text-align:left;" class="btn btn-default" name="device_type" id="device_type_1">
-              <option selected disabled value="">{{ lang.device_type }}</option>
+              <option selected disabled>{{ lang.device_type }}</option>
               {% for entry in devices %}
               <option value="{{ entry }}">{{ entry }}</option>
               {% endfor %}
@@ -841,7 +860,7 @@
               {% for entry in media_objs %}
               <option value="{{ entry }}">{{ entry }}</option>
               {% endfor %}
-            </select>
+            </select><span style="color:red;font-size:1.2em">&nbsp;*</span>
           </div>
           <div class="form-group">
             <select style="text-align:left;" class="btn btn-default" name="device_action" id="device_action">
@@ -853,7 +872,7 @@
               <option value="{{ entry }}">{% set jutun_vaihe = entry|split('|') %}{{ jutun_vaihe.1 }}</option>
               {% endif %}
               {% endfor %}
-            </select>
+            </select><span style="color:red;font-size:1.2em">&nbsp;*</span>
           </div>
           <div class="form-group">
             <select style="text-align:left;" class="btn btn-default" name="device_location" id="device_location">
@@ -861,43 +880,43 @@
               {% for entry in device_locations %}
               <option value="{{ entry }}">{{ entry }}</option>
               {% endfor %}
-            </select>
+            </select><span style="color:red;font-size:1.2em">&nbsp;*</span>
           </div>
           <div class="form-group">
             <label class="sr-only" for="device_manuf">{{ lang.sort_label_brand }}</label>
-            <input type="text" class="form-control" id="device_manuf" name="device_manuf" placeholder="{{ lang.sort_label_brand }}">
+            <input type="text" class="form-control" id="device_manuf" name="device_manuf" placeholder="{{ lang.sort_label_brand }}" value="{{ session_cache.device_manuf }}">
           </div>
           <div class="form-group">
             <label class="sr-only" for="device_model">{{ lang.sort_label_model }}</label>
-            <input type="text" class="form-control" id="device_model" name="device_model" placeholder="{{ lang.sort_label_model }}">
+            <input type="text" class="form-control" id="device_model" name="device_model" placeholder="{{ lang.sort_label_model }}" value="{{ session_cache.device_model }}">
           </div>
           <div class="form-group">
             <label class="sr-only" for="device_size_in_gb">{{ lang.size_in_gb_long }}</label>
-            <input type="text" class="form-control" id="device_size_in_gb" name="device_size_in_gb" placeholder="{{ lang.size_in_gb_long }}" onKeyPress="return numbersonly(this, event)">
+            <input type="text" class="form-control" id="device_size_in_gb" name="device_size_in_gb" placeholder="{{ lang.size_in_gb_long }}" value="{{ session_cache.device_size_in_gb }}" onKeyPress="return numbersonly(this, event)">
           </div>
           <div class="form-group">
             <label class="sr-only" for="device_identifier">{{ lang.sort_label_owner }}</label>
             <input type="text" class="form-control" id="device_owner" name="device_owner" placeholder="{{ lang.sort_label_owner }}" value="{{ caserow.0.case_suspect }}">
           </div>
           <div class="form-group">
-            <input type="text" class="form-control" id="device_os" name="device_os" placeholder="{{ lang.operating_system_long }}" value="{{ entry.device_os }}">
+            <input type="text" class="form-control" id="device_os" name="device_os" placeholder="{{ lang.operating_system_long }}" value="{{ session_cache.device_os }}">
           </div>
           <div class="form-group">
-            <input type="text" class="form-control" id="device_time_deviation" name="device_time_deviation" placeholder="{{ lang.time_deviation }}" value="{{ entry.device_time_deviation }}">
+            <input type="text" class="form-control" id="device_time_deviation" name="device_time_deviation" placeholder="{{ lang.time_deviation }}" value="{{ session_cache.device_time_deviation }}">
           </div>
           <div class="form-group">
             <label class="sr-only" for="case_request_description">{{ lang.description }}</label>
-            <input type="text" class="form-control" id="case_request_description" name="case_request_description" placeholder="{{ lang.device_description }}">
+            <input type="text" class="form-control" id="case_request_description" name="case_request_description" placeholder="{{ lang.device_description }}" value="{{ session_cache.case_request_description }}">
           </div>
           <div class="form-group">
             <label class="sr-only" for="device_identifier">{{ lang.device_identifier }}</label>
-            <input type="text" class="form-control" id="device_identifier" name="device_identifier" placeholder="{{ lang.device_identifier_serial }}">
+            <input type="text" class="form-control" id="device_identifier" name="device_identifier" placeholder="{{ lang.device_identifier_serial }}" value="{{ session_cache.device_identifier }}">
           </div>
           <div class="form-group">
-            <input type="text" class="form-control" id="device_item_number" name="device_item_number" placeholder="{{ lang.device_item_number }}" onKeyPress="return numbersonly(this, event)">
+            <input type="text" class="form-control" id="device_item_number" name="device_item_number" placeholder="{{ lang.device_item_number }}" onKeyPress="return numbersonly(this, event)" value="{{ session_cache.device_item_number }}">
           </div>
           <div class="form-group">
-            <input type="text" class="form-control" id="device_document" name="device_document" placeholder="{{ lang.device_document }}">
+            <input type="text" class="form-control" id="device_document" name="device_document" placeholder="{{ lang.device_document }}" value="{{ session_cache.device_document }}">
           </div>
           <div class="form-group">
             <input type="hidden" name="parent_id" value="{{ caserow.0.id }}">

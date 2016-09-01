@@ -10,7 +10,7 @@ session_start();
 
 /*
  If you wish to add your credentials and update kirjuri with git (not recommended in production environment)
- or by copying new version files into the folder, create this file as conf/mysql_credentials.php:
+ or by copying new version files into the folder, create this file as conf/mysql_credentials.php or /etc/kirjuri/mysql_credentials.php:
 -----------
  <?php
  return array(
@@ -37,7 +37,7 @@ function kirjuri_error_handler($errno, $errstr, $errfile, $errline) {
     logline('Error', $errno." ".$errstr.", File: ".$errfile.", line ".$errline);
 }
 
-function db($database)
+function db($database) // PDO Database connection
   {
     global $settings;
     global $mysql_config;
@@ -60,7 +60,7 @@ function db($database)
       }
   }
 
-function logline($event_level, $description)
+function logline($event_level, $description) // Add an entry to event_log
   {
     global $settings;
     global $mysql_config;

@@ -12,7 +12,8 @@ if ($settings['allow_attachments'] !== "1") {
 
 if (!file_exists($target_dir)) {
   if (mkdir($target_dir, 0755) !== True) {
-    echo "Can not create subdirectory to attachments/. Check folder permissions.";
+    trigger_error('Can not create subdirectory to attachments/. Check folder permissions.');
+    header('Location: ' . preg_replace('/\?.*/', '', $_SERVER['HTTP_REFERER'])."?case=".substr($_GET['case'], 0, 5)."&upload_status=error");
     die;
   };
 };

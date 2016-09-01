@@ -22,7 +22,7 @@
 {% endblock navi %} {% block content %}
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
   <h4>{{settings_file}}</h4>
-  <form class="form form-horizontal" role="form" method="post" action="settings.php">
+  <form class="form form-horizontal" role="form" method="post" action="submit.php">
     <input type="hidden" name="save" value="settings">
     <div class="form-group">
       <textarea style="background-color:#EEE;" rows="30" class="mceNoEditor textarea col-md-12" name="settings_conf">{{ settings_filedump }}</textarea>

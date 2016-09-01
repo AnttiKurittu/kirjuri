@@ -2,16 +2,13 @@
 require_once("./include_functions.php");
 
 $sort_j = isset($_GET['j']) ? $_GET['j'] : '';
-
 $get_case = isset($_GET['case']) ? $_GET['case'] : '';
 $get_show_status_message = isset($_GET['show_status_message']) ? $_GET['show_status_message'] : '';
 $get_drop_file = isset($_GET['drop_file']) ? $_GET['drop_file'] : '';
 $upload_status = isset($_GET['upload_status']) ? $_GET['upload_status'] : '';
 $returntab = isset($_GET['tab']) ? $_GET['tab'] : '';
 $dev_owner = urldecode(isset($_GET['dev_owner'])) ? $_GET['dev_owner'] : '';
-
 $filelist = array();
-
 $case_number = preg_replace("/[^0-9]/", "", (substr($get_case, 0, 5)));
 $confCrimes = file_get_contents('conf/crimes_autofill.conf');
 $kirjuri_database = db('kirjuri-database');
@@ -73,14 +70,11 @@ else
     $instructions_text = file_get_contents("conf/instructions_" . str_replace(" ", "_", strtolower($caserow[0]['classification'])) . ".txt");
   }
 
-
-
 $drop_file_target = "attachments/".$case_number."/".stripslashes(str_replace("./", "", str_replace("../", "", urldecode($get_drop_file))));
 if ( (!empty($get_drop_file) && (file_exists ($drop_file_target) ) )) {
   logline('Action', 'Attachment deleted: '.$drop_file_target);
   unlink($drop_file_target);
 }
-
 
 if (file_exists("attachments/".$case_number."/")) {
    $i = 0;
@@ -99,6 +93,7 @@ if (file_exists("attachments/".$case_number."/")) {
  };
 
 echo $twig->render('edit_request.html', array(
+    'session_cache' => $_SESSION['post_cache'],
     'free_disk_space' => disk_free_space("/"),
     'upload_status' => $upload_status,
     'filelist' => $filelist,

@@ -70,6 +70,14 @@ SCREENSHOTS
 
 CHANGELOG
 ------------
+2016-09-01:
+
+* Streamlined the handling of settings - settings now take effect right away on any pageload.
+* Kirjuri refuses to accept a device is type, action status and location have not been set.
+* Slight tweaks here and there.
+* Kirjuri triggers an error if default settings gets a new directive that is not found in the local settings in either /conf/settings.local or /etc/kirjuri/settings.local
+* Added some comments to the code.
+
 2016-08-31:
 
 * Cleaned up submit.php and got rid of the clumsy return.php.

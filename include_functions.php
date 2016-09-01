@@ -84,7 +84,7 @@ function logline($event_level, $description) // Add an entry to event_log
       }
   }
 
-set_error_handler(kirjuri_error_handler);
+set_error_handler('kirjuri_error_handler');
 
 if (file_exists('conf/mysql_credentials.php')) { // Read credentials
   $mysql_config = include('conf/mysql_credentials.php');

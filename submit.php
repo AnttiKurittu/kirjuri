@@ -248,7 +248,7 @@ if ($_GET['type'] === 'move_all') // Change all device locations and/or actions
       }
     if ($form_data['device_location'] != "NO_CHANGE")
       {
-        $sql = $kirjuri_database->prepare('UPDATE exam_requests SET device_location = :device_location, last_updated = NOW() WHERE parent_id=:parent_id AND is_removes != "1"');
+        $sql = $kirjuri_database->prepare('UPDATE exam_requests SET device_location = :device_location, last_updated = NOW() WHERE parent_id=:parent_id AND is_removed != "1"');
         $sql->execute(array(
             ':parent_id' => $_GET['returnid'],
             ':device_location' => $form_data['device_location']

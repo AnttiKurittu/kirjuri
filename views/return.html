@@ -1,7 +1,0 @@
-{% if returnpage == "devicememo" %}
-<META http-equiv="refresh" content="0;URL=device_memo.php?db_row={{ returnid }}&show_status_message=OK">
-{% elseif returnpage == "etusivu" %}
-<META http-equiv="refresh" content="0;URL=index.php">
-{% else %}
-<META http-equiv="refresh" content="0;URL=edit_request.php?case={{ returnid }}{% if show_status_message == "OK"%}&show_status_message=OK{% endif %}{{ anchor }}#{{ deviceid }}">
-{% endif %}

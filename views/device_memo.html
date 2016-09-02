@@ -29,10 +29,13 @@
 <ul class="nav nav-sidebar">
   <li><a href="settings.php"><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> {{ lang.settings }}</a></li>
 </ul>
-{% for entry in caserow %} {% if show_status_message == "OK" %}
+
+{% if error_status == "OK" %}
 <p>
-<div class="alert alert-success" role="alert" id="alert-success"><span style="color:green;"><i class="fa fa-check"></i> {{ lang.request_saved }} {{ entry.last_updated|date("H:i") }}.</span></div>
-</p>{% endif %} {% endfor %}
+<div class="alert alert-success" role="alert" id="alert-success"><span style="color:green;"><i class="fa fa-check"></i> {{ lang.request_saved }} {{ caserow.0.last_updated|date("H:i") }}.</span></div>
+</p>
+{% endif %}
+
 </div>
 {% endblock navi %}
 {% block content %}

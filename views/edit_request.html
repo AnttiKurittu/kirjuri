@@ -50,58 +50,47 @@
   <li><a href="settings.php"><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> {{ lang.settings }}</a></li>
 </ul>
 
-{% if show_status_message == "OK" %}
+{% if error_status == "OK" %}
 <p>
 <div class="alert alert-success" role="alert" id="alert-success"><span style="color:green;"><i class="fa fa-check"></i> {{ lang.request_saved }} {{ caserow.0.last_updated|date("H:i") }}.</span></div>
 </p>
-{% endif %}
-
-{% if show_status_message == "location_missing" %}
+{% elseif error_status == "location_missing" %}
 <p>
 <div class="alert alert-danger" role="alert" id="alert-danger"><span style="color:red;"><i class="fa fa-warning"></i> {{ lang.device_location }}<br>{{ lang.fill_all_fields_warning }}</span></div>
 </p>
-{% endif %}
-
-{% if show_status_message == "action_missing" %}
+{% elseif error_status == "action_missing" %}
 <p>
 <div class="alert alert-danger" role="alert" id="alert-danger"><span style="color:red;"><i class="fa fa-warning"></i> {{ lang.action_status }}<br>{{ lang.fill_all_fields_warning }}</span></div>
 </p>
-{% endif %}
-
-{% if show_status_message == "type_missing" %}
+{% elseif error_status == "type_missing" %}
 <p>
 <div class="alert alert-danger" role="alert" id="alert-danger"><span style="color:red;"><i class="fa fa-warning"></i> {{ lang.undefined_device_or_media_type}}<br>{{ lang.fill_all_fields_warning }}</span></div>
 </p>
-{% endif %}
-
-
-{% if upload_status == "ok" %}
+{% elseif error_status == "upload_OK" %}
 <p>
 <div class="alert alert-success" role="alert" id="alert-success"><span style="color:green;"><i class="fa fa-check"></i> {{ lang.file_notice_file_upload_succesfull }}</span></div>
 </p>
-{% elseif upload_status == "file_deleted" %}
+{% elseif error_status == "file_deleted" %}
 <p>
 <div class="alert alert-success" role="alert" id="alert-success"><i class="fa fa-check"></i> {{ lang.file_notice_file_deleted }}</div>
 </p>
-{% elseif upload_status == "filesize_too_large" %}
+{% elseif error_status == "filesize_too_large" %}
 <p>
 <div class="alert alert-danger" role="alert" id="alert-success"><i class="fa fa-warning"></i> {{ lang.file_notice_file_too_big }}</div>
 </p>
-{% elseif upload_status == "error" %}
+{% elseif error_status == "upload_error" %}
 <p>
 <div class="alert alert-danger" role="alert" id="alert-success"><i class="fa fa-warning"></i> {{ lang.file_notice_error }}</div>
 </p>
-{% elseif upload_status == "file_exists" %}
+{% elseif error_status == "file_exists" %}
 <p>
 <div class="alert alert-warning" role="alert" id="alert-success"><i class="fa fa-warning"></i> {{ lang.file_notice_file_exists }}</div>
 </p>
-{% elseif upload_status == "attachments_disabled" %}
+{% elseif error_status == "attachments_disabled" %}
 <p>
 <div class="alert alert-success" role="alert" id="alert-success"><i class="fa fa-check"></i> {{ lang.file_notice_attachments_disabled }}</div>
 </p>
 {% endif %}
-
-
 </div>
 {% endblock %}
 {% block content %}
@@ -239,14 +228,16 @@
           <td style="width:1px;">{{file.filetype}}</td>
           <td style="width:1px;white-space:nowrap;"><span class="pull-right">
             {{filesize_calc.bytesToSize(file.filesize)}}
+            {% if (settings.allow_attachments == "1") and (caserow.0.case_status == "2") %}
             <a href="edit_request.php?case={{ caserow.0.id }}&drop_file={{file.filename|url_encode}}&upload_status=file_deleted" onclick="return confirm('{{lang.file_remove_confirm}}')"><i class="fa fa-remove" style="color:red;"></i></span></a>
+            {% endif %}
           </td>
 
           {% endfor%}
           {% else %}
           <tr><td colspan="4">{{lang.no_attachments}}</td></tr>
           {% endif %}
-          {% if settings.allow_attachments == "1" %}
+          {% if (settings.allow_attachments == "1") and (caserow.0.case_status == "2") %}
           <tr><td colspan="4" class="active">
           <form class="form-inline" action="upload.php?case={{caserow.0.id}}" method="post" enctype="multipart/form-data">
 
@@ -256,9 +247,12 @@
               <button type="submit" class="btn btn-success btn-xs"><i class="fa fa-upload"></i> {{ lang.upload_attachment }}</button>
               <span class="pull-right">{{lang.max_attachment_size}} {{filesize_calc.bytesToSize(settings.max_attachment_size)}}, {{filesize_calc.bytesToSize(free_disk_space)}} {{ lang.free_space_left }}</span>
             </form>
-
           </td></tr>
           {% endif %}
+          {% for failure in failed_uploads %}
+          <tr><td colspan="999">&nbsp;&nbsp;<span style="color:red;"><i class="fa fa-warning"></i> <s>{{ failure }}</s></span></td></tr>
+          {% endfor %}
+
         </table>
 </div>
 </div>

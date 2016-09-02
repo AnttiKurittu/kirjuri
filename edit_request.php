@@ -1,9 +1,11 @@
 <?php
 require_once("./include_functions.php");
+$error_status = isset($_SESSION['error_status']) ? $_SESSION['error_status'] : '';
+$failed_uploads = isset($_SESSION['failed_uploads']) ? $_SESSION['failed_uploads'] : '';
+$_SESSION['failed_uploads'] = ""; // Reset the session variable
 $session_cache = isset($_SESSION['post_cache']) ? $_SESSION['post_cache'] : '';
 $sort_j = isset($_GET['j']) ? $_GET['j'] : '';
 $get_case = isset($_GET['case']) ? $_GET['case'] : '';
-$get_show_status_message = isset($_GET['show_status_message']) ? $_GET['show_status_message'] : '';
 $get_drop_file = isset($_GET['drop_file']) ? $_GET['drop_file'] : '';
 $upload_status = isset($_GET['upload_status']) ? $_GET['upload_status'] : '';
 $returntab = isset($_GET['tab']) ? $_GET['tab'] : '';
@@ -23,6 +25,7 @@ $query->execute(array(
     ':case_id' => $caserow[0]['case_id']
 ));
 $samerequest_file_number = $query->fetchAll(PDO::FETCH_ASSOC);
+
 if ($sort_j === "dev_owner")
   {
     $j = "device_owner";
@@ -92,7 +95,11 @@ if (file_exists("attachments/".$case_number."/")) {
  };
  };
 
+$error_status = $_SESSION['error_status'];
+$_SESSION['error_status'] = "";
 echo $twig->render('edit_request.html', array(
+    'failed_uploads' => $failed_uploads,
+    'error_status' => $error_status,
     'session_cache' => $session_cache,
     'free_disk_space' => disk_free_space("/"),
     'upload_status' => $upload_status,
@@ -102,7 +109,6 @@ echo $twig->render('edit_request.html', array(
     'j' => $sort_j,
     'sort_order' => $j,
     'returntab' => $returntab,
-    'show_status_message' => $get_show_status_message,
     'caserow' => $caserow,
     'mediarow' => $mediarow,
     'settings' => $settings,

@@ -133,7 +133,8 @@ if ($_GET['type'] === 'case_update') // Update examination request.
     logline("Action", "Updated request " . $form_data['case_name'] . "");
     $form_data['returnid'] = $_GET['db_row'];
     $_SESSION['post_cache'] = "";
-    header("Location: edit_request.php?case=".$form_data['returnid']."&show_status_message=OK");
+    $_SESSION['error_status'] = "OK";
+    header("Location: edit_request.php?case=".$form_data['returnid']);
     die;
   }
 
@@ -145,7 +146,8 @@ if ($_GET['type'] === 'report_notes') // Save case report notes.
         ':report_notes' => $form_data['report_notes']
     ));
     $_SESSION['post_cache'] = "";
-    header("Location: edit_request.php?case=".$form_data['returnid']."show_status_message=OK&tab=report_notes");
+    $_SESSION['error_status'] = "OK";
+    header("Location: edit_request.php?case=".$form_data['returnid']."&tab=report_notes");
     logline("Action", "Updated report notes, returnid=" . $form_data['returnid'] . "");
     die;
   }
@@ -158,7 +160,8 @@ if ($_GET['type'] === 'examiners_notes') // Save examiners private notes
         ':examiners_notes' => $form_data['examiners_notes']
     ));
     $_SESSION['post_cache'] = "";
-    header("Location: edit_request.php?case=".$form_data['returnid']."show_status_message=OK&tab=examiners_notes");
+    $_SESSION['error_status'] = "OK";
+    header("Location: edit_request.php?case=".$form_data['returnid']."&tab=examiners_notes");
     logline("Action", "Updated examiners notes, returnid=" . $form_data['returnid'] . "");
     die;
   }
@@ -185,6 +188,7 @@ if ($_GET['type'] === 'set_removed') // Remove device from case
     ));
     $form_data['returnid'] = $_GET['returnid'];
     $_SESSION['post_cache'] = "";
+    $_SESSION['error_status'] = "OK";
     header("Location: edit_request.php?case=".$form_data['returnid']."&tab=devices");
     die;
   }
@@ -202,6 +206,7 @@ if ($_GET['type'] === 'device_attach') // Associate a media/device with host dev
       }
     $form_data['returnid'] = $_GET['returnid'];
     $_SESSION['post_cache'] = "";
+    $_SESSION['error_status'] = "OK";
     header("Location: edit_request.php?case=".$form_data['returnid']."&tab=devices");
     die;
   }
@@ -214,6 +219,7 @@ if ($_GET['type'] === 'device_detach') // Remove device association
     ));
     $form_data['returnid'] = $_GET['returnid'];
     $_SESSION['post_cache'] = "";
+    $_SESSION['error_status'] = "OK";
     header("Location: edit_request.php?case=".$form_data['returnid']."&tab=devices");
     die;
   }
@@ -242,7 +248,7 @@ if ($_GET['type'] === 'move_all') // Change all device locations and/or actions
       }
     if ($form_data['device_location'] != "NO_CHANGE")
       {
-        $sql = $kirjuri_database->prepare('UPDATE exam_requests SET device_location = :device_location, last_updated = NOW() WHERE parent_id=:parent_id');
+        $sql = $kirjuri_database->prepare('UPDATE exam_requests SET device_location = :device_location, last_updated = NOW() WHERE parent_id=:parent_id AND is_removes != "1"');
         $sql->execute(array(
             ':parent_id' => $_GET['returnid'],
             ':device_location' => $form_data['device_location']
@@ -250,6 +256,11 @@ if ($_GET['type'] === 'move_all') // Change all device locations and/or actions
       }
     $form_data['returnid'] = $_GET['returnid'];
     $_SESSION['post_cache'] = "";
+    if($form_data['device_action'] === "NO_CHANGE" && $form_data['device_location'] === "NO_CHANGE") {
+      // Do nothing
+    } else {
+      $_SESSION['error_status'] = "OK";
+    }
     header("Location: edit_request.php?case=".$form_data['returnid']."&tab=devices");
     die;
   }
@@ -331,7 +342,8 @@ if ($_GET['type'] === 'devicememo') // Update individual device details.
     $form_data['returnid'] = $_GET['returnid'];
     logline("Action", "Updated device memo " . $form_data['id'] . "");
     $_SESSION['post_cache'] = "";
-    header("Location: device_memo.php?db_row=".$form_data['returnid']."&show_status_message=OK");
+    $_SESSION['error_status'] = "OK";
+    header("Location: device_memo.php?db_row=".$form_data['returnid']);
     die;
   }
 
@@ -346,15 +358,18 @@ if ($_GET['type'] === 'device') // Create new device entry
         $device_is_host = "0";
       }
     if(empty($form_data['device_type'])) {
-      header("Location: edit_request.php?case=".$form_data['parent_id']."&tab=devices&show_status_message=type_missing");
+      $_SESSION['error_status'] = "type_missing";
+      header("Location: edit_request.php?case=".$form_data['parent_id']."&tab=devices");
       die;
     }
     if($form_data['device_action'] === '1|?') {
-      header("Location: edit_request.php?case=".$form_data['parent_id']."&tab=devices&show_status_message=action_missing");
+      $_SESSION['error_status'] = "action_missing";
+      header("Location: edit_request.php?case=".$form_data['parent_id']."&tab=devices");
       die;
     }
     if($form_data['device_location'] === '?') {
-      header("Location: edit_request.php?case=".$form_data['parent_id']."&tab=devices&show_status_message=location_missing");
+      $_SESSION['error_status'] = "location_missing";
+      header("Location: edit_request.php?case=".$form_data['parent_id']."&tab=devices");
       die;
     }
 
@@ -386,7 +401,8 @@ if ($_GET['type'] === 'device') // Create new device entry
     ));
     logline("Action", "Added device " . $form_data['device_type'] . " " . $form_data['device_manuf'] . " " . $form_data['device_model'] . " with id [" . $form_data['device_identifier'] . "] to case " . $form_data['parent_id'] . "");
     $_SESSION['post_cache'] = "";
-    header("Location: edit_request.php?case=".$form_data['parent_id']."&tab=devices&show_status_message=OK");
+    $_SESSION['error_status'] = "OK";
+    header("Location: edit_request.php?case=".$form_data['parent_id']."&tab=devices");
     die;
   }
 

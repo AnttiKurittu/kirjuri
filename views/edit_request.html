@@ -510,7 +510,7 @@
   <div role="tabpanel" class="tab-pane{% if returntab == "devices" %} active{% endif %}" id="tab-devices">
   <div class="form-group"
   <!-- Button trigger modal -->
-  {% if caserow.0.case_status == "2" %}
+  {% if (caserow.0.case_status == "2") or ((caserow.0.case_status == "1") and (caserow.0.phone_investigator != "")) %}
   <button type="button" class="btn btn-primary btn-md" data-toggle="modal" data-target="#medialisays{{ entry.id }}">
   <i class="fa fa-plus"></i> {{ lang.add_device_or_media }}
   </button>{% endif %}
@@ -734,7 +734,7 @@
   </tr>
   {% endif %}
   {% endfor %}
-  {% if caserow.0.case_status == "2" %}
+  {% if (caserow.0.case_status == "2") or ((caserow.0.case_status == "1") and (caserow.0.phone_investigator != "")) %}
   <tr>
     <td></td>
     <td colspan="5">

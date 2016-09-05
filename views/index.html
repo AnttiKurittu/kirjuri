@@ -90,7 +90,7 @@
            {% if (order_by == "case_investigator ASC") %}
            <th class="active"><a href="index.php?year={{ dateStart|date("Y") }}&j=6{% if query_s %}&s={{ query_s }}{% endif %}{% if search_term %}&search={{ search_term|replace({"\+": "%2B"}) }}{% endif %}">{{ lang.investigator }} <i class="fa fa-sort-alpha-asc"></i></a></th>
            {% elseif (order_by == "case_investigator DESC") %}
-           <th class="active"><a href="index.php?year={{ dateStart|date("Y") }}&j=6&d=a{% if query_s %}&s={{ query_s }}{% endif %}{% if search_term %}&search={{ search_term|replace({"\+": "%2B"}) }}{% endif %}">Takt. tutkija <i class="fa fa-sort-alpha-desc"></i></a></th>
+           <th class="active"><a href="index.php?year={{ dateStart|date("Y") }}&j=6&d=a{% if query_s %}&s={{ query_s }}{% endif %}{% if search_term %}&search={{ search_term|replace({"\+": "%2B"}) }}{% endif %}">{{ lang.investigator }} <i class="fa fa-sort-alpha-desc"></i></a></th>
            {% else %}
            <th><a href="index.php?year={{ dateStart|date("Y") }}&j=6&d=a{% if query_s %}&s={{ query_s }}{% endif %}{% if search_term %}&search={{ search_term|replace({"\+": "%2B"}) }}{% endif %}">{{ lang.investigator }} <i class="fa fa-sort"></i></a></th>
            {% endif %}
@@ -104,7 +104,7 @@
            {% if (order_by == "phone_investigator ASC") %}
            <th class="active"><a href="index.php?year={{ dateStart|date("Y") }}&j=8{% if query_s %}&s={{ query_s }}{% endif %}{% if search_term %}&search={{ search_term|replace({"\+": "%2B"}) }}{% endif %}">{{ lang.mobile_examiner_short }} <i class="fa fa-sort-alpha-asc"></i></a></th>
            {% elseif (order_by == "phone_investigator DESC") %}
-           <th class="active"><a href="index.php?year={{ dateStart|date("Y") }}&j=8&d=a{% if query_s %}&s={{ query_s }}{% endif %}{% if search_term %}&search={{ search_term|replace({"\+": "%2B"}) }}{% endif %}">Puh. tutkija <i class="fa fa-sort-alpha-desc"></i></a></th>
+           <th class="active"><a href="index.php?year={{ dateStart|date("Y") }}&j=8&d=a{% if query_s %}&s={{ query_s }}{% endif %}{% if search_term %}&search={{ search_term|replace({"\+": "%2B"}) }}{% endif %}">{{ lang.mobile_examiner }} <i class="fa fa-sort-alpha-desc"></i></a></th>
            {% else %}
            <th><a href="index.php?year={{ dateStart|date("Y") }}&j=8&d=a{% if query_s %}&s={{ query_s }}{% endif %}{% if search_term %}&search={{ search_term|replace({"\+": "%2B"}) }}{% endif %}">{{ lang.mobile_examiner_short }} <i class="fa fa-sort"></i></a></th>
            {% endif %}

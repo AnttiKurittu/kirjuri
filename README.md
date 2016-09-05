@@ -8,7 +8,7 @@ OVERVIEW & LICENSE
 
 Kirjuri is developed by Antti Kurittu at the Helsinki Police Department as an internal tool. Original development released under the MIT license. Some components are distributed with their own licenses, please see folders & help for details.
 
-Kirjuri requires PHP5 and MySQL and uses Twig (http://twig.sensiolabs.org), Bootstrap (http://getbootstrap.com), Font Awesome (http://fontawesome.io), Freepik image resources (http://www.freepik.com), Chart.js (http://www.chartjs.org), TinyMCE editor (https://www.tinymce.com) and jQuery (https://jquery.com). You can install Kirjuri on a LAMP/WAMP/LEMP stack with just a few commands.
+It requires PHP and MySQL and uses Twig (http://twig.sensiolabs.org), Bootstrap (http://getbootstrap.com), Font Awesome (http://fontawesome.io), Freepik image resources (http://www.freepik.com), Chart.js (http://www.chartjs.org), TinyMCE editor (https://www.tinymce.com) and jQuery (https://jquery.com). You can install Kirjuri on a LAMP/WAMP/LEMP stack with just a few commands. Kirjuri has been tested on Windows, Max and Linux using PHP5 and PHP7.
 
 WARNING
 ------------
@@ -70,6 +70,10 @@ SCREENSHOTS
 
 CHANGELOG
 ------------
+2016-09-01:
+
+* Fixed some finnish variable names. Tested Kirjuri with PHP7, seems to work fine.
+
 2016-09-01:
 
 * Streamlined the handling of settings - settings now take effect right away on any pageload.

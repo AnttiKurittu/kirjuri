@@ -69,6 +69,7 @@ if ($_GET['type'] === 'login') {
       if (strpos($user['flags'], 'I') === false) {
         $_SESSION['user'] = $user;
       } else {
+        sleep(3);
         message("error", $_SESSION['lang']['account_inactive']);
         logline('action', 'Login attempt with inactive account: '.$_POST['username']);
         header("Location: login.php");

@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}
+<title>{{ lang.add_an_examination_request }} - {{ settings.title_text }}</title>
+{% endblock title %}
+{% block content %}
+<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+  <h1 class="page-header">{{ lang.log_in }}</h1>
+  <form class="form-horizontal" role="form" method="post" action="submit.php?type=login">
+    <div class="form-group">
+      <label for="username" class="col-sm-1 control-label">{{ lang.username }}</label>
+      <div class="col-sm-4">
+        <input type="text" class="form-control" id="username" name="username">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="password" class="col-sm-1 control-label">{{ lang.password }} </label>
+      <div class="col-sm-4">
+        <input type="password" class="form-control" id="password" name="password"maxlength="64">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="password" class="col-sm-1 control-label"></label>
+      <div class="col-sm-4">
+        <button type="submit" class="btn btn-success" id="request_save_button"><i class="fa fa-sign-in"></i> {{ lang.log_in }}</button>
+        <a href="submit.php?type=anon_login" class="btn btn-default">{{ lang.anon_login_button }}</a>
+      </div>
+    </div>
+  </form>
+</div>
+{% endblock %}

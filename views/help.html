@@ -1,25 +1,7 @@
 {% extends 'base.html' %} {% block title %}
 <title>{{ lang.help_settings }} - {{ settings.title_text }}</title>
-{% endblock title %} {% block navi %}
-<ul class="nav nav-sidebar">
-  <li><a href='index.php?year={{ dateStart|date("Y") }}'><span class="glyphicon glyphicon-home" aria-hidden="true"></span> {{ lang.front_page }} {{ dateStart|date("Y") }}<span class="sr-only">(current)</span></a></li>
-</ul>
-<ul class="nav nav-sidebar">
-  <li>
-    <a href='statistics.php?year={{ dateStart|date("Y") }}'> <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> {{ lang.statistics }} {{ dateStart|date("Y") }}</a>
-  </li>
-</ul>
-<ul class="nav nav-sidebar">
-  <li><a href="add_case.php"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{ lang.add_a_request }}</a></li>
-</ul>
-<ul class="nav nav-sidebar">
-  <li {% if not debug %}class="active" {% endif %}><a href="help.php"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> {{ lang.help_licenses }}</a></li>
-</ul>
-<ul class="nav nav-sidebar">
-  <li {% if debug%}class="active" {% endif %}><a href="settings.php"><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> {{ lang.settings }}</a></li>
-</ul>
-</div>
-{% endblock navi %} {% block content %}
+{% endblock title %}
+{% block content %}
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
   <h1 class="page-header">Kirjuri</h1>
 <pre>{{ readme }}</pre>

@@ -1,6 +1,6 @@
 <?php
 require_once("./include_functions.php");
-    $kirjuri_database = db('kirjuri-database');
+    // COMMENTEDOUTFORTESTING $kirjuri_database = db('kirjuri-database');
     $sql = $kirjuri_database->prepare('SELECT device_action FROM exam_requests where id=:id AND parent_id != id');
     $sql->execute(array(
         ':id' => $_GET['db_row']

@@ -110,22 +110,76 @@
           <hr>
           {% endblock logo %}
           {% block navi %}
+
+          {% if session.user %}
+
           <ul class="nav nav-sidebar">
-            <li><a href='index.php?year={{ dateStart|date("Y") }}'><span class="glyphicon glyphicon-home" aria-hidden="true"></span> {{ lang.front_page }} {{ dateStart|date("Y") }}<span class="sr-only">(current)</span></a></li>
+            <li{% if "index.php" in settings.self %} class="active"{% endif %}><a href='index.php?year={{ dateStart|date("Y") }}'><span class="glyphicon glyphicon-home" aria-hidden="true"></span> {{ lang.front_page }} {{ dateStart|date("Y") }}<span class="sr-only">(current)</span></a></li>
+          </ul>
+
+          {% if ("edit_request.php" in settings.self) %}
+          <ul class="nav nav-sidebar">
+            <li role="presentation"{% if not returntab %} class="active"{% endif %}><a href="#tab-exam-request" aria-controls="tab-exam-request" role="tab" data-toggle="tab">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {{ caserow.0.case_id }}/{{ caserow.0.case_added_date|date("Y") }} {{ caserow.0.case_name }}</a></li>
+            <li role="presentation"{% if returntab == "devices" %} class="active"{% endif %}><a href="#tab-devices" aria-controls="tab-devices" role="tab" data-toggle="tab">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {% if caserow.0.case_devicecount >= "1" %}<b>{% endif %}{{ lang.devices_and_medias }} {% if caserow.0.case_devicecount >= "1" %}</b><span class="badge pull-right">{{ caserow.0.case_devicecount }}</span>{% endif %}</a></li>
+            <li role="presentation"{% if returntab == "report_notes" %} class="active"{% endif %}><a href="#tab-report_notes" aria-controls="tab-report_notes" role="tab" data-toggle="tab">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {% if caserow.0.report_notes %}<b>{% endif %}{{ lang.examination_report }}{% if caserow.0.report_notes %}</b>{% endif %}</a></li>
+            <li role="presentation"{% if returntab == "examiners_notes" %} class="active"{% endif %}><a href="#tab-examiners_notes" aria-controls="tab-examiners_notes" role="tab" data-toggle="tab">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {% if caserow.0.examiners_notes %}<b>{% endif %}{{ lang.examination_notes }}{% if caserow.0.examiners_notes %}</b>{% endif %}</a></li>
+            <li role="presentation"{% if returntab == "ohjeet" %} class="active"{% endif %}><a href="#tab-ohjeet" aria-controls="tab-ohjeet" role="tab" data-toggle="tab">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {{ lang.crime_type_instructions }}</a></li>
+          </ul>
+          {% endif %}
+
+          {% if ("device_memo.php" in settings.self) %}
+          <ul class="nav nav-sidebar">
+            <li role="presentation"><a href="edit_request.php?case={{ caserow.0.id }}">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {{ caserow.0.case_id }}/{{ caserow.0.case_added_date|date("Y") }} {{ caserow.0.case_name }}</a></li>
+            <li role="presentation"><a href="edit_request.php?case={{ caserow.0.id }}&tab=devices">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {% if caserow.0.case_devicecount >= "1" %}<b>{% endif %}{{ lang.devices_and_medias }} {% if caserow.0.case_devicecount >= "1" %}</b><span class="badge pull-right">{{ caserow.0.case_devicecount }}</span>{% endif %}</a></li>
+            <li role="presentation" class="active"><a href="#">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {{ mediarow.0.device_type }} </a></li>
+            <li role="presentation"><a href="edit_request.php?case={{ caserow.0.id }}&tab=report_notes">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {% if caserow.0.report_notes %}<b>{% endif %}{{ lang.examination_report }}{% if caserow.0.report_notes %}</b>{% endif %}</a></li>
+            <li role="presentation"><a href="edit_request.php?case={{ caserow.0.id }}&tab=examiners_notes">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {% if caserow.0.examiners_notes %}<b>{% endif %}{{ lang.examination_notes }}{% if caserow.0.examiners_notes %}</b>{% endif %}</a></li>
+            <li role="presentation"><a href="edit_request.php?case={{ caserow.0.id }}&tab=ohjeet">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {{ lang.crime_type_instructions }}</a></li>
+          </ul>
+          {% endif %}
+
+          <ul class="nav nav-sidebar">
+            <li{% if "statistics.php" in settings.self %} class="active"{% endif %}{% if session.user.access >= 3 %} class="disabled"{% endif %}><a href='statistics.php?year={{ dateStart|date("Y") }}'> <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> {{ lang.statistics }} {{ dateStart|date("Y") }}</a></li>
           </ul>
           <ul class="nav nav-sidebar">
-            <li><a href='statistics.php?year={{ dateStart|date("Y") }}'> <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> {{ lang.statistics }} {{ dateStart|date("Y") }}</a></li>
+            <li{% if "add_case.php" in settings.self %} class="active"{% endif %}><a href="add_case.php"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{ lang.add_a_request }}</a></li>
           </ul>
           <ul class="nav nav-sidebar">
-            <li><a href="add_case.php"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{ lang.add_a_request }}</a></li>
+            <li{% if "help.php" in settings.self %} class="active"{% endif %}><a href="help.php"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> {{ lang.help_licenses }}</a></li>
           </ul>
           <ul class="nav nav-sidebar">
-            <li><a href="help.php"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> {{ lang.help_licenses }}</a></li>
+            <li{% if "settings.php" in settings.self %} class="active"{% endif %}{% if session.user.access > 1 %} class="disabled"{% endif %}><a href="settings.php"><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> {{ lang.settings }}</a></li>
           </ul>
           <ul class="nav nav-sidebar">
-            <li><a href="settings.php"><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> {{ lang.settings }}</a></li>
+            <li{% if "users.php" in settings.self %} class="active"{% endif %}{% if session.user.access > 0 %} class="disabled"{% endif %}><a href="users.php"><i class="fa fa-users"></i> {{ lang.manage_users }}</a></li>
           </ul>
+          {% if session.user.username %}
+          <ul class="nav nav-sidebar">
+            <li><a href="submit.php?type=logout"><i class="fa fa-user"></i> {{ lang.log_out }} {{ session.user.name }} </a></li>
+          </ul>
+          {% else %}
+          <ul class="nav nav-sidebar">
+            <li><a href="login.php"><i class="fa fa-sign-in"></i> {{ lang.log_in }}</a></li>
+          </ul>
+          {% endif %}
+
+          {% endif %}
+
+          <!-- info message -->
+          {% if session.message.type == "info"%}
+          <div style="background:#9F9;padding:10px;-webkit-box-shadow: 10px 10px 15px -4px rgba(0,0,0,0.27);-moz-box-shadow: 10px 10px 15px -4px rgba(0,0,0,0.27);box-shadow: 10px 10px 15px -4px rgba(0,0,0,0.27);" id="alert-success"><i class="fa fa-info-circle" style="color:green;"></i> {{ session.message.content }}</div>
+          {% endif %}
+
+          <!-- error message -->
         </div>
+        {% if session.message.type == "error"%}
+          <div class="col-sm-offset-3 col-md-offset-2 text-center" style="background:#F66;padding-top:10px;padding-bottom:10px;
+          -webkit-box-shadow: 0px 0px 20px 7px rgba(0,0,0,0.27);
+          -moz-box-shadow: 0px 0px 20px 7px rgba(0,0,0,0.27);
+          box-shadow: 0px 0px 20px 7px rgba(0,0,0,0.27);">
+          {{ session.message.content }}<span class="pull-right" style="color:white;"><i class="fa fa-warning"></i>&nbsp;&nbsp;&nbsp;</span>
+        </div>
+        {% endif %}
         {% endblock navi %}
         {% block content %}
         {% endblock %}

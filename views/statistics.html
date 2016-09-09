@@ -1,29 +1,11 @@
 {% extends 'base.html' %} {% block title %}
 <title>{{ lang.statistics }} - {{ settings.title_text }}</title>
-{% endblock title %} {% block navi %}
-<ul class="nav nav-sidebar">
-  <li><a href='index.php?year={{ dateStart|date("Y") }}'><span class="glyphicon glyphicon-home" aria-hidden="true"></span> {{ lang.front_page }} {{ dateStart|date("Y") }}<span class="sr-only">(current)</span></a></li>
-</ul>
-<ul class="nav nav-sidebar">
-  <li class="active">
-    <a href='statistics.php?year={{ dateStart|date("Y") }}'>
-    <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> {{ lang.statistics }} {{ dateStart|date("Y") }}</a>
-  </li>
-</ul>
-<ul class="nav nav-sidebar">
-  <li><a href="add_case.php"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{ lang.add_a_request }}</a></li>
-</ul>
-<ul class="nav nav-sidebar">
-  <li><a href="help.php"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> {{ lang.help_licenses }}</a></li>
-</ul>
-<ul class="nav nav-sidebar">
-  <li><a href="settings.php"><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> {{ lang.settings }}</a></li>
-</ul>
-</div> {% endblock navi %} {% block content %}
+{% endblock title %}
+{% block content %}
 <div class="col-sm-9 col-sm-offset-3
   col-md-10 col-md-offset-2 main">
 <h1 class="page-header">{{ lang.statistics }} {{ dateStart|date("Y") }} <a href='statistics.php?year={{ (dateStart|date("Y") - 1 ) }}'><span class="glyphicon glyphicon-triangle-left" aria-hidden="true"></span></a> <a href='statistics.php?year={{ (dateStart|date("Y") + 1 ) }}'><span class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span></a> </h1>
-<div class="col-md-3 text-center">
+<div class="col-md-3 col-sm-3 text-center">
   <h4>{{ lang.status_of_requests }}</h4>
   <canvas id="statusKaavio" style="width:200px;height:200px;"></canvas>
   <script>
@@ -51,7 +33,7 @@
     var myNewChart = new Chart(ctx).Doughnut(data);
   </script>
 </div>
-<div class="col-md-3 text-center">
+<div class="col-md-3 col-sm-3  text-center">
   <h4>{{ lang.requests_containing_phones }}</h4>
   <canvas id="puhelinKaavio" style="width:200px;height:200px;"></canvas>
   <script>
@@ -73,7 +55,7 @@
     var myNewChart = new Chart(ctx).Doughnut(data);
   </script>
 </div>
-<div class="col-sm-3 text-center">
+<div class="col-md-3 col-sm-3 text-center">
   <h4>{{ lang.requests_by_classification }}</h4>
   <canvas id="classificationKaavio" style="width:200px;height:200px;"></canvas>
   <script>
@@ -91,7 +73,7 @@
     var myNewChart = new Chart(ctx).Doughnut(data);
   </script>
 </div>
-<div class="col-sm-3 text-center">
+<div class="col-sm-3 col-md-3 text-center">
   <h4>{{ lang.requests_by_unit }}</h4>
   <canvas id="yksikkoKaavio" style="width:200px;height:200px;"></canvas>
   <script>
@@ -109,7 +91,8 @@
     var myNewChart = new Chart(ctx).Doughnut(data);
   </script>
 </div>
-<div class="col-md-12" style="height:40px;"></div>
+
+<div class="col-md-12">
 <h3>{{ lang.examined_devices_for_calendar_year }}</h3>
 <table class="table table-striped">
   <thead>
@@ -174,7 +157,6 @@
     {% endfor %}
   </tr>
 </table>
-<div class="col-sm-12">
   <canvas id="exam_requestChart" style="width:100%;height:400px;"></canvas>
   <script>
     var ctx = document.getElementById("exam_requestChart").getContext("2d");
@@ -215,8 +197,7 @@
     };
     var myNewChart = new Chart(ctx).Line(data);
   </script>
-</div>
-<div class="col-md-12" style="height:40px;"></div>
+
 <h3>{{ lang.examined_data_as_gb_per_month }}</h3>
 <table class="table">
   <thead>

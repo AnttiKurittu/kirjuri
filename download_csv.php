@@ -1,7 +1,9 @@
 <?php
 $case_number = preg_replace("/[^0-9]/", "", (substr($_GET['case'], 0, 5)));
 require_once("./include_functions.php");
-$kirjuri_database = db('kirjuri-database');
+protect_page(2); // View only or higher
+
+// COMMENTEDOUTFORTESTING $kirjuri_database = db('kirjuri-database');
 $query            = $kirjuri_database->prepare('SELECT * FROM exam_requests WHERE parent_id = :id AND is_removed != "1" ORDER BY id');
 $query->execute(array(
   ':id' => $case_number

@@ -20,16 +20,19 @@ Familiarize yourself with the software prior to installing it into a production 
 INSTALLATION
 ------------
 
-* Clone the repository to your server.
-* Copy the files to your webroot directory (for example ```/usr/share/nginx/html```)
-* Run ```conf/create_tables.sql``` against your database to create the tables needed for operation. (```mysql -u root -pyourpassword < create_tables.sql```)
-* Set your mysql root/user password by editing ```include_functions.php``` or copy the commented out php code to ```conf/mysql_credentials.php```. This file is ignored so you can pull updates without having to re-edit the source.
-* Set your preferred settings by editing ```conf/settings.conf```. Reload the settings page to apply new settings.
-* Set ```cache``` folder permissions so that the www-server process can write into it or disable caching by commenting it out on ```include_functions.php```.
-* Set ```attachments``` folder permissions so that the www-server process can read, create directories and write files into it.
-* If you wish to enable attachments, set the settings, server and PHP directives to match the maximum allowed file size.
-* If you wish to enable editing the crime list or settings from the web UI, set the server process to own ```conf/settings.conf``` and ```conf/crimes_autofill.conf```. This is insecure, and not recommended but might be preferable in some circumstances.
-* If you decide to test or run Kirjuri in your organization, drop me a line via email or a shoutout at Twitter: https://twitter.com/AnttiKurittu
+1 Clone the repository to your server and copy the files to your webroot directory (for example ```/usr/share/nginx/html```)
+2 Set ```cache```, ```attachments``` and ```conf``` folder permissions so that the www-server process can read, create directories and write files into them.
+3 Navigate to ```http://yourwebserver/install.php``` and run the installation script. The script will ask for your MySQL credentials, create the necessary database, tables and write two files:
+  * ```conf/mysql_credentials.php``` which stores you MySQL credentials
+  * ```conf/settings.local``` which stores your local changes to the settings file.
+  * These files will not be updated with ```git pull```
+  * You can place these files into /etc/kirjuri if you wish and they will be read from there.
+4 Move the install script somewhere safe so that users can't accidentally run it and cause problems.
+5 Log in with "admin" / "admin" and create your users.
+6 Go create your first examination request, assign it to an user and add devices!
+
+If you wish to enable larger attachments, set the settings, server and PHP directives to match the maximum allowed file size.
+For any questions or suggestions, drop me a line via email or a shoutout at Twitter: https://twitter.com/AnttiKurittu. I'd also love to know if you use Kirjuri in your organization!
 
 USAGE
 ------------
@@ -39,8 +42,7 @@ USAGE
 * Manipulating device actions and locations takes effect immediately, other information needs to be saved with the save button.
 * When all devices have been marked as "done" or "no action" Kirjuri will allow you to close the request.
 * You can move, remove or edit the devices from the device listing or individual device memo.
-* To reload changes made to the settings, visit the "Settings" page on the web app - this will refresh language files and settings.
-* Optionally you can clear the cache to reset your PHPSESSID token, which will reload your settings.
+* Users have four levels of access; admin, user, view only and add only. Create your users accordingly. If you wish to effectively disable user management give the anonymous user admin access.
 
 LOCALIZATION
 ------------
@@ -53,7 +55,12 @@ LOCALIZATION
 
 UPDATING FROM A PREVIOUS VERSION
 ------------
-* If you are updating Kirjuri from the limited release version to the current version, you can migrate your databases by running ```migrate_old_tables.sql``` against your MySQL server. This will create the new tables and insert data from the old tables to the new one. It will also truncate your event log, as there was a bug in the old event log structure where the ID didn't auto-increment. Please back up your existing installation and database before migrating.
+
+* Back up your existing installation and database!
+
+* If you are updating from a previous version without user management, run "/install.php" with your credentials and existing database name. The script will fail at creating a database because it already exists, but will write the users table on your existing installation. The script will also add some columns to exam_requests for future features.
+
+* If you are updating Kirjuri from the finnish limited release version to the current version, you can migrate your databases by running ```migrate_old_tables.sql``` against your MySQL server. This will create the new tables and insert data from the old tables to the new one. It will also truncate your event log, as there was a bug in the old event log structure where the ID didn't auto-increment. Please back up your existing installation and database before migrating.
 
 LOOKING TO PARTICIPATE?
 ------------
@@ -70,6 +77,20 @@ SCREENSHOTS
 
 CHANGELOG
 ------------
+2016-09-09:
+
+* Big update!
+* Implemented user management.
+  * Passwords are saved as simple sha256 hashes, which should be enough for this use case and don't require dependencies
+  * Users are stored in the database
+* Simplified installation with an install script.
+  * Run /install.php to rebuild database and add user tables
+* Improved error / info message system.
+* Removed clumsiness and utilized the session variable more.
+* Streamlined template rendering a bit.
+* Added comments to the code.
+* Please notify me of any bugs you find, I've tested the new version but some might have slipped by.
+
 2016-09-01:
 
 * Fixed some finnish variable names. Tested Kirjuri with PHP7, seems to work fine.

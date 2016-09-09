@@ -1,5 +1,6 @@
 <?php
 require_once("./include_functions.php");
+protect_page(3); // View only or higher.
 ?>
 <html>
   <head>
@@ -15,7 +16,7 @@ require_once("./include_functions.php");
 <?php
 if ($_GET['type'] === "examination_request")
   {
-    $kirjuri_database = db('kirjuri-database');
+    // COMMENTEDOUTFORTESTING $kirjuri_database = db('kirjuri-database');
     $query = $kirjuri_database->prepare('select * FROM exam_requests WHERE id=:id AND parent_id=id');
     $query->execute(array(
         ':id' => $_GET['db_row']
@@ -31,21 +32,21 @@ Inv. " . $row['case_investigator'] . " (" . $row['case_investigator_unit'] . ")"
 
 if ($_GET['type'] === "device")
   {
-    $kirjuri_database = db('kirjuri-database');
+    // COMMENTEDOUTFORTESTING $kirjuri_database = db('kirjuri-database');
     $query = $kirjuri_database->prepare('select parent_id FROM exam_requests WHERE id=:db_row');
     $query->execute(array(
         ':db_row' => $_GET['db_row']
     ));
     $parentrow = $query->fetch(PDO::FETCH_ASSOC);
     $parent = $parentrow['parent_id'];
-    $kirjuri_database = db('kirjuri-database');
+    // COMMENTEDOUTFORTESTING $kirjuri_database = db('kirjuri-database');
     $query = $kirjuri_database->prepare('select * FROM exam_requests WHERE id=:db_row AND id = parent_id LIMIT 1');
     $query->execute(array(
         ':db_row' => $parent
     ));
     $parentrow = $query->fetch(PDO::FETCH_ASSOC);
     echo "<b>" . $parentrow['case_id'] . "/" . date("y", strtotime($parentrow['case_added_date'])) . " " . $parentrow['case_name'] . " " . $parentrow['case_file_number'] . "</b><br>";
-    $kirjuri_database = db('kirjuri-database');
+    // COMMENTEDOUTFORTESTING $kirjuri_database = db('kirjuri-database');
     $query = $kirjuri_database->prepare('select * FROM exam_requests WHERE id=:db_row AND id != parent_id LIMIT 1');
     $query->execute(array(
         ':db_row' => $_GET['db_row']

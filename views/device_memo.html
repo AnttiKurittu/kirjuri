@@ -4,40 +4,6 @@
 {{caserow.0.case_id}}/{{ caserow.0.case_added_date|date("Y") }}/{{mediarow.0.id}} {{ mediarow.0.device_type }}: {{ mediarow.0.device_manuf }} {{ mediarow.0.device_model }} - {{ settings.title_text }}
 </title>
 {% endblock title %}
-{% block navi %}
-<ul class="nav nav-sidebar">
-  <li><a href='index.php?year={{ dateStart|date("Y") }}'><span class="glyphicon glyphicon-home" aria-hidden="true"></span> {{ lang.front_page }} {{ dateStart|date("Y") }}<span class="sr-only">(current)</span></a></li>
-</ul>
-<ul class="nav nav-sidebar">
-  <li role="presentation"><a href="edit_request.php?case={{ caserow.0.id }}">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {{ caserow.0.case_id }}/{{ caserow.0.case_added_date|date("Y") }} {{ caserow.0.case_name }}</a></li>
-  <li role="presentation"><a href="edit_request.php?case={{ caserow.0.id }}&tab=devices">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {% if caserow.0.case_devicecount >= "1" %}<b>{% endif %}{{ lang.devices_and_medias }} {% if caserow.0.case_devicecount >= "1" %}</b><span class="badge pull-right">{{ caserow.0.case_devicecount }}</span>{% endif %}</a></li>
-  <li role="presentation"><a href="edit_request.php?case={{ caserow.0.id }}&tab=report_notes">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {% if caserow.0.report_notes %}<b>{% endif %}{{ lang.examination_report }}{% if caserow.0.report_notes %}</b>{% endif %}</a></li>
-  <li role="presentation"><a href="edit_request.php?case={{ caserow.0.id }}&tab=examiners_notes">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {% if caserow.0.examiners_notes %}<b>{% endif %}{{ lang.examiners_private_notes }}{% if caserow.0.examiners_notes %}</b>{% endif %}</a></li>
-  <li role="presentation"><a href="edit_request.php?case={{ caserow.0.id }}&tab=ohjeet">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {{ lang.crime_type_instructions }}</a></li>
-</ul>
-<ul class="nav nav-sidebar">
-  <li>
-    <a href='statistics.php?year={{ dateStart|date("Y") }}'> <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> {{ lang.statistics }} {{ dateStart|date("Y") }}</a>
-  </li>
-</ul>
-<ul class="nav nav-sidebar">
-  <li><a href="add_case.php"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{ lang.add_a_request }}</a></li>
-</ul>
-<ul class="nav nav-sidebar">
-  <li><a href="help.php"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> {{ lang.help_licenses }}</a></li>
-</ul>
-<ul class="nav nav-sidebar">
-  <li><a href="settings.php"><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> {{ lang.settings }}</a></li>
-</ul>
-
-{% if error_status == "OK" %}
-<p>
-<div class="alert alert-success" role="alert" id="alert-success"><span style="color:green;"><i class="fa fa-check"></i> {{ lang.request_saved }} {{ caserow.0.last_updated|date("H:i") }}.</span></div>
-</p>
-{% endif %}
-
-</div>
-{% endblock navi %}
 {% block content %}
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
   <ol class="breadcrumb">

@@ -1,6 +1,8 @@
 <?php
 require_once("./include_functions.php");
-$kirjuri_database = db('kirjuri-database');
+protect_page(2); // View only or higher.
+
+// COMMENTEDOUTFORTESTING $kirjuri_database = db('kirjuri-database');
 $dateStart = $_GET['year'] . ":01:01 00:00:00";
 $dateStop = ($_GET['year'] + 1) . ":01:01 00:00:00";
 $query = $kirjuri_database->prepare('select * FROM exam_requests WHERE is_removed != "1" AND id = parent_id AND case_added_date BETWEEN :datestart AND :datestop');
@@ -61,7 +63,10 @@ $query->execute(array(
 ));
 $summa = $query->fetch(PDO::FETCH_ASSOC);
 $summed_size = $summa['SUM(device_size_in_gb)'];
+
+$_SESSION['message_set'] = false;
 echo $twig->render('statistics.html', array(
+    'session' => $_SESSION,
     'forensic_investigators' => $settings_contents['forensic_investigators'],
     'statistics_chart_colors' => $settings_contents['statistics_chart_colors'],
     'devices' => $_SESSION['lang']['devices'],

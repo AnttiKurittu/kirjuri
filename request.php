@@ -1,6 +1,9 @@
 <?php
+
+// AJAX generator page
+
 require_once("./include_functions.php");
-$kirjuri_database = db('kirjuri-database');
+// COMMENTEDOUTFORTESTING $kirjuri_database = db('kirjuri-database');
 $case_file_number = substr($_GET['case_file_number'], 0, 18);
 $search_term = isset($_GET['search']) ? $_GET['search'] : '';
 

@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% block title %}
+<title>{{ lang.help_settings }} - {{ settings.title_text }}</title>
+{% endblock title %}
+{% block content %}
+<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+  <h3>{{ lang.user_management_header}} </h3>
+  <table class="table table-striped">
+    <thead>
+      <th>{{ lang.id }}</th>
+      <th>{{ lang.username|capitalize}}</th>
+      <th>{{ lang.name|capitalize }}</th>
+      <th>{{ lang.access_level|capitalize }}</th>
+      <th>{{ lang.forensic_examiner_long|capitalize }}</th>
+      <th>{{ lang.mobile_examiner_long|capitalize }}</th>
+      <th>{{ lang.active|capitalize }}</th>
+    </thead>
+    {% for user in session.all_users %}
+    <tr {% if session.user.username == user.username %}class="info"{% elseif 'I' in user.flags %}class="warning"{% endif %}>
+      <td>{{ user.id }}</td>
+      <td><a href="users.php?populate={{user.id}}">{{ user.username }}</a>{% if session.user.username == user.username %} ({{ lang.logged_in|lower }}){% endif %}{% if 'I' in user.flags %} ({{ lang.flag_inactive|lower }}){% endif %}</td>
+      <td>{{ user.name }}</td>
+      <td>{% if user.access == 0 %}{{ lang.level_admin }}{% elseif user.access == 1 %}{{ lang.level_user }}{% elseif user.access == 2 %}{{ lang.level_viewonly }}{% elseif user.access == 3 %}{{ lang.level_addonly }}{% else %}???{% endif %}</td>
+      <td>{% if 'F' in user.flags == true %}<i style="color:green;" class="fa fa-check"></i>{% else %}<i style="color:red;" class="fa fa-remove"></i>{% endif %}</td>
+      <td>{% if 'M' in user.flags == true %}<i style="color:green;" class="fa fa-check"></i>{% else %}<i style="color:red;" class="fa fa-remove"></i>{% endif %}</td>
+      <td>{% if 'I' in user.flags == true %}<i style="color:red;" class="fa fa-remove"></i>{% else %}<i style="color:green;" class="fa fa-check"></i>{% endif %}</td>
+      <td></td>
+    </tr>
+    {% endfor %}
+  </table>
+
+<form class="form-horizontal" role="form" method="post" action="submit.php?type=create_user">
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">{{ lang.create_or_modify }}</h3>
+  </div>
+  <div class="panel-body">
+    <div class="form-group">
+      <label for="username" class="col-md-2 control-label">{{ lang.username }}</label>
+      <div class="col-md-10">
+        {% if fields.username %}
+        <input type="text" class="form-control" id="username" name="username" value="{{ fields.username }}" readonly>
+        {% else %}
+        <input type="text" class="form-control" id="username" name="username" plahceholder="{{ lang.new_name_to_create }}">
+        {% endif %}
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="name" class="col-md-2 control-label">{{ lang.real_name }}</label>
+      <div class="col-md-10">
+        <input type="text" class="form-control" id="name" name="name" value="{{ fields.name }}">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="password" class="col-md-2 control-label">{{ lang.password }}</label>
+      <div class="col-md-10">
+        <input type="password" class="form-control" id="password" name="password" placeholder="{% if fields %}{{ lang.enter_new_to_change }}{% endif %}">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="access" class="col-md-2 control-label">{{ lang.access_level }}</label>
+      <div class="col-md-10">
+        <select class="btn btn-default" name="access" id="access">
+          <option value="A" {% if fields.access == "0" %}selected{% endif %}>{{ lang.level_admin }}</option>
+          <option value="1" {% if fields.access == "1" %}selected{% endif %}{% if not fields %}selected{% endif %}>{{ lang.level_user }}</option>
+          <option value="2" {% if fields.access == "2" %}selected{% endif %}>{{ lang.level_viewonly }}</option>
+          <option value="3" {% if fields.access == "3" %}selected{% endif %}>{{ lang.level_addonly }}</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="flags" class="col-md-2 control-label">{{ lang.flags }}</label>
+      <div class="col-md-10">
+        <div class="checkbox">
+           <label class="col-md-6">
+             <input type="checkbox" name="flag1" value="F" {% if "F" in fields.flags %}checked{% endif %}> {{ lang.flag_forensic }}
+           </label>
+         </div>
+
+         <div class="checkbox">
+            <label class="col-md-6">
+              <input type="checkbox" name="flag2" value="M" {% if "M" in fields.flags %}checked{% endif %}> {{ lang.flag_mobile }}
+            </label>
+          </div>
+
+          <div class="checkbox">
+             <label class="col-md-6">
+               <input type="checkbox" name="flag3" value="I" {% if "I" in fields.flags %}checked{% endif %}> {{ lang.flag_inactive }}
+             </label>
+           </div>
+
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="current_password" class="col-md-2 control-label">{{ lang.verify_password_for }} <b>{{ session.user.username }}</b></label>
+      <div class="col-md-10">
+        <input type="password" class="form-control" id="current_password" name="current_password" placeholder="{{ lang.your_password }}">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="attr_1" class="col-md-2 control-label"></label>
+      <div class="col-md-10">
+        {{ fields.attr_1 }}
+      </div>
+    </div>
+
+
+  </div>
+  <div class="panel-footer">
+    <button type="submit" class="btn btn-success">{{ lang.save }}</button> <a href="users.php" class="btn btn-default">{{ lang.clear_form }}</a>
+  </div>
+</div>
+</form>
+
+
+
+</div>
+{% endblock %}

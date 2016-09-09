@@ -24,75 +24,6 @@
 <!-- bytesToSize macro by Chausser from Stack Exchange: http://stackoverflow.com/questions/15280310/readable-file-sizes-with-the-twig-templating-system -->
 <title>{{caserow.0.case_id}}/{{ caserow.0.case_added_date|date("Y") }} {{ lang.edit_request }} - {{ settings.title_text }}</title>
 {% endblock title %}
-{% block navi %}
-<ul class="nav nav-sidebar">
-  <li><a href='index.php?year={{ dateStart|date("Y") }}'><span class="glyphicon glyphicon-home" aria-hidden="true"></span> {{ lang.front_page }} {{ dateStart|date("Y") }}<span class="sr-only">(current)</span></a></li>
-</ul>
-<ul class="nav nav-sidebar">
-  <li role="presentation"{% if not returntab %} class="active"{% endif %}><a href="#tab-exam-request" aria-controls="tab-exam-request" role="tab" data-toggle="tab">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {{ caserow.0.case_id }}/{{ caserow.0.case_added_date|date("Y") }} {{ caserow.0.case_name }}</a></li>
-  <li role="presentation"{% if returntab == "devices" %} class="active"{% endif %}><a href="#tab-devices" aria-controls="tab-devices" role="tab" data-toggle="tab">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {% if caserow.0.case_devicecount >= "1" %}<b>{% endif %}{{ lang.devices_and_medias }} {% if caserow.0.case_devicecount >= "1" %}</b><span class="badge pull-right">{{ caserow.0.case_devicecount }}</span>{% endif %}</a></li>
-  <li role="presentation"{% if returntab == "report_notes" %} class="active"{% endif %}><a href="#tab-report_notes" aria-controls="tab-report_notes" role="tab" data-toggle="tab">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {% if caserow.0.report_notes %}<b>{% endif %}{{ lang.examination_report }}{% if caserow.0.report_notes %}</b>{% endif %}</a></li>
-  <li role="presentation"{% if returntab == "examiners_notes" %} class="active"{% endif %}><a href="#tab-examiners_notes" aria-controls="tab-examiners_notes" role="tab" data-toggle="tab">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {% if caserow.0.examiners_notes %}<b>{% endif %}{{ lang.examination_notes }}{% if caserow.0.examiners_notes %}</b>{% endif %}</a></li>
-  <li role="presentation"{% if returntab == "ohjeet" %} class="active"{% endif %}><a href="#tab-ohjeet" aria-controls="tab-ohjeet" role="tab" data-toggle="tab">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {{ lang.crime_type_instructions }}</a></li>
-</ul>
-<ul class="nav nav-sidebar">
-  <li>
-    <a href='statistics.php?year={{ dateStart|date("Y") }}'> <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> {{ lang.statistics }} {{ dateStart|date("Y") }}</a>
-  </li>
-</ul>
-<ul class="nav nav-sidebar">
-  <li><a href="add_case.php"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{ lang.add_a_request }}</a></li>
-</ul>
-<ul class="nav nav-sidebar">
-  <li><a href="help.php"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> {{ lang.help_licenses }}</a></li>
-</ul>
-<ul class="nav nav-sidebar">
-  <li><a href="settings.php"><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> {{ lang.settings }}</a></li>
-</ul>
-
-{% if error_status == "OK" %}
-<p>
-<div class="alert alert-success" role="alert" id="alert-success"><span style="color:green;"><i class="fa fa-check"></i> {{ lang.request_saved }} {{ caserow.0.last_updated|date("H:i") }}.</span></div>
-</p>
-{% elseif error_status == "location_missing" %}
-<p>
-<div class="alert alert-danger" role="alert" id="alert-danger"><span style="color:red;"><i class="fa fa-warning"></i> {{ lang.device_location }}<br>{{ lang.fill_all_fields_warning }}</span></div>
-</p>
-{% elseif error_status == "action_missing" %}
-<p>
-<div class="alert alert-danger" role="alert" id="alert-danger"><span style="color:red;"><i class="fa fa-warning"></i> {{ lang.action_status }}<br>{{ lang.fill_all_fields_warning }}</span></div>
-</p>
-{% elseif error_status == "type_missing" %}
-<p>
-<div class="alert alert-danger" role="alert" id="alert-danger"><span style="color:red;"><i class="fa fa-warning"></i> {{ lang.undefined_device_or_media_type}}<br>{{ lang.fill_all_fields_warning }}</span></div>
-</p>
-{% elseif error_status == "upload_OK" %}
-<p>
-<div class="alert alert-success" role="alert" id="alert-success"><span style="color:green;"><i class="fa fa-check"></i> {{ lang.file_notice_file_upload_succesfull }}</span></div>
-</p>
-{% elseif error_status == "file_deleted" %}
-<p>
-<div class="alert alert-success" role="alert" id="alert-success"><i class="fa fa-check"></i> {{ lang.file_notice_file_deleted }}</div>
-</p>
-{% elseif error_status == "filesize_too_large" %}
-<p>
-<div class="alert alert-danger" role="alert" id="alert-success"><i class="fa fa-warning"></i> {{ lang.file_notice_file_too_big }}</div>
-</p>
-{% elseif error_status == "upload_error" %}
-<p>
-<div class="alert alert-danger" role="alert" id="alert-success"><i class="fa fa-warning"></i> {{ lang.file_notice_error }}</div>
-</p>
-{% elseif error_status == "file_exists" %}
-<p>
-<div class="alert alert-warning" role="alert" id="alert-success"><i class="fa fa-warning"></i> {{ lang.file_notice_file_exists }}</div>
-</p>
-{% elseif error_status == "attachments_disabled" %}
-<p>
-<div class="alert alert-success" role="alert" id="alert-success"><i class="fa fa-check"></i> {{ lang.file_notice_attachments_disabled }}</div>
-</p>
-{% endif %}
-</div>
-{% endblock %}
 {% block content %}
 
 {% for entry in caserow %}
@@ -122,7 +53,13 @@
                 <form name="add_forensic_investigator" class="form" role="form" method="post" action="submit.php?type=case_update&db_row={{ entry.parent_id }}">
                   <div class="form-group">
                     <select style="text-align:left;width:100%;" class="btn btn-default" name="forensic_investigator" id="forensic_investigator">
-                      <option selected disabled>{{ lang.forensic_examiner_long }}</option>
+                      <option disabled>{{ lang.forensic_examiner_long }}</option>
+                      {% for user in session.all_users %}
+                        {% if 'F' in user.flags == true %}
+                          <option value="{{ user.name }}" {% if user.name == session.user.name %}selected{% endif %}>{{ user.name }} ({{user.username}})</option>
+                        {% endif %}
+                      {% endfor %}
+                      <option disabled>---</option>
                       {% for entry in forensic_investigators %}
                       <option value="{{ entry }}">{{ entry }}</option>
                       {% endfor %}
@@ -134,6 +71,13 @@
                   <div class="form-group">
                     <select style="text-align:left;width:100%;" class="btn btn-default" name="phone_investigator" id="phone_investigator">
                       <option selected disabled>{{ lang.mobile_examiner_long }}</option>
+
+                      {% for user in session.all_users %}
+                        {% if 'M' in user.flags == true %}
+                          <option value="{{ user.name }}" {% if user.name == session.user.name %}selected{% endif %}>{{ user.name }} ({{user.username}})</option>
+                        {% endif %}
+                      {% endfor %}
+                      <option disabled>---</option>
                       {% for entry in phone_investigators %}
                       <option value="{{ entry }}">{{ entry }}</option>
                       {% endfor %}
@@ -454,9 +398,17 @@
             <div class="col-sm-10">
             <select style="text-align:left;" class="btn btn-default" name="forensic_investigator" id="forensic_investigator">
             {% if not entry.forensic_investigator %}<option selected disabled value =""></option>{% endif %}
+
+            {% for user in session.all_users %}
+              {% if 'F' in user.flags == true %}
+                <option {% if user.name == entry.forensic_investigator %}selected{% endif %} value="{{ user.name }}">{{ user.name }} ({{user.username}})</option>
+              {% endif %}
+            {% endfor %}
+            <option disabled>---</option>
             {% for this_investigator in forensic_investigators %}
             <option value="{{ this_investigator }}" {% if this_investigator == entry.forensic_investigator %}selected{% endif %}>{{ this_investigator }}</option>
             {% endfor %}
+
             </select>
             </div>
             </div>
@@ -465,9 +417,18 @@
             <div class="col-sm-10">
             <select style="text-align:left;" class="btn btn-default" name="phone_investigator" id="phone_investigator">
             {% if not entry.phone_investigator %}<option selected disabled value=""></option>{% endif %}
+
+            {% for user in session.all_users %}
+              {% if 'M' in user.flags == true %}
+                <option {% if user.name == entry.phone_investigator %}selected{% endif %} value="{{ user.name }}">{{ user.name }} ({{user.username}})</option>
+              {% endif %}
+            {% endfor %}
+            <option disabled>---</option>
             {% for this_investigator in phone_investigators %}
             <option value="{{ this_investigator }}" {% if this_investigator == entry.phone_investigator %}selected{% endif %}>{{ this_investigator }}</option>
             {% endfor %}
+
+
             </select>
             </div>
             </div>

@@ -2,24 +2,6 @@
 {% block title %}
 <title>{{ lang.front_page }} - {{ settings.title_text }}</title>
 {% endblock title %}
-{% block navi %}
-<ul class="nav nav-sidebar">
-  <li class="active"><a href='index.php?year={{ dateStart|date("Y") }}'><span class="glyphicon glyphicon-home" aria-hidden="true"></span> {{ lang.front_page }} {{ dateStart|date("Y") }}<span class="sr-only">(current)</span></a></li>
-</ul>
-<ul class="nav nav-sidebar">
-  <li><a href='statistics.php?year={{ dateStart|date("Y") }}'> <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> {{ lang.statistics }} {{ dateStart|date("Y") }}</a></li>
-</ul>
-<ul class="nav nav-sidebar">
-  <li><a href="add_case.php"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{ lang.add_a_request }}</a></li>
-</ul>
-<ul class="nav nav-sidebar">
-  <li><a href="help.php"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> {{ lang.help_licenses }}</a></li>
-</ul>
-<ul class="nav nav-sidebar">
-  <li><a href="settings.php"><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> {{ lang.settings }}</a></li>
-</ul>
-</div>
-{% endblock navi %}
 {% block content %}
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
 <ol class="breadcrumb">
@@ -127,7 +109,9 @@
       {% for entry in row_cases %}
       {% if (entry.id == entry.parent_id) and (entry.is_removed == "0") %}
       {% set counter = counter + 1 %}
-      <tr title="{{ lang.requested }} {{ entry.case_added_date|date("d.m.Y") }}, {{ lang.started }} {{ entry.case_start_date|date("d.m.Y") }}{% if entry.case_ready_date %}, {{lang.ready_at}} {{ entry.case_ready_date|date("d.m.Y") }}{% endif %}" {% if entry.case_status == "1" %}class="danger"{% set new_counter = new_counter + 1 %}{% elseif entry.case_status == "2"  %}class="warning"{% set open_counter = open_counter + 1%}{% elseif entry.case_status == "3" %}class="default"{% set ready_counter = ready_counter + 1%}{% endif %}>
+      <tr title="{{ lang.requested }} {{ entry.case_added_date|date("d.m.Y") }}, {{ lang.started }} {{ entry.case_start_date|date("d.m.Y") }}
+    {% if entry.case_ready_date %}, {{lang.ready_at}} {{ entry.case_ready_date|date("d.m.Y") }}{% endif %}"
+    {% if entry.case_status == "1" %}class="danger"{% set new_counter = new_counter + 1 %}{% elseif (entry.case_status == "2") and ((entry.forensic_investigator == session.user.name) or (entry.phone_investigator == session.user.name)) %}class="info"{% elseif (entry.case_status == "2") and ((entry.forensic_investigator != session.user.name) and (entry.phone_investigator != session.user.name)) %}class="warning"{% set open_counter = open_counter + 1%}{% elseif entry.case_status == "3" %}class="default"{% set ready_counter = ready_counter + 1%}{% endif %}>
       <td style="width:1%;white-space:nowrap;"><a style="font-weight:bold;" href="edit_request.php?case={{ entry.id }}">{{ entry.case_id }}/{{ entry.case_added_date|date("y") }}</a></td>
       <td>
         {% set has_new = false %}

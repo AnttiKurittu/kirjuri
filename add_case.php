@@ -1,8 +1,9 @@
 <?php
 require_once("./include_functions.php");
-logline("info", "Page view - add request");
+protect_page(3);  // Add only or higher
 $confCrimes = file_get_contents('conf/crimes_autofill.conf');
 echo $twig->render('add_case.html', array(
+    'session' => $_SESSION,
     'confCrimes' => $confCrimes,
     'settings' => $settings,
     'classifications' => $_SESSION['lang']['classifications'],

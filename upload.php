@@ -1,11 +1,13 @@
 <?php
 require_once("./include_functions.php");
+protect_page(1);
+
 $target_dir = "attachments/".preg_replace("/[^0-9]/", "", (substr($_GET['case'], 0, 5)))."/";
 $skip = False;
 $upload_error = False;
 
 if ($settings['allow_attachments'] !== "1") {
-  $_SESSION['error_status'] = "attachments_disabled";
+
   header('Location: ' . preg_replace('/\?.*/', '', $_SERVER['HTTP_REFERER'])."?case=".substr($_GET['case'], 0, 5)."");
   die;
 }
@@ -13,27 +15,27 @@ if ($settings['allow_attachments'] !== "1") {
 if (!file_exists($target_dir)) {
   if (mkdir($target_dir, 0755) !== True) {
     trigger_error('Can not create subdirectory to attachments/. Check folder permissions.');
-    $_SESSION['error_status'] = "upload_error";
+
     header('Location: ' . preg_replace('/\?.*/', '', $_SERVER['HTTP_REFERER'])."?case=".substr($_GET['case'], 0, 5)."");
     die;
   };
 };
 
 $total = count($_FILES['fileToUpload']['name']);
-$_SESSION['error_status'] = "upload_OK";
+
 
   for($i=0; $i<$total; $i++) {
 
     $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"][$i]);
     if (file_exists($target_file)) {
-        $_SESSION['error_status'] = "file_exists";
+
         $_SESSION['failed_uploads'][] = $_FILES["fileToUpload"]["name"][$i];
         $skip = True;
         continue;
     };
 
     if ($_FILES["fileToUpload"]["size"][$i] > $settings['max_attachment_size']) {
-      $_SESSION['error_status'] = "filesize_too_large";
+
       $_SESSION['failed_uploads'][] = $_FILES["fileToUpload"]["name"][$i];
       logline('Error', 'Attachment upload failure (size): '.$target_file);
       $skip = True;

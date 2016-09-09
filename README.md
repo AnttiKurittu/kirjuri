@@ -20,16 +20,16 @@ Familiarize yourself with the software prior to installing it into a production 
 INSTALLATION
 ------------
 
-1 Clone the repository to your server and copy the files to your webroot directory (for example ```/usr/share/nginx/html```)
-2 Set ```cache```, ```attachments``` and ```conf``` folder permissions so that the www-server process can read, create directories and write files into them.
-3 Navigate to ```http://yourwebserver/install.php``` and run the installation script. The script will ask for your MySQL credentials, create the necessary database, tables and write two files:
+1. Clone the repository to your server and copy the files to your webroot directory (for example ```/usr/share/nginx/html```)
+2. Set ```cache```, ```attachments``` and ```conf``` folder permissions so that the www-server process can read, create directories and write files into them.
+3. Navigate to ```http://yourwebserver/install.php``` and run the installation script. The script will ask for your MySQL credentials, create the necessary database, tables and write two files:
   * ```conf/mysql_credentials.php``` which stores you MySQL credentials
   * ```conf/settings.local``` which stores your local changes to the settings file.
   * These files will not be updated with ```git pull```
   * You can place these files into /etc/kirjuri if you wish and they will be read from there.
-4 Move the install script somewhere safe so that users can't accidentally run it and cause problems.
-5 Log in with "admin" / "admin" and create your users.
-6 Go create your first examination request, assign it to an user and add devices!
+4. Move the install script somewhere safe so that users can't accidentally run it and cause problems.
+5. Log in with "admin" / "admin" and create your users.
+6. Go create your first examination request, assign it to an user and add devices!
 
 If you wish to enable larger attachments, set the settings, server and PHP directives to match the maximum allowed file size.
 For any questions or suggestions, drop me a line via email or a shoutout at Twitter: https://twitter.com/AnttiKurittu. I'd also love to know if you use Kirjuri in your organization!

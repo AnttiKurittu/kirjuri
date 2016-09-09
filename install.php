@@ -27,9 +27,9 @@ No special characters allowed.
 
 die;
 } else {
-$mysql_config['mysql_username'] = preg_replace('/[^A-Za-z0-9\-]/', '', $_POST['u']);
-$mysql_config['mysql_password'] = preg_replace('/[^A-Za-z0-9\-]/', '', $_POST['p']);
-$mysql_config['mysql_database'] = preg_replace('/[^A-Za-z0-9\-]/', '', $_POST['d']);
+$mysql_config['mysql_username'] = trim(preg_replace('/[^A-Za-z0-9\-]/', '', $_POST['u']));
+$mysql_config['mysql_password'] = trim(preg_replace('/[^A-Za-z0-9\-]/', '', $_POST['p']));
+$mysql_config['mysql_database'] = trim(preg_replace('/[^A-Za-z0-9\-]/', '', $_POST['d']));
 
 $conn = new mysqli('localhost', $mysql_config['mysql_username'], $mysql_config['mysql_password']);
 // Check connection
@@ -180,7 +180,7 @@ ALTER TABLE exam_requests ADD is_protected INT(1);
 ');
 $query->execute(array());
 
-$mysql_config_file = '<?php return array("mysql_username" => "'.$mysql_config['mysql_username'].'", "mysql_password" => "' . $mysql_config['mysql_password'] . '", "mysql_database" => "' . $mysql_config['mysql_database'] .'"); ?>'."\n";
+$mysql_config_file = '<?php return ' . var_export($mysql_config, true) . '; ?>'."\n";
 
 $default_config = file_get_contents('conf/settings.conf');
 

@@ -69,7 +69,6 @@ if ($_GET['type'] === 'login') {
       if (strpos($user['flags'], 'I') === false) {
         $_SESSION['user'] = $user;
       } else {
-        sleep(3);
         message("error", $_SESSION['lang']['account_inactive']);
         logline('action', 'Login attempt with inactive account: '.$_POST['username']);
         header("Location: login.php");
@@ -84,6 +83,7 @@ if ($_GET['type'] === 'login') {
     header("Location: index.php");
     die;
   } else {
+    sleep(3);
     message("error", $_SESSION['lang']['invalid_credentials']);
     logline('action', 'Login attempt: '.$_POST['username']);
     header("Location: login.php");

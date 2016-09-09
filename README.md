@@ -79,12 +79,6 @@ SCREENSHOTS
 ![Device memo](https://github.com/AnttiKurittu/kirjuri/blob/master/conf/screenshots/8.png)
 ![Examination report](https://github.com/AnttiKurittu/kirjuri/blob/master/conf/screenshots/9.png)
 
-
-![Index page](https://github.com/AnttiKurittu/kirjuri/blob/master/conf/screenshot_index.png)
-![Case overview](https://github.com/AnttiKurittu/kirjuri/blob/master/conf/screenshot_overview.png)
-![Device listing in case](https://github.com/AnttiKurittu/kirjuri/blob/master/conf/screenshot_devices.png)
-![Device memo](https://github.com/AnttiKurittu/kirjuri/blob/master/conf/screenshot_device_memo.png)
-
 CHANGELOG
 ------------
 2016-09-09:

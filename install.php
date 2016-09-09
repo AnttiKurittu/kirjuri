@@ -67,12 +67,12 @@ attr_7 mediumtext DEFAULT NULL,
 attr_8 mediumtext DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO users (id, username, password, name, access, flags, attr_1, attr_2, attr_3, attr_4, attr_5, attr_6, attr_7, attr_8) VALUES (
-:one, :anon_name, :zero, :anon_realname, :anon_access, NULL, :anon_attr1,
+INSERT INTO users (username, password, name, access, flags, attr_1, attr_2, attr_3, attr_4, attr_5, attr_6, attr_7, attr_8) VALUES (
+:anon_name, :zero, :anon_realname, :anon_access, :system_flags, :anon_attr1,
 NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 INSERT INTO users (username, password, name, access, flags, attr_1, attr_2, attr_3, attr_4, attr_5, attr_6, attr_7, attr_8) VALUES (
-:admin_name, :admin_default_pw, :admin_realname, :admin_access, :admin_flags, :admin_attr1,
+:admin_name, :admin_default_pw, :admin_realname, :admin_access, :system_flags, :admin_attr1,
 NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 CREATE TABLE IF NOT EXISTS event_log (
@@ -151,17 +151,8 @@ device_model,
 device_identifier,
 device_owner);
 
-INSERT INTO users (id, username, password, name, access, flags, attr_1, attr_2, attr_3, attr_4, attr_5, attr_6, attr_7, attr_8) VALUES (
-:one, :anon_name, :zero, :anon_realname, :anon_access, NULL, :anon_attr1,
-NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-
-INSERT INTO users (username, password, name, access, flags, attr_1, attr_2, attr_3, attr_4, attr_5, attr_6, attr_7, attr_8) VALUES (
-:admin_name, :admin_default_pw, :admin_realname, :admin_access, :admin_flags, :admin_attr1,
-NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-
 ');
 $query->execute(array(
-    ':one' => "1",
     ':zero' => "0",
     ':three' => "3",
     ':access' => "1",
@@ -173,7 +164,7 @@ $query->execute(array(
     ':admin_default_pw' => "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918", // sha256(admin)
     ':admin_realname' => "Administrator",
     ':admin_access' => "0",
-    ':admin_flags' => "AFM",
+    ':system_flags' => "S",
     ':admin_attr1' => "Extra attribute columns for future compatibility"
 ));
 

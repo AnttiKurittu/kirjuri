@@ -438,6 +438,7 @@ if ($_GET['type'] === 'update_request_status') // Set case status
 
   if ($_GET['type'] === 'change_device_status') // Dynamically set device action
     {
+      protect_page(0);
       $sql = $kirjuri_database->prepare('UPDATE exam_requests SET device_action = :device_action, last_updated = NOW() where id=:id AND parent_id != id');
       $sql->execute(array(
           ':device_action' => $form_data['device_action'],

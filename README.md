@@ -69,7 +69,17 @@ LOOKING TO PARTICIPATE?
 SCREENSHOTS
 ------------
 
-![Add a request](https://github.com/AnttiKurittu/kirjuri/blob/master/conf/screenshot_add_request.png)
+![Requests overview](https://github.com/AnttiKurittu/kirjuri/blob/master/conf/screenshots/1.png)
+![Statistics](https://github.com/AnttiKurittu/kirjuri/blob/master/conf/screenshots/2.png)
+![Add request](https://github.com/AnttiKurittu/kirjuri/blob/master/conf/screenshots/3.png)
+![User management](https://github.com/AnttiKurittu/kirjuri/blob/master/conf/screenshots/4.png)
+![Demo request 1](https://github.com/AnttiKurittu/kirjuri/blob/master/conf/screenshots/5.png)
+![Demo request 2](https://github.com/AnttiKurittu/kirjuri/blob/master/conf/screenshots/6.png)
+![Devices](https://github.com/AnttiKurittu/kirjuri/blob/master/conf/screenshots/7.png)
+![Device memo](https://github.com/AnttiKurittu/kirjuri/blob/master/conf/screenshots/8.png)
+![Examination report](https://github.com/AnttiKurittu/kirjuri/blob/master/conf/screenshots/9.png)
+
+
 ![Index page](https://github.com/AnttiKurittu/kirjuri/blob/master/conf/screenshot_index.png)
 ![Case overview](https://github.com/AnttiKurittu/kirjuri/blob/master/conf/screenshot_overview.png)
 ![Device listing in case](https://github.com/AnttiKurittu/kirjuri/blob/master/conf/screenshot_devices.png)

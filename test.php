@@ -1,1 +1,0 @@
-<?php\n return array("mysql_username" => "root", "mysql_password" => "devroot", "mysql_database" => "keijo"); ?>

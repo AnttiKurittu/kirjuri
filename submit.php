@@ -438,7 +438,9 @@ if ($_GET['type'] === 'update_request_status') // Set case status
 
   if ($_GET['type'] === 'change_device_status') // Dynamically set device action
     {
-      //protect_page(0);
+      if($_SESSION['user']['access'] > 1) {
+        die;
+      }
       $sql = $kirjuri_database->prepare('UPDATE exam_requests SET device_action = :device_action, last_updated = NOW() where id=:id AND parent_id != id');
       $sql->execute(array(
           ':device_action' => $form_data['device_action'],
@@ -454,6 +456,9 @@ if ($_GET['type'] === 'update_request_status') // Set case status
 
     if ($_GET['type'] === 'change_device_location') // Dynamically set device location.
       {
+        if($_SESSION['user']['access'] > 1) {
+          die;
+        }
         $sql = $kirjuri_database->prepare('UPDATE exam_requests SET device_location = :device_location, last_updated = NOW() where id=:id AND parent_id != id');
         $sql->execute(array(
             ':device_location' => $form_data['device_location'],

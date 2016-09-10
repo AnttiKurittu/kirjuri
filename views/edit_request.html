@@ -578,7 +578,7 @@
       </td style="vertical-align:middle;">
     <td style="vertical-align:middle;">
       <form class="form form-horizontal" role="form" method="post" action="submit.php?type=change_device_status&db_row={{ entry.id }}" target="submit_iframe{{entry.id}}">
-      {% if caserow.0.case_status != 3 %}
+      {% if (caserow.0.case_status != 3) and (session.user.access <= 1) %}
       <select style="text-align:left;" class="btn btn-{% if not entry.device_action %}danger{% else %}default{% endif %}" name="device_action" onchange="this.form.submit()">
       <option value="{{entry.device_action}}">{% set device_current_action = entry.device_action|split('|') %}{{device_current_action.1}}</option>
       <option disabled>---</option>
@@ -596,7 +596,7 @@
     </td>
     <td style="vertical-align:middle;">
       <form class="form form-horizontal" role="form" method="post" action="submit.php?type=change_device_location&db_row={{ entry.id }}" target="submit_iframe{{entry.id}}_void">
-      <select style="text-align:left;" class="btn btn-{% if not entry.device_location %}danger{% else %}default{% endif %}" name="device_location" onchange="this.form.submit()">
+      <select style="text-align:left;" class="btn btn-{% if not entry.device_location %}danger{% else %}default{% endif %}" name="device_location" {% if session.user.access > 1 %}disabled{% else %}onchange="this.form.submit()"{% endif %}>
 
         <option value="{{entry.device_location}}">{{entry.device_location}}</option>
         <option disabled>---</option>
@@ -663,7 +663,7 @@
       </td style="vertical-align:middle;">
       <td style="vertical-align:middle;">
         <form class="form form-horizontal" role="form" method="post" action="submit.php?type=change_device_status&db_row={{ entry.id }}" target="submit_iframe{{entry.id}}">
-        {% if caserow.0.case_status != 3 %}
+        {% if (caserow.0.case_status != 3) and (session.user.access <= 1) %}
         <select style="text-align:left;" class="btn btn-{% if not entry.device_action %}danger{% else %}default{% endif %}" name="device_action" onchange="this.form.submit()">
         <option value="{{entry.device_action}}">{% set device_current_action = entry.device_action|split('|') %}{{device_current_action.1}}</option>
         <option disabled>---</option>
@@ -682,7 +682,7 @@
 
     <td style="vertical-align:middle;">
       <form class="form form-horizontal" role="form" method="post" action="submit.php?type=change_device_location&db_row={{ entry.id }}" target="submit_iframe{{entry.id}}_void">
-      <select style="text-align:left;" class="btn btn-{% if not entry.device_location %}danger{% else %}default{% endif %}" name="device_location" onchange="this.form.submit()">
+      <select style="text-align:left;" class="btn btn-{% if not entry.device_location %}danger{% else %}default{% endif %}" name="device_location" {% if session.user.access > 1 %}disabled{% else %}onchange="this.form.submit()"{% endif %}>
       <option value="{{entry.device_location}}" selected="selected">{{entry.device_location}}</option>
       <option disabled>---</option>
       {% for dev_loc in device_locations %}

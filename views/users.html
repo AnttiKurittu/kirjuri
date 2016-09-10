@@ -18,7 +18,7 @@
     {% for user in session.all_users %}
     <tr {% if session.user.username == user.username %}class="info"{% elseif 'I' in user.flags %}class="warning"{% endif %}>
       <td>{{ user.id }}</td>
-      <td><a href="users.php?populate={{user.id}}">{{ user.username }}</a>{% if session.user.username == user.username %} ({{ lang.logged_in|lower }}){% endif %}{% if 'I' in user.flags %} ({{ lang.flag_inactive|lower }}){% endif %}</td>
+      <td><a href="users.php?populate={{user.id}}#u">{{ user.username }}</a>{% if session.user.username == user.username %} ({{ lang.logged_in|lower }}){% endif %}{% if 'I' in user.flags %} ({{ lang.flag_inactive|lower }}){% endif %}</td>
       <td>{{ user.name }}</td>
       <td>{% if user.access == 0 %}{{ lang.level_admin }}{% elseif user.access == 1 %}{{ lang.level_user }}{% elseif user.access == 2 %}{{ lang.level_viewonly }}{% elseif user.access == 3 %}{{ lang.level_addonly }}{% else %}???{% endif %}</td>
       <td>{% if 'F' in user.flags == true %}<i style="color:green;" class="fa fa-check"></i>{% else %}<i style="color:red;" class="fa fa-remove"></i>{% endif %}</td>
@@ -32,7 +32,7 @@
 <form class="form-horizontal" role="form" method="post" action="submit.php?type=create_user">
 <div class="panel panel-default">
   <div class="panel-heading">
-    <h3 class="panel-title">{{ lang.create_or_modify }}</h3>
+    <h3 class="panel-title"><a id="u"></a>{{ lang.create_or_modify }}</h3>
   </div>
   <div class="panel-body">
     <div class="form-group">

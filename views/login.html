@@ -24,7 +24,11 @@
       <label for="password" class="col-sm-1 control-label"></label>
       <div class="col-sm-4">
         <button type="submit" class="btn btn-success" id="request_save_button"><i class="fa fa-sign-in"></i> {{ lang.log_in }}</button>
-        <a href="submit.php?type=anon_login" class="btn btn-default">{{ lang.anon_login_button }}</a>
+        {% for user in session.all_users %}
+          {% if (user.id == 1) and ("I" not in user.flags) %}
+          <a href="submit.php?type=anon_login" class="btn btn-default">{{ lang.anon_login_button }}</a>
+          {% endif %}
+        {% endfor %}
       </div>
     </div>
   </form>

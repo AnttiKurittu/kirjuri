@@ -52,6 +52,7 @@ if ($_GET['type'] === 'anon_login') {
       else
       {
         $_SESSION['user'] = $user;
+        logline('Action', 'Anonymous login.');
         message("info", $_SESSION['lang']['anon_login']);
         header('Location: index.php');
         die;
@@ -131,7 +132,7 @@ if ($_GET['type'] === 'create_user') {
           ));
           logline('Admin', 'User modified: '.trim(substr($_POST['username'], 0, 64)) . ", access level " . substr($_POST['access'], 0, 1));
           message("info", $_SESSION['lang']['user_modified']);
-          header("Location: users.php?populate=" . $returnid);
+          header("Location: users.php?populate=" . $returnid . "#u");
           die;
           }
         }
@@ -152,7 +153,6 @@ if ($_GET['type'] === 'create_user') {
         ':attr_1' => 'User created by '.$_SESSION['user']['username'] . " at " . date("Y-m-d H:m")
     ));
     logline('Admin', 'User created: '.trim(substr($_POST['username'], 0, 64)) . ", access level " . substr($_POST['access'], 0, 1));
-
     message("info", $_SESSION['lang']['user_created']);
     header("Location: users.php");
     }
@@ -165,7 +165,6 @@ if ($_GET['type'] === 'create_user') {
   die;
 }
 
-
 if ($_GET['type'] === 'update_password') {
   protect_page(1);
   if((!empty($_POST['new_password'])) && (hash('sha256', $_POST['current_password']) === $_SESSION['user']['password']) )
@@ -176,6 +175,7 @@ if ($_GET['type'] === 'update_password') {
         ':username' => $_SESSION['user']['username'],
         ':id' => $_SESSION['user']['id']
     ));
+    logline('Admin', 'User changed password.');
     $_SESSION['user'] = "";
     session_destroy();
     header("Location: login.php");
@@ -220,7 +220,7 @@ if ($_GET['type'] === 'examination_request') // Create an examination request.
         ':case_requested_action' => $form_data['case_requested_action'],
         ':case_contains_mob_dev' => $form_data['case_contains_mob_dev']
     ));
-    logline("Action", "Added examination request " . $case_id . " / " . $form_data['case_name'] . "");
+    logline("Action", "Added examination request " . $case_id . " / " . $form_data['case_name']);
     $query = $kirjuri_database->prepare('SELECT id FROM exam_requests WHERE case_id=:case_id AND parent_id = id AND case_added_date BETWEEN :dateStart AND :dateStop LIMIT 1');
     $query->execute(array(
         ':case_id' => $case_id,
@@ -438,7 +438,7 @@ if ($_GET['type'] === 'update_request_status') // Set case status
 
   if ($_GET['type'] === 'change_device_status') // Dynamically set device action
     {
-      protect_page(0);
+      //protect_page(0);
       $sql = $kirjuri_database->prepare('UPDATE exam_requests SET device_action = :device_action, last_updated = NOW() where id=:id AND parent_id != id');
       $sql->execute(array(
           ':device_action' => $form_data['device_action'],

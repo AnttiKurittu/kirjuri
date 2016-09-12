@@ -508,8 +508,12 @@
     <td style="vertical-align:middle;" {% if entry.device_contains_evidence %}class="success"{% endif %}>
     <img src="views/img/svg/{% if entry.device_type %}{{ entry.device_type|lower|replace({" ": "_", "ä": "a", "ö": "o"}) }}{% else %}{{ lang.unknown }}{% endif %}.svg"  style="vertical-align:middle;float:left;padding:10px;width:64px;">
     </td>
-    <td style="vertical-align:middle;">
-      <h4><a href="device_memo.php?db_row={{ entry.id }}">{% if entry.device_type %}{{ entry.device_type }}{% else %}<span style="color:red;">{{ lang.undefined_device_or_media_type }}</span>{% endif %} {{ entry.device_manuf }} {{ entry.device_model }} {% if entry.device_size_in_gb > "0" %}{{ entry.device_size_in_gb }} GB{% endif %}</a> <br><small>{{ lang.device_uid }} {{ entry.id }}, {{ entry.device_document }} {{ lang.object_no }} {{ entry.device_item_number }}
+    <td style="vertical-align:middle;width:1%;white-space:nowrap;" {% if entry.device_contains_evidence %}class="success"{% endif %}>
+      <h4><a href="device_memo.php?db_row={{ entry.id }}">{% if entry.device_type %}{{ entry.device_type }}{% else %}<span style="color:red;">{{ lang.undefined_device_or_media_type }}</span>{% endif %}<br>
+        {{ entry.device_manuf }} {{ entry.device_model }} {% if entry.device_size_in_gb > "0" %}{{ entry.device_size_in_gb }} GB{% endif %}</a><br>
+        <small>
+          {{ lang.device_uid }} {{ entry.id }}, {{ entry.device_document }} {{ lang.object_no }} {{ entry.device_item_number }}<br>
+          {{ lang.added }} {{ entry.case_added_date|date("d.m.Y H:i") }}{% if entry.case_added_date != entry.last_updated %}, {{ lang.updated }} {{ entry.last_updated|date("d.m.Y H:i") }}{% endif %}
         {% if entry.report_notes %}<br>
         {% if entry.device_include_in_report == "1" %}
         <span style="color:green;"><i class="fa fa-check-square-o"></i> {{ lang.examination_notes_shown }}</span><br>
@@ -518,7 +522,11 @@
         <span style="color:red;"><i class="fa fa-close"></i> {{ lang.examination_notes_hidden }}</span><br>
         {% endif %}
         {% else %}<br><span style="color:orange;"><i class="fa fa-square-o"></i> {{ lang.examination_notes_empty }}</span><br>
-        {% endif %}</small>
+        {% endif %}
+        {% if entry.device_contains_evidence %}
+        <span style="color:green;"><i class="fa fa-search"></i> {{ lang.contains_evidence }}</span><br>
+        {% endif %}
+        </small>
       </h4>
       {% set check = "0" %}
       {% for test in mediarow if test.device_host_id == entry.id and test.is_removed == "0" %}
@@ -565,12 +573,6 @@
       {% if entry.device_identifier %}
       <i class="fa fa-barcode"></i> {{ entry.device_identifier }}<br>
       {% endif %}
-      {% if entry.device_contains_evidence %}
-      <span style="color:green;"><i class="fa fa-search"></i> {{ lang.contains_evidence }}</span><br>
-      {% endif %}
-      <small>
-        <p>{{ lang.added }} {{ entry.case_added_date|date("d.m.Y H:i") }}{% if entry.case_added_date != entry.last_updated %}, {{ lang.updated }} {{ entry.last_updated|date("d.m.Y H:i") }}{% endif %}</p>
-      </small>
     </td>
     <td style="vertical-align:middle;">
       <iframe name="submit_iframe{{entry.id}}" allowtransparency="true" style="overflow:hidden; width:100px; height:16px; border:0px solid red; margin: 0 auto; display:block;" src="progress_bar_static.php?db_row={{entry.id}}"></iframe>
@@ -616,8 +618,14 @@
     <td style="vertical-align:middle;" {% if entry.device_contains_evidence %}class="success"{% endif %}>
     <img src="views/img/svg/{% if entry.device_type %}{{ entry.device_type|lower|replace({" ": "_", "ä": "a", "ö": "o"}) }}{% else %}tuntematon{% endif %}.svg"  style="vertical-align:middle;float:left;padding:10px;width:64px;">
     </td>
-    <td style="vertical-align:middle;">
-      <h4><a href="device_memo.php?db_row={{ entry.id }}">{% if entry.device_type %}{{ entry.device_type }}{% else %}<span style="color:red;">{{ lang.undefined_device_or_media_type }}</span>{% endif %} {{ entry.device_manuf }} {{ entry.device_model }} {% if entry.device_size_in_gb > "0" %}{{ entry.device_size_in_gb }} GB{% endif %}</a> <br><small>{{ lang.device_uid }} {{ entry.id }}, {{ entry.device_document }} {{ lang.object_no }} {{ entry.device_item_number }}
+    <td style="vertical-align:middle;width:1%;white-space:nowrap;" {% if entry.device_contains_evidence %}class="success"{% endif %}>
+
+
+      <h4><a href="device_memo.php?db_row={{ entry.id }}">{% if entry.device_type %}{{ entry.device_type }}{% else %}<span style="color:red;">{{ lang.undefined_device_or_media_type }}</span>{% endif %}<br>
+        {{ entry.device_manuf }} {{ entry.device_model }} {% if entry.device_size_in_gb > "0" %}{{ entry.device_size_in_gb }} GB{% endif %}</a><br>
+        <small>
+          {{ lang.device_uid }} {{ entry.id }}, {{ entry.device_document }} {{ lang.object_no }} {{ entry.device_item_number }}<br>
+          {{ lang.added }} {{ entry.case_added_date|date("d.m.Y H:i") }}{% if entry.case_added_date != entry.last_updated %}, {{ lang.updated }} {{ entry.last_updated|date("d.m.Y H:i") }}{% endif %}
         {% if entry.report_notes %}<br>
         {% if entry.device_include_in_report == "1" %}
         <span style="color:green;"><i class="fa fa-check-square-o"></i> {{ lang.examination_notes_shown }}</span><br>
@@ -626,8 +634,13 @@
         <span style="color:red;"><i class="fa fa-close"></i> {{ lang.examination_notes_hidden }}</span><br>
         {% endif %}
         {% else %}<br><span style="color:orange;"><i class="fa fa-square-o"></i> {{ lang.examination_notes_empty }}</span><br>
-        {% endif %}</small>
+        {% endif %}
+        {% if entry.device_contains_evidence %}
+        <span style="color:green;"><i class="fa fa-search"></i> {{ lang.contains_evidence }}</span><br>
+        {% endif %}
+        </small>
       </h4>
+
       <a href="submit.php?type=device_detach&db_row={{ entry.id }}&returnid={{ entry.parent_id }}" onclick="return confirm('{{ lang.remove_association_warning }}')"><i class="fa fa-unlink"></i> {{ lang.remove_association }}</a>
     </td>
     <td style="vertical-align:middle;">

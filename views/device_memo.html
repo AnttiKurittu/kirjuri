@@ -30,15 +30,19 @@
         <th style="width:350px">{{ lang.device_or_media }}</th>
         <th>{{ lang.info }}</th>
         <th style="width:1px">{{ lang.status }}</th>
-        <th style="width:1px;">{{ lang.sort_label_status }}</th>
+        <th style="width:1px;">{{ lang.action_status }}</th>
         <th style="width:1px;">{{ lang.sort_label_location }}</th>
       </thead>
-      <tr {% if entry.device_host_id == "0"%}class="active"{% endif %}>
+      <tr {% if entry.device_host_id == "0"%}class="active"{% endif %} >
       <td style="vertical-align:middle;" {% if entry.device_contains_evidence %}class="success"{% endif %}>
       <img src="views/img/svg/{% if entry.device_type %}{{ entry.device_type|lower|replace({" ": "_", "ä": "a", "ö": "o"}) }}{% else %}{{ lang.unknown }}{% endif %}.svg"  style="vertical-align:middle;float:left;padding:10px;width:64px;">
       </td>
-      <td style="vertical-align:middle;">
-        <h4>{% if entry.device_type %}{{ entry.device_type }}{% else %}<span style="color:red;">{{ lang.undefined_device_or_media_type }}</span>{% endif %} {{ entry.device_manuf }} {{ entry.device_model }} {% if entry.device_size_in_gb > "0" %}{{ entry.device_size_in_gb }} GB{% endif %} <br><small>{{ lang.device_uid }} {{ entry.id }}, {{ entry.device_document }} {{ lang.object_no }} {{ entry.device_item_number }}
+      <td style="vertical-align:middle;width:1%;white-space:nowrap;" {% if entry.device_contains_evidence %}class="success"{% endif %}>
+        <h4><a href="device_memo.php?db_row={{ entry.id }}">{% if entry.device_type %}{{ entry.device_type }}{% else %}<span style="color:red;">{{ lang.undefined_device_or_media_type }}</span>{% endif %}<br>
+          {{ entry.device_manuf }} {{ entry.device_model }} {% if entry.device_size_in_gb > "0" %}{{ entry.device_size_in_gb }} GB{% endif %}</a><br>
+          <small>
+            {{ lang.device_uid }} {{ entry.id }}, {{ entry.device_document }} {{ lang.object_no }} {{ entry.device_item_number }}<br>
+            {{ lang.added }} {{ entry.case_added_date|date("d.m.Y H:i") }}{% if entry.case_added_date != entry.last_updated %}, {{ lang.updated }} {{ entry.last_updated|date("d.m.Y H:i") }}{% endif %}
           {% if entry.report_notes %}<br>
           {% if entry.device_include_in_report == "1" %}
           <span style="color:green;"><i class="fa fa-check-square-o"></i> {{ lang.examination_notes_shown }}</span><br>
@@ -47,7 +51,11 @@
           <span style="color:red;"><i class="fa fa-close"></i> {{ lang.examination_notes_hidden }}</span><br>
           {% endif %}
           {% else %}<br><span style="color:orange;"><i class="fa fa-square-o"></i> {{ lang.examination_notes_empty }}</span><br>
-          {% endif %}</small>
+          {% endif %}
+          {% if entry.device_contains_evidence %}
+          <span style="color:green;"><i class="fa fa-search"></i> {{ lang.contains_evidence }}</span><br>
+          {% endif %}
+          </small>
         </h4>
       </td>
       <td style="vertical-align:middle;">
@@ -63,7 +71,7 @@
         {% if entry.device_os %}
         {% if "windows" in entry.device_os|lower %}<i class="fa fa-windows"></i>
         {% elseif "linux" in entry.device_os|lower or "debian" in entry.device_os|lower or "ubuntu" in entry.device_os|lower or "arch" in entry.device_os|lower or "red hat" in entry.device_os|lower %}<i class="fa fa-linux"></i>
-        {% elseif "os x" in entry.device_os|lower or "apple" in entry.device_os|lower or "ios" in entry.device_os|lower %}<i class="fa fa-apple"></i>
+        {% elseif "os x" in entry.device_os|lower or "apple" in entry.device_os|lower or "ios" in entry.device_os|lower or "macos" in entry.device_os|lower or "tvos" in entry.device_os|lower %}<i class="fa fa-apple"></i>
         {% elseif "android" in entry.device_os|lower %}<i class="fa fa-android"></i>
         {% elseif "chrome" in entry.device_os|lower %}<i class="fa fa-chrome"></i>
         {% else %}<i class="fa fa-mouse-pointer"></i>{% endif %} {{ entry.device_os }}<br>
@@ -74,12 +82,6 @@
         {% if entry.device_identifier %}
         <i class="fa fa-barcode"></i> {{ entry.device_identifier }}<br>
         {% endif %}
-        {% if entry.device_contains_evidence %}
-        <span style="color:green;"><i class="fa fa-search"></i> {{ lang.contains_evidence }}</span><br>
-        {% endif %}
-        <small>
-          <p>{{ lang.added }} {{ entry.case_added_date|date("j.m.Y H:i") }}{% if entry.case_added_date != entry.last_updated %}, {{ lang.updated }} {{ entry.last_updated|date("j.m.Y H:i") }}{% endif %}</p>
-        </small>
       </td>
 
 <td style="vertical-align:middle;">

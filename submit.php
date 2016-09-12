@@ -109,8 +109,9 @@ if ($_GET['type'] === 'create_user') {
     {
       foreach($_SESSION['all_users'] as $user)
       {
-        if ($user['username'] == trim($_POST['username']))
+        if ($user['username'] === trim($_POST['username']))
         {
+          $oldname = $user['name'];
           $returnid = $user['id'];
           if(!empty($_POST['password'])) {
             $user_password = hash('sha256', $_POST['password']);
@@ -121,8 +122,12 @@ if ($_GET['type'] === 'create_user') {
             $user_password = $user['password'];
           }
 
-          $query = $kirjuri_database->prepare('UPDATE users SET password = :password, name = :name, access = :access, flags = :flags, attr_1 = :attr_1 WHERE username = :username;');
+          $query = $kirjuri_database->prepare(
+          'UPDATE users SET password = :password, name = :name, access = :access, flags = :flags, attr_1 = :attr_1 WHERE username = :username;
+           UPDATE exam_requests SET forensic_investigator = :name WHERE forensic_investigator = :oldname;
+           UPDATE exam_requests SET phone_investigator = :name WHERE phone_investigator = :oldname;');
           $query->execute(array(
+              ':oldname' => $oldname,
               ':username' => strtolower(trim(substr($_POST['username'], 0, 64))),
               ':name' => trim(substr($_POST['name'], 0, 256)),
               ':password' => $user_password,
@@ -299,7 +304,7 @@ if ($_GET['type'] === 'examiners_notes') // Save examiners private notes
     $sql = $kirjuri_database->prepare('UPDATE exam_requests SET examiners_notes = :examiners_notes, last_updated = NOW() where id=:id AND parent_id = :id AND is_removed != "1"');
     $sql->execute(array(
         ':id' => $form_data['returnid'],
-        ':examiners_notes' => $form_data['examiners_notes'] . "<p> -- " . $_SESSION['user']['name'] . " (". date("Y-m-d H:m") .")</p><br><br>"
+        ':examiners_notes' => $form_data['examiners_notes'] . "<p> -- " . $_SESSION['user']['username'] . " (". date("Y-m-d H:m") .")</p><br><br>"
     ));
     $_SESSION['post_cache'] = "";
     message("info", $_SESSION['lang']['exam_notes_saved']);

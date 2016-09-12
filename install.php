@@ -54,31 +54,37 @@ if ((file_exists("conf/mysql_credentials.php")) || (file_exists("conf/settings.l
 
 if (empty($_POST))
  {
-  echo 'This script will install the necessary databases for Kirjuri to operate,
-  save your credentials to <i>conf/mysql_credentials.php</i> and prepopulate
-  the users with "admin" and "anonymous". If you wish to do this manually,
-  you can get the necessary SQL queries from the source code of this script.
+  echo '<form role="form" method="post">
+This script will install the necessary databases for Kirjuri to operate,
+save your credentials to <i>conf/mysql_credentials.php</i> and prepopulate
+the users with "admin" and "anonymous". If you wish to do this manually,
+you can get the necessary SQL queries from the source code of this script.
 
-  You can rerun this install script at any time to create a new database. This is
-  useful is you wish to create a test database first and then later create a
-  production database.
+You can rerun this install script at any time to create a new database. This is
+useful is you wish to create a test database first and then later create a
+production database.
 
-  Please choose a name for your database. The default is "kirjuri".
+Please choose a name for your database. The default is "kirjuri".
 
-  <form role="form" method="post"><input type="checkbox" name="drop_database" value="drop"> Drop existing database. <b style="color:red;">THIS WILL DELETE YOUR DATA AND USERS.</b>
-  MySQL username <input name="u" type="text">
-  MySQL password <input name="p" type="password">
-  MySQL database <input name="d" type="text" value="kirjuri">
-  <button type="submit">Install databases</button>
-  </form>';
+<input type="checkbox" name="drop_database" value="drop"> Drop existing database. <b style="color:red;">THIS WILL DELETE YOUR DATA AND USERS.</b>
+<input type="checkbox" name="migrate_old_database" value="migrate"> Migrate tutkinta.jutut database. <b style="color:red;">THIS WILL OVERWRITE YOUR EXISTING DATABASE.</b>
+
+MySQL username <input name="u" type="text">
+MySQL password <input name="p" type="password">
+MySQL database <input name="d" type="text" value="kirjuri">
+
+<button type="submit">Install / rebuild databases</button></form>';
   die;
  }
 else // If form is submitted
  {
   $_POST['drop_database']         = isset($_POST['drop_database']) ? $_POST['drop_database'] : '';
+  $_POST['migrate_old_database']  = isset($_POST['migrate_old_database']) ? $_POST['migrate_old_database'] : '';
   $mysql_config['mysql_username'] = trim(preg_replace('/[^A-Za-z0-9\-]/', '', $_POST['u']));
   $mysql_config['mysql_password'] = trim(preg_replace('/[^A-Za-z0-9\-]/', '', $_POST['p']));
   $mysql_config['mysql_database'] = strtolower(trim(preg_replace('/[^A-Za-z0-9\-]/', '', $_POST['d'])));
+
+
 
   // Check for invalid database names
   if (in_array($mysql_config['mysql_database'], array(
@@ -284,6 +290,23 @@ else // If form is submitted
    {
     echo '<p style="color:red;">Error creating exam_requests: ', $e->getMessage(), '. Tables not created.</p>';
    }
+
+  // Bring data from the limited release version database.
+
+  if ($_POST['migrate_old_database'] === "migrate") {
+    try
+     {
+      $query = $kirjuri_database->prepare('
+      INSERT INTO exam_requests SELECT * FROM tutkinta.jutut;
+      ');
+      $query->execute(array());
+      echo '<p style="color:green;">Table tutkinta.jutut migrated.</p>';
+     }
+    catch (Exception $e)
+     {
+      echo '<p style="color:red;">Can not migrate old tables from tutkinta.jutut: ', $e->getMessage(), ".</p>";
+     }
+  }
 
   // Add columns for upgrading existing databases.
 

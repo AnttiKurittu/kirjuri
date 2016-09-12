@@ -7,7 +7,8 @@ function error_handler($n, $s, $f) // Custom error handler for the installation 
   global $i;
   echo '<p style="color:red;">Installation error: (' . $n . ") " . $s . "</p>";
   $i = 0;
- }
+}
+
 
 set_error_handler('error_handler');
 
@@ -35,7 +36,7 @@ foreach ($test_folders as $folder)
 
 if ($i === count($test_folders)) // See if all folders passed the write test
  {
-  echo '<b style="color:green;">   Write test passed!</b><br>';
+  echo '<b style="color:green;">   Write test passed!</b><hr>';
  }
 else
  {
@@ -53,16 +54,30 @@ if ((file_exists("conf/mysql_credentials.php")) || (file_exists("conf/settings.l
 <i>mysq_credentials.php</i> and <i>settings.local</i>. If you wish to keep them intact, make backup copies.</b></p>';
  }
 
-/*$beacon = file_get_contents('https://kurittu.org/beacon.txt');
+// This piece of code will test for internet connectivity and check for new versions of Kirjuri.
+// Comment it out with /* and */ if you do not wish the installer to go online.
+ini_set('default_socket_timeout', 10);
+echo "<p>Testing for internet connectivity. This will throw errors if one is not present. These can be safely ignored.</p>";
+$installer_version = trim(file_get_contents('conf/RELEASE'));
+$beacon = file_get_contents('https://kurittu.org/beacon.txt?kirjuri_installer_version=' . $installer_version);
 if($beacon === "connected") {
-  $installer_version = trim(file_get_contents('conf/RELEASE'));
-  $github_version = file_get_contents('')
-  echo "<p>Internet connection available.</p>";
-}*/
+  echo '<p style="color:red;">Internet connection available.<br>
+Do not use Kirjuri with a working internet connection in production when handling sensitive information. </p>';
+  $github_version = trim(file_get_contents('https://raw.githubusercontent.com/AnttiKurittu/kirjuri/master/conf/RELEASE'));
+  if($installer_version < $github_version) {
+    echo "<p><b>New version of Kirjuri available: " . $github_version . ". Current version: " . $installer_version . ".<br>";
+    echo 'Download the new version from <a href="https://github.com/AnttiKurittu/kirjuri" target="_BLANK">the repository</a> or run "git pull".</b></p>';
+  } else {
+    echo '<b>Kirjuri is up to date: Release version ' . $github_version . '</b>';
+  }
+}
+ini_restore('default_socket_timeout');
+
+// Continue the installer if data is present.
 
 if (empty($_POST))
  {
-  echo '<form role="form" method="post">
+  echo '<hr><form role="form" method="post">
 This script will install the necessary databases for Kirjuri to operate,
 save your credentials to <i>conf/mysql_credentials.php</i> and prepopulate
 the users with "admin" and "anonymous". If you wish to do this manually,

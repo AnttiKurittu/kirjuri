@@ -112,23 +112,25 @@ function logline($event_level, $description) // Add an entry to event_log
      {
       $description = "[" . $_SESSION['user']['username'] . "] " . $description;
      }
-    $kirjuri_database = new PDO("mysql:host=localhost;dbname=" . $mysql_config['mysql_database'] . "", $mysql_config['mysql_username'], $mysql_config['mysql_password']);
-    $kirjuri_database->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $kirjuri_database->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
-    $kirjuri_database->exec("SET NAMES utf8");
-    $event_insert_row = $kirjuri_database->prepare('INSERT INTO event_log (id,event_timestamp,event_level,event_descr,ip) VALUES ("",NOW(),:event_level,:event_descr,:ip)');
-    $event_insert_row->execute(array(
-      ':event_level' => $event_level,
-      ':event_descr' => $description . ' (Method: ' . $_SERVER['REQUEST_METHOD'] . ' URI:' . $_SERVER['REQUEST_URI'] . ')',
-      ':ip' => $_SERVER['REMOTE_ADDR']
-    ));
-    return true;
+       $log = date('Y-m-d H:i:s') . ' ' . $event_level . ' - ' . $description . ' (Method: ' . $_SERVER['REQUEST_METHOD'] . ' URI:' . $_SERVER['REQUEST_URI'] . '), IP: ' . $_SERVER['REMOTE_ADDR'] . "\r\n";
+       file_put_contents('logs/kirjuri.log', $log, FILE_APPEND);
+       $kirjuri_database = new PDO("mysql:host=localhost;dbname=" . $mysql_config['mysql_database'] . "", $mysql_config['mysql_username'], $mysql_config['mysql_password']);
+       $kirjuri_database->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+       $kirjuri_database->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
+       $kirjuri_database->exec("SET NAMES utf8");
+       $event_insert_row = $kirjuri_database->prepare('INSERT INTO event_log (event_timestamp,event_level,event_descr,ip) VALUES (NOW(),:event_level,:event_descr,:ip)');
+       $event_insert_row->execute(array(
+         ':event_level' => $event_level,
+         ':event_descr' => $description . ' (Method: ' . $_SERVER['REQUEST_METHOD'] . ' URI:' . $_SERVER['REQUEST_URI'] . ')',
+         ':ip' => $_SERVER['REMOTE_ADDR']
+       ));
+      return true;
    }
   catch (PDOException $e)
    {
-    session_destroy();
-    echo 'Database error: ' . $e->getMessage() . '. Run <a href="install.php">install</a> to create tables and check your credentials.';
-    die;
+    file_put_contents('logs/kirjuri.log', $log, FILE_APPEND);
+    message('error', 'Database error in logline(): ' . $e->getMessage());
+    return false;
    }
  }
 

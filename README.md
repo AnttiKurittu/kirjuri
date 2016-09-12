@@ -21,7 +21,7 @@ INSTALLATION
 ------------
 
 1. Clone the repository to your server and copy the files to your webroot directory (for example ```/usr/share/nginx/html```)
-2. Set ```cache```, ```attachments``` and ```conf``` folder permissions so that the www-server process can read, create directories and write files into them.
+2. Set ```cache```, ```attachments```, ```logs``` and ```conf``` folder permissions so that the www-server process can read, create directories and write files into them.
 3. Navigate to ```http://yourwebserver/install.php``` and run the installation script. The script will ask for your MySQL credentials, create the necessary database, tables and write two files:
   * ```conf/mysql_credentials.php``` which stores you MySQL credentials
   * ```conf/settings.local``` which stores your local changes to the settings file.

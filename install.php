@@ -17,7 +17,8 @@ $i            = 0; // Count folders
 $test_folders = array(
   'conf',
   'cache',
-  'attachments'
+  'attachments',
+  'logs'
 );
 foreach ($test_folders as $folder)
  {

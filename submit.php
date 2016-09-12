@@ -146,8 +146,8 @@ if ($_GET['type'] === 'create_user') {
     {
       $_POST['access'] = "0"; // Stupid PHP evaluates 0 as empty, so circumvent with "A" to write "0" as access.
     }
-    $query = $kirjuri_database->prepare('INSERT INTO users (id, username, password, name, access, flags, attr_1, attr_2, attr_3, attr_4, attr_5, attr_6, attr_7, attr_8) VALUES (
-    NULL, :username, :password, :name, :access, :flags, :attr_1,
+    $query = $kirjuri_database->prepare('INSERT INTO users (username, password, name, access, flags, attr_1, attr_2, attr_3, attr_4, attr_5, attr_6, attr_7, attr_8) VALUES (
+    :username, :password, :name, :access, :flags, :attr_1,
     NULL, NULL, NULL, NULL, NULL, NULL, NULL);');
     $query->execute(array(
         ':username' => strtolower(trim(substr($_POST['username'], 0, 64))),
@@ -547,7 +547,7 @@ if ($_GET['type'] === 'device') // Create new device entry
         ':parent_id' => $form_data['parent_id']
     ));
     // COMMENTEDOUTFORTESTING $kirjuri_database = db('kirjuri-database');
-    $sql = $kirjuri_database->prepare('INSERT INTO exam_requests (id, parent_id, device_host_id, device_type, device_manuf, device_model, device_identifier, device_location, device_item_number, device_document, device_time_deviation, device_os, device_size_in_gb, device_is_host, device_owner, device_include_in_report, device_contains_evidence, case_added_date, case_request_description, device_action, is_removed, last_updated ) VALUES ( "", :parent_id, :device_host_id, :device_type, :device_manuf, :device_model, :device_identifier, :device_location, :device_item_number, :device_document, :device_time_deviation, :device_os, :device_size_in_gb, :device_is_host, :device_owner, "1", "0", NOW(), :case_request_description, :device_action, :is_removed, NOW());
+    $sql = $kirjuri_database->prepare('INSERT INTO exam_requests (parent_id, device_host_id, device_type, device_manuf, device_model, device_identifier, device_location, device_item_number, device_document, device_time_deviation, device_os, device_size_in_gb, device_is_host, device_owner, device_include_in_report, device_contains_evidence, case_added_date, case_request_description, device_action, is_removed, last_updated ) VALUES (:parent_id, :device_host_id, :device_type, :device_manuf, :device_model, :device_identifier, :device_location, :device_item_number, :device_document, :device_time_deviation, :device_os, :device_size_in_gb, :device_is_host, :device_owner, "1", "0", NOW(), :case_request_description, :device_action, :is_removed, NOW());
         ');
     $sql->execute(array(
         ':parent_id' => $form_data['parent_id'],

@@ -53,6 +53,13 @@ if ((file_exists("conf/mysql_credentials.php")) || (file_exists("conf/settings.l
 <i>mysq_credentials.php</i> and <i>settings.local</i>. If you wish to keep them intact, make backup copies.</b></p>';
  }
 
+/*$beacon = file_get_contents('https://kurittu.org/beacon.txt');
+if($beacon === "connected") {
+  $installer_version = trim(file_get_contents('conf/RELEASE'));
+  $github_version = file_get_contents('')
+  echo "<p>Internet connection available.</p>";
+}*/
+
 if (empty($_POST))
  {
   echo '<form role="form" method="post">

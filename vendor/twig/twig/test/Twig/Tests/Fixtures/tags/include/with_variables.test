@@ -4,7 +4,7 @@
 {% include "foo.twig" with {'foo': 'bar'} %}
 {% include "foo.twig" with vars %}
 --TEMPLATE(foo.twig)--
-{{foo}}
+{{ foo }}
 --DATA--
 return array('vars' => array('foo' => 'bar'))
 --EXPECT--

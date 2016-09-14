@@ -1,16 +1,16 @@
 --TEST--
 "empty" test
 --TEMPLATE--
-{{foo is empty ? 'ok' : 'ko'}}
-{{bar is empty ? 'ok' : 'ko'}}
-{{foobar is empty ? 'ok' : 'ko'}}
-{{array is empty ? 'ok' : 'ko'}}
-{{zero is empty ? 'ok' : 'ko'}}
-{{string is empty ? 'ok' : 'ko'}}
-{{countable_empty is empty ? 'ok' : 'ko'}}
-{{countable_not_empty is empty ? 'ok' : 'ko'}}
-{{markup_empty is empty ? 'ok' : 'ko'}}
-{{markup_not_empty is empty ? 'ok' : 'ko'}}
+{{ foo is empty ? 'ok' : 'ko' }}
+{{ bar is empty ? 'ok' : 'ko' }}
+{{ foobar is empty ? 'ok' : 'ko' }}
+{{ array is empty ? 'ok' : 'ko' }}
+{{ zero is empty ? 'ok' : 'ko' }}
+{{ string is empty ? 'ok' : 'ko' }}
+{{ countable_empty is empty ? 'ok' : 'ko' }}
+{{ countable_not_empty is empty ? 'ok' : 'ko' }}
+{{ markup_empty is empty ? 'ok' : 'ko' }}
+{{ markup_not_empty is empty ? 'ok' : 'ko' }}
 --DATA--
 
 class CountableStub implements Countable

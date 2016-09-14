@@ -31,7 +31,7 @@ an instance of ``Twig_Token``, and the stream is an instance of
 ``Twig_TokenStream``). The default lexer recognizes 13 different token types:
 
 * ``Twig_Token::BLOCK_START_TYPE``, ``Twig_Token::BLOCK_END_TYPE``: Delimiters for blocks (``{% %}``)
-* ``Twig_Token::VAR_START_TYPE``, ``Twig_Token::VAR_END_TYPE``: Delimiters for variables (``{{}}``)
+* ``Twig_Token::VAR_START_TYPE``, ``Twig_Token::VAR_END_TYPE``: Delimiters for variables (``{{ }}``)
 * ``Twig_Token::TEXT_TYPE``: A text outside an expression;
 * ``Twig_Token::NAME_TYPE``: A name in an expression;
 * ``Twig_Token::NUMBER_TYPE``: A number in an expression;
@@ -51,7 +51,7 @@ representation of it by echoing the object::
 
     echo $stream."\n";
 
-Here is the output for the ``Hello {{name}}`` template:
+Here is the output for the ``Hello {{ name }}`` template:
 
 .. code-block:: text
 
@@ -84,7 +84,7 @@ Echoing the node object gives you a nice representation of the tree::
 
     echo $nodes."\n";
 
-Here is the output for the ``Hello {{name}}`` template:
+Here is the output for the ``Hello {{ name }}`` template:
 
 .. code-block:: text
 
@@ -113,11 +113,11 @@ of an environment::
 
     $php = $twig->compile($nodes);
 
-The generated template for a ``Hello {{name}}`` template reads as follows
+The generated template for a ``Hello {{ name }}`` template reads as follows
 (the actual output can differ depending on the version of Twig you are
 using)::
 
-    /* Hello {{name}} */
+    /* Hello {{ name }} */
     class __TwigTemplate_1121b6f109fe93ebe8c6e22e3712bceb extends Twig_Template
     {
         protected function doDisplay(array $context, array $blocks = array())

@@ -30,7 +30,7 @@ different possible extension points and when to use them.
 
 First, remember that Twig has two main language constructs:
 
-* ``{{}}``: used to print the result of an expression evaluation;
+* ``{{ }}``: used to print the result of an expression evaluation;
 
 * ``{% %}``: used to execute statements.
 
@@ -53,7 +53,7 @@ three main reasons:
 
   .. code-block:: jinja
 
-      {{'some text' ~ {% lipsum 40 %} ~ 'some more text'}}
+      {{ 'some text' ~ {% lipsum 40 %} ~ 'some more text' }}
 
 In fact, you rarely need to create tags; and that's good news because tags are
 the most complex extension point of Twig.
@@ -62,7 +62,7 @@ Now, let's use a ``lipsum`` *filter*:
 
 .. code-block:: jinja
 
-    {{40|lipsum}}
+    {{ 40|lipsum }}
 
 Again, it works, but it looks weird. A filter transforms the passed value to
 something else but here we use the value to indicate the number of words to
@@ -73,14 +73,14 @@ Next, let's use a ``lipsum`` *function*:
 
 .. code-block:: jinja
 
-    {{lipsum(40)}}
+    {{ lipsum(40) }}
 
 Here we go. For this specific example, the creation of a function is the
 extension point to use. And you can use it anywhere an expression is accepted:
 
 .. code-block:: jinja
 
-    {{'some text' ~ lipsum(40) ~ 'some more text'}}
+    {{ 'some text' ~ lipsum(40) ~ 'some more text' }}
 
     {% set lipsum = lipsum(40) %}
 
@@ -89,7 +89,7 @@ to generate lorem ipsum text:
 
 .. code-block:: jinja
 
-    {{text.lipsum(40)}}
+    {{ text.lipsum(40) }}
 
 As a rule of thumb, use functions for frequently used features and global
 objects for everything else.
@@ -99,13 +99,13 @@ Keep in mind the following when you want to extend Twig:
 ========== ========================== ========== =========================
 What?      Implementation difficulty? How often? When?
 ========== ========================== ========== =========================
-*macro*    tdb_rowal                    frequent   Content generation
-*global*   tdb_rowal                    frequent   Helper object
-*function* tdb_rowal                    frequent   Content generation
-*filter*   tdb_rowal                    frequent   Value transformation
+*macro*    trivial                    frequent   Content generation
+*global*   trivial                    frequent   Helper object
+*function* trivial                    frequent   Content generation
+*filter*   trivial                    frequent   Value transformation
 *tag*      complex                    rare       DSL language construct
-*test*     tdb_rowal                    rare       Boolean decision
-*operator* tdb_rowal                    rare       Values transformation
+*test*     trivial                    rare       Boolean decision
+*operator* trivial                    rare       Values transformation
 ========== ========================== ========== =========================
 
 Globals
@@ -121,7 +121,7 @@ You can then use the ``text`` variable anywhere in a template:
 
 .. code-block:: jinja
 
-    {{text.lipsum(40)}}
+    {{ text.lipsum(40) }}
 
 Filters
 -------
@@ -152,7 +152,7 @@ And here is how to use it in a template:
 
 .. code-block:: jinja
 
-    {{'Twig'|rot13}}
+    {{ 'Twig'|rot13 }}
 
     {# will output Gjvt #}
 
@@ -164,8 +164,8 @@ For instance, the following code:
 
 .. code-block:: jinja
 
-    {{'TWIG'|lower}}
-    {{now|date('d/m/Y')}}
+    {{ 'TWIG'|lower }}
+    {{ now|date('d/m/Y') }}
 
 is compiled to something like the following::
 
@@ -383,7 +383,7 @@ variables from within a template. The tag can be used like follows:
 
     {% set name = "value" %}
 
-    {{name}}
+    {{ name }}
 
     {# should output value #}
 
@@ -553,6 +553,8 @@ An extension is a class that implements the following interface::
          * This is where you can load some file that contains filter functions for instance.
          *
          * @param Twig_Environment $environment The current Twig_Environment instance
+         *
+         * @deprecated since 1.23 (to be removed in 2.0), implement Twig_Extension_InitRuntimeInterface instead
          */
         function initRuntime(Twig_Environment $environment);
 
@@ -602,6 +604,8 @@ An extension is a class that implements the following interface::
          * Returns a list of global variables to add to the existing list.
          *
          * @return array An array of global variables
+         *
+         * @deprecated since 1.23 (to be removed in 2.0), implement Twig_Extension_GlobalsInterface instead
          */
         function getGlobals();
 
@@ -645,9 +649,6 @@ main ``Environment`` object::
     $twig = new Twig_Environment($loader);
     $twig->addExtension(new Project_Twig_Extension());
 
-Of course, you need to first load the extension file by either using
-``require_once()`` or by using an autoloader (see `spl_autoload_register()`_).
-
 .. tip::
 
     The bundled extensions are great examples of how extensions work.
@@ -658,7 +659,7 @@ Globals
 Global variables can be registered in an extension via the ``getGlobals()``
 method::
 
-    class Project_Twig_Extension extends Twig_Extension
+    class Project_Twig_Extension extends Twig_Extension implements Twig_Extension_GlobalsInterface
     {
         public function getGlobals()
         {
@@ -862,11 +863,10 @@ Fixtures examples can be found within the Twig repository
 Node Tests
 ~~~~~~~~~~
 
-Testing the node visitors can be complex, so extend your test exam_requests from
+Testing the node visitors can be complex, so extend your test cases from
 ``Twig_Test_NodeTestCase``. Examples can be found in the Twig repository
 `tests/Twig/Node`_ directory.
 
-.. _`spl_autoload_register()`: http://www.php.net/spl_autoload_register
 .. _`rot13`:                   http://www.php.net/manual/en/function.str-rot13.php
 .. _`tests/Twig/Fixtures`:     https://github.com/twigphp/Twig/tree/master/test/Twig/Tests/Fixtures
 .. _`tests/Twig/Node`:         https://github.com/twigphp/Twig/tree/master/test/Twig/Tests/Node

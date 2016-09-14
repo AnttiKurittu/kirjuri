@@ -91,7 +91,7 @@ class Twig_Tests_ErrorTest extends PHPUnit_Framework_TestCase
             // error occurs in a template
             array(
                 array(
-                    'index' => "\n\n{{foo.bar}}\n\n\n{{'foo'}}",
+                    'index' => "\n\n{{ foo.bar }}\n\n\n{{ 'foo' }}",
                 ),
                 'index', 3,
             ),
@@ -100,7 +100,7 @@ class Twig_Tests_ErrorTest extends PHPUnit_Framework_TestCase
             array(
                 array(
                     'index' => "{% include 'partial' %}",
-                    'partial' => '{{foo.bar}}',
+                    'partial' => '{{ foo.bar }}',
                 ),
                 'partial', 1,
             ),
@@ -110,9 +110,9 @@ class Twig_Tests_ErrorTest extends PHPUnit_Framework_TestCase
                 array(
                     'index' => "{% extends 'base' %}
                     {% block content %}
-                        {{parent()}}
+                        {{ parent() }}
                     {% endblock %}",
-                    'base' => '{% block content %}{{foo.bar}}{% endblock %}',
+                    'base' => '{% block content %}{{ foo.bar }}{% endblock %}',
                 ),
                 'base', 1,
             ),
@@ -122,10 +122,10 @@ class Twig_Tests_ErrorTest extends PHPUnit_Framework_TestCase
                 array(
                     'index' => "{% extends 'base' %}
                     {% block content %}
-                        {{foo.bar}}
+                        {{ foo.bar }}
                     {% endblock %}
                     {% block foo %}
-                        {{foo.bar}}
+                        {{ foo.bar }}
                     {% endblock %}",
                     'base' => '{% block content %}{% endblock %}',
                 ),

@@ -6,6 +6,6 @@ uppercase, all others lowercase:
 
 .. code-block:: jinja
 
-    {{'my first car'|capitalize}}
+    {{ 'my first car'|capitalize }}
 
     {# outputs 'My first car' #}

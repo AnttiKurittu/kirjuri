@@ -1,8 +1,8 @@
 --TEST--
 Twig supports __call() for attributes
 --TEMPLATE--
-{{foo.foo}}
-{{foo.bar}}
+{{ foo.foo }}
+{{ foo.bar }}
 --DATA--
 class TestClassForMagicCallAttributes
 {

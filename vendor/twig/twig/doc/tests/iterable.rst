@@ -11,9 +11,9 @@
     {# evaluates to true if the foo variable is iterable #}
     {% if users is iterable %}
         {% for user in users %}
-            Hello {{user}}!
+            Hello {{ user }}!
         {% endfor %}
     {% else %}
         {# users is probably a string #}
-        Hello {{users}}!
+        Hello {{ users }}!
     {% endif %}

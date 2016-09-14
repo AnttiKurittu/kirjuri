@@ -3,7 +3,7 @@
 --TEMPLATE--
 {% autoescape 'html' %}
   {% block foo %}
-    {{var}}
+    {{ var }}
   {% endblock %}
 {% endautoescape %}
 --DATA--

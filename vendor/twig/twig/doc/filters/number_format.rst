@@ -9,14 +9,14 @@ The ``number_format`` filter formats numbers.  It is a wrapper around PHP's
 
 .. code-block:: jinja
 
-    {{200.35|number_format}}
+    {{ 200.35|number_format }}
 
 You can control the number of decimal places, decimal point, and thousands
 separator using the additional arguments:
 
 .. code-block:: jinja
 
-    {{9800.333|number_format(2, '.', ',')}}
+    {{ 9800.333|number_format(2, '.', ',') }}
 
 If no formatting options are provided then Twig will use the default formatting
 options of:

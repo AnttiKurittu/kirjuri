@@ -5,12 +5,12 @@ Twig parses postfix expressions
 
 {% macro foo() %}foo{% endmacro %}
 
-{{'a'}}
-{{'a'|upper}}
-{{('a')|upper}}
-{{-1|upper}}
-{{macros.foo()}}
-{{(macros).foo()}}
+{{ 'a' }}
+{{ 'a'|upper }}
+{{ ('a')|upper }}
+{{ -1|upper }}
+{{ macros.foo() }}
+{{ (macros).foo() }}
 --DATA--
 return array();
 --EXPECT--

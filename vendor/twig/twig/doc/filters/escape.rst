@@ -16,29 +16,29 @@ By default, it uses the HTML escaping strategy:
 
 .. code-block:: jinja
 
-    {{user.username|escape}}
+    {{ user.username|escape }}
 
 For convenience, the ``e`` filter is defined as an alias:
 
 .. code-block:: jinja
 
-    {{user.username|e}}
+    {{ user.username|e }}
 
 The ``escape`` filter can also be used in other contexts than HTML thanks to
 an optional argument which defines the escaping strategy to use:
 
 .. code-block:: jinja
 
-    {{user.username|e}}
+    {{ user.username|e }}
     {# is equivalent to #}
-    {{user.username|e('html')}}
+    {{ user.username|e('html') }}
 
 And here is how to escape variables included in JavaScript code:
 
 .. code-block:: jinja
 
-    {{user.username|escape('js')}}
-    {{user.username|e('js')}}
+    {{ user.username|escape('js') }}
+    {{ user.username|e('js') }}
 
 The ``escape`` filter supports the following escaping strategies:
 
@@ -72,8 +72,8 @@ The ``escape`` filter supports the following escaping strategies:
         {% set strategy = 'html' %}
 
         {% autoescape 'html' %}
-            {{var|escape('html')}}   {# won't be double-escaped #}
-            {{var|escape(strategy)}} {# will be double-escaped #}
+            {{ var|escape('html') }}   {# won't be double-escaped #}
+            {{ var|escape(strategy) }} {# will be double-escaped #}
         {% endautoescape %}
 
     When using a variable as the escaping strategy, you should disable
@@ -84,7 +84,7 @@ The ``escape`` filter supports the following escaping strategies:
         {% set strategy = 'html' %}
 
         {% autoescape 'html' %}
-            {{var|escape(strategy)|raw}} {# won't be double-escaped #}
+            {{ var|escape(strategy)|raw }} {# won't be double-escaped #}
         {% endautoescape %}
 
 Custom Escapers
@@ -97,7 +97,7 @@ used in the ``escape`` call) and the second one must be a valid PHP callable:
 .. code-block:: php
 
     $twig = new Twig_Environment($loader);
-    $twig->getExtension('core')->setEscaper('csv', 'csv_escaper'));
+    $twig->getExtension('core')->setEscaper('csv', 'csv_escaper');
 
 When called by Twig, the callable receives the Twig environment instance, the
 string to escape, and the charset.

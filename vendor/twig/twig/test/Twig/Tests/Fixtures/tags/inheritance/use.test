@@ -7,20 +7,20 @@
 {% use "use2.twig" %}
 
 {% block content_parent %}
-    {{parent()}}
+    {{ parent() }}
 {% endblock %}
 
 {% block content_use1 %}
-    {{parent()}}
+    {{ parent() }}
 {% endblock %}
 
 {% block content_use2 %}
-    {{parent()}}
+    {{ parent() }}
 {% endblock %}
 
 {% block content %}
-    {{block('content_use1_only')}}
-    {{block('content_use2_only')}}
+    {{ block('content_use1_only') }}
+    {{ block('content_use2_only') }}
 {% endblock %}
 --TEMPLATE(parent.twig)--
 {% block content_parent 'content_parent' %}

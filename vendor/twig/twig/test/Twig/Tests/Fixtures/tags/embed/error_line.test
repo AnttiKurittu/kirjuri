@@ -4,7 +4,7 @@
 FOO
 {% embed "foo.twig" %}
     {% block c1 %}
-        {{nothing}}
+        {{ nothing }}
     {% endblock %}
 {% endembed %}
 BAR

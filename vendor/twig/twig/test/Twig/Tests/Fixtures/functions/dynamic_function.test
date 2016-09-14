@@ -1,8 +1,8 @@
 --TEST--
 dynamic function
 --TEMPLATE--
-{{foo_path('bar')}}
-{{a_foo_b_bar('bar')}}
+{{ foo_path('bar') }}
+{{ a_foo_b_bar('bar') }}
 --DATA--
 return array()
 --EXPECT--

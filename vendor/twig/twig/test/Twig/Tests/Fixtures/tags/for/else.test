@@ -2,7 +2,7 @@
 "for" tag can use an "else" clause
 --TEMPLATE--
 {% for item in items %}
-  * {{item}}
+  * {{ item }}
 {% else %}
   no item
 {% endfor %}

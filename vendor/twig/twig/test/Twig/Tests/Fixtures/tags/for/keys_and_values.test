@@ -2,7 +2,7 @@
 "for" tag can iterate over keys and values
 --TEMPLATE--
 {% for key, item in items %}
-  * {{key}}/{{item}}
+  * {{ key }}/{{ item }}
 {% endfor %}
 --DATA--
 return array('items' => array('a', 'b'))

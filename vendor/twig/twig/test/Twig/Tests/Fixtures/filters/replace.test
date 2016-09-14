@@ -1,9 +1,9 @@
 --TEST--
 "replace" filter
 --TEMPLATE--
-{{"I liké %this% and %that%."|replace({'%this%': "foo", '%that%': "bar"})}}
-{{'I like single replace operation only %that%'|replace({'%that%' : '%that%1'})}}
-{{'I like %this% and %that%.'|replace(traversable)}}
+{{ "I liké %this% and %that%."|replace({'%this%': "foo", '%that%': "bar"}) }}
+{{ 'I like single replace operation only %that%'|replace({'%that%' : '%that%1'}) }}
+{{ 'I like %this% and %that%.'|replace(traversable) }}
 --DATA--
 return array('traversable' => new ArrayObject(array('%this%' => 'foo', '%that%' => 'bar')))
 --EXPECT--

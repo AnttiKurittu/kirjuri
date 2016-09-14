@@ -3,10 +3,10 @@
 --TEMPLATE--
 {% import _self as macros %}
 
-{{macros.§('foo')}}
+{{ macros.§('foo') }}
 
 {% macro §(foo) %}
-  §{{foo}}§
+  §{{ foo }}§
 {% endmacro %}
 --DATA--
 return array()

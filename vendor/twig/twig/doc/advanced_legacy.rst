@@ -31,7 +31,7 @@ different possible extension points and when to use them.
 
 First, remember that Twig has two main language constructs:
 
-* ``{{}}``: used to print the result of an expression evaluation;
+* ``{{ }}``: used to print the result of an expression evaluation;
 
 * ``{% %}``: used to execute statements.
 
@@ -54,7 +54,7 @@ three main reasons:
 
   .. code-block:: jinja
 
-      {{'some text' ~ {% lipsum 40 %} ~ 'some more text'}}
+      {{ 'some text' ~ {% lipsum 40 %} ~ 'some more text' }}
 
 In fact, you rarely need to create tags; and that's good news because tags are
 the most complex extension point of Twig.
@@ -63,7 +63,7 @@ Now, let's use a ``lipsum`` *filter*:
 
 .. code-block:: jinja
 
-    {{40|lipsum}}
+    {{ 40|lipsum }}
 
 Again, it works, but it looks weird. A filter transforms the passed value to
 something else but here we use the value to indicate the number of words to
@@ -74,14 +74,14 @@ Next, let's use a ``lipsum`` *function*:
 
 .. code-block:: jinja
 
-    {{lipsum(40)}}
+    {{ lipsum(40) }}
 
 Here we go. For this specific example, the creation of a function is the
 extension point to use. And you can use it anywhere an expression is accepted:
 
 .. code-block:: jinja
 
-    {{'some text' ~ ipsum(40) ~ 'some more text'}}
+    {{ 'some text' ~ ipsum(40) ~ 'some more text' }}
 
     {% set ipsum = ipsum(40) %}
 
@@ -90,7 +90,7 @@ to generate lorem ipsum text:
 
 .. code-block:: jinja
 
-    {{text.lipsum(40)}}
+    {{ text.lipsum(40) }}
 
 As a rule of thumb, use functions for frequently used features and global
 objects for everything else.
@@ -100,13 +100,13 @@ Keep in mind the following when you want to extend Twig:
 ========== ========================== ========== =========================
 What?      Implementation difficulty? How often? When?
 ========== ========================== ========== =========================
-*macro*    tdb_rowal                    frequent   Content generation
-*global*   tdb_rowal                    frequent   Helper object
-*function* tdb_rowal                    frequent   Content generation
-*filter*   tdb_rowal                    frequent   Value transformation
+*macro*    trivial                    frequent   Content generation
+*global*   trivial                    frequent   Helper object
+*function* trivial                    frequent   Content generation
+*filter*   trivial                    frequent   Value transformation
 *tag*      complex                    rare       DSL language construct
-*test*     tdb_rowal                    rare       Boolean decision
-*operator* tdb_rowal                    rare       Values transformation
+*test*     trivial                    rare       Boolean decision
+*operator* trivial                    rare       Values transformation
 ========== ========================== ========== =========================
 
 Globals
@@ -122,7 +122,7 @@ You can then use the ``text`` variable anywhere in a template:
 
 .. code-block:: jinja
 
-    {{text.lipsum(40)}}
+    {{ text.lipsum(40) }}
 
 Filters
 -------
@@ -136,7 +136,7 @@ callable. For instance, let's say you have the following code in a template:
 
 .. code-block:: jinja
 
-    {{'TWIG'|lower}}
+    {{ 'TWIG'|lower }}
 
 When compiling this template to PHP, Twig looks for the PHP callable
 associated with the ``lower`` filter. The ``lower`` filter is a built-in Twig
@@ -154,7 +154,7 @@ A filter can also take extra arguments like in the following example:
 
 .. code-block:: jinja
 
-    {{now|date('d/m/Y')}}
+    {{ now|date('d/m/Y') }}
 
 In this case, the extra arguments are passed to the function after the main
 argument, and the compiled code is equivalent to:
@@ -171,7 +171,7 @@ expected output:
 
 .. code-block:: jinja
 
-    {{"Twig"|rot13}}
+    {{ "Twig"|rot13 }}
 
     {# should displays Gjvt #}
 
@@ -190,7 +190,7 @@ Let's say I now want to be able to add a prefix before the converted string:
 
 .. code-block:: jinja
 
-    {{"Twig"|rot13('prefix_')}}
+    {{ "Twig"|rot13('prefix_') }}
 
     {# should displays prefix_Gjvt #}
 
@@ -299,7 +299,7 @@ templates.
 
 .. code-block:: jinja
 
-    {{constant("DATE_W3C")}}
+    {{ constant("DATE_W3C") }}
 
 When compiling this template to PHP, Twig looks for the PHP callable
 associated with the ``constant`` function. The ``constant`` function is a built-in Twig
@@ -372,7 +372,7 @@ variables from within a template. The tag can be used like follows:
 
     {% set name = "value" %}
 
-    {{name}}
+    {{ name }}
 
     {# should output value #}
 
@@ -877,7 +877,7 @@ Fixtures examples can be found within the Twig repository
 Node Tests
 ~~~~~~~~~~
 
-Testing the node visitors can be complex, so extend your test exam_requests from
+Testing the node visitors can be complex, so extend your test cases from
 ``Twig_Test_NodeTestCase``. Examples can be found in the Twig repository
 `tests/Twig/Node`_ directory.
 

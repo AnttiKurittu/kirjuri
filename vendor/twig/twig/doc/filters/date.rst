@@ -17,7 +17,7 @@ The ``date`` filter formats a date to a given format:
 
 .. code-block:: jinja
 
-    {{post.published_at|date("m/d/Y")}}
+    {{ post.published_at|date("m/d/Y") }}
 
 The format specifier is the same as supported by `date`_,
 except when the filtered data is of type `DateInterval`_, when the format must conform to
@@ -29,14 +29,14 @@ instance, to display the current date, filter the word "now":
 
 .. code-block:: jinja
 
-    {{"now"|date("m/d/Y")}}
+    {{ "now"|date("m/d/Y") }}
 
 To escape words and characters in the date format use ``\\`` in front of each
 character:
 
 .. code-block:: jinja
 
-    {{post.published_at|date("F jS \\a\\t g:ia")}}
+    {{ post.published_at|date("F jS \\a\\t g:ia") }}
 
 If the value passed to the ``date`` filter is ``null``, it will return the
 current date by default. If an empty string is desired instead of the current
@@ -44,7 +44,7 @@ date, use a ternary operator:
 
 .. code-block:: jinja
 
-    {{post.published_at is empty ? "" : post.published_at|date("m/d/Y")}}
+    {{ post.published_at is empty ? "" : post.published_at|date("m/d/Y") }}
 
 If no format is provided, Twig will use the default one: ``F j, Y H:i``. This
 default can be easily changed by calling the ``setDateFormat()`` method on the
@@ -65,14 +65,14 @@ it by explicitly specifying a timezone:
 
 .. code-block:: jinja
 
-    {{post.published_at|date("m/d/Y", "Europe/Paris")}}
+    {{ post.published_at|date("m/d/Y", "Europe/Paris") }}
 
 If the date is already a DateTime object, and if you want to keep its current
 timezone, pass ``false`` as the timezone value:
 
 .. code-block:: jinja
 
-    {{post.published_at|date("m/d/Y", false)}}
+    {{ post.published_at|date("m/d/Y", false) }}
 
 The default timezone can also be set globally by calling ``setTimezone()``:
 

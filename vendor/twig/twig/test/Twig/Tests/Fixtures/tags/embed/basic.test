@@ -4,7 +4,7 @@
 FOO
 {% embed "foo.twig" %}
     {% block c1 %}
-        {{parent()}}
+        {{ parent() }}
         block1extended
     {% endblock %}
 {% endembed %}

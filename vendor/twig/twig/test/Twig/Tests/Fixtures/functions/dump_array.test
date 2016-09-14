@@ -3,7 +3,7 @@
 --CONDITION--
 !extension_loaded('xdebug') || (($r = new ReflectionExtension('xdebug')) && version_compare($r->getVersion(), '2.2-dev', '<'))
 --TEMPLATE--
-{{dump()}}
+{{ dump() }}
 --DATA--
 return array('foo' => 'foo', 'bar' => 'bar')
 --CONFIG--

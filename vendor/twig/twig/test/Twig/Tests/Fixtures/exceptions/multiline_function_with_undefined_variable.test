@@ -1,9 +1,9 @@
 --TEST--
 Exception for multile function with undefined variable
 --TEMPLATE--
-{{include('foo',
+{{ include('foo',
    with_context=with_context
-)}}
+) }}
 --TEMPLATE(foo)--
 Foo
 --DATA--

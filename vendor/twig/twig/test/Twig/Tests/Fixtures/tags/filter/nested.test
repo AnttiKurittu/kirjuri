@@ -2,11 +2,11 @@
 "filter" tags can be nested at will
 --TEMPLATE--
 {% filter lower|title %}
-  {{var}}
+  {{ var }}
   {% filter upper %}
-    {{var}}
+    {{ var }}
   {% endfilter %}
-  {{var}}
+  {{ var }}
 {% endfilter %}
 --DATA--
 return array('var' => 'var')

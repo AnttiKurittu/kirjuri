@@ -4,11 +4,11 @@
 {% extends "base.twig" %}
 
 {% block content %}
-    {{parent()}}
+    {{ parent() }}
 {% endblock %}
 --TEMPLATE(base.twig)--
 {% block content %}
-    {{include("foo.twig")}}
+    {{ include("foo.twig") }}
 {% endblock %}
 --DATA--
 return array();

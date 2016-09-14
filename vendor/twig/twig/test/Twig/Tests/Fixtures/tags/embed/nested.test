@@ -3,10 +3,10 @@
 --TEMPLATE--
 {% embed "foo.twig" %}
     {% block c1 %}
-        {{parent()}}
+        {{ parent() }}
         {% embed "foo.twig" %}
             {% block c1 %}
-                {{parent()}}
+                {{ parent() }}
                 block1extended
             {% endblock %}
         {% endembed %}

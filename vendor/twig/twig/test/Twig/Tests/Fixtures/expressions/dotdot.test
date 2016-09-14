@@ -1,15 +1,15 @@
 --TEST--
 Twig supports the .. operator
 --TEMPLATE--
-{% for i in 0..10 %}{{i}} {% endfor %}
+{% for i in 0..10 %}{{ i }} {% endfor %}
 
-{% for letter in 'a'..'z' %}{{letter}} {% endfor %}
+{% for letter in 'a'..'z' %}{{ letter }} {% endfor %}
 
-{% for letter in 'a'|upper..'z'|upper %}{{letter}} {% endfor %}
+{% for letter in 'a'|upper..'z'|upper %}{{ letter }} {% endfor %}
 
-{% for i in foo[0]..foo[1] %}{{i}} {% endfor %}
+{% for i in foo[0]..foo[1] %}{{ i }} {% endfor %}
 
-{% for i in 0 + 1 .. 10 - 1 %}{{i}} {% endfor %}
+{% for i in 0 + 1 .. 10 - 1 %}{{ i }} {% endfor %}
 --DATA--
 return array('foo' => array(1, 10))
 --EXPECT--

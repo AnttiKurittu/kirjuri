@@ -13,7 +13,7 @@ It requires PHP and MySQL and uses Twig (http://twig.sensiolabs.org), Bootstrap 
 WARNING
 ------------
 
-Kirjuri is NOT designed to be installed on an internet-facing machines except for testing and development purposes. It is INHERENTLY INSECURE, and designed to be used in an air-gapped network by trusted operators in a secure location. If you wish to implement user management and security features, you are welcome to collaborate with this project.
+Kirjuri is NOT designed to be installed on an internet-facing machines except for testing and development purposes. It is INHERENTLY INSECURE, and designed to be used in an air-gapped network by trusted operators in a secure location. If you wish to implement more security features, you are welcome to collaborate with this project.
 
 Familiarize yourself with the software prior to installing it into a production environment. The developers accept no liability on security incidents following from the use of this software. The software is provided as-is.
 
@@ -81,6 +81,11 @@ SCREENSHOTS
 
 CHANGELOG
 ------------
+2016-09-14:
+
+* Updated Twig to version 1.24.3 (https://github.com/twigphp/Twig)
+* Updated Font Awesome to version 4.6.3 (http://fontawesome.io/)
+
 2016-09-09:
 
 * Big update!

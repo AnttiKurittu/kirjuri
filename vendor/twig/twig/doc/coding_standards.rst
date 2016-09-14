@@ -9,7 +9,7 @@ standards:
 
   .. code-block:: jinja
 
-    {{foo}}
+    {{ foo }}
     {# comment #}
     {% if foo %}{% endif %}
 
@@ -30,40 +30,40 @@ standards:
 
   .. code-block:: jinja
 
-     {{1 + 2}}
-     {{foo ~ bar}}
-     {{true ? true : false}}
+     {{ 1 + 2 }}
+     {{ foo ~ bar }}
+     {{ true ? true : false }}
 
 * Put one (and only one) space after the ``:`` sign in hashes and ``,`` in
   arrays and hashes:
 
   .. code-block:: jinja
 
-     {{[1, 2, 3]}}
-     {{{'foo': 'bar'}}}
+     {{ [1, 2, 3] }}
+     {{ {'foo': 'bar'} }}
 
 * Do not put any spaces after an opening parenthesis and before a closing
   parenthesis in expressions:
 
   .. code-block:: jinja
 
-    {{1 + (2 * 3)}}
+    {{ 1 + (2 * 3) }}
 
 * Do not put any spaces before and after string delimiters:
 
   .. code-block:: jinja
 
-    {{'foo'}}
-    {{"foo"}}
+    {{ 'foo' }}
+    {{ "foo" }}
 
 * Do not put any spaces before and after the following operators: ``|``,
   ``.``, ``..``, ``[]``:
 
   .. code-block:: jinja
 
-    {{foo|upper|lower}}
-    {{user.name}}
-    {{user[name]}}
+    {{ foo|upper|lower }}
+    {{ user.name }}
+    {{ user[name] }}
     {% for i in 1..12 %}{% endfor %}
 
 * Do not put any spaces before and after the parenthesis used for filter and
@@ -71,16 +71,16 @@ standards:
 
   .. code-block:: jinja
 
-     {{foo|default('foo')}}
-     {{range(1..10)}}
+     {{ foo|default('foo') }}
+     {{ range(1..10) }}
 
 * Do not put any spaces before and after the opening and the closing of arrays
   and hashes:
 
   .. code-block:: jinja
 
-     {{[1, 2, 3]}}
-     {{{'foo': 'bar'}}}
+     {{ [1, 2, 3] }}
+     {{ {'foo': 'bar'} }}
 
 * Use lower cased and underscored variable names:
 
@@ -95,7 +95,7 @@ standards:
   .. code-block:: jinja
 
      {% block foo %}
-        {% if true %}
-            true
-        {% endif %}
+         {% if true %}
+             true
+         {% endif %}
      {% endblock %}

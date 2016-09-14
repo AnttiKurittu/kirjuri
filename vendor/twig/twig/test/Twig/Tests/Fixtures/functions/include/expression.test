@@ -2,7 +2,7 @@
 "include" function allows expressions for the template to include
 --TEMPLATE--
 FOO
-{{include(foo)}}
+{{ include(foo) }}
 
 BAR
 --TEMPLATE(foo.twig)--

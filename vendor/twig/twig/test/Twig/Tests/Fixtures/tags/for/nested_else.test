@@ -3,9 +3,9 @@
 --TEMPLATE--
 {% for item in items %}
   {% for item in items1 %}
-    * {{item}}
+    * {{ item }}
   {% else %}
-    no {{item}}
+    no {{ item }}
   {% endfor %}
 {% else %}
   no item1

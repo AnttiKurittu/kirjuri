@@ -3,7 +3,7 @@
 --TEMPLATE--
 {% set foo %}f<br />o<br />o{% endset %}
 
-{{foo}}
+{{ foo }}
 --DATA--
 return array()
 --EXPECT--

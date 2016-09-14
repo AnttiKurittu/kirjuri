@@ -4,19 +4,20 @@
 {% extends "base.twig" %}
 
 {% block c1 %}
-    {{parent()}}
+    {{ parent() }}
     blockc1baseextended
 {% endblock %}
 
 {% block c2 %}
-    {{parent()}}
+    {{ parent() }}
 
     {% embed "foo.twig" %}
         {% block c1 %}
-            {{parent()}}
+            {{ parent() }}
             block1extended
         {% endblock %}
     {% endembed %}
+    {{ parent() }}
 {% endblock %}
 --TEMPLATE(base.twig)--
 A
@@ -54,4 +55,6 @@ A
             block1extended
         B
     block2
-CB
+C        blockc2base
+
+B

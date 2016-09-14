@@ -19,7 +19,7 @@ You can also test if an array is not empty:
     {% if users %}
         <ul>
             {% for user in users %}
-                <li>{{user.username|e}}</li>
+                <li>{{ user.username|e }}</li>
             {% endfor %}
         </ul>
     {% endif %}
@@ -61,7 +61,7 @@ use more complex ``expressions`` there too:
 .. note::
 
     The rules to determine if an expression is ``true`` or ``false`` are the
-    same as in PHP; here are the edge exam_requests rules:
+    same as in PHP; here are the edge cases rules:
 
     ====================== ====================
     Value                  Boolean evaluation

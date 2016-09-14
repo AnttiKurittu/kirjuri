@@ -14,7 +14,7 @@ configuration and extensions, and are used to load templates from the file
 system or other locations.
 
 Most applications will create one ``Twig_Environment`` object on application
-initialization and use that to load templates. In some exam_requests it's however
+initialization and use that to load templates. In some cases it's however
 useful to have multiple environments side by side, if different configurations
 are in use.
 
@@ -78,16 +78,16 @@ The following options are available:
   ``__toString()`` method that you can use to display the generated nodes
   (default to ``false``).
 
-* ``charset`` *string (default to ``utf-8``)*
+* ``charset`` *string* (defaults to ``utf-8``)
 
   The charset used by the templates.
 
-* ``base_template_class`` *string (default to ``Twig_Template``)*
+* ``base_template_class`` *string* (defaults to ``Twig_Template``)
 
   The base template class to use for generated
   templates.
 
-* ``cache`` *string|false*
+* ``cache`` *string* or ``false``
 
   An absolute path where to store the compiled templates, or
   ``false`` to disable caching (which is the default).
@@ -106,7 +106,7 @@ The following options are available:
   replace them with a ``null`` value. When set to ``true``, Twig throws an
   exception instead (default to ``false``).
 
-* ``autoescape`` *string|boolean*
+* ``autoescape`` *string* or *boolean*
 
   If set to ``true``, HTML auto-escaping will be enabled by
   default for all templates (default to ``true``).
@@ -197,7 +197,7 @@ Namespaced templates can be accessed via the special
 of strings bound to template names::
 
     $loader = new Twig_Loader_Array(array(
-        'index.html' => 'Hello {{name}}!',
+        'index.html' => 'Hello {{ name }}!',
     ));
     $twig = new Twig_Environment($loader);
 
@@ -223,7 +223,7 @@ projects where storing all templates in a single PHP file might make sense.
         'base.html' => '{% block content %}{% endblock %}',
     ));
     $loader2 = new Twig_Loader_Array(array(
-        'index.html' => '{% extends "base.html" %}{% block content %}Hello {{name}}{% endblock %}',
+        'index.html' => '{% extends "base.html" %}{% block content %}Hello {{ name }}{% endblock %}',
         'base.html'  => 'Will never be loaded',
     ));
 
@@ -348,7 +348,7 @@ escaping strategy), except those using the ``raw`` filter:
 
 .. code-block:: jinja
 
-    {{article.to_html|raw}}
+    {{ article.to_html|raw }}
 
 You can also change the escaping mode locally by using the ``autoescape`` tag
 (see the :doc:`autoescape<tags/autoescape>` doc for the syntax used before
@@ -357,9 +357,9 @@ Twig 1.8):
 .. code-block:: jinja
 
     {% autoescape 'html' %}
-        {{var}}
-        {{var|raw}}      {# var won't be escaped #}
-        {{var|escape}}   {# var won't be double-escaped #}
+        {{ var }}
+        {{ var|raw }}      {# var won't be escaped #}
+        {{ var|escape }}   {# var won't be double-escaped #}
     {% endautoescape %}
 
 .. warning::
@@ -373,40 +373,40 @@ The escaping rules are implemented as follows:
 
   .. code-block:: jinja
 
-        {{"Twig<br />"}} {# won't be escaped #}
+        {{ "Twig<br />" }} {# won't be escaped #}
 
         {% set text = "Twig<br />" %}
-        {{text}} {# will be escaped #}
+        {{ text }} {# will be escaped #}
 
 * Expressions which the result is always a literal or a variable marked safe
   are never automatically escaped:
 
   .. code-block:: jinja
 
-        {{foo ? "Twig<br />" : "<br />Twig"}} {# won't be escaped #}
+        {{ foo ? "Twig<br />" : "<br />Twig" }} {# won't be escaped #}
 
         {% set text = "Twig<br />" %}
-        {{foo ? text : "<br />Twig"}} {# will be escaped #}
+        {{ foo ? text : "<br />Twig" }} {# will be escaped #}
 
         {% set text = "Twig<br />" %}
-        {{foo ? text|raw : "<br />Twig"}} {# won't be escaped #}
+        {{ foo ? text|raw : "<br />Twig" }} {# won't be escaped #}
 
         {% set text = "Twig<br />" %}
-        {{foo ? text|escape : "<br />Twig"}} {# the result of the expression won't be escaped #}
+        {{ foo ? text|escape : "<br />Twig" }} {# the result of the expression won't be escaped #}
 
 * Escaping is applied before printing, after any other filter is applied:
 
   .. code-block:: jinja
 
-        {{var|upper}} {# is equivalent to {{var|upper|escape}} #}
+        {{ var|upper }} {# is equivalent to {{ var|upper|escape }} #}
 
 * The `raw` filter should only be used at the end of the filter chain:
 
   .. code-block:: jinja
 
-        {{var|raw|upper}} {# will be escaped #}
+        {{ var|raw|upper }} {# will be escaped #}
 
-        {{var|upper|raw}} {# won't be escaped #}
+        {{ var|upper|raw }} {# won't be escaped #}
 
 * Automatic escaping is not applied if the last filter in the chain is marked
   safe for the current context (e.g. ``html`` or ``js``). ``escape`` and
@@ -416,16 +416,16 @@ The escaping rules are implemented as follows:
   .. code-block:: jinja
 
         {% autoescape 'js' %}
-            {{var|escape('html')}} {# will be escaped for HTML and JavaScript #}
-            {{var}} {# will be escaped for JavaScript #}
-            {{var|escape('js')}} {# won't be double-escaped #}
+            {{ var|escape('html') }} {# will be escaped for HTML and JavaScript #}
+            {{ var }} {# will be escaped for JavaScript #}
+            {{ var|escape('js') }} {# won't be double-escaped #}
         {% endautoescape %}
 
 .. note::
 
     Note that autoescaping has some limitations as escaping is applied on
     expressions after evaluation. For instance, when working with
-    concatenation, ``{{foo|raw ~ bar}}`` won't give the expected result as
+    concatenation, ``{{ foo|raw ~ bar }}`` won't give the expected result as
     escaping is applied on the result of the concatenation, not on the
     individual variables (so, the ``raw`` filter won't have any effect here).
 

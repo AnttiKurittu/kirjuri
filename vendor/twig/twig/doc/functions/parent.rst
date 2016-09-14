@@ -11,7 +11,7 @@ parent block when overriding a block by using the ``parent`` function:
     {% block sidebar %}
         <h3>Table Of Contents</h3>
         ...
-        {{parent()}}
+        {{ parent() }}
     {% endblock %}
 
 The ``parent()`` call will return the content of the ``sidebar`` block as

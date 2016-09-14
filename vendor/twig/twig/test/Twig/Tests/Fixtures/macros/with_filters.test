@@ -7,7 +7,7 @@ macro with a filter
     {% filter escape %}foo<br />{% endfilter %}
 {% endmacro %}
 
-{{test.test()}}
+{{ test.test() }}
 --DATA--
 return array();
 --EXPECT--

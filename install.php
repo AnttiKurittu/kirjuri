@@ -67,6 +67,8 @@ Do not use Kirjuri with a working internet connection in production when handlin
   if($installer_version < $github_version) {
     echo "<p><b>New version of Kirjuri available: " . $github_version . ". Current version: " . $installer_version . ".<br>";
     echo 'Download the new version from <a href="https://github.com/AnttiKurittu/kirjuri" target="_BLANK">the repository</a> or run "git pull".</b></p>';
+  } elseif($installer_version > $github_version) {
+    echo '<b>Kirjuri is ahead of public version: Release version ' . $github_version . ', your version is '. $installer_version . '</b>';
   } else {
     echo '<b>Kirjuri is up to date: Release version ' . $github_version . '</b>';
   }

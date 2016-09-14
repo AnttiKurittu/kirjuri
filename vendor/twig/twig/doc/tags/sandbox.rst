@@ -25,6 +25,6 @@ template, when sandboxing is not enabled globally for the Twig environment:
 
         {% sandbox %}
             {% for i in 1..2 %}
-                {{i}}
+                {{ i }}
             {% endfor %}
         {% endsandbox %}

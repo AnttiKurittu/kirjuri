@@ -5,14 +5,14 @@ macro
 {% from _self import test %}
 
 {% macro test(a, b) -%}
-    {{a|default('a')}}<br />
-    {{- b|default('b')}}<br />
+    {{ a|default('a') }}<br />
+    {{- b|default('b') }}<br />
 {%- endmacro %}
 
-{{test.test()}}
-{{test()}}
-{{test.test(1, "c")}}
-{{test(1, "c")}}
+{{ test.test() }}
+{{ test() }}
+{{ test.test(1, "c") }}
+{{ test(1, "c") }}
 --DATA--
 return array();
 --EXPECT--

@@ -10,7 +10,7 @@ is the input charset:
 
 .. code-block:: jinja
 
-    {{data|convert_encoding('UTF-8', 'iso-2022-jp')}}
+    {{ data|convert_encoding('UTF-8', 'iso-2022-jp') }}
 
 .. note::
 

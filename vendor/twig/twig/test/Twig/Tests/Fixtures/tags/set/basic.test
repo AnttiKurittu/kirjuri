@@ -4,12 +4,12 @@
 {% set foo = 'foo' %}
 {% set bar = 'foo<br />' %}
 
-{{foo}}
-{{bar}}
+{{ foo }}
+{{ bar }}
 
 {% set foo, bar = 'foo', 'bar' %}
 
-{{foo}}{{bar}}
+{{ foo }}{{ bar }}
 --DATA--
 return array()
 --EXPECT--

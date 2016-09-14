@@ -56,22 +56,22 @@ class Twig_Tests_TemplateTest extends PHPUnit_Framework_TestCase
     public function getAttributeExceptions()
     {
         $tests = array(
-            array('{{string["a"]}}', 'Impossible to access a key ("a") on a string variable ("foo") in "%s" at line 1', false),
-            array('{{null["a"]}}', 'Impossible to access a key ("a") on a null variable in "%s" at line 1', false),
-            array('{{empty_array["a"]}}', 'Key "a" does not exist as the array is empty in "%s" at line 1', false),
-            array('{{array["a"]}}', 'Key "a" for array with keys "foo" does not exist in "%s" at line 1', false),
-            array('{{array_access["a"]}}', 'Key "a" in object with ArrayAccess of class "Twig_TemplateArrayAccessObject" does not exist in "%s" at line 1', false),
-            array('{{string.a}}', 'Impossible to access an attribute ("a") on a string variable ("foo") in "%s" at line 1', false),
-            array('{{string.a()}}', 'Impossible to invoke a method ("a") on a string variable ("foo") in "%s" at line 1', false),
-            array('{{null.a}}', 'Impossible to access an attribute ("a") on a null variable in "%s" at line 1', false),
-            array('{{null.a()}}', 'Impossible to invoke a method ("a") on a null variable in "%s" at line 1', false),
-            array('{{empty_array.a}}', 'Key "a" does not exist as the array is empty in "%s" at line 1', false),
-            array('{{array.a}}', 'Key "a" for array with keys "foo" does not exist in "%s" at line 1', false),
-            array('{{attribute(array, -10)}}', 'Key "-10" for array with keys "foo" does not exist in "%s" at line 1', false),
-            array('{{array_access.a}}', 'Method "a" for object "Twig_TemplateArrayAccessObject" does not exist in "%s" at line 1', false),
-            array('{% from _self import foo %}{% macro foo(obj) %}{{obj.missing_method()}}{% endmacro %}{{foo(array_access)}}', 'Method "missing_method" for object "Twig_TemplateArrayAccessObject" does not exist in "%s" at line 1', false),
-            array('{{magic_exception.test}}', 'An exception has been thrown during the rendering of a template ("Hey! Don\'t try to isset me!") in "%s" at line 1.', false),
-            array('{{object["a"]}}', 'Impossible to access a key "a" on an object of class "stdClass" that does not implement ArrayAccess interface in "%s" at line 1', false),
+            array('{{ string["a"] }}', 'Impossible to access a key ("a") on a string variable ("foo") in "%s" at line 1', false),
+            array('{{ null["a"] }}', 'Impossible to access a key ("a") on a null variable in "%s" at line 1', false),
+            array('{{ empty_array["a"] }}', 'Key "a" does not exist as the array is empty in "%s" at line 1', false),
+            array('{{ array["a"] }}', 'Key "a" for array with keys "foo" does not exist in "%s" at line 1', false),
+            array('{{ array_access["a"] }}', 'Key "a" in object with ArrayAccess of class "Twig_TemplateArrayAccessObject" does not exist in "%s" at line 1', false),
+            array('{{ string.a }}', 'Impossible to access an attribute ("a") on a string variable ("foo") in "%s" at line 1', false),
+            array('{{ string.a() }}', 'Impossible to invoke a method ("a") on a string variable ("foo") in "%s" at line 1', false),
+            array('{{ null.a }}', 'Impossible to access an attribute ("a") on a null variable in "%s" at line 1', false),
+            array('{{ null.a() }}', 'Impossible to invoke a method ("a") on a null variable in "%s" at line 1', false),
+            array('{{ empty_array.a }}', 'Key "a" does not exist as the array is empty in "%s" at line 1', false),
+            array('{{ array.a }}', 'Key "a" for array with keys "foo" does not exist in "%s" at line 1', false),
+            array('{{ attribute(array, -10) }}', 'Key "-10" for array with keys "foo" does not exist in "%s" at line 1', false),
+            array('{{ array_access.a }}', 'Neither the property "a" nor one of the methods "a()", "geta()"/"isa()" or "__call()" exist and have public access in class "Twig_TemplateArrayAccessObject" in "%s" at line 1', false),
+            array('{% from _self import foo %}{% macro foo(obj) %}{{ obj.missing_method() }}{% endmacro %}{{ foo(array_access) }}', 'Neither the property "missing_method" nor one of the methods "missing_method()", "getmissing_method()"/"ismissing_method()" or "__call()" exist and have public access in class "Twig_TemplateArrayAccessObject" in "%s" at line 1', false),
+            array('{{ magic_exception.test }}', 'An exception has been thrown during the rendering of a template ("Hey! Don\'t try to isset me!") in "%s" at line 1.', false),
+            array('{{ object["a"] }}', 'Impossible to access a key "a" on an object of class "stdClass" that does not implement ArrayAccess interface in "%s" at line 1', false),
         );
 
         if (function_exists('twig_template_get_attributes')) {
@@ -86,7 +86,7 @@ class Twig_Tests_TemplateTest extends PHPUnit_Framework_TestCase
 
     public function testGetSource()
     {
-        $template = new Twig_TemplateTest(new Twig_Environment($this->getMock('Twig_LoaderInterface')), false);
+        $template = new Twig_TemplateTest(new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock()), false);
 
         $this->assertSame("<? */*bar*/ ?>\n", $template->getSource());
     }
@@ -96,7 +96,7 @@ class Twig_Tests_TemplateTest extends PHPUnit_Framework_TestCase
      */
     public function testGetAttributeWithSandbox($object, $item, $allowed, $useExt)
     {
-        $twig = new Twig_Environment($this->getMock('Twig_LoaderInterface'));
+        $twig = new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock());
         $policy = new Twig_Sandbox_SecurityPolicy(array(), array(), array(/*method*/), array(/*prop*/), array());
         $twig->addExtension(new Twig_Extension_Sandbox($policy, !$allowed));
         $template = new Twig_TemplateTest($twig, $useExt);
@@ -140,8 +140,8 @@ class Twig_Tests_TemplateTest extends PHPUnit_Framework_TestCase
      */
     public function testGetAttributeWithTemplateAsObject($useExt)
     {
-        $template = new Twig_TemplateTest(new Twig_Environment($this->getMock('Twig_LoaderInterface')), $useExt);
-        $template1 = new Twig_TemplateTest(new Twig_Environment($this->getMock('Twig_LoaderInterface')), false);
+        $template = new Twig_TemplateTest(new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock()), $useExt);
+        $template1 = new Twig_TemplateTest(new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock()), false);
 
         $this->assertInstanceof('Twig_Markup', $template->getAttribute($template1, 'string'));
         $this->assertEquals('some_string', $template->getAttribute($template1, 'string'));
@@ -180,7 +180,7 @@ class Twig_Tests_TemplateTest extends PHPUnit_Framework_TestCase
     public function testGetAttributeOnArrayWithConfusableKey($useExt = false)
     {
         $template = new Twig_TemplateTest(
-            new Twig_Environment($this->getMock('Twig_LoaderInterface')),
+            new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock()),
             $useExt
         );
 
@@ -219,7 +219,7 @@ class Twig_Tests_TemplateTest extends PHPUnit_Framework_TestCase
      */
     public function testGetAttribute($defined, $value, $object, $item, $arguments, $type, $useExt = false)
     {
-        $template = new Twig_TemplateTest(new Twig_Environment($this->getMock('Twig_LoaderInterface')), $useExt);
+        $template = new Twig_TemplateTest(new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock()), $useExt);
 
         $this->assertEquals($value, $template->getAttribute($object, $item, $arguments, $type));
     }
@@ -229,7 +229,7 @@ class Twig_Tests_TemplateTest extends PHPUnit_Framework_TestCase
      */
     public function testGetAttributeStrict($defined, $value, $object, $item, $arguments, $type, $useExt = false, $exceptionMessage = null)
     {
-        $template = new Twig_TemplateTest(new Twig_Environment($this->getMock('Twig_LoaderInterface'), array('strict_variables' => true)), $useExt);
+        $template = new Twig_TemplateTest(new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock(), array('strict_variables' => true)), $useExt);
 
         if ($defined) {
             $this->assertEquals($value, $template->getAttribute($object, $item, $arguments, $type));
@@ -251,7 +251,7 @@ class Twig_Tests_TemplateTest extends PHPUnit_Framework_TestCase
      */
     public function testGetAttributeDefined($defined, $value, $object, $item, $arguments, $type, $useExt = false)
     {
-        $template = new Twig_TemplateTest(new Twig_Environment($this->getMock('Twig_LoaderInterface')), $useExt);
+        $template = new Twig_TemplateTest(new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock()), $useExt);
 
         $this->assertEquals($defined, $template->getAttribute($object, $item, $arguments, $type, true));
     }
@@ -261,7 +261,7 @@ class Twig_Tests_TemplateTest extends PHPUnit_Framework_TestCase
      */
     public function testGetAttributeDefinedStrict($defined, $value, $object, $item, $arguments, $type, $useExt = false)
     {
-        $template = new Twig_TemplateTest(new Twig_Environment($this->getMock('Twig_LoaderInterface'), array('strict_variables' => true)), $useExt);
+        $template = new Twig_TemplateTest(new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock(), array('strict_variables' => true)), $useExt);
 
         $this->assertEquals($defined, $template->getAttribute($object, $item, $arguments, $type, true));
     }
@@ -271,7 +271,7 @@ class Twig_Tests_TemplateTest extends PHPUnit_Framework_TestCase
      */
     public function testGetAttributeCallExceptions($useExt = false)
     {
-        $template = new Twig_TemplateTest(new Twig_Environment($this->getMock('Twig_LoaderInterface')), $useExt);
+        $template = new Twig_TemplateTest(new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock()), $useExt);
 
         $object = new Twig_TemplateMagicMethodExceptionObject();
 
@@ -666,7 +666,7 @@ class Twig_TemplateMagicMethodExceptionObject
 {
     public function __call($method, $arguments)
     {
-        throw new BadMethodCallException(sprintf('Unkown method %s', $method));
+        throw new BadMethodCallException(sprintf('Unknown method "%s".', $method));
     }
 }
 

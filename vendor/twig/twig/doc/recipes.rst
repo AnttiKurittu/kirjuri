@@ -245,9 +245,9 @@ And the following template to display all messages in all topics:
 .. code-block:: jinja
 
     {% for topic, messages in topics %}
-        * {{loop.index}}: {{topic}}
+        * {{ loop.index }}: {{ topic }}
       {% for message in messages %}
-          - {{loop.parent.loop.index}}.{{loop.index}}: {{message}}
+          - {{ loop.parent.loop.index }}.{{ loop.index }}: {{ message }}
       {% endfor %}
     {% endfor %}
 
@@ -280,7 +280,7 @@ For functions, use ``registerUndefinedFunctionCallback()``::
     // don't try this at home as it's not secure at all!
     $twig->registerUndefinedFunctionCallback(function ($name) {
         if (function_exists($name)) {
-            return new Twig_Function_Function($name);
+            return new Twig_SimpleFunction($name, $name);
         }
 
         return false;
@@ -402,7 +402,7 @@ First, let's create a temporary in-memory SQLite3 database to work with::
     $base = '{% block content %}{% endblock %}';
     $index = '
     {% extends "base.twig" %}
-    {% block content %}Hello {{name}}{% endblock %}
+    {% block content %}Hello {{ name }}{% endblock %}
     ';
     $now = time();
     $dbh->exec("INSERT INTO templates (name, source, last_modified) VALUES ('base.twig', '$base', $now)");
@@ -499,16 +499,16 @@ Loading a Template from a String
 
 From a template, you can easily load a template stored in a string via the
 ``template_from_string`` function (available as of Twig 1.11 via the
-``Twig_Extension_StringLoader`` extension)::
+``Twig_Extension_StringLoader`` extension):
 
 .. code-block:: jinja
 
-    {{include(template_from_string("Hello {{name}}"))}}
+    {{ include(template_from_string("Hello {{ name }}")) }}
 
 From PHP, it's also possible to load a template stored in a string via
 ``Twig_Environment::createTemplate()`` (available as of Twig 1.18)::
 
-    $template = $twig->createTemplate('hello {{name}}');
+    $template = $twig->createTemplate('hello {{ name }}');
     echo $template->render(array('name' => 'Fabien'));
 
 .. note::

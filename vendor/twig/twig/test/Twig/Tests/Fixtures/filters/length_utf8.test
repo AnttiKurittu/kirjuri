@@ -3,8 +3,8 @@
 --CONDITION--
 function_exists('mb_get_info')
 --TEMPLATE--
-{{string|length}}
-{{markup|length}}
+{{ string|length }}
+{{ markup|length }}
 --DATA--
 return array('string' => 'été', 'markup' => new Twig_Markup('foo', 'UTF-8'))
 --EXPECT--

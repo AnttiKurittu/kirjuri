@@ -4,35 +4,35 @@
 1***
 
 {%- verbatim %}
-    {{'bla'}}
+    {{ 'bla' }}
 {% endverbatim %}
 
 1***
 2***
 
 {%- verbatim -%}
-    {{'bla'}}
+    {{ 'bla' }}
 {% endverbatim %}
 
 2***
 3***
 
 {%- verbatim -%}
-    {{'bla'}}
+    {{ 'bla' }}
 {% endverbatim -%}
 
 3***
 4***
 
 {%- verbatim -%}
-    {{'bla'}}
+    {{ 'bla' }}
 {%- endverbatim %}
 
 4***
 5***
 
 {%- verbatim -%}
-    {{'bla'}}
+    {{ 'bla' }}
 {%- endverbatim -%}
 
 5***
@@ -40,17 +40,17 @@
 return array()
 --EXPECT--
 1***
-    {{'bla'}}
+    {{ 'bla' }}
 
 
 1***
-2***{{'bla'}}
+2***{{ 'bla' }}
 
 
 2***
-3***{{'bla'}}
+3***{{ 'bla' }}
 3***
-4***{{'bla'}}
+4***{{ 'bla' }}
 
 4***
-5***{{'bla'}}5***
+5***{{ 'bla' }}5***

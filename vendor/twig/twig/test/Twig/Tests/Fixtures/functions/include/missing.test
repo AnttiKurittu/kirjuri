@@ -1,7 +1,7 @@
 --TEST--
 "include" function
 --TEMPLATE--
-{{include("foo.twig")}}
+{{ include("foo.twig") }}
 --DATA--
 return array();
 --EXCEPTION--

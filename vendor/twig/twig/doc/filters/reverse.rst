@@ -12,7 +12,7 @@ The ``reverse`` filter reverses a sequence, a mapping, or a string:
         ...
     {% endfor %}
 
-    {{'1234'|reverse}}
+    {{ '1234'|reverse }}
 
     {# outputs 4321 #}
 
@@ -24,13 +24,13 @@ The ``reverse`` filter reverses a sequence, a mapping, or a string:
     .. code-block:: jinja
 
         {% for key, value in {1: "a", 2: "b", 3: "c"}|reverse %}
-            {{key}}: {{value}}
+            {{ key }}: {{ value }}
         {%- endfor %}
 
         {# output: 0: c    1: b    2: a #}
 
         {% for key, value in {1: "a", 2: "b", 3: "c"}|reverse(true) %}
-            {{key}}: {{value}}
+            {{ key }}: {{ value }}
         {%- endfor %}
 
         {# output: 3: c    2: b    1: a #}

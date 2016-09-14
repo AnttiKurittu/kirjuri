@@ -1,7 +1,7 @@
 --TEST--
 Exception for invalid argument type in replace call
 --TEMPLATE--
-{{'test %foo%'|replace(stdClass)}}
+{{ 'test %foo%'|replace(stdClass) }}
 --DATA--
 return array('stdClass' => new stdClass())
 --EXCEPTION--

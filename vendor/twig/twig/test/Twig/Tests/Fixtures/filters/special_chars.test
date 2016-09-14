@@ -1,7 +1,7 @@
 --TEST--
 "§" custom filter
 --TEMPLATE--
-{{'foo'|§}}
+{{ 'foo'|§ }}
 --DATA--
 return array()
 --EXPECT--

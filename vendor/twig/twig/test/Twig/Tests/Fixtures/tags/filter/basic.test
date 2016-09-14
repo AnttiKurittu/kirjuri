@@ -2,7 +2,7 @@
 "filter" tag applies a filter on its children
 --TEMPLATE--
 {% filter upper %}
-Some text with a {{var}}
+Some text with a {{ var }}
 {% endfilter %}
 --DATA--
 return array('var' => 'var')

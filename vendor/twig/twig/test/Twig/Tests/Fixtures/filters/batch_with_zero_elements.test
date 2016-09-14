@@ -1,8 +1,8 @@
 --TEST--
 "batch" filter with zero elements
 --TEMPLATE--
-{{[]|batch(3)|length}}
-{{[]|batch(3, 'fill')|length}}
+{{ []|batch(3)|length }}
+{{ []|batch(3, 'fill')|length }}
 --DATA--
 return array()
 --EXPECT--

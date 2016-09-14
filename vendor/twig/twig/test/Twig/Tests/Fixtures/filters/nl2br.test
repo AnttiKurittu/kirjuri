@@ -1,8 +1,8 @@
 --TEST--
 "nl2br" filter
 --TEMPLATE--
-{{"I like Twig.\nYou will like it too.\n\nEverybody like it!"|nl2br}}
-{{text|nl2br}}
+{{ "I like Twig.\nYou will like it too.\n\nEverybody like it!"|nl2br }}
+{{ text|nl2br }}
 --DATA--
 return array('text' => "If you have some <strong>HTML</strong>\nit will be escaped.")
 --EXPECT--

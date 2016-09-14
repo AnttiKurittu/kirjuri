@@ -1,7 +1,7 @@
 --TEST--
 "include" function accepts Twig_Template instance
 --TEMPLATE--
-{{include(foo)}} FOO
+{{ include(foo) }} FOO
 --TEMPLATE(foo.twig)--
 BAR
 --DATA--

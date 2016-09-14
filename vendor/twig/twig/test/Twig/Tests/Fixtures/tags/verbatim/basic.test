@@ -2,9 +2,9 @@
 "verbatim" tag
 --TEMPLATE--
 {% verbatim %}
-{{foo}}
+{{ foo }}
 {% endverbatim %}
 --DATA--
 return array()
 --EXPECT--
-{{foo}}
+{{ foo }}

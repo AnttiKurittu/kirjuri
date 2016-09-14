@@ -8,7 +8,7 @@ if ``raw`` is the last filter applied to it:
 .. code-block:: jinja
 
     {% autoescape %}
-        {{var|raw}} {# var won't be escaped #}
+        {{ var|raw }} {# var won't be escaped #}
     {% endautoescape %}
 
 .. note::
@@ -21,11 +21,11 @@ if ``raw`` is the last filter applied to it:
             {% set hello = '<strong>Hello</strong>' %}
             {% set hola = '<strong>Hola</strong>' %}
 
-            {{false ? '<strong>Hola</strong>' : hello|raw}}
+            {{ false ? '<strong>Hola</strong>' : hello|raw }}
             does not render the same as
-            {{false ? hola : hello|raw}}
+            {{ false ? hola : hello|raw }}
             but renders the same as
-            {{(false ? hola : hello)|raw}}
+            {{ (false ? hola : hello)|raw }}
         {% endautoescape %}
 
     The first ternary statement is not escaped: ``hello`` is marked as being

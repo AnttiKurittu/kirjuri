@@ -4,14 +4,14 @@ macro
 {% import _self as macros %}
 
 {% macro foo(data) %}
-    {{data}}
+    {{ data }}
 {% endmacro %}
 
 {% macro bar() %}
     <br />
 {% endmacro %}
 
-{{macros.foo(macros.bar())}}
+{{ macros.foo(macros.bar()) }}
 --DATA--
 return array();
 --EXPECT--

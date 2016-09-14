@@ -13,7 +13,7 @@ this snippet:
     {% verbatim %}
         <ul>
         {% for item in seq %}
-            <li>{{item}}</li>
+            <li>{{ item }}</li>
         {% endfor %}
         </ul>
     {% endverbatim %}

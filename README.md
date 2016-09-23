@@ -81,6 +81,19 @@ SCREENSHOTS
 
 CHANGELOG
 ------------
+2016-09-23:
+
+* Added support for printing and reading barcodes. Device and case stickers now have a barcode, which you can read to the "Search" box and jump straight to that device. The label printer has been tested with a Dymo LabelWriter 450. Support for barcodes has been built with https://github.com/picqer/php-barcode-generator
+* Some visual changes to better handle limited screen real estate, stacked the action / status droplists on top of each other to make room for device information.
+* Changed how enter behaves when filling forms from saving form to jumping to next field.
+* Started working on an API. This is still very heavily a work in progress, and is at this time undocumented. I'm still including it in this update so that it can be tried out. Do not expect it to remain unchanged over future updates!
+* Added a warning after three months if confiscation date is nearing +4 months (if this option is turned on, default off)
+* Removed the timeout for open browser windows logging the user out.
+* Added the ability to dump the database into a file for backing up from the browser. The link is under settings, available to admin accounts. Set your mysqldump binary location in the source if it doesn't work right away.
+* Fixed some coding standards which jumbled a lot of the files around.
+* Fixed a few minor bugs.
+
+
 2016-09-14:
 
 * Updated Twig to version 1.24.3 (https://github.com/twigphp/Twig)

@@ -16,7 +16,7 @@
     {% if query_s %}<input type="hidden" name="s" value="{{ query_s }}">{% endif %}
   </form>
 </div>
-<h3 class="page-header">{{ lang.forensic_examination_requests }} {{ dateStart|date("Y") }} {{ count_new }} {{ count_open }} {{ count_finished }}<a href='index.php?year={{ (dateStart|date("Y") - 1 ) }}{% if query_s %}&s={{ query_s }}{% endif %}{% if query_j %}&j={{ query_j }}{% endif %}{% if query_d %}&d={{ query_d }}{% endif %}{% if search_term %}&search={{ search_term|replace({"\+": "%2B"}) }}{% endif %}'><span class="glyphicon glyphicon-triangle-left" aria-hidden="true"></span></a> <a href='index.php?year={{ (dateStart|date("Y") + 1 ) }}{% if query_s %}&s={{ query_s }}{% endif %}{% if query_j %}&j={{ query_j }}{% endif %}{% if query_d %}&d={{ query_d }}{% endif %}{% if search_term %}&search={{ search_term|replace({"\+": "%2B"}) }}{% endif %}'><span class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span></a> </h3>
+<h3 class="page-header">{{ session.refresh }} {{ lang.forensic_examination_requests }} {{ dateStart|date("Y") }} {{ count_new }} {{ count_open }} {{ count_finished }}<a href='index.php?year={{ (dateStart|date("Y") - 1 ) }}{% if query_s %}&s={{ query_s }}{% endif %}{% if query_j %}&j={{ query_j }}{% endif %}{% if query_d %}&d={{ query_d }}{% endif %}{% if search_term %}&search={{ search_term|replace({"\+": "%2B"}) }}{% endif %}'><span class="glyphicon glyphicon-triangle-left" aria-hidden="true"></span></a> <a href='index.php?year={{ (dateStart|date("Y") + 1 ) }}{% if query_s %}&s={{ query_s }}{% endif %}{% if query_j %}&j={{ query_j }}{% endif %}{% if query_d %}&d={{ query_d }}{% endif %}{% if search_term %}&search={{ search_term|replace({"\+": "%2B"}) }}{% endif %}'><span class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span></a> </h3>
 {% if settings.motd %}
 <div class="panel panel-danger">
   <div class="panel-body">
@@ -130,7 +130,15 @@
         {% if (entry.last_updated|date("U") < settings.stalled_case|date("U")) and (entry.case_status == "2")%}<span class="pull-right"><i style="color:blue;" class="fa fa-moon-o"></i>&nbsp;</span>{% endif %}
         </a>
       </td>
-      <td style="width:1%;white-space:nowrap;"><a style="font-weight:bold;" href="edit_request.php?case={{ entry.id }}">{{ entry.case_file_number }}</a>{% if settings.notify_after_4_months == "1" and (entry.case_confiscation_date != "0000-00-00") and ((entry.case_confiscation_date|date("U")) < ("-4 months"|date("U"))) %} &nbsp;<i class="fa fa-calendar-times-o" style="color:red;"></i><i class="fa fa-exclamation" style="color:red;"></i>{%endif%}</td>
+      <td style="width:1%;white-space:nowrap;"><a style="font-weight:bold;" href="edit_request.php?case={{ entry.id }}">{{ entry.case_file_number }}</a>
+        {% if (settings.notify_after_4_months == "1") and (entry.case_confiscation_date != "0000-00-00") %}
+          {% if (entry.case_confiscation_date|date("U") < ("-3 months"|date("U"))) %}
+        &nbsp;<i class="fa fa-calendar-times-o" style="color:orange;"></i>
+        {% elseif (entry.case_confiscation_date|date("U") < ("-4 months"|date("U"))) %}
+      &nbsp;<i class="fa fa-calendar-times-o" style="color:red;"></i><i class="fa fa-exclamation" style="color:red;"></i>
+          {% endif %}
+        {% endif %}
+      </td>
       <td><a href="index.php?search={{ entry.case_crime|url_encode }}&year={{ entry.case_added_date|date("Y") }}">{{ entry.case_crime|length > 20 ? entry.case_crime|slice(0, 20) ~ '...' : entry.case_crime }}</a></td>
       <td><a href="index.php?search={{ entry.case_suspect|url_encode }}&year={{ entry.case_added_date|date("Y") }}">{{ entry.case_suspect|length > 20 ? entry.case_suspect|slice(0, 20) ~ '...' : entry.case_suspect }}</a></td>
       <td><a href="index.php?search={{ entry.case_investigator|url_encode }}&year={{ entry.case_added_date|date("Y") }}">{{ entry.case_investigator|length > 20 ? entry.case_investigator|slice(0, 20) ~ '...' : entry.case_investigator }}</a> </td>

@@ -5,6 +5,44 @@
 </title>
 {% endblock title %}
 {% block content %}
+
+<!-- http://stackoverflow.com/questions/1009808/enter-key-press-behaves-like-a-tab-in-javascript -->
+
+<script>
+$('body').on('keydown', 'input, select, textarea', function(e) {
+var self = $(this)
+  , form = self.parents('form:eq(0)')
+  , focusable
+  , next
+  , prev
+  ;
+
+if (e.shiftKey) {
+ if (e.keyCode == 13) {
+     focusable =   form.find('input,a,select,button,textarea').filter(':visible');
+     prev = focusable.eq(focusable.index(this)-1);
+
+     if (prev.length) {
+        prev.focus();
+     } else {
+        form.submit();
+    }
+  }
+}
+  else
+if (e.keyCode == 13) {
+    focusable = form.find('input,a,select,button,textarea').filter(':visible');
+    next = focusable.eq(focusable.index(this)+1);
+    if (next.length) {
+        next.focus();
+    } else {
+        form.submit();
+    }
+    return false;
+}
+});
+</script>
+
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
   <ol class="breadcrumb">
     <li><a href="index.php?year={{ caserow.0.case_added_date|date("Y") }}">{{ lang.front_page }} {{ caserow.0.case_added_date|date("Y") }}</a></li>
@@ -13,7 +51,6 @@
   </ol>
   {% for entry in mediarow %}
   {% if (entry.is_removed == "0") %}
-
 <p>
     <select class="btn btn-default" onchange="location = this.options[this.selectedIndex].value;">
       <option>{{lang.jump_to_device}}</option>
@@ -29,20 +66,18 @@
         <th style="width:1px;"></th>
         <th style="width:350px">{{ lang.device_or_media }}</th>
         <th>{{ lang.info }}</th>
-        <th style="width:1px">{{ lang.status }}</th>
-        <th style="width:1px;">{{ lang.action_status }}</th>
-        <th style="width:1px;">{{ lang.sort_label_location }}</th>
+        <th style="width:1px"></th>
       </thead>
       <tr {% if entry.device_host_id == "0"%}class="active"{% endif %} >
       <td style="vertical-align:middle;" {% if entry.device_contains_evidence %}class="success"{% endif %}>
       <img src="views/img/svg/{% if entry.device_type %}{{ entry.device_type|lower|replace({" ": "_", "ä": "a", "ö": "o"}) }}{% else %}{{ lang.unknown }}{% endif %}.svg"  style="vertical-align:middle;float:left;padding:10px;width:64px;">
       </td>
-      <td style="vertical-align:middle;width:1%;white-space:nowrap;" {% if entry.device_contains_evidence %}class="success"{% endif %}>
+      <td style="vertical-align:middle;;white-space:nowrap;" {% if entry.device_contains_evidence %}class="success"{% endif %}>
         <h4><a href="device_memo.php?db_row={{ entry.id }}">{% if entry.device_type %}{{ entry.device_type }}{% else %}<span style="color:red;">{{ lang.undefined_device_or_media_type }}</span>{% endif %}<br>
           {{ entry.device_manuf }} {{ entry.device_model }} {% if entry.device_size_in_gb > "0" %}{{ entry.device_size_in_gb }} GB{% endif %}</a><br>
           <small>
-            {{ lang.device_uid }} {{ entry.id }}, {{ entry.device_document }} {{ lang.object_no }} {{ entry.device_item_number }}<br>
-            {{ lang.added }} {{ entry.case_added_date|date("d.m.Y H:i") }}{% if entry.case_added_date != entry.last_updated %}, {{ lang.updated }} {{ entry.last_updated|date("d.m.Y H:i") }}{% endif %}
+            <a href="print_sticker.php?db_row={{entry.id}}&type=device" target="_BLANK"><i class="fa fa-print"></i> [UID{{ entry.id }}]</a>, {{ entry.device_document }} {{ lang.object_no }} {{ entry.device_item_number }}<br>
+            {{ lang.added }} {{ entry.case_added_date|date("d.m.Y H:i") }}{% if entry.case_added_date != entry.last_updated %}<br>{{ lang.updated|capitalize }} {{ entry.last_updated|date("d.m.Y H:i") }}{% endif %}
           {% if entry.report_notes %}<br>
           {% if entry.device_include_in_report == "1" %}
           <span style="color:green;"><i class="fa fa-check-square-o"></i> {{ lang.examination_notes_shown }}</span><br>
@@ -58,7 +93,7 @@
           </small>
         </h4>
       </td>
-      <td style="vertical-align:middle;">
+      <td style="vertical-align:middle;{% if entry.device_contains_evidence %}background:linear-gradient(to right, #e1f0d6 , {% if entry.device_host_id == "0"%}#f5f5f5{% else %}#ffffff{% endif %});{% endif %}">
         {% if entry.device_owner %}
         <i class="fa fa-user"></i> {{ entry.device_owner }}</span><br>
         {% set hosting_dev_owner = entry.device_owner %}
@@ -84,51 +119,45 @@
         {% endif %}
       </td>
 
-<td style="vertical-align:middle;">
-  <iframe name="submit_iframe{{entry.id}}" allowtransparency="true" style="overflow:hidden; width:100px; height:16px; border:0px solid red; margin: 0 auto; display:block;" src="progress_bar_static.php?db_row={{entry.id}}"></iframe>
-  <iframe name="submit_iframe{{entry.id}}_void" style="display:none;"></iframe>
-  </td style="vertical-align:middle;">
-
-<td style="vertical-align:middle;">
+<td style="vertical-align:middle;align:left;">
   <form class="form form-horizontal" role="form" method="post" action="submit.php?type=change_device_status&db_row={{ entry.id }}" target="submit_iframe{{entry.id}}">
   {% if (caserow.0.case_status != 3) and (session.user.access <= 1) %}
-  <select style="text-align:left;" class="btn btn-{% if not entry.device_action %}danger{% else %}default{% endif %}" name="device_action" onchange="this.form.submit()">
+<p>  <select style="text-align:left;width:200px;" class="btn btn-{% if not entry.device_action %}danger{% else %}default{% endif %}" name="device_action" onchange="this.form.submit()">
   <option value="{{entry.device_action}}" selected="selected">{% set device_current_action = entry.device_action|split('|') %}{{device_current_action.1}}</option>
   <option disabled>---</option>
   {% for dev_act in device_actions %}
   {% set device_current_action = dev_act|split('|') %}
   <option value="{{dev_act}}">{{device_current_action.1}} </option>
   {% endfor %}
-  </select>​
+</select>​</p>
   {% else %}
   {% set show_action_status = entry.device_action|split('|') %}
   <div style="width:100px;">{{ show_action_status.1 }}</div>
   <input type="hidden" name="device_action" value="{{ entry.device_action }}">
   {% endif %}
   </form>
-</td>
-<td style="vertical-align:middle;">
-  <form class="form form-horizontal" role="form" method="post" action="submit.php?type=change_device_location&db_row={{ entry.id }}" target="submit_iframe{{entry.id}}_void">
-  <select style="text-align:left;" class="btn btn-{% if not entry.device_location %}danger{% else %}default{% endif %}" name="device_location" {% if session.user.access > 1 %}disabled{% else %}onchange="this.form.submit()"{% endif %}>
+  <p><form class="form form-horizontal" role="form" method="post" action="submit.php?type=change_device_location&db_row={{ entry.id }}" target="submit_iframe{{entry.id}}_void">
+  <select style="text-align:left;width:200px;" class="btn btn-{% if not entry.device_location %}danger{% else %}default{% endif %}" name="device_location" {% if session.user.access > 1 %}disabled{% else %}onchange="this.form.submit()"{% endif %}>
   <option value="{{entry.device_location}}" selected="selected">{{entry.device_location}}</option>
   <option disabled>---</option>
   {% for dev_loc in device_locations %}
   <option value="{{dev_loc}}">{{dev_loc}}</option>
   {% endfor %}
   </select>​
-  </form>
+</form></p>
+<p><iframe name="submit_iframe{{entry.id}}" allowtransparency="true" style="overflow:hidden; width:200px; height:16px; border:0px solid red; margin: 0 auto; display:block;" src="progress_bar_static.php?db_row={{entry.id}}"></iframe></p>
+<iframe name="submit_iframe{{entry.id}}_void" style="display:none;"></iframe></p>
 </td>
-
 </tr>
-{% if connectedmediarow %}<tr><td colspan="6">{{ lang.associated_devices }}: {% for entry in connectedmediarow %}
+{% if connectedmediarow %}<tr><td colspan="4">{{ lang.associated_devices }}: {% for entry in connectedmediarow %}
 <a class="label label-primary" href="device_memo.php?db_row={{ entry.id }}">{% if entry.device_type %}{{ entry.device_type }}{% else %}{{ lang.undefined_device_or_media_type }}{% endif %}: {{ entry.device_manuf }} {{ entry.device_model }}</a>&nbsp; {% endfor %}</td></tr>{% endif %}
-{% if hostdevice %}<tr><td colspan="6"> {{ lang.associated_with_device }}:
+{% if hostdevice %}<tr><td colspan="4"> {{ lang.associated_with_device }}:
 {% for entry in hostdevice %}
 <a class="label label-info" href="device_memo.php?db_row={{ entry.id }}">{% if entry.device_type %}{{ entry.device_type }}{% else %}{{ lang.undefined_device_or_media_type }}{% endif %}: {{ entry.device_manuf }} {{ entry.device_model }}</a>&nbsp;
 {% endfor %}
 </td></tr>
 {% endif %}
-<tr><td colspan="6" class="active">
+<tr><td colspan="4" class="active">
 <form class="form form-horizontal" role="form" method="post" action="submit.php?type=devicememo&returnid={{ entry.id }}&tab=devices">
 <div class="col-md-6 text-left pull-left">
 <input type="checkbox" name="device_contains_evidence" value="1" {% if entry.device_contains_evidence == "1" %}checked{% endif %}> {{ lang.contains_evidence }}
@@ -138,7 +167,7 @@
 </td>
 </tr>
 <tr>
-<td colspan="6">
+<td colspan="4">
 <br>
 <div class="form-horizontal">
 {% for entry in mediarow %} <div class="form-group">
@@ -257,5 +286,5 @@
 </div>
 </form>
 
-
-{% endfor %} {% endblock %}
+{% endfor %}
+{% endblock %}

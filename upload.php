@@ -1,69 +1,63 @@
 <?php
-require_once("./include_functions.php");
+
+require_once './include_functions.php';
 protect_page(1);
 
-$target_dir = "attachments/".preg_replace("/[^0-9]/", "", (substr($_GET['case'], 0, 5)))."/";
-$skip = False;
-$upload_error = False;
+$target_dir = 'attachments/'.preg_replace('/[^0-9]/', '', (substr($_GET['case'], 0, 5))).'/';
+$skip = false;
+$upload_error = false;
 
-if ($settings['allow_attachments'] !== "1") {
-
-  header('Location: ' . preg_replace('/\?.*/', '', $_SERVER['HTTP_REFERER'])."?case=".substr($_GET['case'], 0, 5)."");
-  die;
+if ($settings['allow_attachments'] !== '1') {
+    header('Location: '.preg_replace('/\?.*/', '', $_SERVER['HTTP_REFERER']).'?case='.substr($_GET['case'], 0, 5).'');
+    die;
 }
 
 if (!file_exists($target_dir)) {
-  if (mkdir($target_dir, 0755) !== True) {
-    trigger_error('Can not create subdirectory to attachments/. Check folder permissions.');
+    if (mkdir($target_dir, 0755) !== true) {
+        trigger_error('Can not create subdirectory to attachments/. Check folder permissions.');
 
-    header('Location: ' . preg_replace('/\?.*/', '', $_SERVER['HTTP_REFERER'])."?case=".substr($_GET['case'], 0, 5)."");
-    die;
-  };
+        header('Location: '.preg_replace('/\?.*/', '', $_SERVER['HTTP_REFERER']).'?case='.substr($_GET['case'], 0, 5).'');
+        die;
+    };
 };
 
 $total = count($_FILES['fileToUpload']['name']);
 
+  for ($i = 0; $i < $total; ++$i) {
+      $target_file = $target_dir.basename($_FILES['fileToUpload']['name'][$i]);
+      if (file_exists($target_file)) {
+          $_SESSION['failed_uploads'][] = $_FILES['fileToUpload']['name'][$i];
+          $skip = true;
+          continue;
+      };
 
-  for($i=0; $i<$total; $i++) {
+      if ($_FILES['fileToUpload']['size'][$i] > $settings['max_attachment_size']) {
+          $_SESSION['failed_uploads'][] = $_FILES['fileToUpload']['name'][$i];
+          logline('Error', 'Attachment upload failure (size): '.$target_file);
+          $skip = true;
+          continue;
+      };
 
-    $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"][$i]);
-    if (file_exists($target_file)) {
-
-        $_SESSION['failed_uploads'][] = $_FILES["fileToUpload"]["name"][$i];
-        $skip = True;
-        continue;
-    };
-
-    if ($_FILES["fileToUpload"]["size"][$i] > $settings['max_attachment_size']) {
-
-      $_SESSION['failed_uploads'][] = $_FILES["fileToUpload"]["name"][$i];
-      logline('Error', 'Attachment upload failure (size): '.$target_file);
-      $skip = True;
-      continue;
-    };
-
-    if ( (strtolower(pathinfo($target_file, PATHINFO_EXTENSION)) === "js") ||
-         (strtolower(pathinfo($target_file, PATHINFO_EXTENSION)) === "php") ||
-         (strtolower(pathinfo($target_file, PATHINFO_EXTENSION)) === "html") ||
-         (strtolower(pathinfo($target_file, PATHINFO_EXTENSION)) === "htm")) {
-      $target_file = $target_file.".txt";
+      if ((strtolower(pathinfo($target_file, PATHINFO_EXTENSION)) === 'js') ||
+         (strtolower(pathinfo($target_file, PATHINFO_EXTENSION)) === 'php') ||
+         (strtolower(pathinfo($target_file, PATHINFO_EXTENSION)) === 'html') ||
+         (strtolower(pathinfo($target_file, PATHINFO_EXTENSION)) === 'htm')) {
+          $target_file = $target_file.'.txt';
       }
 
-    if ((move_uploaded_file($_FILES["fileToUpload"]["tmp_name"][$i], $target_file)) && ($skip !== True)) {
-        logline('Action', 'Attachment uploaded: '.$target_file);
-        $upload_error = False;
+      if ((move_uploaded_file($_FILES['fileToUpload']['tmp_name'][$i], $target_file)) && ($skip !== true)) {
+          logline('Action', 'Attachment uploaded: '.$target_file);
+          $upload_error = false;
       } else {
-        $upload_error = True;
-        }
-}
+          $upload_error = true;
+      }
+  }
 
-if ($upload_error === False) {
-  header('Location: ' . preg_replace('/\?.*/', '', $_SERVER['HTTP_REFERER'])."?case=".substr($_GET['case'], 0, 5));
-die;
+if ($upload_error === false) {
+    header('Location: '.preg_replace('/\?.*/', '', $_SERVER['HTTP_REFERER']).'?case='.substr($_GET['case'], 0, 5));
+    die;
 } else {
-  logline('Error', 'Attachment upload failure (other): '.$target_file);
-  header('Location: ' . preg_replace('/\?.*/', '', $_SERVER['HTTP_REFERER'])."?case=".substr($_GET['case'], 0, 5));
-die;
+    logline('Error', 'Attachment upload failure (other): '.$target_file);
+    header('Location: '.preg_replace('/\?.*/', '', $_SERVER['HTTP_REFERER']).'?case='.substr($_GET['case'], 0, 5));
+    die;
 };
-
-?>

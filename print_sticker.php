@@ -11,7 +11,6 @@ require_once './include_functions.php';
   </head>
 <!-- <body onload="window.print()"> -->
 <body>
-    <pre>
 <?php
 if ($_GET['type'] === 'examination_request') {
     $query = $kirjuri_database->prepare('select * FROM exam_requests WHERE id=:id AND parent_id=id');
@@ -19,9 +18,9 @@ if ($_GET['type'] === 'examination_request') {
     $row = $query->fetch(PDO::FETCH_ASSOC);
     $generator = new \Picqer\Barcode\BarcodeGeneratorSVG();
     echo $generator->getBarcode('UID'.$row['id'], $generator::TYPE_CODE_128);
-    echo '<b>[UID'.$row['id'].'] '.$row['case_id'].'/'.date('Y', strtotime($row['case_added_date'])).', '.$row['case_file_number'].'</b><br>';
-    echo '<b>'.$row['case_name'].' '.$row['case_suspect'].'</b><br>';
-    echo $row['case_investigator'].' ' .$row['case_investigator_unit'].'<br>';
+    echo '<br><b>[UID'.$row['id'].'] '.$row['case_id'].'/'.date('Y', strtotime($row['case_added_date'])).', '.$row['case_file_number'].'</b>';
+    echo '<br><b>'.$row['case_name'].' '.$row['case_suspect'].'</b>';
+    echo '<br>' . $row['case_investigator'].' ' .$row['case_investigator_unit'];
     exit;
 }
 
@@ -45,11 +44,10 @@ if ($_GET['type'] === 'device') {
     $row = $query->fetch(PDO::FETCH_ASSOC);
     $generator = new \Picqer\Barcode\BarcodeGeneratorSVG();
     echo $generator->getBarcode('UID'.$row['id'], $generator::TYPE_CODE_128);
-    echo '<b>[UID'.$row['id'].'] '.$parentrow['case_id'].'/'.date('Y', strtotime($parentrow['case_added_date'])).', '.$parentrow['case_file_number'];
-    echo $row['device_type'].' '.$row['device_manuf'].' '.$row['device_model'].'<br>';
+    echo '<br><b>[UID'.$row['id'].'] '.$parentrow['case_id'].'/'.date('Y', strtotime($parentrow['case_added_date'])).', '.$parentrow['case_file_number'].'</b>';
+    echo '<br>'.$row['device_type'].' '.$row['device_manuf'].' '.$row['device_model'].'<br>';
     exit;
 }
 
 ?>
-</pre>
 </body>

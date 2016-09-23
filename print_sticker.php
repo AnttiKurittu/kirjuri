@@ -19,7 +19,7 @@ if ($_GET['type'] === 'examination_request') {
     $row = $query->fetch(PDO::FETCH_ASSOC);
     $generator = new \Picqer\Barcode\BarcodeGeneratorSVG();
     echo $generator->getBarcode('UID'.$row['id'], $generator::TYPE_CODE_128);
-    echo '<br><b>[UID'.$row['id'].'] '.$row['case_id'].'/'.date('Y', strtotime($row['case_added_date'])).', '.$row['case_file_number'].'</b><br>';
+    echo '<b>[UID'.$row['id'].'] '.$row['case_id'].'/'.date('Y', strtotime($row['case_added_date'])).', '.$row['case_file_number'].'</b><br>';
     echo '<b>'.$row['case_name'].' '.$row['case_suspect'].'</b><br>';
     echo $row['case_investigator'].' ' .$row['case_investigator_unit'].'<br>';
     exit;
@@ -45,7 +45,7 @@ if ($_GET['type'] === 'device') {
     $row = $query->fetch(PDO::FETCH_ASSOC);
     $generator = new \Picqer\Barcode\BarcodeGeneratorSVG();
     echo $generator->getBarcode('UID'.$row['id'], $generator::TYPE_CODE_128);
-    echo '<br><b>[UID'.$row['id'].'] '.$parentrow['case_id'].'/'.date('Y', strtotime($parentrow['case_added_date'])).', '.$parentrow['case_file_number'].$
+    echo '<b>[UID'.$row['id'].'] '.$parentrow['case_id'].'/'.date('Y', strtotime($parentrow['case_added_date'])).', '.$parentrow['case_file_number'];
     echo $row['device_type'].' '.$row['device_manuf'].' '.$row['device_model'].'<br>';
     exit;
 }

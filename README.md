@@ -43,6 +43,7 @@ USAGE
 * When all devices have been marked as "done" or "no action" Kirjuri will allow you to close the request.
 * You can move, remove or edit the devices from the device listing or individual device memo.
 * Users have four levels of access; admin, user, view only and add only. Create your users accordingly. If you wish to effectively disable user management give the anonymous user admin access.
+* If you have access to an IMEI database, Kirjuri can look up IMEI numbers and pull device manufacturer and model data from it. The database can be uploaded from settings and requires the following format: TAC|Marketing Name|Internal Model Name|Manufacturer|Bands|Allocation Date|Country Code|Fixed Code|Manufacturer Code|Radio Interface|Brand Name|Model Name|Operating System|NFC|Bluetooth|WLAN|Device Type
 
 LOCALIZATION
 ------------
@@ -81,6 +82,12 @@ SCREENSHOTS
 
 CHANGELOG
 ------------
+2016-09-27:
+
+* THIS RELEASE CREATES AN ADDITIONAL DATABASE TABLE. RE-RUN ```install.php``` to auto-create the necessary tables. Back up your database before making any changes to your existing installation.
+* Added support for managing your forensic tools and adding them to the case via a tool registry. The tool registry can be used to keep track of software and hardware versions in use complete with a version / update history. You can add information about used tools to a device by using the "Add a tool..."-dropdown in the device memo and saving the data. This will add a line to the examiners notes about the tools used. This information will not be printed to the report.
+* Added support for using an IMEI database to automatically look up device details based on the TAC identified in the IMEI code. The database is not shared but you can request a copy from GSMA if you are eligible for one. The database format is as follows: "TAC|Marketing Name|Internal Model Name|Manufacturer|Bands|Allocation Date|Country Code|Fixed Code|Manufacturer Code|Radio Interface|Brand Name|Model Name|Operating System|NFC|Bluetooth|WLAN|Device Type". The administrator can upload an IMEI database via the settings or move it manually to ```conf/imei.txt```.
+
 2016-09-23:
 
 * Added support for printing and reading barcodes. Device and case stickers now have a barcode, which you can read to the "Search" box and jump straight to that device. The label printer has been tested with a Dymo LabelWriter 450. Support for barcodes has been built with https://github.com/picqer/php-barcode-generator

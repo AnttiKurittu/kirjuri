@@ -3,7 +3,7 @@
 require_once './include_functions.php';
 protect_page(2); // View only or higher
 
- 
+
 
 $query = $kirjuri_database->prepare('SELECT * FROM exam_requests WHERE is_removed != "1" AND id = :db_row LIMIT 1');
 $query->execute(array(
@@ -42,8 +42,29 @@ $query = $kirjuri_database->prepare('SELECT id, case_id, case_name, case_suspect
 $query->execute();
 $allcases = $query->fetchAll(PDO::FETCH_ASSOC);
 
+
+$imei_data = "";
+if ( strpos( strtoupper($mediarow[0]['device_identifier']), "IMEI") !== false)
+{
+  $imei_TAC =  substr(num($mediarow[0]['device_identifier']),0,8);
+  if (strlen($imei_TAC) === 8) {
+    if (file_exists('conf/imei.txt'))
+    {
+      $imei_list = file('conf/imei.txt');
+      foreach($imei_list as $line)
+      {
+        if (substr($line, 0 , 8) === $imei_TAC)
+        {
+          $imei_data = explode("|", $line);
+        }
+      }
+    }
+  }
+}
+
 $_SESSION['message_set'] = false;
 echo $twig->render('device_memo.html', array(
+  'imei_data' => $imei_data,
   'session' => $_SESSION,
   'device_actions' => $_SESSION['lang']['device_actions'],
   'device_locations' => $_SESSION['lang']['device_locations'],

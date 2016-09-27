@@ -170,7 +170,8 @@ if (e.keyCode == 13) {
 <td colspan="4">
 <br>
 <div class="form-horizontal">
-{% for entry in mediarow %} <div class="form-group">
+{% for entry in mediarow %}
+<div class="form-group">
 <label for="device_type" class="col-sm-1 control-label">{{ lang.sort_label_type }}</label>
 <div class="col-sm-5">
 <select style="text-align:left;" class="btn btn-default" name="device_type" id="device_type">
@@ -187,63 +188,72 @@ if (e.keyCode == 13) {
 {% endfor %}
 </select>
 </div>
-<label for="device_manuf" class="col-sm-1 control-label">{{ lang.sort_label_brand }}</label>
-<div class="col-sm-5">
-<input type="device_type" class="form-control" id="device_manuf" name="device_manuf" placeholder="{{ lang.sort_label_brand }}" value="{{ entry.device_manuf }}">
 </div>
-</div>
+
 <div class="form-group">
-<label for="device_model" class="col-sm-1 control-label">{{ lang.sort_label_model }}</label>
+<label for="device_manuf" class="col-sm-1 control-label">{% if imei_data != false %}<span style="color:green;">{{ lang.sort_label_brand }}</span>{% else %}{{ lang.sort_label_brand }}{% endif %}</label>
 <div class="col-sm-5">
-<input type="device_type" class="form-control" id="device_model" name="device_model" placeholder="{{ lang.sort_label_model }}" value="{{ entry.device_model }}">
+<input type="device_type" class="form-control" id="device_manuf" name="device_manuf" placeholder="{{ lang.sort_label_brand }}" value="{% if imei_data != false %}{{ imei_data.10 }}{% else %}{{ entry.device_manuf }}{% endif %}">
 </div>
+<label for="device_model" class="col-sm-1 control-label">{% if imei_data != false %}<span style="color:green;">{{ lang.sort_label_model }}</span>{% else %}{{ lang.sort_label_model }}{% endif %}</label>
+<div class="col-sm-5">
+<input type="device_type" class="form-control" id="device_model" name="device_model" placeholder="{{ lang.sort_label_model }}" value="{% if imei_data != false %}{{ imei_data.11 }}{% else %}{{ entry.device_model }}{% endif %}">
+</div>
+</div>
+
+<div class="form-group">
 <label for="device_size_in_gb" class="col-sm-1 control-label">{{ lang.size_in_gb_short }}</label>
 <div class="col-sm-5">
 <input type="device_size_in_gb" class="form-control" id="device_size_in_gb" name="device_size_in_gb" placeholder="{{ lang.size_in_gb_long }}" onKeyPress="return numbersonly(this, event)" value="{{ entry.device_size_in_gb }}">
 </div>
-</div>
-<div class="form-group">
 <label for="device_owner" class="col-sm-1 control-label">{{ lang.sort_label_owner }}</label>
 <div class="col-sm-5">
 <input type="device_owner" class="form-control" id="device_owner" name="device_owner" placeholder="{{ lang.sort_label_owner }}" value="{{ entry.device_owner }}">
 </div>
+</div>
+
+<div class="form-group">
 <label for="device_os" class="col-sm-1 control-label">{{ lang.operating_system_short }}</label>
 <div class="col-sm-5">
 <input type="device_os" class="form-control" id="device_os" name="device_os" placeholder="{{ lang.operating_system_long }}" value="{{ entry.device_os }}">
 </div>
-</div>
-<div class="form-group">
 <label for="device_time_deviation" class="col-sm-1 control-label">{{ lang.time_deviation }}</label>
 <div class="col-sm-5">
 <input type="device_time_deviation" class="form-control" id="device_time_deviation" name="device_time_deviation" placeholder="{{ lang.time_deviation }}" value="{{ entry.device_time_deviation }}">
 </div>
+</div>
+
+<div class="form-group">
 <label for="case_request_description" class="col-sm-1 control-label">{{ lang.description }}</label>
 <div class="col-sm-5">
 <input type="text" class="form-control" id="case_request_description" name="case_request_description" placeholder="{{ lang.device_description }}" value="{{ entry.case_request_description }}">
 </div>
-</div>
-<div class="form-group">
 <label for="device_item_number" class="col-sm-1 control-label">{{ lang.device_item_number_abbrev }}</label>
 <div class="col-sm-5">
 <input type="text" class="form-control" id="device_item_number" name="device_item_number" placeholder="{{ lang.device_item_number }}" onKeyPress="return numbersonly(this, event)" value="{{ entry.device_item_number }}">
 </div>
+</div>
+
+<div class="form-group">
 <label for="device_document" class="col-sm-1 control-label">{{ lang.device_document }}</label>
 <div class="col-sm-5">
 <input type="text" class="form-control" id="device_document" name="device_document" placeholder="{{ lang.device_document }}" value="{{ entry.device_document }}">
 </div>
-</div>
-<div class="form-group">
-<label for="device_identifier" class="col-sm-1 control-label">{{ lang.device_identifier }}</label>
+<label for="device_identifier" class="col-sm-1 control-label">{% if imei_data != false %}<span style="color:green;">{{ lang.device_identifier }}</span>{% else %}{{ lang.device_identifier }}{% endif %}</label>
 <div class="col-sm-5">
 <input type="device_identifier" class="form-control" id="device_identifier" name="device_identifier" placeholder="{{ lang.device_identifier_serial }}" value="{{ entry.device_identifier }}">
 </div>
 </div>
+
+<hr>
+<div class="form-group">
+
 {% if entry.device_host_id != "0" %}
 <input type="hidden" name="parent_id" value="{{ entry.parent_id }}">
+<div class="col-sm-6"></div>
 {% else %}
-<div class="form-group">
-<label for="device_case" class="col-sm-1 control-label">{{ lang.move_device }}</label>
-<div class="col-sm-10">
+<label for="device_case" class="col-sm-1 control-label">{{ lang.move }}</label>
+<div class="col-sm-5">
 <select style="text-align:left;" class="btn btn-default" name="parent_id" id="parent_id">
 <option selected value="{{ caserow.0.id }}">{{ lang.move_device_to_another_request }}</option>
 {% for entry in allcases %}
@@ -252,9 +262,24 @@ if (e.keyCode == 13) {
 {% endfor %}
 </select>
 </div>
-</div>
 {% endif %}
 {% endfor %}
+
+<label for="add_tool" class="col-sm-1 control-label"></label>
+<div class="col-sm-5">
+<select style="text-align:left;" class="btn btn-default" name="used_tool" id="used_tool">
+<option selected value="">{{ lang.add_a_tool|capitalize }}...</option>
+{% for tool in session.all_tools if "I" not in tool.flags %}
+<option value="* {{ tool.product_name }} {% if tool.sw_version %}{{ tool.sw_version }}{% endif %}{% if tool.hw_version %},
+{{ lang.hardware_version }} {{ tool.hw_version }}{% endif %}{% if tool.serialno %} [{{ lang.serial_no}}: {{tool.serialno}}]{% endif %}">{{ tool.product_name }}
+{% if tool.sw_version %}{{ tool.sw_version }}{% endif %}{% if tool.hw_version %}, {{ lang.hw_version }}: {{ tool.hw_version }}{% endif %}
+{% if tool.serialno %} [{{tool.serialno}}]{% endif %}</option>
+{% endfor %}
+</select>
+</div>
+</div>
+
+
 </td>
 </tr>
 </table>

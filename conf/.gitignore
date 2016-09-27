@@ -1,2 +1,3 @@
 *.local
 mysql_credentials.php
+imei.txt

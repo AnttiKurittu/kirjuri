@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% block title %}
+<title>{{ lang.tool_management|capitalize }} - {{ settings.title_text }}</title>
+{% endblock title %}
+{% block content %}
+<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+  <h3>{{ lang.tool_management|capitalize }}</h3>
+  <table class="table table-striped">
+    <thead>
+      <th>{{ lang.product_name|capitalize }}</th>
+      <th>{{ lang.hardware_version|capitalize }}</th>
+      <th>{{ lang.software_version|capitalize }}</th>
+      <th>{{ lang.serial_no|capitalize }}</th>
+      <th>{{ lang.created|capitalize }}</th>
+      <th>{{ lang.last_update|capitalize }}</th>
+      <th class="text-center">{{ lang.active|capitalize }}</th>
+      <th class="text-center">{{ lang.comment|capitalize }}</th>
+    </thead>
+    {% for tool in session.all_tools if 'I' in tool.flags == false %}
+    <tr {% if fields.id == tool.id %}class="info"{% endif %}>
+      <td><a href="tools.php?populate={{ tool.id }}">{{ tool.product_name }}</a></td>
+      <td>{{ tool.hw_version }}</td>
+      <td>{{ tool.sw_version }}</td>
+      <td>{{ tool.serialno }}</td>
+      <td>{{ tool.attr_1 }}</td>
+      <td>{% set updated = tool.attr_2|split(',') %}  {% set updated = updated.0|split(';') %} {{ updated.0 }}</td>
+      <td class="text-center">{% if 'I' in tool.flags == true %}<i style="color:red;" class="fa fa-remove"></i>{% else %}<i style="color:green;" class="fa fa-check"></i>{% endif %}</td>
+      <td class="text-center">{% if not tool.attr_3 %}<i style="color:red;" class="fa fa-remove"></i>{% else %}<i style="color:green;" class="fa fa-check"></i>{% endif %}</td>
+      <td></td>
+    </tr>
+    {% endfor %}
+    {% for tool in session.all_tools if 'I' in tool.flags == true %}
+    <tr {% if fields.id == tool.id %}class="info"{% else %}class="warning"{% endif %}>
+      <td><a href="tools.php?populate={{ tool.id }}">{{ tool.product_name }}</a></td>
+      <td>{{ tool.hw_version }}</td>
+      <td>{{ tool.sw_version }}</td>
+      <td>{{ tool.serialno }}</td>
+      <td>{{ tool.attr_1 }}</td>
+      <td>{% set updated = tool.attr_2|split(',') %}  {% set updated = updated.0|split(';') %} {{ updated.0 }}</td>
+      <td class="text-center">{% if 'I' in tool.flags == true %}<i style="color:red;" class="fa fa-remove"></i>{% else %}<i style="color:green;" class="fa fa-check"></i>{% endif %}</td>
+      <td class="text-center">{% if not tool.attr_3 %}<i style="color:red;" class="fa fa-remove"></i>{% else %}<i style="color:green;" class="fa fa-check"></i>{% endif %}</td>
+      <td></td>
+    </tr>
+    {% endfor %}
+
+  </table>
+
+<form class="form-horizontal" role="form" method="post" action="submit.php?type={% if fields %}update_tool{% else %}add_tool{% endif %}">
+{% if fields %}<input type="hidden" name="tool_id" value="{{ fields.id }}">{% endif %}
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title"><a id="u"></a>{{ lang.manage_tools }} | {% if fields %}{{ lang.edit_tool|capitalize }}{% else %}{{ lang.add_a_tool|capitalize }}{% endif %}</h3>
+  </div>
+
+  <div class="panel-body">
+
+    {% if fields %}<div class="form-group">
+      <label for="product_name" class="col-md-2 control-label">{{ lang.id }}</label>
+      <div class="col-md-1">
+        <input type="text" class="form-control" id="id" name="id" value="{{ fields.id }}" disabled>
+      </div>
+    </div>{% endif %}
+
+    <div class="form-group">
+      <label for="product_name" class="col-md-2 control-label">{{ lang.product_name|capitalize }}</label>
+      <div class="col-md-10">
+        <input type="text" class="form-control" id="product_name" name="product_name" value="{{ fields.product_name }}">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="name" class="col-md-2 control-label">{{ lang.hardware_version|capitalize }}</label>
+      <div class="col-md-10">
+        <input type="text" class="form-control" id="hw_version" name="hw_version" value="{{ fields.hw_version }}">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="name" class="col-md-2 control-label">{{ lang.software_version|capitalize }}</label>
+      <div class="col-md-10">
+        <input type="text" class="form-control" id="sw_version" name="sw_version" value="{{ fields.sw_version }}">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="name" class="col-md-2 control-label">{{ lang.serial_no|capitalize }}</label>
+      <div class="col-md-10">
+        <input type="text" class="form-control" id="serialno" name="serialno" value="{{ fields.serialno }}">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="name" class="col-md-2 control-label">{{ lang.comment|capitalize }}</label>
+      <div class="col-md-10">
+        <input type="text" class="form-control" id="comment" name="comment" value="{{ fields.attr_3 }}">
+      </div>
+    </div>
+
+
+    <div class="form-group">
+      <label for="flags" class="col-md-2 control-label">{{ lang.flags }}</label>
+      <div class="col-md-10">
+          <div class="checkbox">
+             <label class="col-md-12">
+               <input type="checkbox" name="flag1" value="I" {% if "I" in fields.flags %}checked{% endif %}> {{ lang.flag_inactive }}
+             </label>
+           </div>
+      </div>
+    </div>
+
+
+    {% if fields %}
+    <div class="form-group">
+      <label for="flags" class="col-md-2 control-label">{{ lang.update_history|capitalize }}</label>
+      <div class="col-md-10">
+
+         {% for update in fields.attr_2 %}
+         {% set update = update|split(";") %}<p>{{update.0}}, {% if update.1 %}{{ lang.hardware_version }}: {{update.1}}, {% endif %}{% if update.2 %}{{ lang.software_version }}: {{update.2}}, {% endif %}
+         {% if "I" in update.3 %}<span style="color:red;">{{ lang.inactive|capitalize }}</span>{% else %}<span style="color:green;">{{ lang.active|capitalize }}</span>{% endif %}</p>
+         {% endfor %}
+
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+  <div class="panel-footer">
+    <button type="submit" class="btn btn-success">{{ lang.save }}</button> <a href="tools.php" class="btn btn-default">{{ lang.clear_form }}</a>
+  </div>
+</div>
+</form>
+
+</div>
+{% endblock %}

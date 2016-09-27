@@ -177,6 +177,31 @@ MySQL database <input name="d" type="text" value="kirjuri">
 
     try {
         $query = $kirjuri_database->prepare('
+  CREATE TABLE IF NOT EXISTS tools (
+  id int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  product_name varchar(256) NOT NULL,
+  hw_version varchar(256) DEFAULT NULL,
+  sw_version varchar(256) DEFAULT NULL,
+  serialno varchar(256) DEFAULT NULL,
+  flags varchar(16) DEFAULT NULL,
+  attr_1 mediumtext DEFAULT NULL,
+  attr_2 mediumtext DEFAULT NULL,
+  attr_3 mediumtext DEFAULT NULL,
+  attr_4 mediumtext DEFAULT NULL,
+  attr_5 mediumtext DEFAULT NULL,
+  attr_6 mediumtext DEFAULT NULL,
+  attr_7 mediumtext DEFAULT NULL,
+  attr_8 mediumtext DEFAULT NULL
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8;');
+        $query->execute(array());
+        echo '<p style="color:green;">Tool table created.</p>';
+    } catch (Exception $e) {
+        echo '<p style="color:red;">Error creating tool table: ', $e->getMessage(), '.</p>';
+    }
+
+
+    try {
+        $query = $kirjuri_database->prepare('
   INSERT INTO users (id, username, password, name, access, flags, attr_1, attr_2, attr_3, attr_4, attr_5, attr_6, attr_7, attr_8) VALUES (
   :anon_user_id, :anon_name, :anon_pw, :anon_realname, :anon_access, :system_flags, :anon_attr1,
   NULL, NULL, NULL, NULL, NULL, NULL, NULL);
@@ -314,7 +339,7 @@ MySQL database <input name="d" type="text" value="kirjuri">
     ALTER TABLE exam_requests ADD is_protected INT(1);
     ');
       $query->execute(array());
-      echo '<p style="color:green;">Examination requests table upgraded.</p>';
+      echo '<p style="color:green;">Examination requests table upgraded (1/2).</p>';
   } catch (Exception $e) {
       echo '<p style="color:red;">Caught MySQL exception: ', $e->getMessage(), '. This is expected with existing tables.</p>';
   }

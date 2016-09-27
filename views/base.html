@@ -164,6 +164,9 @@
           <ul class="nav nav-sidebar">
             <li{% if "users.php" in settings.self %} class="active"{% endif %}{% if session.user.access > 0 %} class="disabled"{% endif %}><a href="users.php"><i class="fa fa-users"></i> {{ lang.manage_users }}</a></li>
           </ul>
+          <ul class="nav nav-sidebar">
+            <li{% if "tools.php" in settings.self %} class="active"{% endif %}{% if session.user.access > 0 %} class="disabled"{% endif %}><a href="tools.php"><i class="fa fa-crosshairs"></i> {{ lang.manage_tools|capitalize }}</a></li>
+          </ul>
           {% if session.user.username %}
           <ul class="nav nav-sidebar">
             <li><a href="submit.php?type=logout"><i class="fa fa-user"></i> {{ lang.log_out }} {{ session.user.name }} </a></li>

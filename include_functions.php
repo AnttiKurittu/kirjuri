@@ -47,6 +47,11 @@ function protect_page($required_access_level)
     }
 }
 
+function num($a)
+{
+    return preg_replace('/[^0-9]/', '', $a);
+}
+
  function encrypt($in, $key) // Encrypt a string with AES-256-CBC
  {
      $iv = trim(substr(str_shuffle('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'), 0, 16));
@@ -129,7 +134,7 @@ function db($database) // PDO Database connection
             return $kirjuri_database;
         } catch (PDOException $e) {
             session_destroy();
-            echo 'Database error: '.$e->getMessage().'. Run <a href="install.php">install</a> to create tables and check your credentials.';
+            echo 'Database error: '.$e->getMessage().'. Run <a href="install.php">install</a> to create or upgrade tables and check your credentials.';
             die;
         }
     }
@@ -159,7 +164,6 @@ function logline($event_level, $description) // Add an entry to event_log
     } catch (PDOException $e) {
         file_put_contents('logs/kirjuri.log', $log, FILE_APPEND);
         message('error', 'Database error in logline(): '.$e->getMessage());
-
         return false;
     }
 }
@@ -194,8 +198,32 @@ $settings['release'] = file_get_contents('conf/RELEASE');
 
 $_SESSION['lang'] = parse_ini_file('conf/'.$settings_contents['settings']['lang'], true); // Parse language file
 
-$kirjuri_database = db('kirjuri-database'); // Read users from database to settings.
-$query = $kirjuri_database->prepare('SELECT * from users ORDER BY access, username;');
-$query->execute();
-$users = $query->fetchAll(PDO::FETCH_ASSOC);
-$_SESSION['all_users'] = $users;
+try
+{
+  $kirjuri_database = db('kirjuri-database'); // Read users from database to settings.
+  $query = $kirjuri_database->prepare('SELECT * from users ORDER BY access, username;');
+  $query->execute();
+  $users = $query->fetchAll(PDO::FETCH_ASSOC);
+  $_SESSION['all_users'] = $users;
+}
+catch (PDOException $e)
+{
+  session_destroy();
+  echo 'Database error: '.$e->getMessage().'. Run <a href="install.php">install</a> to create or upgrade tables and check your credentials.';
+  die;
+}
+
+try
+{
+  $kirjuri_database = db('kirjuri-database'); // Read tools from database to settings.
+  $query = $kirjuri_database->prepare('SELECT * from tools ORDER BY product_name;');
+  $query->execute();
+  $tools = $query->fetchAll(PDO::FETCH_ASSOC);
+  $_SESSION['all_tools'] = $tools;
+}
+catch (PDOException $e)
+{
+  session_destroy();
+  echo 'Database error: '.$e->getMessage().'. Run <a href="install.php">install</a> to create or upgrade tables and check your credentials.';
+  die;
+}

@@ -42,6 +42,8 @@ $form_data['case_contains_mob_dev'] = substr($form_data['case_contains_mob_dev']
 
 $save_target = isset($_POST['save']) ? $_POST['save'] : '';
 
+// ----- User management
+
 if ($_GET['type'] === 'anon_login') {
     foreach ($_SESSION['all_users'] as $user) {
         if ($user['id'] === '1') {
@@ -188,6 +190,52 @@ if ($_GET['type'] === 'update_password') {
     }
     die;
 }
+
+// ----- Tool management
+
+if ($_GET['type'] === 'add_tool') {
+    protect_page(0);
+    if(!empty($_POST['product_name'])) {
+    $query = $kirjuri_database->prepare('INSERT INTO tools (product_name, hw_version, sw_version, serialno, flags, attr_1, attr_2, attr_3, attr_4, attr_5, attr_6, attr_7, attr_8) VALUES (
+    :product_name, :hw_version, :sw_version, :serialno, :flags, NOW(), NOW(), :comment, NULL, NULL, NULL, NULL, NULL);');
+        $query->execute(array(
+        ':product_name' => trim(substr($_POST['product_name'], 0, 128)),
+        ':hw_version' => trim(substr($_POST['hw_version'], 0, 64)),
+        ':sw_version' => trim(substr($_POST['sw_version'], 0, 64)),
+        ':serialno' => $_POST['serialno'],
+        ':comment' => $_POST['comment'],
+        ':flags' => $_POST['flag1'].$_POST['flag2']
+    ));
+        logline('Admin', 'tool created: '.trim(substr($_POST['product_name'], 0, 64)));
+        message('info', $_SESSION['lang']['tool_added'] . ": ". trim(substr($_POST['product_name'], 0, 128)));
+        header('Location: tools.php');
+    die;
+  } else {
+        header('Location: tools.php');
+        die;
+  }
+}
+
+if ($_GET['type'] === 'update_tool') {
+    protect_page(0);
+    $query = $kirjuri_database->prepare('UPDATE tools SET product_name = :product_name, hw_version = :hw_version, sw_version = :sw_version, serialno = :serialno, attr_3 = :comment, flags = :flags,
+      attr_2 = CONCAT(NOW(),";", :hw_version, ";", :sw_version, ";", :flags, ";", ", ", IFNULL(attr_2,"")) WHERE id = :tool_id');
+        $query->execute(array(
+        ':tool_id' => $_POST['tool_id'],
+        ':product_name' => trim(substr($_POST['product_name'], 0, 128)),
+        ':hw_version' => trim(substr($_POST['hw_version'], 0, 64)),
+        ':sw_version' => trim(substr($_POST['sw_version'], 0, 64)),
+        ':serialno' => $_POST['serialno'],
+        ':comment' => $_POST['comment'],
+        ':flags' => $_POST['flag1'].$_POST['flag2']
+    ));
+        logline('Admin', 'tool updated: '.trim(substr($_POST['product_name'], 0, 128)));
+        message('info', $_SESSION['lang']['tool_updated'] . ": ". trim(substr($_POST['product_name'], 0, 128)));
+        header('Location: tools.php?populate=' . $_POST['tool_id']);
+    die;
+}
+
+// ----- Request management
 
 if ($_GET['type'] === 'examination_request') {
     // Create an examination request.
@@ -475,8 +523,11 @@ if ($_GET['type'] === 'update_request_status') {
 
 if ($_GET['type'] === 'devicememo') {
     // Update individual device details.
-
     protect_page(1);
+    if (!empty($_POST['used_tool']))
+    {
+      $form_data['examiners_notes'] = $form_data['examiners_notes'] . '<p>'.$_POST['used_tool'].'</p>';
+    }
     $sql = $kirjuri_database->prepare('UPDATE exam_requests SET report_notes = :report_notes, examiners_notes = :examiners_notes, device_type = :device_type, device_manuf = :device_manuf, device_model = :device_model, device_size_in_gb = :device_size_in_gb,
       device_owner = :device_owner, device_os = :device_os, device_time_deviation = :device_time_deviation, last_updated = NOW(),
       case_request_description = :case_request_description, device_item_number = :device_item_number, device_document = :device_document, device_identifier = :device_identifier,
@@ -542,13 +593,34 @@ if ($_GET['type'] === 'device') {
         header('Location: edit_request.php?case='.$form_data['parent_id'].'&tab=devices');
         die;
     }
+    $form_data['examiners_notes'] = "";
+    if ( strpos( strtoupper($form_data['device_identifier']), "IMEI") !== false)
+    {
+      $imei_TAC =  substr(num($form_data['device_identifier']),0,8);
+      if (strlen($imei_TAC) === 8) {
+        if (file_exists('conf/imei.txt'))
+        {
+          $imei_list = file('conf/imei.txt');
+          foreach($imei_list as $line)
+          {
+            if (substr($line, 0 , 8) === $imei_TAC)
+            {
+              $imei_data = explode("|", $line);
+              $form_data['device_manuf'] = $imei_data['10'];
+              $form_data['device_model'] = $imei_data['11'];
+              $form_data['examiners_notes'] = implode(", " ,$imei_data);
+            }
+          }
+        }
+      }
+    }
 
     $sql = $kirjuri_database->prepare('UPDATE exam_requests SET case_devicecount = case_devicecount + 1, last_updated = NOW() WHERE id = :parent_id'); // Update device count
     $sql->execute(array(
         ':parent_id' => $form_data['parent_id'],
     ));
 
-    $sql = $kirjuri_database->prepare('INSERT INTO exam_requests (parent_id, device_host_id, device_type, device_manuf, device_model, device_identifier, device_location, device_item_number, device_document, device_time_deviation, device_os, device_size_in_gb, device_is_host, device_owner, device_include_in_report, device_contains_evidence, case_added_date, case_request_description, device_action, is_removed, last_updated ) VALUES (:parent_id, :device_host_id, :device_type, :device_manuf, :device_model, :device_identifier, :device_location, :device_item_number, :device_document, :device_time_deviation, :device_os, :device_size_in_gb, :device_is_host, :device_owner, "1", "0", NOW(), :case_request_description, :device_action, :is_removed, NOW());
+    $sql = $kirjuri_database->prepare('INSERT INTO exam_requests (parent_id, device_host_id, device_type, device_manuf, device_model, device_identifier, device_location, device_item_number, device_document, device_time_deviation, device_os, device_size_in_gb, device_is_host, device_owner, device_include_in_report, device_contains_evidence, case_added_date, case_request_description, device_action, is_removed, last_updated, examiners_notes ) VALUES (:parent_id, :device_host_id, :device_type, :device_manuf, :device_model, :device_identifier, :device_location, :device_item_number, :device_document, :device_time_deviation, :device_os, :device_size_in_gb, :device_is_host, :device_owner, "1", "0", NOW(), :case_request_description, :device_action, :is_removed, NOW(), :examiners_notes);
         ');
     $sql->execute(array(
         ':parent_id' => $form_data['parent_id'],
@@ -568,6 +640,7 @@ if ($_GET['type'] === 'device') {
         ':case_request_description' => $form_data['case_request_description'],
         ':device_action' => $form_data['device_action'],
         ':is_removed' => $form_data['is_removed'],
+        ':examiners_notes' => $form_data['examiners_notes']
     ));
     logline('Action', 'Added device '.$form_data['device_type'].' '.$form_data['device_manuf'].' '.$form_data['device_model'].' with id ['.$form_data['device_identifier'].'] to case '.$form_data['parent_id'].'');
     $_SESSION['post_cache'] = '';

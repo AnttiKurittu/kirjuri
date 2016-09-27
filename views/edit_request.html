@@ -735,6 +735,7 @@ if (e.keyCode == 13) {
   </tr>
   {% endif %}
 </table>
+
 <!-- Button trigger modal -->
 <!-- Modal -->
 <div class="modal fade" id="add_media_modal_{{ entry.id }}" role="dialog" aria-labelledby="add_media_modal_{{ entry.id }}">
@@ -787,7 +788,7 @@ if (e.keyCode == 13) {
             <input type="text" class="form-control" id="device_size_in_gb" name="device_size_in_gb" placeholder="{{ lang.size_in_gb_long }}" value="{{ session_cache.device_size_in_gb }}" onKeyPress="return numbersonly(this, event)">
           </div>
           <div class="form-group">
-            <label class="sr-only" for="device_identifier">{{ lang.sort_label_owner }}</label>
+            <label class="sr-only" for="device_owner">{{ lang.sort_label_owner }}</label>
             <input type="text" class="form-control" id="device_owner" name="device_owner" placeholder="{{ lang.sort_label_owner }}" value="{{ entry.device_owner }}" value="{{ session_cache.device_owner }}">
           </div>
           <div class="form-group">

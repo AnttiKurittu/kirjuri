@@ -23,10 +23,18 @@
   </form>
 </div>
 
-
   <pre>API: {{ apikey }}</pre>
 
 {% if session.user.access == "0" %}
+
+  <form class="form" action="upload_IMEI.php" method="post" enctype="multipart/form-data">
+<div class="form-group">
+  <label for="exampleInputFile"></label>
+  <input type="file" name="fileToUpload" id="fileToUpload">
+  <p class="help-block">{{lang.upload_imei_data }}</p>
+</div>
+    <button type="submit" class="btn btn-success btn-xs"><i class="fa fa-upload"></i> {{ lang.upload }}</button>
+  </form>
 
   <h4>{{settings_file}}</h4>
   <form class="form form-horizontal" role="form" method="post" action="submit.php">
@@ -54,8 +62,9 @@
 
     </div>
   </form>
-{% endif %}
 <a href="backup.php" target="_BLANK">Back up database...</a>
+{% endif %}
+
 </div>
 </div>
 </div>

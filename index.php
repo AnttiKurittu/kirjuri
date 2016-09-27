@@ -112,7 +112,6 @@ if (isset($_GET['search'])) {
 else
 {
     // If no search term present, just get all case id's for device counting.
-
   $query = $kirjuri_database->prepare('SELECT id FROM exam_requests WHERE id = parent_id '.$statuslimit.'AND case_added_date BETWEEN :dateStart AND :dateStop ORDER BY '.$order_by);
     $query->execute(array(
     ':dateStart' => $dateRange['start'],
@@ -122,7 +121,6 @@ else
 
     foreach ($row_active as $entry) {
         // Count and update devicecount in case they loses track.
-
     $query = $kirjuri_database->prepare('SELECT COUNT(id) FROM exam_requests WHERE parent_id = :id AND is_removed = "0";');
         $query->execute(array(
       ':id' => $entry['id'],

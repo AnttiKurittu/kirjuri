@@ -191,6 +191,149 @@ if ($_GET['type'] === 'update_password') {
     die;
 }
 
+// ----- Messages
+
+if ($_GET['type'] === 'send_message') {
+    if(!empty($_POST['body'])) {
+      if($_POST['msgto'] === "ALL_USERS") {
+      foreach($_SESSION['all_users'] as $user)
+      {
+      if ($user['username'] !== $_SESSION['user']['username']) {
+        $query = $kirjuri_database->prepare('INSERT INTO messages (msgfrom, msgto, subject, body, received, archived_from, archived_to, deleted_from, deleted_to, attr_1, attr_2, attr_3, attr_4, attr_5, attr_6, attr_7, attr_8) VALUES (
+        :msgfrom, :msgto, :subject, :body, "0", "0", "0", "0", "0", NOW(), NULL, NULL, NULL, NULL, NULL, NULL, NULL);');
+        $query->execute(array(
+            ':msgfrom' => $_SESSION['user']['username'],
+            ':msgto' => $user['username'],
+            ':subject' => base64_encode(gzdeflate($_POST['subject'])),
+            ':body' => base64_encode(gzdeflate($_POST['body']))
+        ));
+      }
+    }
+  } else {
+    if($_POST['msgto'] === $_SESSION['user']['username']) {
+      $msgfrom = "Myself";
+    } else {
+      $msgfrom = $_SESSION['user']['username'];
+    }
+    $query = $kirjuri_database->prepare('INSERT INTO messages (msgfrom, msgto, subject, body, received, archived_from, archived_to, deleted_from, deleted_to, attr_1, attr_2, attr_3, attr_4, attr_5, attr_6, attr_7, attr_8) VALUES (
+    :msgfrom, :msgto, :subject, :body, "0", "0", "0", "0", "0", NOW(), NULL, NULL, NULL, NULL, NULL, NULL, NULL);');
+    $query->execute(array(
+        ':msgfrom' => $msgfrom,
+        ':msgto' => $_POST['msgto'],
+        ':subject' => base64_encode(gzdeflate($_POST['subject'])),
+        ':body' => base64_encode(gzdeflate($_POST['body']))
+    ));
+    }
+        logline('Admin', 'message sent: '.trim(substr($_POST['subject'], 0, 1024)));
+        message('info', $_SESSION['lang']['tool_added'] . ": ". trim(substr($_POST['product_name'], 0, 128)));
+        header('Location: messages.php');
+    die;
+  } else {
+        header('Location: messages.php');
+        die;
+  }
+}
+
+if ($_GET['type'] === 'delete_received')
+{
+    $query = $kirjuri_database->prepare('UPDATE messages SET deleted_to = "1" WHERE id = :id AND (msgto = :user OR msgfrom = :user) AND archived_to = "1"');
+    $query->execute(array(
+          ':user' => $_SESSION['user']['username'],
+          ':id' => num($_GET['id'])
+      ));
+    $query->execute();
+    header('Location: messages.php#archive');
+    die;
+}
+
+if ($_GET['type'] === 'delete_sent')
+{
+    $query = $kirjuri_database->prepare('UPDATE messages SET deleted_from = "1" WHERE id = :id AND (msgto = :user OR msgfrom = :user) AND archived_from = "1"');
+    $query->execute(array(
+          ':user' => $_SESSION['user']['username'],
+          ':id' => num($_GET['id'])
+      ));
+    $query->execute();
+    header('Location: messages.php#archive');
+    die;
+}
+
+if ($_GET['type'] === 'delete_all')
+{
+    $query = $kirjuri_database->prepare('UPDATE messages SET deleted_to = "1" WHERE msgto = :user AND archived_to = "1"');
+    $query->execute(array(
+          ':user' => $_SESSION['user']['username']
+      ));
+    $query = $kirjuri_database->prepare('UPDATE messages SET deleted_from = "1" WHERE msgfrom = :user AND archived_from = "1"');
+    $query->execute(array(
+          ':user' => $_SESSION['user']['username']
+      ));
+    $query->execute();
+    header('Location: messages.php#inbox');
+    die;
+}
+
+if ($_GET['type'] === 'archive_received')
+{
+    $query = $kirjuri_database->prepare('UPDATE messages SET archived_to = "1" WHERE id = :id AND received != "0" AND (msgto = :user OR msgfrom = :user)');
+    $query->execute(array(
+          ':user' => $_SESSION['user']['username'],
+          ':id' => num($_GET['id'])
+      ));
+    $query->execute();
+    header('Location: messages.php#inbox');
+    die;
+}
+
+if ($_GET['type'] === 'archive_sent')
+{
+    $query = $kirjuri_database->prepare('UPDATE messages SET archived_from = "1" WHERE id = :id AND (msgto = :user OR msgfrom = :user)');
+    $query->execute(array(
+          ':user' => $_SESSION['user']['username'],
+          ':id' => num($_GET['id'])
+      ));
+    $query->execute();
+    header('Location: messages.php#outbox');
+    die;
+}
+
+
+if ($_GET['type'] === 'restore_received')
+{
+    $query = $kirjuri_database->prepare('UPDATE messages SET archived_to = "0" WHERE id = :id AND (msgto = :user OR msgfrom = :user)');
+    $query->execute(array(
+          ':user' => $_SESSION['user']['username'],
+          ':id' => num($_GET['id'])
+      ));
+    $query->execute();
+    header('Location: messages.php');
+    die;
+}
+
+if ($_GET['type'] === 'restore_sent')
+{
+    $query = $kirjuri_database->prepare('UPDATE messages SET archived_from = "0" WHERE id = :id AND (msgto = :user OR msgfrom = :user)');
+    $query->execute(array(
+          ':user' => $_SESSION['user']['username'],
+          ':id' => num($_GET['id'])
+      ));
+    $query->execute();
+    header('Location: messages.php');
+    die;
+}
+
+if ($_GET['type'] === 'delete_message')
+{
+    $query = $kirjuri_database->prepare('DELETE FROM messages WHERE id = :id AND msgto = :user');
+    $query->execute(array(
+          ':user' => $_SESSION['user']['username'],
+          ':id' => num($_GET['id'])
+      ));
+    $query->execute();
+    header('Location: messages.php');
+    die;
+}
+
 // ----- Tool management
 
 if ($_GET['type'] === 'add_tool') {

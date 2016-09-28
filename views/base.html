@@ -90,17 +90,13 @@
         }
         //-->
 
-    var refreshTime = 600000; // every 10 minutes in milliseconds
-    window.setInterval( function() {
-        $.ajax({
-            cache: false,
-            type: "GET",
-            url: "refresh.php",
-            success: function(data) {
-            }
-        });
-    }, refreshTime );
+     function autoRefresh_div()
+      {
+          $("#unreadcounter").load("unreadcounter.php");// a function which will load data from other file after x seconds
+      }
+      setInterval('autoRefresh_div()', 60000); // Refresh the unread counter every minute
     </script>
+
 
     <title id="html-title">
     </title>
@@ -167,6 +163,18 @@
           <ul class="nav nav-sidebar">
             <li{% if "tools.php" in settings.self %} class="active"{% endif %}{% if session.user.access > 0 %} class="disabled"{% endif %}><a href="tools.php"><i class="fa fa-crosshairs"></i> {{ lang.manage_tools|capitalize }}</a></li>
           </ul>
+          <ul class="nav nav-sidebar">
+            <li{% if "messages.php" in settings.self and not show %} class="active"{% endif %}><a href="messages.php{% if (session.unread.new > 0) and "messages.php" not in settings.self %}?show=inbox{% endif %}"><i class="fa fa-inbox"></i> {{ lang.messages|capitalize }} <span class="pull-right"><div id="unreadcounter">{% if session.unread.new > 0 %}<span style="color:red;"><i class="fa fa-envelope-o"></i> {{session.unread.new}}</span>{% endif %}</div></span></a></li>
+          </ul>
+          {% if ("messages.php" in settings.self) %}
+          <ul class="nav nav-sidebar">
+            <li{% if show == "inbox" %} class="active"{% endif %} role="presentation"><a href="messages.php?show=inbox">&nbsp;&nbsp;<i class="fa fa-folder{% if show == "inbox" or not show %}-open{% endif %}"></i> {{ lang.inbox|capitalize }} <span class="pull-right">{% if session.unread.msgcount_to > 0%}{{ session.unread.msgcount_to }}{% endif %}</span></a></li>
+            <li{% if show == "outbox" %} class="active"{% endif %} role="presentation"><a href="messages.php?show=outbox">&nbsp;&nbsp;<i class="fa fa-folder{% if show == "outbox" or not show %}-open{% endif %}"></i> {{ lang.outbox|capitalize }} <span class="pull-right">{% if session.unread.msgcount_from > 0%}{{ session.unread.msgcount_from }}{% endif %}</span></a></li>
+            <li{% if show == "archive" %} class="active"{% endif %} role="presentation"><a href="messages.php?show=archive">&nbsp;&nbsp;<i class="fa fa-folder{% if show == "archive" or not show %}-open{% endif %}"></i> {{ lang.archived|capitalize }} <span class="pull-right">{% if session.unread.msgcount_archived > 0%}{{ session.unread.msgcount_archived }}{% endif %}</span></a></li>
+            <li{% if show == "compose" %} class="active"{% endif %} role="presentation"><a href="messages.php?show=compose">&nbsp;&nbsp;<i class="fa fa-paper-plane-o"></i> {{ lang.send_a_message|capitalize }}</a></li>
+          </ul>
+          {% endif %}
+
           {% if session.user.username %}
           <ul class="nav nav-sidebar">
             <li><a href="submit.php?type=logout"><i class="fa fa-user"></i> {{ lang.log_out }} {{ session.user.name }} </a></li>

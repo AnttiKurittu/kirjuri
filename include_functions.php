@@ -172,7 +172,6 @@ set_error_handler('kirjuri_error_handler'); // Give errors to the custom error h
 
 if (file_exists('conf/mysql_credentials.php')) {
     // Read credentials array from a file
-
   $mysql_config = include 'conf/mysql_credentials.php';
 } elseif (file_exists('/etc/kirjuri/mysql_credentials.php')) {
     $mysql_config = include '/etc/kirjuri/mysql_credentials.php';
@@ -226,4 +225,18 @@ catch (PDOException $e)
   session_destroy();
   echo 'Database error: '.$e->getMessage().'. Run <a href="install.php">install</a> to create or upgrade tables and check your credentials.';
   die;
+}
+if($_SESSION['user']) {
+  try
+  {
+    $query = $kirjuri_database->prepare('SELECT (SELECT COUNT(id) FROM messages WHERE msgto = :username AND received = "0") as new');
+    $query->execute(array(':username' => $_SESSION['user']['username']));
+    $_SESSION['unread'] = $query->fetch(PDO::FETCH_ASSOC);
+  }
+  catch (PDOException $e)
+  {
+    session_destroy();
+    echo 'Database error: '.$e->getMessage().'. Run <a href="install.php">install</a> to create or upgrade tables and check your credentials.';
+    die;
+  }
 }

@@ -199,6 +199,34 @@ MySQL database <input name="d" type="text" value="kirjuri">
         echo '<p style="color:red;">Error creating tool table: ', $e->getMessage(), '.</p>';
     }
 
+    try {
+        $query = $kirjuri_database->prepare('
+  CREATE TABLE IF NOT EXISTS messages (
+  id int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  subject varchar(1024) NOT NULL,
+  body MEDIUMTEXT NOT NULL,
+  msgfrom varchar(256) DEFAULT NULL,
+  msgto varchar(256) DEFAULT NULL,
+  received varchar(256) DEFAULT NULL,
+  archived_from varchar(1) DEFAULT NULL,
+  archived_to varchar(1) DEFAULT NULL,
+  deleted_from varchar(1) DEFAULT NULL,
+  deleted_to varchar(1) DEFAULT NULL,
+  attr_1 mediumtext DEFAULT NULL,
+  attr_2 mediumtext DEFAULT NULL,
+  attr_3 mediumtext DEFAULT NULL,
+  attr_4 mediumtext DEFAULT NULL,
+  attr_5 mediumtext DEFAULT NULL,
+  attr_6 mediumtext DEFAULT NULL,
+  attr_7 mediumtext DEFAULT NULL,
+  attr_8 mediumtext DEFAULT NULL
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8;');
+        $query->execute(array());
+        echo '<p style="color:green;">Messages table created.</p>';
+    } catch (Exception $e) {
+        echo '<p style="color:red;">Error creating messages table: ', $e->getMessage(), '.</p>';
+    }
+
 
     try {
         $query = $kirjuri_database->prepare('

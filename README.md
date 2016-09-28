@@ -59,7 +59,7 @@ UPDATING FROM A PREVIOUS VERSION
 
 * Back up your existing installation and database!
 
-* If you are updating from a previous version without user management, run "/install.php" with your credentials and existing database name. The script will fail at creating a database because it already exists, but will write the users table on your existing installation. The script will also add some columns to exam_requests for future features.
+* If you get an error message after updating, Kirjuri might need some additional tables that do not exist yet. Run "/install.php" with your credentials and existing database name. The script will fail at creating a database and/or tables because some of them may already exist, but it will write the new tables on your existing installation.
 
 * If you are updating Kirjuri from the finnish limited release version to the current version, you can migrate your databases by running ```migrate_old_tables.sql``` against your MySQL server. This will create the new tables and insert data from the old tables to the new one. It will also truncate your event log, as there was a bug in the old event log structure where the ID didn't auto-increment. Please back up your existing installation and database before migrating.
 
@@ -82,6 +82,10 @@ SCREENSHOTS
 
 CHANGELOG
 ------------
+2016-09-28:
+
+* Implemented a simple internal messaging system. This update requires running ```install.php``` to create the necessary tables.
+
 2016-09-27:
 
 * THIS RELEASE CREATES AN ADDITIONAL DATABASE TABLE. RE-RUN ```install.php``` to auto-create the necessary tables. Back up your database before making any changes to your existing installation.

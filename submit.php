@@ -224,8 +224,8 @@ if ($_GET['type'] === 'send_message') {
         ':body' => base64_encode(gzdeflate($_POST['body']))
     ));
     }
-        logline('Admin', 'message sent: '.trim(substr($_POST['subject'], 0, 1024)));
-        message('info', $_SESSION['lang']['tool_added'] . ": ". trim(substr($_POST['product_name'], 0, 128)));
+        logline('Action', 'message sent.'));
+        //message('info', $_SESSION['lang']['tool_added'] . ": ". trim(substr($_POST['product_name'], 0, 128)));
         header('Location: messages.php');
     die;
   } else {

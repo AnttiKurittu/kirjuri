@@ -82,6 +82,10 @@ SCREENSHOTS
 
 CHANGELOG
 ------------
+2016-09-29:
+
+* Upgraded the included TinyMCE from 4.2.7 to 4.4.3
+
 2016-09-28:
 
 * Implemented a simple internal messaging system. This update requires running ```install.php``` to create the necessary tables.

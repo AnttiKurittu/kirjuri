@@ -64,6 +64,9 @@ if ($_GET['type'] === 'anon_login') {
 
 if ($_GET['type'] === 'login') {
     $_SESSION['user'] = null;
+    if(file_exists('conf/BLOCK_'.hash('sha1', $_POST['username']))) {
+      sleep(5);
+    }
     foreach ($users as $user) {
         if ((strtolower($_POST['username']) === strtolower($user['username'])) && (hash('sha256', $_POST['password']) === $user['password'])) {
             if (strpos($user['flags'], 'I') === false) {
@@ -83,7 +86,9 @@ if ($_GET['type'] === 'login') {
         header('Location: index.php');
         die;
     } else {
-        sleep(3);
+        file_put_contents('conf/BLOCK_'.hash('sha1', $_POST['username']), "failed password attempt");
+        sleep(5);
+        unlink('conf/BLOCK_'.hash('sha1', $_POST['username']));
         message('error', $_SESSION['lang']['invalid_credentials']);
         logline('action', 'Login attempt: '.$_POST['username']);
         header('Location: login.php');

@@ -154,6 +154,7 @@
           <ul class="nav nav-sidebar">
             <li{% if "help.php" in settings.self %} class="active"{% endif %}><a href="help.php"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> {{ lang.help_licenses }}</a></li>
           </ul>
+          {% if session.user.access <= 0 %}
           <ul class="nav nav-sidebar">
             <li{% if "settings.php" in settings.self %} class="active"{% endif %}{% if session.user.access > 1 %} class="disabled"{% endif %}><a href="settings.php"><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> {{ lang.settings }}</a></li>
           </ul>
@@ -163,6 +164,7 @@
           <ul class="nav nav-sidebar">
             <li{% if "tools.php" in settings.self %} class="active"{% endif %}{% if session.user.access > 0 %} class="disabled"{% endif %}><a href="tools.php"><i class="fa fa-crosshairs"></i> {{ lang.manage_tools|capitalize }}</a></li>
           </ul>
+          {% endif %}
           <ul class="nav nav-sidebar">
             <li{% if "messages.php" in settings.self and not show %} class="active"{% endif %}><a href="messages.php{% if (session.unread.new > 0) and "messages.php" not in settings.self %}?show=inbox{% endif %}"><i class="fa fa-inbox"></i> {{ lang.messages|capitalize }} <span class="pull-right"><div id="unreadcounter">{% if session.unread.new > 0 %}<span style="color:red;"><i class="fa fa-envelope-o"></i> {{session.unread.new}}</span>{% endif %}</div></span></a></li>
           </ul>

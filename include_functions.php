@@ -1,26 +1,33 @@
 <?php
 // This is the 'header' file in all php files containing shared functions etc.
 // Go to installer if no credentials found.
-
 if ((!file_exists('conf/mysql_credentials.php')) && (!file_exists('/etc/kirjuri/conf/mysql_credentials.php'))) {
     header('Location: install.php');
     die;
 }
 
+// Load dependencies
 require __DIR__.'/vendor/autoload.php';
 $generator = new \Picqer\Barcode\BarcodeGeneratorPNG();
 $loader = new Twig_Loader_Filesystem('views/');
 $twig = new Twig_Environment($loader, array(
   'debug' => true, // if you remove the cache directive, remember to remove the trailing comma from this line.
-  'cache' => 'cache', // This may be a source of errors if the WWW server process does not have ownership of the cache folder.
+  'cache' => 'cache' // This may be a source of errors if the WWW server process does not have ownership of the cache folder.
 ));
 $twig->addExtension(new Twig_Extension_Debug());
 
 $purifier = new HTMLPurifier();
 $pur_config = HTMLPurifier_Config::createDefault();
-$pur_config->set('Cache.SerializerPath', 'cache/');
+$pur_config->set('Cache.SerializerPath', 'cache');
 
 session_start();
+
+foreach($_GET as $key => $value) // Sanitize all GET variables
+{
+  $strip_chars = array("<", ">", "'", ";");
+  $value = str_replace($strip_chars, "", $value);
+  $_GET[$key] = isset($value) ? $value : '';
+}
 
 // Declare variables
 $_SESSION['message_set'] = isset($_SESSION['message_set']) ? $_SESSION['message_set'] : '';
@@ -51,15 +58,32 @@ function protect_page($required_access_level)
     }
 }
 
-function sanitize_raw($string)
+function sanitize_raw($string) // Purify HTML content for raw presentation.
 {
-  global $purifier;
-  $out = $purifier->purify($string);
-  //$out = strip_tags($string, '<br><p><blockquote><pre><strong><ol><em><span><ul><li><b><i><sup><sub><code><h1><h2><h3><h4>');
-  return $out;
+  if(empty($string))
+  {
+    return "";
+  }
+  else
+  {
+    global $purifier;
+    $out = $purifier->purify($string);
+    if(strcmp($out, $string) !== 0)
+    {
+      logline('Info', 'Purified string: ' . $string . ' => ' . $out);
+    }
+    if(empty($out))
+    {
+      message('error', 'Invalid HTML input.');
+      header('Location: '.$_SERVER['HTTP_REFERER']);
+      die;
+    }
+    return $out;
+  }
+
 }
 
-function num($a)
+function num($a)  // Filter out everything but numbers.
 {
     return preg_replace('/[^0-9]/', '', $a);
 }
@@ -238,7 +262,8 @@ catch (PDOException $e)
   echo 'Database error: '.$e->getMessage().'. Run <a href="install.php">install</a> to create or upgrade tables and check your credentials.';
   die;
 }
-if($_SESSION['user']) {
+
+if($_SESSION['user']) { // Get unread message count
   try
   {
     $query = $kirjuri_database->prepare('SELECT (SELECT COUNT(id) FROM messages WHERE msgto = :username AND received = "0") as new');

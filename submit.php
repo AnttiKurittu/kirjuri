@@ -5,42 +5,15 @@ require_once './include_functions.php';
 $year = date('Y');
 $dateRange = array('start' => $year.'-01-01 00:00:00', 'stop' => ($year + 1).'-01-01 00:00:00');
 
+foreach($_POST as $key => $value) // Sanitize all POST data
+{
+  $value = sanitize_raw($value);
+  $_POST[$key] = isset($value) ? $value : '';
+}
 
-$form_data = $_POST;
-$_SESSION['post_cache'] = $form_data;
+$_SESSION['post_cache'] = $_POST;
+
 $_GET['type'] = isset($_GET['type']) ? $_GET['type'] : '';
-$_POST['flag1'] = isset($_POST['flag1']) ? $_POST['flag1'] : '';
-$_POST['flag2'] = isset($_POST['flag2']) ? $_POST['flag2'] : '';
-$_POST['flag3'] = isset($_POST['flag3']) ? $_POST['flag3'] : '';
-$_POST['flag4'] = isset($_POST['flag4']) ? $_POST['flag4'] : '';
-$form_data['case_name'] = isset($_POST['case_name']) ? $_POST['case_name'] : '';
-$form_data['case_file_number'] = isset($_POST['case_file_number']) ? $_POST['case_file_number'] : '';
-$form_data['case_investigator'] = isset($_POST['case_investigator']) ? $_POST['case_investigator'] : '';
-$form_data['case_investigator_unit'] = isset($_POST['case_investigator_unit']) ? $_POST['case_investigator_unit'] : '';
-$form_data['case_investigator_tel'] = isset($_POST['case_investigator_tel']) ? $_POST['case_investigator_tel'] : '';
-$form_data['case_investigation_lead'] = isset($_POST['case_investigation_lead']) ? $_POST['case_investigation_lead'] : '';
-$form_data['case_confiscation_date'] = isset($_POST['case_confiscation_date']) ? $_POST['case_confiscation_date'] : '';
-$form_data['case_crime'] = isset($_POST['case_crime']) ? $_POST['case_crime'] : '';
-$form_data['classification'] = isset($_POST['classification']) ? $_POST['classification'] : '';
-$form_data['case_suspect'] = isset($_POST['case_suspect']) ? $_POST['case_suspect'] : '';
-$form_data['case_request_description'] = isset($_POST['case_request_description']) ? $_POST['case_request_description'] : '';
-$form_data['case_urgency'] = isset($_POST['case_urgency']) ? $_POST['case_urgency'] : '';
-$form_data['case_urg_justification'] = isset($_POST['case_urg_justification']) ? $_POST['case_urg_justification'] : '';
-$form_data['case_requested_action'] = isset($_POST['case_requested_action']) ? $_POST['case_requested_action'] : '';
-$form_data['case_contains_mob_dev'] = isset($_POST['case_contains_mob_dev']) ? $_POST['case_contains_mob_dev'] : '';
-$form_data['device_type'] = isset($_POST['device_type']) ? $_POST['device_type'] : '';
-$form_data['forensic_investigator'] = isset($_POST['forensic_investigator']) ? $_POST['forensic_investigator'] : '';
-$form_data['phone_investigator'] = isset($_POST['phone_investigator']) ? $_POST['phone_investigator'] : '';
-$form_data['device_location'] = isset($_POST['device_location']) ? $_POST['device_location'] : '?';
-$form_data['device_action'] = isset($_POST['device_action']) ? $_POST['device_action'] : '1|?';
-$form_data['device_contains_evidence'] = isset($_POST['device_contains_evidence']) ? $_POST['device_contains_evidence'] : '0';
-$form_data['device_include_in_report'] = isset($_POST['device_include_in_report']) ? $_POST['device_include_in_report'] : '0';
-$form_data['case_urgency'] = substr($form_data['case_urgency'], 0, 1);
-$form_data['device_include_in_report'] = substr($form_data['device_include_in_report'], 0, 1);
-$form_data['device_contains_evidence'] = substr($form_data['device_contains_evidence'], 0, 1);
-$form_data['case_contains_mob_dev'] = substr($form_data['case_contains_mob_dev'], 0, 1);
-
-$save_target = isset($_POST['save']) ? $_POST['save'] : '';
 
 // ----- User management
 
@@ -199,7 +172,7 @@ if ($_GET['type'] === 'update_password') {
 // ----- Messages
 
 if ($_GET['type'] === 'send_message') {
-    if(!empty($_POST['body'])) {
+    if(!empty($_POST['body']) && !empty($_POST['msgto'])) {
       if($_POST['msgto'] === "ALL_USERS") {
       foreach($_SESSION['all_users'] as $user)
       {
@@ -230,11 +203,13 @@ if ($_GET['type'] === 'send_message') {
     ));
     }
         logline('Action', 'message sent.');
-        //message('info', $_SESSION['lang']['tool_added'] . ": ". trim(substr($_POST['product_name'], 0, 128)));
+        message('info', $_SESSION['lang']['message_sent']);
+        $_SESSION['post_cache'] = "";
         header('Location: messages.php');
     die;
   } else {
-        header('Location: messages.php');
+        message('error', $_SESSION['lang']['message_or_to_missing']);
+        header('Location: messages.php?show=compose');
         die;
   }
 }
@@ -388,7 +363,7 @@ if ($_GET['type'] === 'update_tool') {
 if ($_GET['type'] === 'examination_request') {
     // Create an examination request.
 
-    if (empty($form_data['case_file_number']) || empty($form_data['case_investigator']) || empty($form_data['case_investigator_unit']) || empty($form_data['case_investigator_tel']) || empty($form_data['case_investigation_lead']) || empty($form_data['case_confiscation_date']) || empty($form_data['case_crime']) || empty($form_data['case_suspect']) || empty($form_data['case_request_description']) || empty($form_data['case_urgency']) || empty($form_data['case_requested_action'])) {
+    if (empty($_POST['case_file_number']) || empty($_POST['case_investigator']) || empty($_POST['case_investigator_unit']) || empty($_POST['case_investigator_tel']) || empty($_POST['case_investigation_lead']) || empty($_POST['case_confiscation_date']) || empty($_POST['case_crime']) || empty($_POST['case_suspect']) || empty($_POST['case_request_description']) || empty($_POST['case_urgency']) || empty($_POST['case_requested_action'])) {
         trigger_error('Fill all required fields.');
     }
     $query = $kirjuri_database->prepare('select case_id FROM exam_requests WHERE case_added_date BETWEEN :dateStart AND :dateStop ORDER BY case_id DESC LIMIT 1 ');
@@ -403,23 +378,23 @@ if ($_GET['type'] === 'examination_request') {
         ');
     $sql->execute(array(
         ':case_id' => $case_id,
-        ':case_name' => $form_data['case_name'],
-        ':case_file_number' => $form_data['case_file_number'],
-        ':case_investigator' => $form_data['case_investigator'],
-        ':case_investigator_unit' => $form_data['case_investigator_unit'],
-        ':case_investigator_tel' => $form_data['case_investigator_tel'],
-        ':case_investigation_lead' => $form_data['case_investigation_lead'],
-        ':case_confiscation_date' => $form_data['case_confiscation_date'],
-        ':case_crime' => $form_data['case_crime'],
-        ':classification' => $form_data['classification'],
-        ':case_suspect' => $form_data['case_suspect'],
-        ':case_request_description' => $form_data['case_request_description'],
-        ':case_urgency' => $form_data['case_urgency'],
-        ':case_urg_justification' => $form_data['case_urg_justification'],
-        ':case_requested_action' => $form_data['case_requested_action'],
-        ':case_contains_mob_dev' => $form_data['case_contains_mob_dev'],
+        ':case_name' => $_POST['case_name'],
+        ':case_file_number' => $_POST['case_file_number'],
+        ':case_investigator' => $_POST['case_investigator'],
+        ':case_investigator_unit' => $_POST['case_investigator_unit'],
+        ':case_investigator_tel' => $_POST['case_investigator_tel'],
+        ':case_investigation_lead' => $_POST['case_investigation_lead'],
+        ':case_confiscation_date' => $_POST['case_confiscation_date'],
+        ':case_crime' => $_POST['case_crime'],
+        ':classification' => $_POST['classification'],
+        ':case_suspect' => $_POST['case_suspect'],
+        ':case_request_description' => $_POST['case_request_description'],
+        ':case_urgency' => $_POST['case_urgency'],
+        ':case_urg_justification' => $_POST['case_urg_justification'],
+        ':case_requested_action' => $_POST['case_requested_action'],
+        ':case_contains_mob_dev' => $_POST['case_contains_mob_dev'],
     ));
-    logline('Action', 'Added examination request '.$case_id.' / '.$form_data['case_name']);
+    logline('Action', 'Added examination request '.$case_id.' / '.$_POST['case_name']);
     $query = $kirjuri_database->prepare('SELECT id FROM exam_requests WHERE case_id=:case_id AND parent_id = id AND case_added_date BETWEEN :dateStart AND :dateStop LIMIT 1');
     $query->execute(array(
         ':case_id' => $case_id,
@@ -441,7 +416,7 @@ if ($_GET['type'] === 'case_update') {
     // Update examination request.
 
     protect_page(1);
-    if ($form_data['forensic_investigator'] !== '') {
+    if ($_POST['forensic_investigator'] !== '') {
         // Set the case as started if an f.investigator is assigned.
 
         $case_status = '2';
@@ -450,29 +425,29 @@ if ($_GET['type'] === 'case_update') {
     }
     $sql = $kirjuri_database->prepare('UPDATE exam_requests SET case_name = :case_name, case_file_number = :case_file_number, case_crime = :case_crime, classification = :classification, case_suspect = :case_suspect, case_investigation_lead = :case_investigation_lead, case_investigator = :case_investigator, forensic_investigator = :forensic_investigator, phone_investigator = :phone_investigator, case_investigator_tel = :case_investigator_tel, case_investigator_unit = :case_investigator_unit, case_request_description = :case_request_description, case_confiscation_date = :case_confiscation_date, case_start_date = NOW(), last_updated = NOW(), is_removed = "0", case_contains_mob_dev = :case_contains_mob_dev, case_status = :case_status, case_urgency = :case_urgency where id=:id AND parent_id = :id');
     $sql->execute(array(
-        ':case_name' => $form_data['case_name'],
-        ':case_file_number' => $form_data['case_file_number'],
-        ':case_crime' => $form_data['case_crime'],
-        ':classification' => $form_data['classification'],
-        ':case_suspect' => $form_data['case_suspect'],
-        ':case_investigation_lead' => $form_data['case_investigation_lead'],
-        ':case_investigator' => $form_data['case_investigator'],
-        ':forensic_investigator' => $form_data['forensic_investigator'],
-        ':phone_investigator' => $form_data['phone_investigator'],
-        ':case_investigator_tel' => $form_data['case_investigator_tel'],
-        ':case_investigator_unit' => $form_data['case_investigator_unit'],
-        ':case_request_description' => $form_data['case_request_description'],
-        ':case_confiscation_date' => $form_data['case_confiscation_date'],
-        ':case_contains_mob_dev' => $form_data['case_contains_mob_dev'],
+        ':case_name' => $_POST['case_name'],
+        ':case_file_number' => $_POST['case_file_number'],
+        ':case_crime' => $_POST['case_crime'],
+        ':classification' => $_POST['classification'],
+        ':case_suspect' => $_POST['case_suspect'],
+        ':case_investigation_lead' => $_POST['case_investigation_lead'],
+        ':case_investigator' => $_POST['case_investigator'],
+        ':forensic_investigator' => $_POST['forensic_investigator'],
+        ':phone_investigator' => $_POST['phone_investigator'],
+        ':case_investigator_tel' => $_POST['case_investigator_tel'],
+        ':case_investigator_unit' => $_POST['case_investigator_unit'],
+        ':case_request_description' => $_POST['case_request_description'],
+        ':case_confiscation_date' => $_POST['case_confiscation_date'],
+        ':case_contains_mob_dev' => $_POST['case_contains_mob_dev'],
         ':case_status' => $case_status,
         ':id' => $_GET['db_row'],
-        ':case_urgency' => $form_data['case_urgency'],
+        ':case_urgency' => $_POST['case_urgency'],
     ));
-    logline('Action', 'Updated request '.$form_data['case_name'].'');
-    $form_data['returnid'] = $_GET['db_row'];
+    logline('Action', 'Updated request '.$_POST['case_name'].'');
+    $_POST['returnid'] = $_GET['db_row'];
     $_SESSION['post_cache'] = '';
     show_saved();
-    header('Location: edit_request.php?case='.$form_data['returnid']);
+    header('Location: edit_request.php?case='.$_POST['returnid']);
     die;
 }
 
@@ -482,14 +457,14 @@ if ($_GET['type'] === 'report_notes') {
     protect_page(1);
     $sql = $kirjuri_database->prepare('UPDATE exam_requests SET report_notes = :report_notes, last_updated = NOW() where id=:id AND parent_id = :id AND is_removed != "1"');
     $sql->execute(array(
-        ':id' => $form_data['returnid'],
-        ':report_notes' => sanitize_raw($form_data['report_notes']),
+        ':id' => $_POST['returnid'],
+        ':report_notes' => sanitize_raw($_POST['report_notes']),
     ));
     $_SESSION['post_cache'] = '';
     message('info', $_SESSION['lang']['report_notes_saved']);
     $_SESSION['message_set'] = true;
-    header('Location: edit_request.php?case='.$form_data['returnid'].'&tab=report_notes');
-    logline('Action', 'Updated report notes, returnid='.$form_data['returnid'].'');
+    header('Location: edit_request.php?case='.$_POST['returnid'].'&tab=report_notes');
+    logline('Action', 'Updated report notes, returnid='.$_POST['returnid'].'');
     die;
 }
 
@@ -499,13 +474,13 @@ if ($_GET['type'] === 'examiners_notes') {
     protect_page(1);
     $sql = $kirjuri_database->prepare('UPDATE exam_requests SET examiners_notes = :examiners_notes, last_updated = NOW() where id=:id AND parent_id = :id AND is_removed != "1"');
     $sql->execute(array(
-        ':id' => $form_data['returnid'],
-        ':examiners_notes' => sanitize_raw($form_data['examiners_notes']).'<p> -- '.$_SESSION['user']['username'].' ('.date('Y-m-d H:m').')</p><br><br>',
+        ':id' => $_POST['returnid'],
+        ':examiners_notes' => sanitize_raw($_POST['examiners_notes']).'<p> -- '.$_SESSION['user']['username'].' ('.date('Y-m-d H:m').')</p><br><br>',
     ));
     $_SESSION['post_cache'] = '';
     message('info', $_SESSION['lang']['exam_notes_saved']);
-    header('Location: edit_request.php?case='.$form_data['returnid'].'&tab=examiners_notes');
-    logline('Action', 'Updated examiners notes, returnid='.$form_data['returnid'].'');
+    header('Location: edit_request.php?case='.$_POST['returnid'].'&tab=examiners_notes');
+    logline('Action', 'Updated examiners notes, returnid='.$_POST['returnid'].'');
     die;
 }
 
@@ -530,10 +505,10 @@ if ($_GET['type'] === 'set_removed') {
         ':devicecount' => $devicecount,
         ':id' => $_GET['returnid'],
     ));
-    $form_data['returnid'] = $_GET['returnid'];
+    $_POST['returnid'] = $_GET['returnid'];
     $_SESSION['post_cache'] = '';
     message('info', $_SESSION['lang']['device_removed']);
-    header('Location: edit_request.php?case='.$form_data['returnid'].'&tab=devices');
+    header('Location: edit_request.php?case='.$_POST['returnid'].'&tab=devices');
     die;
 }
 
@@ -541,18 +516,18 @@ if ($_GET['type'] === 'device_attach') {
     // Associate a media/device with host device
 
     protect_page(1);
-    if (isset($form_data['isanta'])) {
+    if (isset($_POST['isanta'])) {
         $sql = $kirjuri_database->prepare('UPDATE exam_requests SET device_host_id = :isanta, last_updated = NOW() where id=:id AND parent_id != id;
         UPDATE exam_requests SET device_is_host = "1" where id = :isanta;');
         $sql->execute(array(
             ':id' => $_GET['db_row'],
-            ':isanta' => $form_data['isanta'],
+            ':isanta' => $_POST['isanta'],
         ));
     }
-    $form_data['returnid'] = $_GET['returnid'];
+    $_POST['returnid'] = $_GET['returnid'];
     $_SESSION['post_cache'] = '';
     message('info', $_SESSION['lang']['device_attached']);
-    header('Location: edit_request.php?case='.$form_data['returnid'].'&tab=devices');
+    header('Location: edit_request.php?case='.$_POST['returnid'].'&tab=devices');
     die;
 }
 
@@ -564,10 +539,10 @@ if ($_GET['type'] === 'device_detach') {
     $sql->execute(array(
         ':id' => $_GET['db_row'],
     ));
-    $form_data['returnid'] = $_GET['returnid'];
+    $_POST['returnid'] = $_GET['returnid'];
     $_SESSION['post_cache'] = '';
     message('info', $_SESSION['lang']['device_detached']);
-    header('Location: edit_request.php?case='.$form_data['returnid'].'&tab=devices');
+    header('Location: edit_request.php?case='.$_POST['returnid'].'&tab=devices');
     die;
 }
 
@@ -577,9 +552,9 @@ if ($_GET['type'] === 'set_removed_case') {
     protect_page(1);
     $sql = $kirjuri_database->prepare('UPDATE exam_requests SET is_removed = "1", last_updated = NOW() WHERE id=:id AND parent_id = :id');
     $sql->execute(array(
-        ':id' => $form_data['remove_exam_request'],
+        ':id' => $_POST['remove_exam_request'],
     ));
-    logline('Action', 'Removed case ID '.$form_data['remove_exam_request'].'');
+    logline('Action', 'Removed case ID '.$_POST['remove_exam_request'].'');
     $_SESSION['post_cache'] = '';
     message('info', $_SESSION['lang']['case_removed']);
     header('Location: index.php');
@@ -590,27 +565,27 @@ if ($_GET['type'] === 'move_all') {
     // Change all device locations and/or actions
 
     protect_page(1);
-    if ($form_data['device_action'] != 'NO_CHANGE') {
+    if ($_POST['device_action'] != 'NO_CHANGE') {
         $sql = $kirjuri_database->prepare('UPDATE exam_requests SET device_action = :device_action, last_updated = NOW() WHERE parent_id=:parent_id');
         $sql->execute(array(
             ':parent_id' => $_GET['returnid'],
-            ':device_action' => $form_data['device_action'],
+            ':device_action' => $_POST['device_action'],
         ));
     }
-    if ($form_data['device_location'] != 'NO_CHANGE') {
+    if ($_POST['device_location'] != 'NO_CHANGE') {
         $sql = $kirjuri_database->prepare('UPDATE exam_requests SET device_location = :device_location, last_updated = NOW() WHERE parent_id=:parent_id AND is_removed != "1"');
         $sql->execute(array(
             ':parent_id' => $_GET['returnid'],
-            ':device_location' => $form_data['device_location'],
+            ':device_location' => $_POST['device_location'],
         ));
     }
-    $form_data['returnid'] = $_GET['returnid'];
+    $_POST['returnid'] = $_GET['returnid'];
     $_SESSION['post_cache'] = '';
-    if ($form_data['device_action'] === 'NO_CHANGE' && $form_data['device_location'] === 'NO_CHANGE') {
+    if ($_POST['device_action'] === 'NO_CHANGE' && $_POST['device_location'] === 'NO_CHANGE') {
         // Do nothing
     } else {
     }
-    header('Location: edit_request.php?case='.$form_data['returnid'].'&tab=devices');
+    header('Location: edit_request.php?case='.$_POST['returnid'].'&tab=devices');
     die;
 }
 
@@ -618,20 +593,20 @@ if ($_GET['type'] === 'update_request_status') {
     // Set case status
 
     protect_page(1);
-    if ($form_data['case_status'] === '1') {
+    if ($_POST['case_status'] === '1') {
         $sql = $kirjuri_database->prepare('UPDATE exam_requests SET case_status = :case_status, forensic_investigator = "", phone_investigator = "", case_ready_date = NOW(), last_updated = NOW() WHERE parent_id = :id');
     } else {
         $sql = $kirjuri_database->prepare('UPDATE exam_requests SET case_status = :case_status, case_ready_date = NOW(), last_updated = NOW() WHERE parent_id = :id');
     }
     $sql->execute(array(
-        ':id' => $form_data['returnid'],
-        ':case_status' => $form_data['case_status'],
+        ':id' => $_POST['returnid'],
+        ':case_status' => $_POST['case_status'],
     ));
 
-    logline('Action', 'Changed request '.$form_data['returnid'].' status: '.$form_data['case_status'].'');
+    logline('Action', 'Changed request '.$_POST['returnid'].' status: '.$_POST['case_status'].'');
     $_SESSION['post_cache'] = '';
     show_saved();
-    header('Location: edit_request.php?case='.$form_data['returnid']);
+    header('Location: edit_request.php?case='.$_POST['returnid']);
     die;
 }
 
@@ -643,12 +618,12 @@ if ($_GET['type'] === 'update_request_status') {
       }
       $sql = $kirjuri_database->prepare('UPDATE exam_requests SET device_action = :device_action, last_updated = NOW() where id=:id AND parent_id != id');
       $sql->execute(array(
-          ':device_action' => $form_data['device_action'],
+          ':device_action' => $_POST['device_action'],
           ':id' => $_GET['db_row'],
       ));
       $_SESSION['post_cache'] = '';
       echo $twig->render('progress_bar.html', array(
-          'device_action' => $form_data['device_action'],
+          'device_action' => $_POST['device_action'],
           'settings' => $settings,
       ));
       exit;
@@ -662,7 +637,7 @@ if ($_GET['type'] === 'update_request_status') {
         }
         $sql = $kirjuri_database->prepare('UPDATE exam_requests SET device_location = :device_location, last_updated = NOW() where id=:id AND parent_id != id');
         $sql->execute(array(
-            ':device_location' => $form_data['device_location'],
+            ':device_location' => $_POST['device_location'],
             ':id' => $_GET['db_row'],
         ));
         $_SESSION['post_cache'] = '';
@@ -674,7 +649,7 @@ if ($_GET['type'] === 'devicememo') {
     protect_page(1);
     if (!empty($_POST['used_tool']))
     {
-      $form_data['examiners_notes'] = sanitize_raw($form_data['examiners_notes']) . '<p>'.$_POST['used_tool'].'</p>';
+      $_POST['examiners_notes'] = sanitize_raw($_POST['examiners_notes']) . '<p>'.$_POST['used_tool'].'</p>';
     }
     $sql = $kirjuri_database->prepare('UPDATE exam_requests SET report_notes = :report_notes, examiners_notes = :examiners_notes, device_type = :device_type, device_manuf = :device_manuf, device_model = :device_model, device_size_in_gb = :device_size_in_gb,
       device_owner = :device_owner, device_os = :device_os, device_time_deviation = :device_time_deviation, last_updated = NOW(),
@@ -683,29 +658,29 @@ if ($_GET['type'] === 'devicememo') {
         UPDATE exam_requests SET last_updated = NOW() where id = :parent_id;
         UPDATE exam_requests SET parent_id = :parent_id WHERE id = :id OR device_host_id = :id;');
     $sql->execute(array(
-        ':report_notes' => sanitize_raw($form_data['report_notes']),
-        ':examiners_notes' => sanitize_raw($form_data['examiners_notes']),
-        ':device_type' => $form_data['device_type'],
-        ':device_manuf' => $form_data['device_manuf'],
-        ':device_model' => $form_data['device_model'],
-        ':device_size_in_gb' => $form_data['device_size_in_gb'],
-        ':device_owner' => $form_data['device_owner'],
-        ':device_os' => $form_data['device_os'],
-        ':device_time_deviation' => $form_data['device_time_deviation'],
-        ':case_request_description' => $form_data['case_request_description'],
-        ':device_item_number' => $form_data['device_item_number'],
-        ':device_document' => $form_data['device_document'],
-        ':device_identifier' => $form_data['device_identifier'],
-        ':parent_id' => $form_data['parent_id'],
-        ':id' => $form_data['id'],
-        ':device_include_in_report' => $form_data['device_include_in_report'],
-        ':device_contains_evidence' => $form_data['device_contains_evidence'],
+        ':report_notes' => sanitize_raw($_POST['report_notes']),
+        ':examiners_notes' => sanitize_raw($_POST['examiners_notes']),
+        ':device_type' => $_POST['device_type'],
+        ':device_manuf' => $_POST['device_manuf'],
+        ':device_model' => $_POST['device_model'],
+        ':device_size_in_gb' => $_POST['device_size_in_gb'],
+        ':device_owner' => $_POST['device_owner'],
+        ':device_os' => $_POST['device_os'],
+        ':device_time_deviation' => $_POST['device_time_deviation'],
+        ':case_request_description' => $_POST['case_request_description'],
+        ':device_item_number' => $_POST['device_item_number'],
+        ':device_document' => $_POST['device_document'],
+        ':device_identifier' => $_POST['device_identifier'],
+        ':parent_id' => $_POST['parent_id'],
+        ':id' => $_POST['id'],
+        ':device_include_in_report' => $_POST['device_include_in_report'],
+        ':device_contains_evidence' => $_POST['device_contains_evidence'],
     ));
-    $form_data['returnid'] = $_GET['returnid'];
-    logline('Action', 'Updated device memo '.$form_data['id'].'');
+    $_POST['returnid'] = $_GET['returnid'];
+    logline('Action', 'Updated device memo '.$_POST['id'].'');
     $_SESSION['post_cache'] = '';
     show_saved();
-    header('Location: device_memo.php?db_row='.$form_data['returnid']);
+    header('Location: device_memo.php?db_row='.$_POST['returnid']);
     die;
 }
 
@@ -713,38 +688,38 @@ if ($_GET['type'] === 'device') {
     // Create new device entry
 
     protect_page(1);
-    if ($form_data['device_host_id'] === '0') {
+    if ($_POST['device_host_id'] === '0') {
         // If new device is an associated media, it is not a host by itself
 
         $device_is_host = '1';
     } else {
         $device_is_host = '0';
     }
-    if (empty($form_data['device_type'])) {
+    if (empty($_POST['device_type'])) {
         $_SESSION['message']['type'] = 'error';
         $_SESSION['message']['content'] = 'Device type missing.';
         $_SESSION['message_set'] = true;
-        header('Location: edit_request.php?case='.$form_data['parent_id'].'&tab=devices');
+        header('Location: edit_request.php?case='.$_POST['parent_id'].'&tab=devices');
         die;
     }
-    if ($form_data['device_action'] === '1|?') {
+    if ($_POST['device_action'] === '1|?') {
         $_SESSION['message']['type'] = 'error';
         $_SESSION['message']['content'] = 'Device action missing.';
         $_SESSION['message_set'] = true;
-        header('Location: edit_request.php?case='.$form_data['parent_id'].'&tab=devices');
+        header('Location: edit_request.php?case='.$_POST['parent_id'].'&tab=devices');
         die;
     }
-    if ($form_data['device_location'] === '?') {
+    if ($_POST['device_location'] === '?') {
         $_SESSION['message']['type'] = 'error';
         $_SESSION['message']['content'] = 'Device location missing.';
         $_SESSION['message_set'] = true;
-        header('Location: edit_request.php?case='.$form_data['parent_id'].'&tab=devices');
+        header('Location: edit_request.php?case='.$_POST['parent_id'].'&tab=devices');
         die;
     }
-    $form_data['examiners_notes'] = "";
-    if ( strpos( strtoupper($form_data['device_identifier']), "IMEI") !== false)
+    $_POST['examiners_notes'] = "";
+    if ( strpos( strtoupper($_POST['device_identifier']), "IMEI") !== false)
     {
-      $imei_TAC =  substr(num($form_data['device_identifier']),0,8);
+      $imei_TAC =  substr(num($_POST['device_identifier']),0,8);
       if (strlen($imei_TAC) === 8) {
         if (file_exists('conf/imei.txt'))
         {
@@ -754,9 +729,9 @@ if ($_GET['type'] === 'device') {
             if (substr($line, 0 , 8) === $imei_TAC)
             {
               $imei_data = explode("|", $line);
-              $form_data['device_manuf'] = $imei_data['10'];
-              $form_data['device_model'] = $imei_data['11'];
-              $form_data['examiners_notes'] = implode(", " ,$imei_data);
+              $_POST['device_manuf'] = $imei_data['10'];
+              $_POST['device_model'] = $imei_data['11'];
+              $_POST['examiners_notes'] = implode(", " ,$imei_data);
             }
           }
         }
@@ -765,41 +740,41 @@ if ($_GET['type'] === 'device') {
 
     $sql = $kirjuri_database->prepare('UPDATE exam_requests SET case_devicecount = case_devicecount + 1, last_updated = NOW() WHERE id = :parent_id'); // Update device count
     $sql->execute(array(
-        ':parent_id' => $form_data['parent_id'],
+        ':parent_id' => $_POST['parent_id'],
     ));
 
     $sql = $kirjuri_database->prepare('INSERT INTO exam_requests (parent_id, device_host_id, device_type, device_manuf, device_model, device_identifier, device_location, device_item_number, device_document, device_time_deviation, device_os, device_size_in_gb, device_is_host, device_owner, device_include_in_report, device_contains_evidence, case_added_date, case_request_description, device_action, is_removed, last_updated, examiners_notes ) VALUES (:parent_id, :device_host_id, :device_type, :device_manuf, :device_model, :device_identifier, :device_location, :device_item_number, :device_document, :device_time_deviation, :device_os, :device_size_in_gb, :device_is_host, :device_owner, "1", "0", NOW(), :case_request_description, :device_action, :is_removed, NOW(), :examiners_notes);
         ');
     $sql->execute(array(
-        ':parent_id' => $form_data['parent_id'],
-        ':device_host_id' => $form_data['device_host_id'],
-        ':device_type' => $form_data['device_type'],
-        ':device_manuf' => $form_data['device_manuf'],
-        ':device_model' => $form_data['device_model'],
-        ':device_identifier' => $form_data['device_identifier'],
-        ':device_location' => $form_data['device_location'],
-        ':device_item_number' => $form_data['device_item_number'],
-        ':device_document' => $form_data['device_document'],
-        ':device_time_deviation' => $form_data['device_time_deviation'],
-        ':device_os' => $form_data['device_os'],
-        ':device_size_in_gb' => $form_data['device_size_in_gb'],
+        ':parent_id' => $_POST['parent_id'],
+        ':device_host_id' => $_POST['device_host_id'],
+        ':device_type' => $_POST['device_type'],
+        ':device_manuf' => $_POST['device_manuf'],
+        ':device_model' => $_POST['device_model'],
+        ':device_identifier' => $_POST['device_identifier'],
+        ':device_location' => $_POST['device_location'],
+        ':device_item_number' => $_POST['device_item_number'],
+        ':device_document' => $_POST['device_document'],
+        ':device_time_deviation' => $_POST['device_time_deviation'],
+        ':device_os' => $_POST['device_os'],
+        ':device_size_in_gb' => $_POST['device_size_in_gb'],
         ':device_is_host' => $device_is_host,
-        ':device_owner' => $form_data['device_owner'],
-        ':case_request_description' => $form_data['case_request_description'],
-        ':device_action' => $form_data['device_action'],
-        ':is_removed' => $form_data['is_removed'],
-        ':examiners_notes' => sanitize_raw($form_data['examiners_notes'])
+        ':device_owner' => $_POST['device_owner'],
+        ':case_request_description' => $_POST['case_request_description'],
+        ':device_action' => $_POST['device_action'],
+        ':is_removed' => $_POST['is_removed'],
+        ':examiners_notes' => sanitize_raw($_POST['examiners_notes'])
     ));
-    logline('Action', 'Added device '.$form_data['device_type'].' '.$form_data['device_manuf'].' '.$form_data['device_model'].' with id ['.$form_data['device_identifier'].'] to case '.$form_data['parent_id'].'');
+    logline('Action', 'Added device '.$_POST['device_type'].' '.$_POST['device_manuf'].' '.$_POST['device_model'].' with id ['.$_POST['device_identifier'].'] to case '.$_POST['parent_id'].'');
     $_SESSION['post_cache'] = '';
     $_SESSION['message']['type'] = 'info';
     $_SESSION['message']['content'] = 'Changes saved.';
     $_SESSION['message_set'] = true;
-    header('Location: edit_request.php?case='.$form_data['parent_id'].'&tab=devices');
+    header('Location: edit_request.php?case='.$_POST['parent_id'].'&tab=devices');
     die;
 }
 
-  if (($save_target === 'settings') && (isset($_POST['settings_conf']))) {
+  if (($_POST['save'] === 'settings') && (isset($_POST['settings_conf']))) {
       // Save settings to file
 
       protect_page(1);

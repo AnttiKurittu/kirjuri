@@ -2,14 +2,17 @@
 
 require_once './include_functions.php';
 
-
 $open = isset($_GET['open']) ? $_GET['open'] : '';
-
 $prefill_msgto = isset($_GET['msgto']) ? $_GET['msgto'] : '';
-$prefill_subject = urldecode(isset($_GET['subject']) ? $_GET['subject'] : '');
-
+$_SESSION['post_cache']['subject'] = urldecode(isset($_GET['subject']) ? $_GET['subject'] : '');
 $show = isset($_GET['show']) ? $_GET['show'] : '';
-$_POST = isset($_POST) ? $_POST : '';
+
+foreach($_POST as $key => $value) // Sanitize all POST data
+{
+  $value = sanitize_raw($value);
+  $_POST[$key] = isset($value) ? $value : '';
+}
+
 $open = num($open);
 
 if ($open > 0)

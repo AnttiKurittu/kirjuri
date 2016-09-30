@@ -34,12 +34,12 @@
     </div>
     <div class="form-group">
       <div class="col-md-12">
-        <input type="text" class="form-control" id="subject" name="subject" placeholder="Message subject" value="{% if post %}{{ post.copy_subject }}{% endif %}{% for msg in messages %}{% if msg.id == open %}{{ lang.re }}{{ msg.subject }}{% endif %}{% endfor %}">
+        <input type="text" class="form-control" id="subject" name="subject" placeholder="Message subject" value="{% if post %}{{ post.copy_subject }}{% endif %}{% for msg in messages %}{% if msg.id == open %}{{ lang.re }}{{ msg.subject }}{% endif %}{% endfor %}{{ session.post_cache.subject}}">
       </div>
     </div>
     <div class="form-group">
       <div class="col-md-12">
-        <textarea rows="25" name="body">{% if post %}{{ post.copy_body }}{% endif %}{% for msg in messages %}{% if (msg.id == open) %}<br><br><p>---- From {{ msg.msgfrom }} {{ msg.attr_1 }}:</p>{{msg.body}}{% endif %}{% endfor %}</textarea>
+        <textarea rows="25" name="body">{% if post %}{{ post.copy_body }}{% endif %}{% for msg in messages %}{% if (msg.id == open) %}<br><br><p>---- From {{ msg.msgfrom }} {{ msg.attr_1 }}:</p>{{msg.body}}{% endif %}{% endfor %}{{ session.post_cache.body}}</textarea>
       </div>
     </div>
   </div>

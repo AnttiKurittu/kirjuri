@@ -209,8 +209,8 @@ if ($_GET['type'] === 'send_message') {
         $query->execute(array(
             ':msgfrom' => $_SESSION['user']['username'],
             ':msgto' => $user['username'],
-            ':subject' => base64_encode(gzdeflate($_POST['subject'])),
-            ':body' => base64_encode(gzdeflate($_POST['body']))
+            ':subject' => base64_encode(gzdeflate(sanitize_raw($_POST['subject']))),
+            ':body' => base64_encode(gzdeflate(sanitize_raw($_POST['body'])))
         ));
       }
     }
@@ -225,8 +225,8 @@ if ($_GET['type'] === 'send_message') {
     $query->execute(array(
         ':msgfrom' => $msgfrom,
         ':msgto' => $_POST['msgto'],
-        ':subject' => base64_encode(gzdeflate($_POST['subject'])),
-        ':body' => base64_encode(gzdeflate($_POST['body']))
+        ':subject' => base64_encode(gzdeflate(sanitize_raw($_POST['subject']))),
+        ':body' => base64_encode(gzdeflate(sanitize_raw($_POST['body'])))
     ));
     }
         logline('Action', 'message sent.');
@@ -483,7 +483,7 @@ if ($_GET['type'] === 'report_notes') {
     $sql = $kirjuri_database->prepare('UPDATE exam_requests SET report_notes = :report_notes, last_updated = NOW() where id=:id AND parent_id = :id AND is_removed != "1"');
     $sql->execute(array(
         ':id' => $form_data['returnid'],
-        ':report_notes' => $form_data['report_notes'],
+        ':report_notes' => sanitize_raw($form_data['report_notes']),
     ));
     $_SESSION['post_cache'] = '';
     message('info', $_SESSION['lang']['report_notes_saved']);
@@ -500,7 +500,7 @@ if ($_GET['type'] === 'examiners_notes') {
     $sql = $kirjuri_database->prepare('UPDATE exam_requests SET examiners_notes = :examiners_notes, last_updated = NOW() where id=:id AND parent_id = :id AND is_removed != "1"');
     $sql->execute(array(
         ':id' => $form_data['returnid'],
-        ':examiners_notes' => $form_data['examiners_notes'].'<p> -- '.$_SESSION['user']['username'].' ('.date('Y-m-d H:m').')</p><br><br>',
+        ':examiners_notes' => sanitize_raw($form_data['examiners_notes']).'<p> -- '.$_SESSION['user']['username'].' ('.date('Y-m-d H:m').')</p><br><br>',
     ));
     $_SESSION['post_cache'] = '';
     message('info', $_SESSION['lang']['exam_notes_saved']);
@@ -674,7 +674,7 @@ if ($_GET['type'] === 'devicememo') {
     protect_page(1);
     if (!empty($_POST['used_tool']))
     {
-      $form_data['examiners_notes'] = $form_data['examiners_notes'] . '<p>'.$_POST['used_tool'].'</p>';
+      $form_data['examiners_notes'] = sanitize_raw($form_data['examiners_notes']) . '<p>'.$_POST['used_tool'].'</p>';
     }
     $sql = $kirjuri_database->prepare('UPDATE exam_requests SET report_notes = :report_notes, examiners_notes = :examiners_notes, device_type = :device_type, device_manuf = :device_manuf, device_model = :device_model, device_size_in_gb = :device_size_in_gb,
       device_owner = :device_owner, device_os = :device_os, device_time_deviation = :device_time_deviation, last_updated = NOW(),
@@ -683,8 +683,8 @@ if ($_GET['type'] === 'devicememo') {
         UPDATE exam_requests SET last_updated = NOW() where id = :parent_id;
         UPDATE exam_requests SET parent_id = :parent_id WHERE id = :id OR device_host_id = :id;');
     $sql->execute(array(
-        ':report_notes' => $form_data['report_notes'],
-        ':examiners_notes' => $form_data['examiners_notes'],
+        ':report_notes' => sanitize_raw($form_data['report_notes']),
+        ':examiners_notes' => sanitize_raw($form_data['examiners_notes']),
         ':device_type' => $form_data['device_type'],
         ':device_manuf' => $form_data['device_manuf'],
         ':device_model' => $form_data['device_model'],
@@ -788,7 +788,7 @@ if ($_GET['type'] === 'device') {
         ':case_request_description' => $form_data['case_request_description'],
         ':device_action' => $form_data['device_action'],
         ':is_removed' => $form_data['is_removed'],
-        ':examiners_notes' => $form_data['examiners_notes']
+        ':examiners_notes' => sanitize_raw($form_data['examiners_notes'])
     ));
     logline('Action', 'Added device '.$form_data['device_type'].' '.$form_data['device_manuf'].' '.$form_data['device_model'].' with id ['.$form_data['device_identifier'].'] to case '.$form_data['parent_id'].'');
     $_SESSION['post_cache'] = '';

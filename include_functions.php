@@ -16,6 +16,10 @@ $twig = new Twig_Environment($loader, array(
 ));
 $twig->addExtension(new Twig_Extension_Debug());
 
+$purifier = new HTMLPurifier();
+$pur_config = HTMLPurifier_Config::createDefault();
+$pur_config->set('Cache.SerializerPath', 'cache/');
+
 session_start();
 
 // Declare variables
@@ -45,6 +49,14 @@ function protect_page($required_access_level)
             return true;
         }
     }
+}
+
+function sanitize_raw($string)
+{
+  global $purifier;
+  $out = $purifier->purify($string);
+  //$out = strip_tags($string, '<br><p><blockquote><pre><strong><ol><em><span><ul><li><b><i><sup><sub><code><h1><h2><h3><h4>');
+  return $out;
 }
 
 function num($a)

@@ -18,7 +18,6 @@ $twig->addExtension(new Twig_Extension_Debug());
 
 $pur_config = HTMLPurifier_Config::createDefault();
 $pur_config->set('Cache.SerializerPath', './cache');
-//$pur_config->set('Cache.DefinitionImpl', null);
 $purifier = new HTMLPurifier($pur_config);
 
 

@@ -11,6 +11,8 @@ foreach($_POST as $key => $value) // Sanitize all POST data
   $_POST[$key] = isset($value) ? $value : '';
 }
 
+$_POST[case_contains_mob_dev] = isset($_POST[case_contains_mob_dev]) ? $_POST[case_contains_mob_dev] : '';
+
 $_SESSION['post_cache'] = $_POST;
 
 $_GET['type'] = isset($_GET['type']) ? $_GET['type'] : '';

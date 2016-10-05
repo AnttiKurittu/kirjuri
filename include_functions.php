@@ -1,6 +1,7 @@
 <?php
 // This is the 'header' file in all php files containing shared functions etc.
 // Go to installer if no credentials found.
+
 if ((!file_exists('conf/mysql_credentials.php')) && (!file_exists('/etc/kirjuri/conf/mysql_credentials.php'))) {
     header('Location: install.php');
     die;

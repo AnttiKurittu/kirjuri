@@ -48,27 +48,6 @@ if ((file_exists('conf/mysql_credentials.php')) || (file_exists('conf/settings.l
 <i>mysq_credentials.php</i> and <i>settings.local</i>. If you wish to keep them intact, make backup copies.</b></p>';
 }
 
-// This piece of code will test for internet connectivity and check for new versions of Kirjuri.
-// Comment it out with /* and */ if you do not wish the installer to go online.
-ini_set('default_socket_timeout', 10);
-echo '<p>Testing for internet connectivity. This will throw errors if one is not present. These can be safely ignored.</p>';
-$installer_version = trim(file_get_contents('conf/RELEASE'));
-$beacon = file_get_contents('https://kurittu.org/beacon.txt?kirjuri_installer_version='.$installer_version);
-if ($beacon === 'connected') {
-    echo '<p style="color:red;">Internet connection available.<br>
-Do not use Kirjuri with a working internet connection in production when handling sensitive information. </p>';
-    $github_version = trim(file_get_contents('https://raw.githubusercontent.com/AnttiKurittu/kirjuri/master/conf/RELEASE'));
-    if ($installer_version < $github_version) {
-        echo '<p><b>New version of Kirjuri available: '.$github_version.'. Current version: '.$installer_version.'.<br>';
-        echo 'Download the new version from <a href="https://github.com/AnttiKurittu/kirjuri" target="_BLANK">the repository</a> or run "git pull".</b></p>';
-    } elseif ($installer_version > $github_version) {
-        echo '<b>Kirjuri is ahead of public version: Release version '.$github_version.', your version is '.$installer_version.'</b>';
-    } else {
-        echo '<b>Kirjuri is up to date: Release version '.$github_version.'</b>';
-    }
-}
-ini_restore('default_socket_timeout');
-
 // Continue the installer if data is present.
 
 if (empty($_POST)) {

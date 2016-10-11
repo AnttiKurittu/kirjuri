@@ -262,7 +262,7 @@
       datasets: [
       {
         label: "Kumulatiivinen data",
-        fillColor: "rgba(220,220,220,0.5)",
+        fillColor: "rgba(220,220,220,0.8)",
         strokeColor: "rgba(151,187,205,1)",
         highlightFill: "rgba(220,220,220,0.75)",
         highlightStroke: "rgba(220,220,220,1)",
@@ -273,6 +273,54 @@
     var myNewChart = new Chart(ctx).Bar(data);
   </script>
 </div>
+
+<div class="col-md-12" style="height:40px;"></div>
+<h3>{{ lang.data_by_unit }}</h3>
+<div class="col-sm-12">
+  <canvas id="dataKaavio3" style="width:100%;height:400px;"></canvas>
+  <script>
+    var ctx = document.getElementById("dataKaavio3").getContext("2d");
+    var data = {
+      labels: [{% for unit in inv_units %}"{{unit}}"{% if not loop.last %},{% endif %}{% endfor %}],
+      datasets: [
+      {
+        label: "Kumulatiivinen data",
+        fillColor: "rgba(220,220,220,0.8)",
+        strokeColor: "rgba(151,187,205,1)",
+        highlightFill: "rgba(220,220,220,0.75)",
+        highlightStroke: "rgba(220,220,220,1)",
+        data: [{% for data in device_data_by_unit %}"{% if not data %}0{% else %}{{ data }}{% endif %}"{% if not loop.last %},{% endif %}{% endfor %}]
+      }
+      ]
+    };
+    var myNewChart = new Chart(ctx).Bar(data);
+  </script>
+</div>
+
+<div class="col-md-12" style="height:40px;"></div>
+<h3>{{ lang.count_by_unit }}</h3>
+<div class="col-sm-12">
+  <canvas id="dataKaavio4" style="width:100%;height:400px;"></canvas>
+  <script>
+    var ctx = document.getElementById("dataKaavio4").getContext("2d");
+    var data = {
+      labels: [{% for unit in inv_units %}"{{unit}}"{% if not loop.last %},{% endif %}{% endfor %}],
+      datasets: [
+      {
+        label: "Kumulatiivinen data",
+        fillColor: "rgba(220,220,220,0.8)",
+        strokeColor: "rgba(151,187,205,1)",
+        highlightFill: "rgba(220,220,220,0.75)",
+        highlightStroke: "rgba(220,220,220,1)",
+        data: [{% for data in device_count_by_unit %}"{% if not data %}0{% else %}{{ data }}{% endif %}"{% if not loop.last %},{% endif %}{% endfor %}]
+      }
+      ]
+    };
+    var myNewChart = new Chart(ctx).Bar(data);
+  </script>
+</div>
+
+
 <div class="col-md-12" style="height:40px;"></div>
 <h3>{{ lang.examined_devices_by_type }}</h3>
 <table class="table table-striped">

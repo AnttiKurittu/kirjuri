@@ -13,9 +13,34 @@ foreach($_POST as $key => $value) // Sanitize all POST data
 
 $_POST['case_contains_mob_dev'] = isset($_POST['case_contains_mob_dev']) ? $_POST['case_contains_mob_dev'] : '';
 
-$_SESSION['post_cache'] = $_POST;
+if(empty($_POST['case_contains_mob_dev']))
+{
+	$_POST['case_contains_mob_dev'] = "0";
+}
 
+if(empty($_POST['device_host_id']))
+{
+	$_POST['device_host_id'] = "0";
+}
+
+if(empty($_POST['device_item_number']))
+{
+	$_POST['device_item_number'] = "0";
+}
+
+if(empty($_POST['device_size_in_gb']))
+{
+	$_POST['device_size_in_gb'] = "0";
+}
+if(empty($_POST['is_removed']))
+{
+	$_POST['is_removed'] = "0";
+}
+
+
+$_SESSION['post_cache'] = $_POST;
 $_GET['type'] = isset($_GET['type']) ? $_GET['type'] : '';
+
 
 // ----- User management
 
@@ -375,7 +400,7 @@ if ($_GET['type'] === 'examination_request') {
     ));
     $case_id = $query->fetch(PDO::FETCH_ASSOC);
     $case_id = $case_id['case_id'] + 1;
-    $sql = $kirjuri_database->prepare(' INSERT INTO exam_requests ( id, parent_id, case_id, case_name, case_file_number, case_investigator, case_investigator_unit, case_investigator_tel, case_investigation_lead, case_confiscation_date, last_updated, case_added_date, case_crime, classification, case_suspect, case_request_description, is_removed, case_status, case_urgency, case_urg_justification, case_requested_action, case_contains_mob_dev, case_devicecount ) VALUES ( "", "0", :case_id, :case_name, :case_file_number, :case_investigator, :case_investigator_unit, :case_investigator_tel, :case_investigation_lead, :case_confiscation_date, NOW(), NOW(), :case_crime, :classification, :case_suspect, :case_request_description, "0", "1", :case_urgency, :case_urg_justification, :case_requested_action, :case_contains_mob_dev, "0" );
+    $sql = $kirjuri_database->prepare(' INSERT INTO exam_requests ( id, parent_id, case_id, case_name, case_file_number, case_investigator, case_investigator_unit, case_investigator_tel, case_investigation_lead, case_confiscation_date, last_updated, case_added_date, case_crime, classification, case_suspect, case_request_description, is_removed, case_status, case_urgency, case_urg_justification, case_requested_action, case_contains_mob_dev, case_devicecount ) VALUES ( NULL, "0", :case_id, :case_name, :case_file_number, :case_investigator, :case_investigator_unit, :case_investigator_tel, :case_investigation_lead, :case_confiscation_date, NOW(), NOW(), :case_crime, :classification, :case_suspect, :case_request_description, "0", "1", :case_urgency, :case_urg_justification, :case_requested_action, :case_contains_mob_dev, "0" );
         UPDATE exam_requests SET parent_id=last_insert_id() WHERE ID=last_insert_id();
         ');
     $sql->execute(array(

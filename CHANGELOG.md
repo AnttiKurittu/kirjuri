@@ -1,5 +1,9 @@
 CHANGELOG
 ------------
+2016-11-15:
+
+* Fixed an error on newest MySQL (at least Ver 14.14 Distrib 5.7.16) where inserting a value of '' no longer populates an INT field with "0" but instead fails. Some dirty workarounds on submit.php to fix this. No need to update if your version works fine.
+
 2016-10-11:
 
 * Added two new data graphs to the statistics; amount of data per requesting unit and amount of devices per requesting unit.

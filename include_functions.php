@@ -70,10 +70,15 @@ function sanitize_raw($string) // Purify HTML content for raw presentation.
   {
     global $purifier;
     $out = $purifier->purify($string);
+/*
+
+//  Disabled logging purify events due to too much noise in the logs.
+
     if(strcmp($out, $string) !== 0)
     {
       logline('Info', 'Purified string: ' . $string . ' => ' . $out);
-    }
+    } 
+*/
     if(empty($out))
     {
       message('error', 'Invalid HTML input.');

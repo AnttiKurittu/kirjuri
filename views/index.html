@@ -8,10 +8,6 @@
   <li><a href="index.php?year={{ caserow.0.case_added_date|date("Y") }}">{{ lang.front_page }} {{ dateStart|date("Y") }}</a></li>
 </ol>
 
-{% if session.user.access < 4 %}
-VIEW ONLY
-{% endif %}
-
 <div class="col-md-4 pull-right">
   <form role="form" method="GET" action="index.php">
     <input type="hidden" name="token" value="{{session.user.token}}">

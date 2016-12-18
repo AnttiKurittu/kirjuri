@@ -6,6 +6,7 @@
 <h1>{{ lang.help_settings }}</h1>
 <div class="well well-sm">
   <form class="form-horizontal" role="form" method="post" action="submit.php?type=update_password">
+    <input type="hidden" name="token" value="{{session.user.token}}">
       <div class="form-group">
         <label for="current_password" class="col-md-1 control-label">{{ lang.current_password }}</label>
         <div class="col-md-10">
@@ -28,6 +29,7 @@
 {% if session.user.access == "0" %}
 
   <form class="form" action="upload_IMEI.php" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="token" value="{{session.user.token}}">
 <div class="form-group">
   <label for="exampleInputFile"></label>
   <input type="file" name="fileToUpload" id="fileToUpload">
@@ -38,6 +40,7 @@
 
   <h4>{{settings_file}}</h4>
   <form class="form form-horizontal" role="form" method="post" action="submit.php">
+    <input type="hidden" name="token" value="{{session.user.token}}">
     <input type="hidden" name="save" value="settings">
     <div class="form-group">
       <textarea style="background-color:#EEE;" rows="30" class="mceNoEditor textarea col-md-12" name="settings_conf">{{ settings_filedump }}</textarea>
@@ -49,6 +52,7 @@
   </form>
   <h4>{{ lang.event_log }}</h4>
   <form class="form form-horizontal">
+    <input type="hidden" name="token" value="{{session.user.token}}">
     <div class="form-group">
 <pre>
 {% for entry in event_log %}{{ entry.id }} {{ entry.event_level }} {{ entry.event_timestamp }} {{ entry.event_descr }} {{ entry.ip }}

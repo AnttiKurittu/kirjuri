@@ -3,6 +3,7 @@
 require_once './include_functions.php';
 
 protect_page(2); // View only or higher
+csrf_init();
 
 // Declare variables
 $failed_uploads = isset($_SESSION['failed_uploads']) ? $_SESSION['failed_uploads'] : '';

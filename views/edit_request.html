@@ -88,6 +88,7 @@ if (e.keyCode == 13) {
                 <b>{{ lang.no_examiner_assigned }}</b>
                 <p>{{ lang.pick_examiner }}</p>
                 <form name="add_forensic_investigator" class="form" role="form" method="post" action="submit.php?type=case_update&db_row={{ entry.parent_id }}">
+                  <input type="hidden" name="token" value="{{session.user.token}}">
                   <div class="form-group">
                     <select style="text-align:left;width:100%;" class="btn btn-default" name="forensic_investigator" id="forensic_investigator">
                       <option disabled>{{ lang.forensic_examiner_long }}</option>
@@ -221,6 +222,7 @@ if (e.keyCode == 13) {
           {% if (settings.allow_attachments == "1") and (caserow.0.case_status == "2") %}
           <tr><td colspan="4" class="active">
           <form class="form-inline" action="upload.php?case={{caserow.0.id}}" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="token" value="{{session.user.token}}">
 
               <div class="form-group">
                 <input type="file" multiple name="fileToUpload[]" id="fileToUpload" class="btn btn-default btn-xs">
@@ -254,6 +256,7 @@ if (e.keyCode == 13) {
         {% endif %}
 
         <form class="form form-inline" role="form" method="post" action="submit.php?type=update_request_status">
+          <input type="hidden" name="token" value="{{session.user.token}}">
           {% for entry in caserow %}
           <a href="download_csv.php?case={{entry.id}}" type="button" class="btn btn-warning"><i class="fa fa-download"></i> {{ lang.download_csv }}</a>
           {% if entry.case_status != "3" %}<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#perustiedot"><i class="fa fa-info-circle"></i> {{ lang.edit_request_details }}</button>{% endif %}{% endfor %}
@@ -324,13 +327,14 @@ if (e.keyCode == 13) {
 
         <div class="col-sm-12">
           <form method="POST" class="form-inline pull-left" action="submit.php?type=set_removed_case">
+            <input type="hidden" name="token" value="{{session.user.token}}">
             <div class="form-group">
               <input type="hidden" name="remove_exam_request" value="{{ caserow.0.id }}">
               <button type="submit" class="btn btn-xl btn-danger">{{ lang.delete_request }}</button>
             </div>
           </form>
         </div>
-        
+
 
         {% endif %}
         {% endif %}
@@ -362,6 +366,7 @@ if (e.keyCode == 13) {
             <div class="modal-body">
               <!--- perustiedot -->
               <form class="form form-horizontal" role="form" method="post" action="submit.php?type=case_update&db_row={{ entry.parent_id }}">
+                <input type="hidden" name="token" value="{{session.user.token}}">
                 <div class="form-group">
                   <label for="examination_request" class="col-sm-2 control-label">{{ lang.case_name }}</label>
                   <div class="col-sm-10">
@@ -578,6 +583,7 @@ if (e.keyCode == 13) {
       {% else %}
       {% for media in media_objs if (entry.device_type == media) and (check != "1") %}
       <form class="form form-inline" role="form" method="post" action="submit.php?type=device_attach&db_row={{ entry.id }}&returnid={{ entry.parent_id }}">
+        <input type="hidden" name="token" value="{{session.user.token}}">
         <select style="text-align:left;" class="btn btn-xs btn-default" name="isanta">
           <option selected disabled value="0">{{ lang.associate_with_device }}</option>
           {% for target in mediarow %}
@@ -622,6 +628,7 @@ if (e.keyCode == 13) {
 
     <td style="vertical-align:middle;align:left;">
       <form class="form form-horizontal" role="form" method="post" action="submit.php?type=change_device_status&db_row={{ entry.id }}" target="submit_iframe{{entry.id}}">
+        <input type="hidden" name="token" value="{{session.user.token}}">
       {% if (caserow.0.case_status != 3) and (session.user.access <= 1) %}
     <p>  <select style="text-align:left;width:200px;" class="btn btn-{% if not entry.device_action %}danger{% else %}default{% endif %}" name="device_action" onchange="this.form.submit()">
       <option value="{{entry.device_action}}" selected="selected">{% set device_current_action = entry.device_action|split('|') %}{{device_current_action.1}}</option>
@@ -638,6 +645,7 @@ if (e.keyCode == 13) {
       {% endif %}
       </form>
       <p><form class="form form-horizontal" role="form" method="post" action="submit.php?type=change_device_location&db_row={{ entry.id }}" target="submit_iframe{{entry.id}}_void">
+        <input type="hidden" name="token" value="{{session.user.token}}">
       <select style="text-align:left;width:200px;" class="btn btn-{% if not entry.device_location %}danger{% else %}default{% endif %}" name="device_location" {% if session.user.access > 1 %}disabled{% else %}onchange="this.form.submit()"{% endif %}>
       <option value="{{entry.device_location}}" selected="selected">{{entry.device_location}}</option>
       <option disabled>---</option>
@@ -678,7 +686,7 @@ if (e.keyCode == 13) {
         {% endif %}
         </small>
       </h4>
-      <a href="submit.php?type=device_detach&db_row={{ entry.id }}&returnid={{ entry.parent_id }}" onclick="return confirm('{{ lang.remove_association_warning }}')"><i class="fa fa-unlink"></i> {{ lang.remove_association }}</a>
+      <a href="submit.php?type=device_detach&db_row={{ entry.id }}&returnid={{ entry.parent_id }}&token={{session.user.token}}" onclick="return confirm('{{ lang.remove_association_warning }}')"><i class="fa fa-unlink"></i> {{ lang.remove_association }}</a>
     </td>
     <td style="vertical-align:middle;{% if entry.device_contains_evidence %}background:linear-gradient(to right, #e1f0d6 , #ffffff);{% endif %}">
       {% if hosting_dev_owner != entry.device_owner %}<span style="color:darkred;"><i class="fa fa-user"></i> {{ entry.device_owner }} {{ lang.different_owner }}</span><br>{% endif %}
@@ -702,6 +710,7 @@ if (e.keyCode == 13) {
     </td>
     <td style="vertical-align:middle;align:left;">
       <form class="form form-horizontal" role="form" method="post" action="submit.php?type=change_device_status&db_row={{ entry.id }}" target="submit_iframe{{entry.id}}">
+        <input type="hidden" name="token" value="{{session.user.token}}">
       {% if (caserow.0.case_status != 3) and (session.user.access <= 1) %}
     <p>  <select style="text-align:left;width:200px;" class="btn btn-{% if not entry.device_action %}danger{% else %}default{% endif %}" name="device_action" onchange="this.form.submit()">
       <option value="{{entry.device_action}}" selected="selected">{% set device_current_action = entry.device_action|split('|') %}{{device_current_action.1}}</option>
@@ -718,6 +727,7 @@ if (e.keyCode == 13) {
       {% endif %}
       </form>
       <p><form class="form form-horizontal" role="form" method="post" action="submit.php?type=change_device_location&db_row={{ entry.id }}" target="submit_iframe{{entry.id}}_void">
+        <input type="hidden" name="token" value="{{session.user.token}}">
       <select style="text-align:left;width:200px;" class="btn btn-{% if not entry.device_location %}danger{% else %}default{% endif %}" name="device_location" {% if session.user.access > 1 %}disabled{% else %}onchange="this.form.submit()"{% endif %}>
       <option value="{{entry.device_location}}" selected="selected">{{entry.device_location}}</option>
       <option disabled>---</option>
@@ -754,6 +764,7 @@ if (e.keyCode == 13) {
       </div>
       <div class="modal-body">
         <form class="form" role="form" method="post" action="submit.php?type=device">
+          <input type="hidden" name="token" value="{{session.user.token}}">
           <div class="form-group">
             <select style="text-align:left;" class="btn btn-default" name="device_type" id="device_type_2">
               <option selected disabled>{{ lang.choose_media_type }}:</option>
@@ -844,6 +855,7 @@ if (e.keyCode == 13) {
       </div>
       <div class="modal-body">
         <form class="form" role="form" method="post" action="submit.php?type=device">
+          <input type="hidden" name="token" value="{{session.user.token}}">
           <div class="form-group">
             <select style="text-align:left;" class="btn btn-default" name="device_type" id="device_type_1">
               <option selected disabled>{{ lang.device_type }}</option>
@@ -928,6 +940,7 @@ if (e.keyCode == 13) {
 </div>
 {% if mediarow %}
 <form class="form form-inline pull-right" role="form" method="post" action="submit.php?type=move_all&returnid={{ caserow.0.parent_id }}">
+  <input type="hidden" name="token" value="{{session.user.token}}">
   {% if caserow.0.case_status != "3" %}
   <select style="text-align:left;" class="btn btn-xs btn-default" name="device_action" id="device_action">
     <option value="NO_CHANGE" selected>{{ lang.sort_label_status }}</option>
@@ -955,6 +968,7 @@ if (e.keyCode == 13) {
 {% if (caserow.0.case_status <= "2") and (caserow.0.forensic_investigator or caserow.0.phone_investigator) %}
 <h3 class="page-heading">{{ lang.examination_report }}</h3>
 <form class="form" role="form" method="post" action="submit.php?type=report_notes">
+  <input type="hidden" name="token" value="{{session.user.token}}">
 <div class="form-group form-horizontal">
 <textarea id="richeditor" class="textarea form-control" rows="25" style="height:500px;" name="report_notes">{% if caserow.0.report_notes %}{{ caserow.0.report_notes }}{% else %}{{ settings.report_notes_footer }}{% endif %}</textarea>
 </div>
@@ -978,6 +992,7 @@ if (e.keyCode == 13) {
 {% if (caserow.0.case_status <= "2") and (caserow.0.forensic_investigator or caserow.0.phone_investigator) %}
 <h3 class="page-heading">{{ lang.examiners_private_notes }}</h3>
 <form class="form" role="form" method="post" action="submit.php?type=examiners_notes">
+  <input type="hidden" name="token" value="{{session.user.token}}">
 <div class="form-group form-horizontal">
 <textarea id="richeditor2" class="textarea form-control" rows="25" style="height:500px;" name="examiners_notes">{{ caserow.0.examiners_notes }}</textarea>
 </div>

@@ -32,6 +32,7 @@
   </table>
 
 <form class="form-horizontal" role="form" method="post" action="submit.php?type=create_user">
+  <input type="hidden" name="token" value="{{session.user.token}}">
 <div class="panel panel-default">
   <div class="panel-heading">
     <h3 class="panel-title"><a id="u"></a>{{ lang.manage_users }} | {{ lang.new_name_to_create }}</h3>
@@ -63,10 +64,10 @@
       <label for="access" class="col-md-2 control-label">{{ lang.access_level }}</label>
       <div class="col-md-10">
         <select class="btn btn-default" name="access" id="access">
-          <option value="A" {% if fields.access == "0" %}selected{% endif %}>{{ lang.level_admin }}</option>
-          <option value="1" {% if fields.access == "1" %}selected{% endif %}{% if not fields %}selected{% endif %}>{{ lang.level_user }}</option>
-          <option value="2" {% if fields.access == "2" %}selected{% endif %}>{{ lang.level_viewonly }}</option>
-          <option value="3" {% if fields.access == "3" %}selected{% endif %}>{{ lang.level_addonly }}</option>
+          <option value="A" {% if fields.access == "0" %}selected{% endif %}>{{ lang.level_admin }} [0]</option>
+          <option value="1" {% if fields.access == "1" %}selected{% endif %}{% if not fields %}selected{% endif %}>{{ lang.level_user }} [1]</option>
+          <option value="2" {% if fields.access == "2" %}selected{% endif %}>{{ lang.level_viewonly }} [2]</option>
+          <option value="3" {% if fields.access == "3" %}selected{% endif %}>{{ lang.level_addonly }} [3]</option>
         </select>
       </div>
     </div>

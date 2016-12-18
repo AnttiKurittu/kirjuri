@@ -51,6 +51,7 @@
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
   <h1 class="page-header">{{ lang.add_an_examination_request }}</h1>
   <form class="form-horizontal" role="form" method="post" action="submit.php?type=examination_request">
+    <input type="hidden" name="token" value="{{session.user.token}}">
     <div class="form-group">
       <label for="examination_request" class="col-sm-2 control-label">{{ lang.case_name }}</label>
       <div class="col-sm-6">

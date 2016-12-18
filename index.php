@@ -2,6 +2,11 @@
 
 require_once './include_functions.php';
 protect_page(3); // View only or higher
+if ($_SESSION['user']['access'] === "3")
+{
+  header('Location: add_case.php');
+  die;
+}
 
 $sort_j = isset($_GET['j']) ? $_GET['j'] : '';
 $sort_d = isset($_GET['d']) ? $_GET['d'] : '';
@@ -165,6 +170,9 @@ foreach (glob('attachments/*', GLOB_ONLYDIR) as $dir) {
     }
 }
 $_SESSION['message_set'] = false;
+
+csrf_init();
+
 echo $twig->render('index.html', array(
   'session' => $_SESSION,
   'has_attachments' => $has_attachments,

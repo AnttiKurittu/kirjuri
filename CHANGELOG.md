@@ -1,5 +1,14 @@
 CHANGELOG
 ------------
+2016-12-18 release 128:
+
+* Added CSRF protection to all pages, even though you shouldn't deploy Kirjuri on a network where this is an issue.
+* Updated the German language file with the new language directives. Translation courtesy of Daniel Schreiber, thank you very much!
+* Shuffled the message buttons around so that the tooltip doesn't cover the essential buttons.
+* Added a possibility to create a device memo report template, so that you can add your own "fields" to it. Currently it has rows for imaging details. You can edit this file at conf/report_notes.template. HTML is allowed, the file is sanitized before presentation. You can copy the file to report_notes.local to preserver your local changes through updates.
+* The "add-only" user now only sees the "Add a new request"-page.
+* Message of the day will be shown at the login screen.
+
 2016-12-08 release 127:
 
 * Added a passwords field to the "new request"-page. The investigator can now add all known passwords to the request at the time of submission, and they will be displayed in the private notes section. Fixed a few minor annoyances.

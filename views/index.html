@@ -7,8 +7,14 @@
 <ol class="breadcrumb">
   <li><a href="index.php?year={{ caserow.0.case_added_date|date("Y") }}">{{ lang.front_page }} {{ dateStart|date("Y") }}</a></li>
 </ol>
+
+{% if session.user.access < 4 %}
+VIEW ONLY
+{% endif %}
+
 <div class="col-md-4 pull-right">
   <form role="form" method="GET" action="index.php">
+    <input type="hidden" name="token" value="{{session.user.token}}">
     <input type="text" class="form-control" name="search" placeholder="{{ lang.search_reqs_and_devs }}" title="Boolean search, * is wildcard." value="{{ search_term }}" onkeyup="showHint(this.value)">
     <input type="hidden" name="year" value="{{ dateStart|date("Y") }}">
     {% if query_j %}<input type="hidden" name="j" value="{{ query_j }}">{% endif %}
@@ -111,6 +117,7 @@
       {% set counter = counter + 1 %}
       <tr title="{{ lang.requested }} {{ entry.case_added_date|date("d.m.Y") }}, {{ lang.started }} {{ entry.case_start_date|date("d.m.Y") }}
     {% if entry.case_ready_date %}, {{lang.ready_at}} {{ entry.case_ready_date|date("d.m.Y") }}{% endif %}"
+
     {% if entry.case_status == "1" %}class="danger"{% set new_counter = new_counter + 1 %}{% elseif (entry.case_status == "2") and ((entry.forensic_investigator == session.user.name) or (entry.phone_investigator == session.user.name)) %}class="info"{% elseif (entry.case_status == "2") and ((entry.forensic_investigator != session.user.name) and (entry.phone_investigator != session.user.name)) %}class="warning"{% set open_counter = open_counter + 1%}{% elseif entry.case_status == "3" %}class="default"{% set ready_counter = ready_counter + 1%}{% endif %}>
       <td style="width:1%;white-space:nowrap;"><a style="font-weight:bold;" href="edit_request.php?case={{ entry.id }}">{{ entry.case_id }}/{{ entry.case_added_date|date("y") }}</a></td>
       <td>
@@ -193,7 +200,7 @@
       {% endfor %}
       <tr>
         <td colspan="999">
-          {{ lang.filter_by_status }}: {% if query_s == "1" %} {{ lang.showing_new }} <a href="index.php?year={{ dateStart|date("Y") }}{% if query_j %}&j={{ query_j }}{% endif %}{% if query_d %}&d={{ query_d }}{% endif %}{% if search_term %}&search={{ search_term|replace({"\+": "%2B"}) }}{% endif %}"><span class="label label-primary">{{ lang.all }}</span> {% elseif query_s == "2" %} {{ lang.showing_open }} <a href="index.php?year={{ dateStart|date("Y") }}{% if query_j %}&j={{ query_j }}{% endif %}{% if query_d %}&d={{ query_d }}{% endif %}{% if search_term %}&search={{ search_term|replace({"\+": "%2B"}) }}{% endif %}"><span class="label label-primary">{{ lang.all }}</span> {% elseif query_s == "3" %} {{ lang.showing_closed }} <a href="index.php?year={{ dateStart|date("Y") }}{% if query_j %}&j={{ query_j }}{% endif %}{% if query_d %}&d={{ query_d }}{% endif %}{% if search_term %}&search={{ search_term|replace({"\+": "%2B"}) }}{% endif %}"><span class="label label-primary">{{ lang.all }}</span> {% else %} {{ lang.no_filtering }}{% endif %} {% if query_s != "1" %} <a href="index.php?year={{ dateStart|date("Y") }}&s=1{% if query_j %}&j={{ query_j }}{% endif %}{% if query_d %}&d={{ query_d }}{% endif %}{% if search_term %}&search={{ search_term|replace({"\+": "%2B"}) }}{% endif %}"><span class="label label-primary">{{ lang.new }}</span></a>{% endif %}{% if query_s != "2" %} <a href="index.php?year={{ dateStart|date("Y") }}&s=2{% if query_j %}&j={{ query_j }}{% endif %}{% if query_d %}&d={{ query_d }}{% endif %}{% if search_term %}&search={{ search_term|replace({"\+": "%2B"}) }}{% endif %}"><span class="label label-primary">{{ lang.open }}</span></a>{% endif%}{% if query_s != "3" %} <a href="index.php?year={{ dateStart|date("Y") }}&s=3{% if query_j %}&j={{ query_j }}{% endif %}{% if query_d %}&d={{ query_d }}{% endif %}{% if search_term %}&search={{ search_term|replace({"\+": "%2B"}) }}{% endif %}"><span class="label label-primary">{{ lang.ready }}</span></a>{% endif %}
+          {{ lang.filter_by_status }}: {% if query_s == "1" %} {{ lang.showing_new }} <a href="index.php?year={{ dateStart|date("Y") }}{% if query_j %}&j={{ query_j }}{% endif %}{% if query_d %}&d={{ query_d }}{% endif %}{% if search_term %}&search={{ search_term|replace({"\+": "%2B"}) }}{% endif %}"><span class="label label-primary">{{ lang.all|capitalize }}</span> {% elseif query_s == "2" %} {{ lang.showing_open }} <a href="index.php?year={{ dateStart|date("Y") }}{% if query_j %}&j={{ query_j }}{% endif %}{% if query_d %}&d={{ query_d }}{% endif %}{% if search_term %}&search={{ search_term|replace({"\+": "%2B"}) }}{% endif %}"><span class="label label-primary">{{ lang.all|capitalize }}</span> {% elseif query_s == "3" %} {{ lang.showing_closed }} <a href="index.php?year={{ dateStart|date("Y") }}{% if query_j %}&j={{ query_j }}{% endif %}{% if query_d %}&d={{ query_d }}{% endif %}{% if search_term %}&search={{ search_term|replace({"\+": "%2B"}) }}{% endif %}"><span class="label label-primary">{{ lang.all|capitalize }}</span> {% else %} {{ lang.no_filtering }}{% endif %} {% if query_s != "1" %} <a href="index.php?year={{ dateStart|date("Y") }}&s=1{% if query_j %}&j={{ query_j }}{% endif %}{% if query_d %}&d={{ query_d }}{% endif %}{% if search_term %}&search={{ search_term|replace({"\+": "%2B"}) }}{% endif %}"><span class="label label-primary">{{ lang.new|capitalize }}</span></a>{% endif %}{% if query_s != "2" %} <a href="index.php?year={{ dateStart|date("Y") }}&s=2{% if query_j %}&j={{ query_j }}{% endif %}{% if query_d %}&d={{ query_d }}{% endif %}{% if search_term %}&search={{ search_term|replace({"\+": "%2B"}) }}{% endif %}"><span class="label label-primary">{{ lang.open|capitalize }}</span></a>{% endif%}{% if query_s != "3" %} <a href="index.php?year={{ dateStart|date("Y") }}&s=3{% if query_j %}&j={{ query_j }}{% endif %}{% if query_d %}&d={{ query_d }}{% endif %}{% if search_term %}&search={{ search_term|replace({"\+": "%2B"}) }}{% endif %}"><span class="label label-primary">{{ lang.ready|capitalize }}</span></a>{% endif %}
 
         <span class="pull-right">
           {% if query_j or query_d %}<a type="button" class="btn btn-danger btn-xs" href="index.php?year={{ dateStart|date("Y") }}{% if query_s %}&s={{ query_s }}{% endif %}{% if search_term %}&search={{ search_term|replace({"\+": "%2B"}) }}{% endif %}"> <i class="fa fa-remove"></i><i class="fa fa-sort"></i> {{ lang.remove_ordering }}</a>{% endif %}

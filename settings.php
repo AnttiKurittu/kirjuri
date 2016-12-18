@@ -2,7 +2,7 @@
 
 require_once './include_functions.php';
 protect_page(1); // User only or higher, add or view only accounts cant change passwords.
-
+csrf_init();
 
 if ($settings['show_log'] === '1') {
     $query = $kirjuri_database->prepare('SELECT * FROM event_log WHERE event_level != "Error" ORDER BY id DESC LIMIT 100');

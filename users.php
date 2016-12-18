@@ -2,6 +2,7 @@
 
 require_once './include_functions.php';
 protect_page(0);
+csrf_init();
 
 // Declare variables
 $_GET['populate'] = isset($_GET['populate']) ? $_GET['populate'] : '';

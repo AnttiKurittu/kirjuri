@@ -41,6 +41,21 @@ if ($_SESSION['message_set'] === false) {
     $_SESSION['message']['content'] = '';
 }
 
+function csrf_validate($token) {
+  if ($token === $_SESSION['user']['token']) {
+    return true;
+  }
+  else {
+    trigger_error("CSRF token mismatch. Try again.");
+    header('Location: '.$_SERVER['HTTP_REFERER']);
+    die();
+  }
+}
+
+function csrf_init() {
+  $_SESSION['user']['token'] = hash('sha256', random_bytes(32));
+}
+
 // Check user access level before rendering page. User details are stored in a session variable.
 function protect_page($required_access_level)
 {
@@ -77,7 +92,7 @@ function sanitize_raw($string) // Purify HTML content for raw presentation.
     if(strcmp($out, $string) !== 0)
     {
       logline('Info', 'Purified string: ' . $string . ' => ' . $out);
-    } 
+    }
 */
     if(empty($out))
     {

@@ -119,11 +119,11 @@
           {% block navi %}
 
           {% if session.user %}
-
+          {% if session.user.access <= 2 %}
           <ul class="nav nav-sidebar">
             <li{% if "index.php" in settings.self %} class="active"{% endif %}><a href='index.php?year={{ dateStart|date("Y") }}'><span class="glyphicon glyphicon-home" aria-hidden="true"></span> {{ lang.front_page }} {{ dateStart|date("Y") }}<span class="sr-only">(current)</span></a></li>
           </ul>
-
+          {% endif %}
           {% if ("edit_request.php" in settings.self) %}
           <ul class="nav nav-sidebar">
             <li role="presentation"{% if not returntab %} class="active"{% endif %}><a href="#tab-exam-request" aria-controls="tab-exam-request" role="tab" data-toggle="tab">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {{ caserow.0.case_id }}/{{ caserow.0.case_added_date|date("Y") }} {{ caserow.0.case_name }}</a></li>
@@ -179,7 +179,7 @@
 
           {% if session.user.username %}
           <ul class="nav nav-sidebar">
-            <li><a href="submit.php?type=logout"><i class="fa fa-user"></i> {{ lang.log_out }} {{ session.user.name }} </a></li>
+            <li><a href="submit.php?type=logout&token={{session.user.token}}"><i class="fa fa-user"></i> {{ lang.log_out }} {{ session.user.name }} </a></li>
           </ul>
           {% else %}
           <ul class="nav nav-sidebar">

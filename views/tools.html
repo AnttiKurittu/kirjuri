@@ -46,6 +46,7 @@
   </table>
 
 <form class="form-horizontal" role="form" method="post" action="submit.php?type={% if fields %}update_tool{% else %}add_tool{% endif %}">
+  <input type="hidden" name="token" value="{{session.user.token}}">
 {% if fields %}<input type="hidden" name="tool_id" value="{{ fields.id }}">{% endif %}
 
 <div class="panel panel-default">

@@ -2,7 +2,7 @@
 
 require_once './include_functions.php';
 protect_page(2); // View only or higher
-
+csrf_init();
 
 
 $query = $kirjuri_database->prepare('SELECT * FROM exam_requests WHERE is_removed != "1" AND id = :db_row LIMIT 1');
@@ -62,8 +62,23 @@ if ( strpos( strtoupper($mediarow[0]['device_identifier']), "IMEI") !== false)
   }
 }
 
+if (file_exists('conf/report_notes.local'))
+{
+  $templates['report_notes'] = file_get_contents('conf/report_notes.local');
+  $templates['report_notes'] = sanitize_raw($templates['report_notes']);
+}
+elseif (file_exists('conf/report_notes.template'))
+{
+  $templates['report_notes'] = file_get_contents('conf/report_notes.template');
+  $templates['report_notes'] = sanitize_raw($templates['report_notes']);
+}
+else {
+  $templates['report_notes'] = "";
+}
+
 $_SESSION['message_set'] = false;
 echo $twig->render('device_memo.html', array(
+  'templates' => $templates,
   'imei_data' => $imei_data,
   'session' => $_SESSION,
   'device_actions' => $_SESSION['lang']['device_actions'],

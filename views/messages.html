@@ -6,6 +6,7 @@
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
 {% if show == "compose" %}
 <form class="form-horizontal" role="form" method="post" action="submit.php?type=send_message">
+  <input type="hidden" name="token" value="{{session.user.token}}">
 <div class="panel panel-default">
   <div class="panel-heading">
     <h3 class="panel-title">{{ lang.send_a_message }}</h3>
@@ -44,7 +45,7 @@
     </div>
   </div>
   <div class="panel-footer">
-    <button type="submit" class="btn btn-success"><i class="fa fa-send"></i> {{ lang.send }}</button> <a href="messages.php?show=compose" class="btn btn-default">{{ lang.clear_form }}</a>
+    <button type="submit" class="btn btn-success pull-right"><i class="fa fa-send"></i> {{ lang.send }}</button> <a href="messages.php?show=compose" class="btn btn-default">{{ lang.clear_form }}</a>
   </div>
 </div>
 </form>
@@ -68,7 +69,7 @@
       <td><a href="messages.php?open={{ msg.id }}&show=inbox">{% if not msg.subject %}<i>{{ lang.no_subject }}</i>{% else %}{{ msg.subject }}{% endif %}</a></td>
       <td>{{ msg.attr_1 }}</td>
       <td>{% if msg.received == "0" %}<i>{{ lang.new }}</i>{% else %}{{ msg.received }}{% endif %}</td>
-      <td>{% if msg.received != "0" %}<a href="submit.php?type=archive_received&id={{msg.id}}"><i class="fa fa-archive"></i></a>{% endif %}</td>
+      <td>{% if msg.received != "0" %}<a href="submit.php?type=archive_received&id={{msg.id}}&token={{session.user.token}}"><i class="fa fa-archive"></i></a>{% endif %}</td>
       {% if open == msg.id %}
       <tr>
         <td style="border:1px solid #DDD;background-color:#EEE;" colspan="5">
@@ -76,6 +77,7 @@
           <br>
 
           <form class="form-horizontal" role="form" method="post" action="submit.php?type=send_message">
+            <input type="hidden" name="token" value="{{session.user.token}}">
                   {% for msg in messages %}
                   {% if msg.id == open %}
                   <input type="hidden" name="msgto" value="{{ msg.msgfrom }}">
@@ -97,7 +99,7 @@
                   {{msg.body}}{% endif %}{% endfor %}</textarea>
                 </div>
               </div>
-              <button type="submit" class="btn btn-success btn-sm"><i class="fa fa-reply"></i> {{ lang.reply }}</button> <span class="pull-right"><a class="btn btn-warning btn-sm" href="submit.php?type=archive_received&id={{msg.id}}"><i class="fa fa-archive"></i> {{ lang.archive_message }}</a></span>
+              <button type="submit" class="btn btn-success btn-sm pull-right"><i class="fa fa-reply"></i> {{ lang.reply }}</button> <a class="btn btn-warning btn-sm" href="submit.php?type=archive_received&id={{msg.id}}&token={{session.user.token}}"><i class="fa fa-archive"></i> {{ lang.archive_message }}</a>
             </div>
           </form>
         </td>
@@ -129,7 +131,7 @@
       <td><a href="messages.php?open={{ msg.id }}&show=outbox">{{ msg.subject }}</a></td>
       <td>{{ msg.attr_1 }}</td>
       <td>{% if msg.received == "0" %}<i>{{ lang.not_received }}</i>{% else %}{{ msg.received }}{% endif %}</td>
-      <td><a href="submit.php?type=archive_sent&id={{msg.id}}"><i class="fa fa-archive"></i></a></td>
+      <td><a href="submit.php?type=archive_sent&id={{msg.id}}&token={{session.user.token}}"><i class="fa fa-archive"></i></a></td>
       {% if open == msg.id %}
       <tr>
         <td style="border:1px solid #DDD;background-color:#EEE;" colspan="6">
@@ -137,11 +139,12 @@
           <br>
           <span class="pull-right">
           <form method="post" action="messages.php?show=compose">
+            <input type="hidden" name="token" value="{{session.user.token}}">
             <input type="hidden" value="{{msg.body}}" name="copy_body">
             <input type="hidden" value="{{msg.subject}}" name="copy_subject">
             <input type="hidden" value="{{msg.msgto}}" name="copy_msgto">
             <button type="submit" class="btn btn-sm btn-success"><i class="fa fa-copy"></i> {{ lang.copy_to_new }}</button>
-          <a class="btn btn-warning btn-sm" href="submit.php?type=archive_sent&id={{msg.id}}"><i class="fa fa-archive"></i> {{ lang.archive_message }}</a>
+          <a class="btn btn-warning btn-sm" href="submit.php?type=archive_sent&id={{msg.id}}&token={{session.user.token}}"><i class="fa fa-archive"></i> {{ lang.archive_message }}</a>
         </form></span>
         </td>
       </tr>
@@ -176,16 +179,16 @@
       <td>{% if msg.received == "0" %}<i>{{ lang.not_received }}</i>{% else %}{{ msg.received }}{% endif %}</td>
       <td>
       {% if msg.archived_to == "1" %}
-      <a href="submit.php?type=restore_received&id={{msg.id}}"><i class="fa fa-undo"></i></a>
+      <a href="submit.php?type=restore_received&id={{msg.id}}&token={{session.user.token}}"><i class="fa fa-undo"></i></a>
       {% elseif msg.archived_from == "1" %}
-      <a href="submit.php?type=restore_sent&id={{msg.id}}"><i class="fa fa-undo"></i></a>
+      <a href="submit.php?type=restore_sent&id={{msg.id}}&token={{session.user.token}}"><i class="fa fa-undo"></i></a>
       {% endif %}
       </td>
       <td>
       {% if msg.msgto == session.user.username %}
-      <a href="submit.php?type=delete_received&id={{msg.id}}"><i style="color:red;" class="fa fa-remove"></i></a>
+      <a href="submit.php?type=delete_received&id={{msg.id}}&token={{session.user.token}}"><i style="color:red;" class="fa fa-remove"></i></a>
       {% elseif msg.msgfrom == session.user.username %}
-      <a href="submit.php?type=delete_sent&id={{msg.id}}"><i style="color:red;" class="fa fa-remove"></i></a>
+      <a href="submit.php?type=delete_sent&id={{msg.id}}&token={{session.user.token}}"><i style="color:red;" class="fa fa-remove"></i></a>
       {% endif %}
       </td>
       {% if open == msg.id %}
@@ -195,19 +198,20 @@
           <br>
           <span class="pull-right">
           <form method="post" action="messages.php?show=compose">
+            <input type="hidden" name="token" value="{{session.user.token}}">
             <input type="hidden" value="{{msg.body}}" name="copy_body">
             <input type="hidden" value="{{msg.subject}}" name="copy_subject">
             <input type="hidden" value="{{msg.msgto}}" name="copy_msgto">
             <button type="submit" class="btn btn-sm btn-success"><i class="fa fa-copy"></i> {{ lang.copy_to_new }}</button>
           {% if msg.msgto == session.user.username %}
-          <a class="btn btn-warning btn-sm" href="submit.php?type=delete_received&id={{msg.id}}"><i class="fa fa-remove"></i> {{ lang.delete_message }}</a>
+          <a class="btn btn-warning btn-sm" href="submit.php?type=delete_received&id={{msg.id}}&token={{session.user.token}}"><i class="fa fa-remove"></i> {{ lang.delete_message }}</a>
           {% elseif msg.msgfrom == session.user.username%}
-          <a class="btn btn-warning btn-sm" href="submit.php?type=delete_sent&id={{msg.id}}"><i class="fa fa-remove"></i> {{ lang.delete_message }}</a>
+          <a class="btn btn-warning btn-sm" href="submit.php?type=delete_sent&id={{msg.id}}&token={{session.user.token}}"><i class="fa fa-remove"></i> {{ lang.delete_message }}</a>
           {% endif %}
           {% if msg.archived_to == "1" %}
-          <a class="btn btn-info btn-sm" href="submit.php?type=restore_received&id={{msg.id}}"><i class="fa fa-archive"></i> {{ lang.restore_to_inbox }}</a>
+          <a class="btn btn-info btn-sm" href="submit.php?type=restore_received&id={{msg.id}}&token={{session.user.token}}"><i class="fa fa-archive"></i> {{ lang.restore_to_inbox }}</a>
           {% elseif msg.archived_from == "1" %}
-          <a class="btn btn-info btn-sm" href="submit.php?type=restore_sent&id={{msg.id}}"><i class="fa fa-archive"></i> {{ lang.restore_to_outbox }}</a>
+          <a class="btn btn-info btn-sm" href="submit.php?type=restore_sent&id={{msg.id}}&token={{session.user.token}}"><i class="fa fa-archive"></i> {{ lang.restore_to_outbox }}</a>
           {% endif %}
           </form>
         </span>
@@ -220,7 +224,7 @@
     {% endfor %}
     {% if session.unread.msgcount_archived == 0 %}<tr><td colspan="7" class="active">{{ lang.no_messages|capitalize }}</tr></td>{% endif %}
   </table>
-  {% if session.unread.msgcount_archived > 0 %}&nbsp;&nbsp;<a href="submit.php?type=delete_all"><i style="color:red;" class="fa fa-remove"></i> {{ lang.delete_all_archived }}</a>{% endif%}
+  {% if session.unread.msgcount_archived > 0 %}&nbsp;&nbsp;<a href="submit.php?type=delete_all&token={{session.user.token}}"><i style="color:red;" class="fa fa-remove"></i> {{ lang.delete_all_archived }}</a>{% endif%}
 {% endif %}
 
 </div>

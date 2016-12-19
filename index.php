@@ -76,7 +76,7 @@ if (isset($sort_s)) {
         $statuslimit = 'AND case_status = "3" ';
     }
 }
-if (isset($_GET['search'])) {
+if (isset($_GET['search']) && (!empty($_GET['search']))) {
     // If a search string is present, handle that. Handled via GET for bookmarking a search.
     // if the search is for UID, jump to that case.
   $search_term = substr($_GET['search'], 0, 128);
@@ -177,6 +177,7 @@ echo $twig->render('index.html', array(
   'session' => $_SESSION,
   'has_attachments' => $has_attachments,
   'search_term' => $search_term,
+  'sort_s' => $sort_s,
   'query_d' => $sort_d,
   'query_j' => $sort_j,
   'query_s' => $sort_s,

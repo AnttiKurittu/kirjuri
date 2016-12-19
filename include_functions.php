@@ -21,7 +21,6 @@ $pur_config = HTMLPurifier_Config::createDefault();
 $pur_config->set('Cache.SerializerPath', './cache');
 $purifier = new HTMLPurifier($pur_config);
 
-
 session_start();
 
 foreach($_GET as $key => $value) // Sanitize all GET variables
@@ -61,7 +60,6 @@ function protect_page($required_access_level)
 {
     if ((empty($_SESSION['user']) && $_SERVER['PHP_SELF'] !== '/api.php')) {
         // Check if user variable is set.
-
     header('Location: login.php');
         die;
     } else {

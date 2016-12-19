@@ -10,7 +10,6 @@
 
 <div class="col-md-4 pull-right">
   <form role="form" method="GET" action="index.php">
-    <input type="hidden" name="token" value="{{session.user.token}}">
     <input type="text" class="form-control" name="search" placeholder="{{ lang.search_reqs_and_devs }}" title="Boolean search, * is wildcard." value="{{ search_term }}" onkeyup="showHint(this.value)">
     <input type="hidden" name="year" value="{{ dateStart|date("Y") }}">
     {% if query_j %}<input type="hidden" name="j" value="{{ query_j }}">{% endif %}
@@ -18,7 +17,11 @@
     {% if query_s %}<input type="hidden" name="s" value="{{ query_s }}">{% endif %}
   </form>
 </div>
-<h3 class="page-header">{{ session.refresh }} {{ lang.forensic_examination_requests }} {{ dateStart|date("Y") }} {{ count_new }} {{ count_open }} {{ count_finished }}<a href='index.php?year={{ (dateStart|date("Y") - 1 ) }}{% if query_s %}&s={{ query_s }}{% endif %}{% if query_j %}&j={{ query_j }}{% endif %}{% if query_d %}&d={{ query_d }}{% endif %}{% if search_term %}&search={{ search_term|replace({"\+": "%2B"}) }}{% endif %}'><span class="glyphicon glyphicon-triangle-left" aria-hidden="true"></span></a> <a href='index.php?year={{ (dateStart|date("Y") + 1 ) }}{% if query_s %}&s={{ query_s }}{% endif %}{% if query_j %}&j={{ query_j }}{% endif %}{% if query_d %}&d={{ query_d }}{% endif %}{% if search_term %}&search={{ search_term|replace({"\+": "%2B"}) }}{% endif %}'><span class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span></a> </h3>
+{% if search_term %}
+<h3 class="page-header"><i class="fa fa-search"></i> {{search_term}}</h3>
+{% else %}
+<h3 class="page-header">{{ session.refresh }} {{ lang.forensic_examination_requests }} {{ dateStart|date("Y") }} <a href='index.php?year={{ (dateStart|date("Y") - 1 ) }}{% if query_s %}&s={{ query_s }}{% endif %}{% if query_j %}&j={{ query_j }}{% endif %}{% if query_d %}&d={{ query_d }}{% endif %}{% if search_term %}&search={{ search_term|replace({"\+": "%2B"}) }}{% endif %}'><span class="glyphicon glyphicon-triangle-left" aria-hidden="true"></span></a> <a href='index.php?year={{ (dateStart|date("Y") + 1 ) }}{% if query_s %}&s={{ query_s }}{% endif %}{% if query_j %}&j={{ query_j }}{% endif %}{% if query_d %}&d={{ query_d }}{% endif %}{% if search_term %}&search={{ search_term|replace({"\+": "%2B"}) }}{% endif %}'><span class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span></a> </h3>
+{% endif %}
 {% if settings.motd %}
 <div class="panel panel-danger">
   <div class="panel-body">
@@ -33,6 +36,7 @@
     </h5>
     {% endif %}
     -->
+{% if row_cases %}
   <table class="table">
     <thead>
          <tr>
@@ -189,7 +193,7 @@
       {% if (entry.id != entry.parent_id) and (entry.is_removed == "0") %}
       <tr>
         <td colspan="999">
-          <i class="fa fa-cube"></i> {{ lang.search_found_device }}: <a href="device_memo.php?db_row={{ entry.id }}">{{ entry.device_type }}, {{ entry.device_manuf }} {{ entry.device_model }}{% if entry.device_identifier %}, {{ lang.identifier }} {{ entry.device_identifier }}{% endif %}{% if entry.device_owner %}, {{ lang.owner }} {{ entry.device_owner }}{% endif %}</a> (<a href="edit_request.php?case={{ entry.parent_id }}&tab=devices">{{ lang.go_to_request }}</a>)
+          <i class="fa fa-cube"></i> {% set device_counter = (device_counter + 1) %}{{ lang.search_found_device }}: <a href="device_memo.php?db_row={{ entry.id }}">{{ entry.device_type }}, {{ entry.device_manuf }} {{ entry.device_model }}{% if entry.device_identifier %}, {{ lang.identifier }} {{ entry.device_identifier }}{% endif %}{% if entry.device_owner %}, {{ lang.owner }} {{ entry.device_owner }}{% endif %}</a> (<a href="edit_request.php?case={{ entry.parent_id }}&tab=devices">{{ lang.go_to_request }}</a>)
         </td>
       </tr>
       {% endif %}
@@ -209,5 +213,13 @@
       <tr><td colspan="999"><i class="fa fa-info-circle"></i> {{ lang.showing_a_total_of }} {{device_counter}} {{ lang.devices_in }} {{counter}} {{lang.requests}} ({{new_counter}} {{lang.new}}, {{open_counter}} {{lang.open}}, {{ready_counter}} {{lang.ready}}.).</td></tr>
     </tbody>
   </table>
+{% else %}
+{% if search_term %}
+<div class="alert alert-warning" role="alert">{{ lang.no_search_results }}</div>
+{% else %}
+<div class="alert alert-info" role="alert">{{ lang.no_requests_to_show }}</div>
+{% endif %}
+{% endif %}
+
 </div>
 {% endblock %}

@@ -123,6 +123,7 @@
           <ul class="nav nav-sidebar">
             <li{% if "index.php" in settings.self %} class="active"{% endif %}><a href='index.php?year={{ dateStart|date("Y") }}'><span class="glyphicon glyphicon-home" aria-hidden="true"></span> {{ lang.front_page }} {{ dateStart|date("Y") }}<span class="sr-only">(current)</span></a></li>
           </ul>
+
           {% endif %}
           {% if ("edit_request.php" in settings.self) %}
           <ul class="nav nav-sidebar">
@@ -144,10 +145,11 @@
             <li role="presentation"><a href="edit_request.php?case={{ caserow.0.id }}&tab=ohjeet">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {{ lang.crime_type_instructions }}</a></li>
           </ul>
           {% endif %}
-
+          {% if session.user.access <= 2 %}
           <ul class="nav nav-sidebar">
-            <li{% if "statistics.php" in settings.self %} class="active"{% endif %}{% if session.user.access >= 3 %} class="disabled"{% endif %}><a href='statistics.php?year={{ dateStart|date("Y") }}'> <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> {{ lang.statistics }} {{ dateStart|date("Y") }}</a></li>
+            <li{% if "statistics.php" in settings.self %} class="active"{% endif %}><a href='statistics.php?year={{ dateStart|date("Y") }}'> <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> {{ lang.statistics }} {{ dateStart|date("Y") }}</a></li>
           </ul>
+          {% endif %}
           <ul class="nav nav-sidebar">
             <li{% if "add_case.php" in settings.self %} class="active"{% endif %}><a href="add_case.php"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{ lang.add_a_request }}</a></li>
           </ul>

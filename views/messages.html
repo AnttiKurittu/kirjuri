@@ -65,7 +65,6 @@
     {% if msg.archived_to == 0 and msg.msgto == session.user.username %}
     <tr {% if open == msg.id %}class="info"{% elseif not msg.received %}class="success"{% endif %} %}>
       <td style="width:200px;">{% if msg.msgfrom == "Myself" %}<span style="color:green;"><i class="fa fa-caret-right"></i> <i class="fa fa-inbox"></i></span> <i>{{ session.user.name }}</i>{% elseif msg.msgfrom == session.user.username %}<span style="color:red;"><i class="fa fa-inbox"></i> <i class="fa fa-caret-right"></i></span> {% for entry in session.all_users %}{% if entry.username == msg.msgfrom %}{{ entry.name }}{% endif %}{% endfor %}{% else %}<span style="color:green;"><i class="fa fa-caret-right"> <i class="fa fa-inbox"></i> </i></span> {% for entry in session.all_users %}{% if entry.username == msg.msgfrom %}{{ entry.name }}{% endif %}{% endfor %}{% endif %}</td>
-
       <td><a href="messages.php?open={{ msg.id }}&show=inbox">{% if not msg.subject %}<i>{{ lang.no_subject }}</i>{% else %}{{ msg.subject }}{% endif %}</a></td>
       <td>{{ msg.attr_1 }}</td>
       <td>{% if msg.received == "0" %}<i>{{ lang.new }}</i>{% else %}{{ msg.received }}{% endif %}</td>
@@ -75,7 +74,6 @@
         <td style="border:1px solid #DDD;background-color:#EEE;" colspan="5">
           {{ msg.body|raw }}
           <br>
-
           <form class="form-horizontal" role="form" method="post" action="submit.php?type=send_message">
             <input type="hidden" name="token" value="{{session.user.token}}">
                   {% for msg in messages %}

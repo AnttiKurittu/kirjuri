@@ -1,6 +1,11 @@
 <html>
 <body>
-<pre><h3>Kirjuri installer</h3><p>Testing write permissions...</p><?php
+<pre><h3>Kirjuri installer</h3>
+<?php
+if (file_exists("conf/mysql_credentials.php"))
+{ echo "Installer has already been run on this instance. Please remove the file conf/mysql_credentials.php to run the installer again.";
+  die;
+}
 
 function error_handler($n, $s, $f) // Custom error handler for the installation script.
 {
@@ -12,6 +17,8 @@ function error_handler($n, $s, $f) // Custom error handler for the installation 
 set_error_handler('error_handler');
 
 echo '<p>Web server running as "'.exec('whoami').'"</p>';
+echo '<p>Testing write permissions...</p>';
+
 
 $i = 0; // Count folders
 $test_folders = array(

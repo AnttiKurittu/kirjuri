@@ -1,5 +1,6 @@
 <?php
 require_once './include_functions.php';
+protect_page(3);
 $release_version = num(file_get_contents('conf/RELEASE'));
 $_SESSION['message_set'] = false;
 echo $twig->render('help.html', array(

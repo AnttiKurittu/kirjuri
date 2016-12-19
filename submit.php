@@ -121,9 +121,9 @@ if ($_GET['type'] === 'login')
    }
   else
    {
-    file_put_contents('conf/BLOCK_' . hash('sha1', $_POST['username']), "failed password attempt");
+    file_put_contents('conf/BLOCK_' . hash('sha1', strtolower($_POST['username'])), "failed password attempt");
     sleep(5);
-    unlink('conf/BLOCK_' . hash('sha1', $_POST['username']));
+    unlink('conf/BLOCK_' . hash('sha1', strtolower($_POST['username'])));
     message('error', $_SESSION['lang']['invalid_credentials']);
     logline('action', 'Login attempt: ' . $_POST['username']);
     header('Location: login.php');

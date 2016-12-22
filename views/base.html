@@ -131,7 +131,8 @@
             <li role="presentation"{% if returntab == "devices" %} class="active"{% endif %}><a href="#tab-devices" aria-controls="tab-devices" role="tab" data-toggle="tab">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {% if caserow.0.case_devicecount >= "1" %}<b>{% endif %}{{ lang.devices_and_medias }} {% if caserow.0.case_devicecount >= "1" %}</b><span class="badge pull-right">{{ caserow.0.case_devicecount }}</span>{% endif %}</a></li>
             <li role="presentation"{% if returntab == "report_notes" %} class="active"{% endif %}><a href="#tab-report_notes" aria-controls="tab-report_notes" role="tab" data-toggle="tab">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {% if caserow.0.report_notes %}<b>{% endif %}{{ lang.examination_report }}{% if caserow.0.report_notes %}</b>{% endif %}</a></li>
             <li role="presentation"{% if returntab == "examiners_notes" %} class="active"{% endif %}><a href="#tab-examiners_notes" aria-controls="tab-examiners_notes" role="tab" data-toggle="tab">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {% if caserow.0.examiners_notes %}<b>{% endif %}{{ lang.examination_notes }}{% if caserow.0.examiners_notes %}</b>{% endif %}</a></li>
-            <li role="presentation"{% if returntab == "ohjeet" %} class="active"{% endif %}><a href="#tab-ohjeet" aria-controls="tab-ohjeet" role="tab" data-toggle="tab">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {{ lang.crime_type_instructions }}</a></li>
+            <li role="presentation"{% if returntab == "access" %} class="active"{% endif %}><a href="#tab-access" aria-controls="tab-access" role="tab" data-toggle="tab">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {% if caserow.0.case_owner %}<b>{{ lang.access_control }}</b>{% else %}{{ lang.access_control }}{% endif %}</a></li>
+            <li role="presentation"{% if returntab == "caselog" %} class="active"{% endif %}><a href="#tab-caselog" aria-controls="tab-caselog" role="tab" data-toggle="tab">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {{ lang.case_log }}</a></li>
           </ul>
           {% endif %}
 
@@ -142,7 +143,8 @@
             <li role="presentation" class="active"><a href="#">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {{ mediarow.0.device_type }} </a></li>
             <li role="presentation"><a href="edit_request.php?case={{ caserow.0.id }}&tab=report_notes">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {% if caserow.0.report_notes %}<b>{% endif %}{{ lang.examination_report }}{% if caserow.0.report_notes %}</b>{% endif %}</a></li>
             <li role="presentation"><a href="edit_request.php?case={{ caserow.0.id }}&tab=examiners_notes">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {% if caserow.0.examiners_notes %}<b>{% endif %}{{ lang.examination_notes }}{% if caserow.0.examiners_notes %}</b>{% endif %}</a></li>
-            <li role="presentation"><a href="edit_request.php?case={{ caserow.0.id }}&tab=ohjeet">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {{ lang.crime_type_instructions }}</a></li>
+            <li role="presentation"><a href="edit_request.php?case={{ caserow.0.id }}&tab=access">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {% if caserow.0.case_owner %}<b>{{ lang.access_control }}</b>{% else %}{{ lang.access_control }}{% endif %}</a></li>
+            <li role="presentation"><a href="edit_request.php?case={{ caserow.0.id }}&tab=caselog">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {{ lang.case_log }}</a></li>
           </ul>
           {% endif %}
           {% if session.user.access <= 2 %}

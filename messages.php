@@ -1,7 +1,14 @@
 <?php
 
 require_once './include_functions.php';
-csrf_init();
+
+// Force end session
+if (!file_exists('cache/user_' . md5($_SESSION['user']['username']) . '.txt'))
+{
+  header('Location: submit.php?type=logout');
+  die;
+}
+
 $open = isset($_GET['open']) ? $_GET['open'] : '';
 $prefill_msgto = isset($_GET['msgto']) ? $_GET['msgto'] : '';
 $_SESSION['post_cache']['subject'] = urldecode(isset($_GET['subject']) ? $_GET['subject'] : '');

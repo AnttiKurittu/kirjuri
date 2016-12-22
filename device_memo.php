@@ -2,8 +2,13 @@
 
 require_once './include_functions.php';
 protect_page(2); // View only or higher
-csrf_init();
 
+// Force end session
+if (!file_exists('cache/user_' . md5($_SESSION['user']['username']) . '.txt'))
+{
+  header('Location: submit.php?type=logout');
+  die;
+}
 
 $query = $kirjuri_database->prepare('SELECT * FROM exam_requests WHERE is_removed != "1" AND id = :db_row LIMIT 1');
 $query->execute(array(
@@ -24,6 +29,13 @@ $hostdevice = $query->fetchAll(PDO::FETCH_ASSOC);
 
 foreach ($mediarow as $entry) {
     $casefetch = $entry;
+}
+
+verify_owner($casefetch['parent_id']);
+
+if (empty($_SESSION['case_token'][ $casefetch['parent_id'] ]))
+{
+  $_SESSION['case_token'][$casefetch['parent_id']] = substr(md5(microtime()),rand(0,26),8); // Initialize case token
 }
 
 $query = $kirjuri_database->prepare('SELECT * FROM exam_requests WHERE is_removed != "1" AND id = :parent_id LIMIT 1');
@@ -78,6 +90,7 @@ else {
 
 $_SESSION['message_set'] = false;
 echo $twig->render('device_memo.html', array(
+  'ct' => $_SESSION['case_token'][$casefetch['parent_id']],
   'templates' => $templates,
   'imei_data' => $imei_data,
   'session' => $_SESSION,

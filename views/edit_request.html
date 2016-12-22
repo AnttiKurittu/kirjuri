@@ -89,6 +89,7 @@ if (e.keyCode == 13) {
                 <p>{{ lang.pick_examiner }}</p>
                 <form name="add_forensic_investigator" class="form" role="form" method="post" action="submit.php?type=case_update&db_row={{ entry.parent_id }}">
                   <input type="hidden" name="token" value="{{session.user.token}}">
+                  <input type="hidden" name="ct" value="{{ct}}">
                   <div class="form-group">
                     <select style="text-align:left;width:100%;" class="btn btn-default" name="forensic_investigator" id="forensic_investigator">
                       <option disabled>{{ lang.forensic_examiner_long }}</option>
@@ -152,7 +153,8 @@ if (e.keyCode == 13) {
         <div class="panel panel-default">
           <div class="panel-body">
 
-        <h1 id="examination_request" class="page-header">{% if entry.case_status == "1" %}<i style="color:red;" class="fa fa-circle"></i>{% endif %}{% if entry.case_status == "2" %}<i style="color:gold;" class="fa fa-circle"></i>{% endif %}{% if entry.case_status == "3" %}<i style="color:green;" class="fa fa-circle"></i>{% endif %} {{ entry.case_id }}/{{ entry.case_added_date|date("Y") }} {% if entry.case_name %}{{ entry.case_name }}{% elseif entry.case_suspect %}{{ lang.suspect_abbrev }} {{ entry.case_suspect }}{% else %}{{ lang.suspect_short }}{% endif %} ({{ entry.case_file_number }})</h1>
+        <h1 id="examination_request" class="page-header">{% if entry.case_status == "1" %}<i style="color:red;" class="fa fa-square"></i>{% endif %}{% if entry.case_status == "2" %}<i style="color:gold;" class="fa fa-square"></i>{% endif %}{% if entry.case_status == "3" %}<i style="color:green;" class="fa fa-square"></i>{% endif %} {{ entry.case_id }}/{{ entry.case_added_date|date("Y") }} {% if entry.case_name %}{{ entry.case_name }}{% elseif entry.case_suspect %}{{ lang.suspect_abbrev }} {{ entry.case_suspect }}{% else %}{{ lang.suspect_short }}{% endif %} ({{ entry.case_file_number }})
+          {% if entry.case_owner %}<span class="pull-right" style="color:red;"><i class="fa fa-lock"></i></span>{% endif %}</h1>
 
         <h4><span class="label label-default">{{lang.crime|capitalize}}</span> {{ entry.case_crime }} / {{ entry.classification }}</h4>
         <h4><span class="label label-default">{{ lang.target|capitalize }}</span> {{ entry.case_suspect }}</h4>
@@ -223,6 +225,7 @@ if (e.keyCode == 13) {
           <tr><td colspan="4" class="active">
           <form class="form-inline" action="upload.php?case={{caserow.0.id}}" method="post" enctype="multipart/form-data">
             <input type="hidden" name="token" value="{{session.user.token}}">
+            <input type="hidden" name="ct" value="{{ct}}">
 
               <div class="form-group">
                 <input type="file" multiple name="fileToUpload[]" id="fileToUpload" class="btn btn-default btn-xs">
@@ -257,11 +260,13 @@ if (e.keyCode == 13) {
 
         <form class="form form-inline" role="form" method="post" action="submit.php?type=update_request_status">
           <input type="hidden" name="token" value="{{session.user.token}}">
-          {% for entry in caserow %}
-          <a href="download_csv.php?case={{entry.id}}" type="button" class="btn btn-warning"><i class="fa fa-download"></i> {{ lang.download_csv }}</a>
-          {% if entry.case_status != "3" %}<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#perustiedot"><i class="fa fa-info-circle"></i> {{ lang.edit_request_details }}</button>{% endif %}{% endfor %}
+          <input type="hidden" name="ct" value="{{ct}}">
+          <a href="download_csv.php?case={{caserow.0.id}}" type="button" class="btn btn-warning"><i class="fa fa-download"></i> {{ lang.download_csv }}</a>
+          {% if caserow.0.case_status != "3" %}<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#perustiedot"><i class="fa fa-info-circle"></i> {{ lang.edit_request_details }}</button>{% endif %}
+
           <a href="print_sticker.php?db_row={{ entry.id }}&type=examination_request" target="_BLANK" type="button" class="btn btn-info"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> {{ lang.print_sticker }}</a>
           <a type="button" class="btn btn-info" href="case_report.php?case={% for entry in caserow %}{{ entry.id }}{% endfor %}" target="_BLANK"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> {{ lang.print_report }}</a>
+
           <div class="form-group">
             <input type="hidden" value="{{ entry.id }}" name="returnid">
             {% set progress_counter1 = "0" %}
@@ -328,6 +333,7 @@ if (e.keyCode == 13) {
         <div class="col-sm-12">
           <form method="POST" class="form-inline pull-left" action="submit.php?type=set_removed_case">
             <input type="hidden" name="token" value="{{session.user.token}}">
+            <input type="hidden" name="ct" value="{{ct}}">
             <div class="form-group">
               <input type="hidden" name="remove_exam_request" value="{{ caserow.0.id }}">
               <button type="submit" class="btn btn-xl btn-danger">{{ lang.delete_request }}</button>
@@ -367,6 +373,7 @@ if (e.keyCode == 13) {
               <!--- perustiedot -->
               <form class="form form-horizontal" role="form" method="post" action="submit.php?type=case_update&db_row={{ entry.parent_id }}">
                 <input type="hidden" name="token" value="{{session.user.token}}">
+                <input type="hidden" name="ct" value="{{ct}}">
                 <div class="form-group">
                   <label for="examination_request" class="col-sm-2 control-label">{{ lang.case_name }}</label>
                   <div class="col-sm-10">
@@ -517,8 +524,8 @@ if (e.keyCode == 13) {
       </div>
     </div>
   </div>
-  <div role="tabpanel" class="tab-pane{% if returntab == "devices" %} active{% endif %}" id="tab-devices">
-  <div class="form-group"
+<div role="tabpanel" class="tab-pane{% if returntab == "devices" %} active{% endif %}" id="tab-devices">
+  <div class="form-group">
   <!-- Button trigger modal -->
   {% if (caserow.0.case_status == "2") or ((caserow.0.case_status == "1") and (caserow.0.phone_investigator != "")) %}
   <button type="button" class="btn btn-primary btn-md" data-toggle="modal" data-target="#add_media_modal_{{ entry.id }}">
@@ -584,6 +591,7 @@ if (e.keyCode == 13) {
       {% for media in media_objs if (entry.device_type == media) and (check != "1") %}
       <form class="form form-inline" role="form" method="post" action="submit.php?type=device_attach&db_row={{ entry.id }}&returnid={{ entry.parent_id }}">
         <input type="hidden" name="token" value="{{session.user.token}}">
+        <input type="hidden" name="ct" value="{{ct}}">
         <select style="text-align:left;" class="btn btn-xs btn-default" name="isanta">
           <option selected disabled value="0">{{ lang.associate_with_device }}</option>
           {% for target in mediarow %}
@@ -629,6 +637,7 @@ if (e.keyCode == 13) {
     <td style="vertical-align:middle;align:left;">
       <form class="form form-horizontal" role="form" method="post" action="submit.php?type=change_device_status&db_row={{ entry.id }}" target="submit_iframe{{entry.id}}">
         <input type="hidden" name="token" value="{{session.user.token}}">
+        <input type="hidden" name="ct" value="{{ct}}">
       {% if (caserow.0.case_status != 3) and (session.user.access <= 1) %}
     <p>  <select style="text-align:left;width:200px;" class="btn btn-{% if not entry.device_action %}danger{% else %}default{% endif %}" name="device_action" onchange="this.form.submit()">
       <option value="{{entry.device_action}}" selected="selected">{% set device_current_action = entry.device_action|split('|') %}{{device_current_action.1}}</option>
@@ -646,6 +655,7 @@ if (e.keyCode == 13) {
       </form>
       <p><form class="form form-horizontal" role="form" method="post" action="submit.php?type=change_device_location&db_row={{ entry.id }}" target="submit_iframe{{entry.id}}_void">
         <input type="hidden" name="token" value="{{session.user.token}}">
+        <input type="hidden" name="ct" value="{{ct}}">
       <select style="text-align:left;width:200px;" class="btn btn-{% if not entry.device_location %}danger{% else %}default{% endif %}" name="device_location" {% if session.user.access > 1 %}disabled{% else %}onchange="this.form.submit()"{% endif %}>
       <option value="{{entry.device_location}}" selected="selected">{{entry.device_location}}</option>
       <option disabled>---</option>
@@ -711,6 +721,7 @@ if (e.keyCode == 13) {
     <td style="vertical-align:middle;align:left;">
       <form class="form form-horizontal" role="form" method="post" action="submit.php?type=change_device_status&db_row={{ entry.id }}" target="submit_iframe{{entry.id}}">
         <input type="hidden" name="token" value="{{session.user.token}}">
+<input type="hidden" name="ct" value="{{ct}}">
       {% if (caserow.0.case_status != 3) and (session.user.access <= 1) %}
     <p>  <select style="text-align:left;width:200px;" class="btn btn-{% if not entry.device_action %}danger{% else %}default{% endif %}" name="device_action" onchange="this.form.submit()">
       <option value="{{entry.device_action}}" selected="selected">{% set device_current_action = entry.device_action|split('|') %}{{device_current_action.1}}</option>
@@ -728,6 +739,7 @@ if (e.keyCode == 13) {
       </form>
       <p><form class="form form-horizontal" role="form" method="post" action="submit.php?type=change_device_location&db_row={{ entry.id }}" target="submit_iframe{{entry.id}}_void">
         <input type="hidden" name="token" value="{{session.user.token}}">
+        <input type="hidden" name="ct" value="{{ct}}">
       <select style="text-align:left;width:200px;" class="btn btn-{% if not entry.device_location %}danger{% else %}default{% endif %}" name="device_location" {% if session.user.access > 1 %}disabled{% else %}onchange="this.form.submit()"{% endif %}>
       <option value="{{entry.device_location}}" selected="selected">{{entry.device_location}}</option>
       <option disabled>---</option>
@@ -765,6 +777,7 @@ if (e.keyCode == 13) {
       <div class="modal-body">
         <form class="form" role="form" method="post" action="submit.php?type=device">
           <input type="hidden" name="token" value="{{session.user.token}}">
+          <input type="hidden" name="ct" value="{{ct}}">
           <div class="form-group">
             <select style="text-align:left;" class="btn btn-default" name="device_type" id="device_type_2">
               <option selected disabled>{{ lang.choose_media_type }}:</option>
@@ -856,6 +869,7 @@ if (e.keyCode == 13) {
       <div class="modal-body">
         <form class="form" role="form" method="post" action="submit.php?type=device">
           <input type="hidden" name="token" value="{{session.user.token}}">
+          <input type="hidden" name="ct" value="{{ct}}">
           <div class="form-group">
             <select style="text-align:left;" class="btn btn-default" name="device_type" id="device_type_1">
               <option selected disabled>{{ lang.device_type }}</option>
@@ -941,6 +955,7 @@ if (e.keyCode == 13) {
 {% if mediarow %}
 <form class="form form-inline pull-right" role="form" method="post" action="submit.php?type=move_all&returnid={{ caserow.0.parent_id }}">
   <input type="hidden" name="token" value="{{session.user.token}}">
+  <input type="hidden" name="ct" value="{{ct}}">
   {% if caserow.0.case_status != "3" %}
   <select style="text-align:left;" class="btn btn-xs btn-default" name="device_action" id="device_action">
     <option value="NO_CHANGE" selected>{{ lang.sort_label_status }}</option>
@@ -965,56 +980,167 @@ if (e.keyCode == 13) {
 {% endif %}
 </div>
 <div role="tabpanel" class="tab-pane{% if returntab == "report_notes" %} active{% endif %}" id="tab-report_notes">
-{% if (caserow.0.case_status <= "2") and (caserow.0.forensic_investigator or caserow.0.phone_investigator) %}
-<h3 class="page-heading">{{ lang.examination_report }}</h3>
-<form class="form" role="form" method="post" action="submit.php?type=report_notes">
-  <input type="hidden" name="token" value="{{session.user.token}}">
-<div class="form-group form-horizontal">
-<textarea id="richeditor" class="textarea form-control" rows="25" style="height:500px;" name="report_notes">{% if caserow.0.report_notes %}{{ caserow.0.report_notes }}{% else %}{{ settings.report_notes_footer }}{% endif %}</textarea>
+  {% if (caserow.0.case_status <= "2") and (caserow.0.forensic_investigator or caserow.0.phone_investigator) %}
+  <h3 class="page-heading">{{ lang.examination_report }}</h3>
+  <form class="form" role="form" method="post" action="submit.php?type=report_notes">
+    <input type="hidden" name="token" value="{{session.user.token}}">
+    <input type="hidden" name="ct" value="{{ct}}">
+  <div class="form-group form-horizontal">
+  <textarea id="richeditor" class="textarea form-control" rows="25" style="height:500px;" name="report_notes">{% if caserow.0.report_notes %}{{ caserow.0.report_notes }}{% else %}{{ settings.report_notes_footer }}{% endif %}</textarea>
+  </div>
+  <input type="hidden" value="{{ caserow.0.parent_id }}" name="returnid">
+  <div class="form-group">
+  <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{ lang.save_examination_report }}</button>
+  </div>
+  </form>
+  {% else %}
+  <div class="panel panel-default">
+  <div class="panel-heading">
+  <h3 id="report_notes" class="panel-title">{{ lang.examination_report }}</h3>
+  </div>
+  <div class="panel-body">
+  {{ caserow.0.report_notes|raw }}
+  </div>
+  </div>
+  {% endif %}
 </div>
-<input type="hidden" value="{{ caserow.0.parent_id }}" name="returnid">
-<div class="form-group">
-<button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{ lang.save_examination_report }}</button>
-</div>
-</form>
-{% else %}
-<div class="panel panel-default">
-<div class="panel-heading">
-<h3 id="report_notes" class="panel-title">{{ lang.examination_report }}</h3>
-</div>
-<div class="panel-body">
-{{ caserow.0.report_notes|raw }}
-</div>
-</div>
-{% endif %}
-</div>
+
 <div role="tabpanel" class="tab-pane{% if returntab == "examiners_notes" %} active{% endif %}" id="tab-examiners_notes">
+  {% if (caserow.0.case_status <= "2") and (caserow.0.forensic_investigator or caserow.0.phone_investigator) %}
+  <h3 class="page-heading">{{ lang.examiners_private_notes }}</h3>
+  <form class="form" role="form" method="post" action="submit.php?type=examiners_notes">
+    <input type="hidden" name="token" value="{{session.user.token}}">
+    <input type="hidden" name="ct" value="{{ct}}">
+  <div class="form-group form-horizontal">
+  <textarea id="richeditor2" class="textarea form-control" rows="25" style="height:500px;" name="examiners_notes">{{ caserow.0.examiners_notes }}</textarea>
+  </div>
+  <input type="hidden" value="{{ caserow.0.parent_id }}" name="returnid">
+  <div class="form-group">
+  <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{ lang.save_notes }}</button>
+  </div>
+  </form>
+  {% else %}
+  <div class="panel panel-default">
+  <div class="panel-heading">
+  <h3 id="report_notes" class="panel-title">{{ lang.examiners_private_notes }}</h3>
+  </div>
+  <div class="panel-body">
+  {{ caserow.0.examiners_notes|raw }}
+  </div>
+  </div>
+  {% endif %}
+</div>
+
+<div role="tabpanel" class="tab-pane{% if returntab == "access" %} active{% endif %}" id="tab-access">
 {% if (caserow.0.case_status <= "2") and (caserow.0.forensic_investigator or caserow.0.phone_investigator) %}
-<h3 class="page-heading">{{ lang.examiners_private_notes }}</h3>
-<form class="form" role="form" method="post" action="submit.php?type=examiners_notes">
-  <input type="hidden" name="token" value="{{session.user.token}}">
-<div class="form-group form-horizontal">
-<textarea id="richeditor2" class="textarea form-control" rows="25" style="height:500px;" name="examiners_notes">{{ caserow.0.examiners_notes }}</textarea>
-</div>
-<input type="hidden" value="{{ caserow.0.parent_id }}" name="returnid">
-<div class="form-group">
-<button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{ lang.save_notes }}</button>
-</div>
+
+<h3 class="page-heading">{{ lang.case_access_control }}</h3>
+<table class="table table-striped">
+
+  <form class="form" role="form" method="post" action="submit.php?type=case_access&id={{caserow.0.id}}">
+    <input type="hidden" name="token" value="{{session.user.token}}">
+    <input type="hidden" name="ct" value="{{ct}}">
+  <thead>
+    <th style="width:1px;">{{ lang.access }}</th>
+    <th>{{ lang.user }}</th>
+    <th class="text-center">{{ lang.forensic_examiner_long|capitalize }}</th>
+    <th class="text-center">{{ lang.mobile_examiner_long|capitalize }}</th>
+  </thead>
+
+  <tr{% if case_owner is empty %} class="success"{% else %} class="danger"{% endif %}>
+    <td>
+      <input type="checkbox" name="access[all_users]" value="true" {% if case_owner is empty %}checked{% endif %}>
+    </td>
+    <td>
+      <b>{% if not case_owner %}{{ lang.no_restrictions }}{% else %}{{ lang.clear_restrictions }}{% endif %}</b>
+    </td>
+    <td class="text-center">
+    </td>
+    <td class="text-center">
+    </td>
+
+  </tr>
+
+{% if session.user.access == "0" %}
+  <tr{% if "admin" in case_owner %} class="success"{% endif %}>
+    <td>
+      <input type="checkbox" name="access[admin_only]" value="true" {% if "admin" in case_owner %}checked{% endif %}>
+    </td>
+    <td>
+      <span style="color:red;">Admin only</span>
+    </td>
+    <td class="text-center">
+    </td>
+    <td class="text-center">
+    </td>
+
+  </tr>
+{% endif %}
+
+{% for user in session.all_users %}
+{% if (user.username == session.user.username and user.access != "0") or caserow.0.phone_investigator == user.name or caserow.0.forensic_investigator == user.name %}
+  <tr class="success">
+    <td>
+      <input type="hidden" name="access[{{user.username}}]" value="{{user.username}}"> <input type="checkbox" checked disabled>
+    </td>
+    <td>
+      {{ user.name }}
+    </td>
+    <td class="text-center">
+      {% if caserow.0.forensic_investigator == user.name %}<i style="color:green;" class="fa fa-check"></i>{% endif %}
+    </td>
+    <td class="text-center">
+      {% if caserow.0.phone_investigator == user.name %}<i style="color:green;" class="fa fa-check"></i>{% endif %}
+    </td>
+  </tr>
+{% endif %}
+{% endfor %}
+
+{% for user in session.all_users %}
+{% if user.username != session.user.username and caserow.0.phone_investigator != user.name and caserow.0.forensic_investigator != user.name and user.access <= 2 and user.access >= 1 %}
+  <tr {% if user.username not in case_owner and case_owner is not empty %}class="danger"{% endif %}{% if user.username in case_owner %} class="success"{% endif %}{% if not case_owner %} class="success"{% endif %}>
+    <td>
+      <input type="checkbox" name="access[{{user.username}}]" value="{{user.username}}" {% if (user.username in case_owner or caserow.0.forensic_investigator == user.name or caserow.0.phone_investigator == user.name) and (case_owner != empty) %}checked{% endif %}>
+    </td>
+    <td>
+      {{ user.name }}
+    </td>
+    <td class="text-center">
+      {% if caserow.0.forensic_investigator == user.name %}<i style="color:green;" class="fa fa-check"></i>{% endif %}
+    </td>
+    <td class="text-center">
+      {% if caserow.0.phone_investigator == user.name %}<i style="color:green;" class="fa fa-check"></i>{% endif %}
+    </td>
+  </tr>
+{% endif %}
+{% endfor %}
+</table>
+<button type="submit" class="btn btn-success"><i class="fa fa-lock"></i> {{ lang.set_case_access_rights }}</button>
 </form>
-{% else %}
-<div class="panel panel-default">
-<div class="panel-heading">
-<h3 id="report_notes" class="panel-title">{{ lang.examiners_private_notes }}</h3>
-</div>
-<div class="panel-body">
-{{ caserow.0.examiners_notes|raw }}
-</div>
-</div>
 {% endif %}
 </div>
-<div role="tabpanel" class="tab-pane" id="tab-ohjeet">
-<div class="col-md-12">{{ instructions_text }}</div>
+
+<div role="tabpanel" class="tab-pane{% if returntab == "caselog" %} active{% endif %}" id="tab-caselog">
+<h3 class="page-heading">{{ lang.case_log }}</h3>
+
+{% if caselog %}
+<table class="table table-condensed">
+  <thead>
+    <th>{{ lang.timestamp }}</th>
+    <th>{{ lang.event_details }}</th>
+  </thead>
+{% for line in caselog %}
+  <tr {% if session.user.username in line %}class="info"{% endif %}>
+    <td>{{ line|slice(0,19) }}</td><td>{{ line|slice(20) }}</td>
+  </tr>
+{% endfor %}
+</table>
+{% else %}
+<div class="alert alert-danger" role="alert">{{ lang.no_events }}</div>
+{% endif %}
+
 </div>
+
 </div>
 </div>
 <!-- tabit loppuu -->

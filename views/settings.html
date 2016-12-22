@@ -28,6 +28,8 @@
 
 {% if session.user.access == "0" %}
 
+<a class="btn btn-default" href="backup.php" target="_BLANK">Back up database...</a>
+
   <form class="form" action="upload_IMEI.php" method="post" enctype="multipart/form-data">
     <input type="hidden" name="token" value="{{session.user.token}}">
 <div class="form-group">
@@ -38,7 +40,7 @@
     <button type="submit" class="btn btn-success btn-xs"><i class="fa fa-upload"></i> {{ lang.upload }}</button>
   </form>
 
-  <h4>{{settings_file}}</h4>
+  <h2>{{settings_file}}</h2>
   <form class="form form-horizontal" role="form" method="post" action="submit.php">
     <input type="hidden" name="token" value="{{session.user.token}}">
     <input type="hidden" name="save" value="settings">
@@ -50,23 +52,41 @@
       <button type="reset" class="btn btn-sm btn-warning">{{ lang.cancel_changes }}</button>
     </div>
   </form>
-  <h4>{{ lang.event_log }}</h4>
-  <form class="form form-horizontal">
-    <input type="hidden" name="token" value="{{session.user.token}}">
-    <div class="form-group">
-<pre>
-{% for entry in event_log %}{{ entry.id }} {{ entry.event_level }} {{ entry.event_timestamp }} {{ entry.event_descr }} {{ entry.ip }}
-{% endfor %}
-</pre>
 
-<pre>
-{% for entry in event_log_errors %}{{ entry.id }} {{ entry.event_level }} {{ entry.event_timestamp }} {{ entry.event_descr }} {{ entry.ip }}
+<h2>{{ lang.event_log }}</h2>
+<table class="table table-condensed col-md-12">
+{% for entry in event_log %}
+  <tr>
+    <td>
+  {{entry}}
+    </td>
+  </tr>
 {% endfor %}
-</pre>
+<tr>
+  <td>
+    <a class="btn btn-danger btn-xs" href="submit.php?type=rotate_logs&token={{session.user.token}}">{{ lang.store_and_clear_logs }}</a>
+  </td>
+</tr>
+</table>
 
-    </div>
-  </form>
-<a href="backup.php" target="_BLANK">Back up database...</a>
+<h2>{{ lang.error_log }}</h2>
+<table class="table table-condensed">
+{% for entry in event_log_errors %}
+  <tr>
+    <td>
+  {{entry}}
+    </td>
+  </tr>
+{% endfor %}
+<tr>
+  <td>
+    <a class="btn btn-danger btn-xs" href="submit.php?type=rotate_logs&token={{session.user.token}}">{{ lang.store_and_clear_logs }}</a>
+  </td>
+</tr>
+</table>
+
+</div>
+
 {% endif %}
 
 </div>

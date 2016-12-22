@@ -2,7 +2,13 @@
 
 require_once './include_functions.php';
 protect_page(0);
-csrf_init();
+
+// Force end session
+if (!file_exists('cache/user_' . md5($_SESSION['user']['username']) . '.txt'))
+{
+  header('Location: submit.php?type=logout');
+  die;
+}
 
 // Declare variables
 $_GET['populate'] = isset($_GET['populate']) ? $_GET['populate'] : '';

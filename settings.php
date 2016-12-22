@@ -2,20 +2,13 @@
 
 require_once './include_functions.php';
 protect_page(1); // User only or higher, add or view only accounts cant change passwords.
-csrf_init();
 
-if ($settings['show_log'] === '1') {
-    $query = $kirjuri_database->prepare('SELECT * FROM event_log WHERE event_level != "Error" ORDER BY id DESC LIMIT 100');
-    $query->execute();
-    $event_log = $query->fetchAll(PDO::FETCH_ASSOC);
-
-    $query = $kirjuri_database->prepare('SELECT * FROM event_log WHERE event_level = "Error" ORDER BY id DESC LIMIT 100');
-    $query->execute();
-    $event_log_errors = $query->fetchAll(PDO::FETCH_ASSOC);
-} else {
-    $event_log = '';
-    $event_log_errors = '';
-};
+// Force end session
+if (!file_exists('cache/user_' . md5($_SESSION['user']['username']) . '.txt'))
+{
+  header('Location: submit.php?type=logout');
+  die;
+}
 
 $settings_filedump = file_get_contents($settings_file);
 $default_settings = parse_ini_file('conf/settings.conf', true);
@@ -23,6 +16,23 @@ $diff = array_diff_key($default_settings['settings'], $settings_contents['settin
 foreach ($diff as $key => $value) {
     trigger_error('Missing a settings directive from '.$settings_file.': '.$key.' = "'.$value.'". The default configuration file might have changed on update, please update your local settings file to contain this directive under [settings].');
 }
+
+if (file_exists('logs/kirjuri_case_0.log'))
+{
+  $event_log = array_reverse(file('logs/kirjuri_case_0.log'));
+}
+else {
+  $event_log = "";
+}
+
+if (file_exists('logs/error.log'))
+{
+  $event_log_errors = array_reverse(file('logs/error.log'));
+}
+else {
+  $event_log_errors = "";
+}
+
 
 $_SESSION['message_set'] = false;
 echo $twig->render('settings.html', array(

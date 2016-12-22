@@ -3,7 +3,13 @@
 require_once './include_functions.php';
 
 protect_page(2); // View only or higher
-csrf_init();
+
+// Force end session
+if (!file_exists('cache/user_' . md5($_SESSION['user']['username']) . '.txt'))
+{
+  header('Location: submit.php?type=logout');
+  die;
+}
 
 // Declare variables
 $failed_uploads = isset($_SESSION['failed_uploads']) ? $_SESSION['failed_uploads'] : '';
@@ -24,6 +30,30 @@ $query->execute(array(
   ':id' => $case_number,
 ));
 $caserow = $query->fetchAll(PDO::FETCH_ASSOC);
+
+if (empty($_SESSION['case_token'][$case_number]))
+{
+  $_SESSION['case_token'][$case_number] = substr(md5(microtime()),rand(0,26),16); // Initialize case token
+}
+
+if (!empty($caserow['0']['case_owner']))
+{
+  $case_owner = explode(";", $caserow['0']['case_owner']);
+  if ( ($_SESSION['user']['access'] > "0") && !in_array($_SESSION['user']['username'], $case_owner))
+  {
+    logline($caserow[0]['id'], "Access", "Denied, user not in access group.");
+    $_SESSION['message']['type'] = 'error';
+    $_SESSION['message']['content'] = sprintf($_SESSION['lang']['not_in_access_group']);
+    $_SESSION['message_set'] = true;
+    header('Location: index.php');
+    die;
+  }
+}
+else
+{
+  $case_owner = array();
+}
+
 $query = $kirjuri_database->prepare('SELECT id, case_id, case_suspect, case_name, case_devicecount FROM exam_requests WHERE case_file_number=:case_file_number AND id = parent_id AND is_removed = 0 AND case_id != :case_id');
 $query->execute(array(
   ':case_file_number' => $caserow[0]['case_file_number'],
@@ -50,7 +80,7 @@ if ($sort_j === 'dev_owner') {
 }
 $query = $kirjuri_database->prepare('SELECT * FROM exam_requests WHERE id != :id AND parent_id=:id AND is_removed != "1" ORDER BY '.$j);
 $query->execute(array(
-  ':id' => $get_case,
+  ':id' => $case_number,
 ));
 $mediarow = $query->fetchAll(PDO::FETCH_ASSOC);
 if (!file_exists('conf/instructions_'.str_replace(' ', '_', strtolower($caserow[0]['classification'])).'.txt')) {
@@ -61,7 +91,7 @@ if (!file_exists('conf/instructions_'.str_replace(' ', '_', strtolower($caserow[
 
 $drop_file_target = 'attachments/'.$case_number.'/'.stripslashes(str_replace('./', '', str_replace('../', '', urldecode($get_drop_file))));
 if ((!empty($get_drop_file) && (file_exists($drop_file_target)))) {
-    logline('Action', 'Attachment deleted: '.$drop_file_target);
+    logline($case_number, 'Action', 'Attachment deleted: '.$drop_file_target);
     unlink($drop_file_target);
 }
 
@@ -81,8 +111,20 @@ if (file_exists('attachments/'.$case_number.'/')) {
     }
 }
 
+if (file_exists('logs/kirjuri_case_' . $case_number . '.log'))
+{
+  $caselog = array_reverse(file('logs/kirjuri_case_' . $case_number . '.log'));
+}
+else {
+  $caselog = "";
+}
+
+
 $_SESSION['message_set'] = false; // Prevent a message from being shown twice.
 echo $twig->render('edit_request.html', array(
+  'ct' => $_SESSION['case_token'][$case_number],
+  'caselog' => $caselog,
+  'case_owner' => $case_owner,
   'session' => $_SESSION,
   'failed_uploads' => $failed_uploads,
   'session_cache' => $session_cache,

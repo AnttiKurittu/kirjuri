@@ -40,7 +40,7 @@ if ($_SESSION['message_set'] === false) {
     $_SESSION['message']['content'] = '';
 }
 
-function csrf_validate($token) {
+function csrf_session_validate($token) {
   if ($token === $_SESSION['user']['token']) {
     return true;
   }
@@ -51,8 +51,19 @@ function csrf_validate($token) {
   }
 }
 
+function csrf_case_validate($token, $case_id) {
+  if ($token === $_SESSION['case_token'][$case_id]) {
+    return true;
+  }
+  else {
+    trigger_error("Case validation token mismatch. Try again.");
+    header('Location: '.$_SERVER['HTTP_REFERER']);
+    die();
+  }
+}
+
 function csrf_init() {
-  $_SESSION['user']['token'] = hash('sha256', random_bytes(32));
+  $_SESSION['user']['token'] = substr(md5(microtime()),rand(0,26),16);
 }
 
 // Check user access level before rendering page. User details are stored in a session variable.
@@ -64,13 +75,36 @@ function protect_page($required_access_level)
         die;
     } else {
         if ($_SESSION['user']['access'] > $required_access_level) {
-            message('error', $_SESSION['lang']['insufficient_privileges']);
+            message('Access', $_SESSION['lang']['insufficient_privileges']);
             header('Location: '.$_SERVER['HTTP_REFERER']);
             die;
         } else {
             return true;
         }
     }
+}
+
+function verify_owner($id)
+{
+  global $kirjuri_database;
+  if ($_SESSION['user']['access'] === "0")
+  {
+    return true;
+  }
+  $query = $kirjuri_database->prepare('SELECT case_owner FROM exam_requests WHERE id = :id');
+  $query->execute(array(':id' => $id));
+  $case_owner = $query->fetch(PDO::FETCH_ASSOC);
+  $case_owner = explode(";", $case_owner['case_owner']);
+  if ( (in_array($_SESSION['user']['username'], $case_owner)) || (empty($case_owner[0])) )
+  {
+    return true;
+  }
+  else {
+    logline($id, 'Access', 'User initiated out-of-bounds POST request to case where not in access group.');
+    message('error', $_SESSION['lang']['not_in_access_group']);
+    header('Location: index.php');
+    die;
+  }
 }
 
 function sanitize_raw($string) // Purify HTML content for raw presentation.
@@ -83,15 +117,6 @@ function sanitize_raw($string) // Purify HTML content for raw presentation.
   {
     global $purifier;
     $out = $purifier->purify($string);
-/*
-
-//  Disabled logging purify events due to too much noise in the logs.
-
-    if(strcmp($out, $string) !== 0)
-    {
-      logline('Info', 'Purified string: ' . $string . ' => ' . $out);
-    }
-*/
     if(empty($out))
     {
       message('error', 'Invalid HTML input.');
@@ -174,7 +199,7 @@ function kirjuri_error_handler($errno, $errstr, $errfile, $errline) // Trigger a
         $_SESSION['message']['content'] = $errnums[$errno].': '.$errstr.'. In file '.$errfile.', line '.$errline.'.';
         $_SESSION['message_set'] = true;
     }
-    logline('Error', $errno.' '.$errstr.', File: '.$errfile.', line '.$errline);
+    logline('0', 'Error', $errno.' '.$errstr.', File: '.$errfile.', line '.$errline);
 }
 
 function db($database) // PDO Database connection
@@ -196,15 +221,25 @@ function db($database) // PDO Database connection
     }
 }
 
-function logline($event_level, $description) // Add an entry to event_log
+function logline($case_id, $event_level, $description) // Add an entry to event_log
 {
     global $mysql_config;
     try {
         if ((isset($_SESSION['user']['username'])) && (isset($description))) {
             $description = '['.$_SESSION['user']['username'].'] '.$description;
         }
-        $log = date('Y-m-d H:i:s').' '.$event_level.' - '.$description.' (Method: '.$_SERVER['REQUEST_METHOD'].' URI:'.$_SERVER['REQUEST_URI'].'), IP: '.$_SERVER['REMOTE_ADDR']."\r\n";
-        file_put_contents('logs/kirjuri.log', $log, FILE_APPEND);
+
+        $log = date('Y-m-d H:i:s').' '.$event_level.' - '.$description.' [URL:'.$_SERVER['REQUEST_URI'].', IP: '.$_SERVER['REMOTE_ADDR']."]\r\n";
+        if ($event_level === "Error")
+        {
+          $logfile = 'logs/error.log';
+        }
+        else
+        {
+          $logfile = 'logs/kirjuri_case_' . preg_replace('/[^0-9]/', '', $case_id) . '.log';
+        }
+        file_put_contents($logfile, $log, FILE_APPEND);
+
         $kirjuri_database = new PDO('mysql:host=localhost;dbname='.$mysql_config['mysql_database'].'', $mysql_config['mysql_username'], $mysql_config['mysql_password']);
         $kirjuri_database->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $kirjuri_database->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
@@ -212,7 +247,7 @@ function logline($event_level, $description) // Add an entry to event_log
         $event_insert_row = $kirjuri_database->prepare('INSERT INTO event_log (event_timestamp,event_level,event_descr,ip) VALUES (NOW(),:event_level,:event_descr,:ip)');
         $event_insert_row->execute(array(
          ':event_level' => $event_level,
-         ':event_descr' => $description.' (Method: '.$_SERVER['REQUEST_METHOD'].' URI:'.$_SERVER['REQUEST_URI'].')',
+         ':event_descr' => $case_id . ',' . $description.' (Method: '.$_SERVER['REQUEST_METHOD'].' URI:'.$_SERVER['REQUEST_URI'].')',
          ':ip' => $_SERVER['REMOTE_ADDR'],
        ));
 
@@ -236,14 +271,16 @@ if (file_exists('conf/mysql_credentials.php')) {
   die;
 }
 
-if (file_exists('conf/settings.local')) {
-    // Check for existence of settings file.
-
+if (file_exists('conf/settings.local'))
+{
   $settings_file = 'conf/settings.local';
-} elseif (file_exists('/etc/kirjuri/settings.local')) {
-    $settings_file = '/etc/kirjuri/settings.local';
-} else {
-    $settings_file = 'conf/settings.conf'; // Fall back to default settings.
+}
+elseif (file_exists('conf/settings.conf'))
+{
+  $settings_file = 'conf/settings.conf'; // Fall back to default settings.
+}
+else {
+  echo "Missing settings file at conf/settings.conf. Can not continue."; die;
 }
 
 $settings_contents = parse_ini_file($settings_file, true); // Parse settings file

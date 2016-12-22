@@ -146,7 +146,7 @@ if ($key_found === false) {
           $query->execute(array(
         ':id' => $request_id,
       ));
-          logline('API', 'Case updated.');
+          logline('0', 'API', 'Case updated.');
       } catch (Exception $e) {
           echo $e;
           return_with_code('500');
@@ -234,7 +234,7 @@ if ($key_found === false) {
         ':case_requested_action' => $_POST['case_requested_action'],
         ':case_contains_mob_dev' => num($_POST['case_contains_mob_dev']),
       ));
-          logline('API', 'Row inserted.');
+          logline('0', 'API', 'Row inserted.');
       } catch (Exception $e) {
           return_with_code('500');
       }

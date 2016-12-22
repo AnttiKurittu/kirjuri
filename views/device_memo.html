@@ -122,6 +122,7 @@ if (e.keyCode == 13) {
 <td style="vertical-align:middle;align:left;">
   <form class="form form-horizontal" role="form" method="post" action="submit.php?type=change_device_status&db_row={{ entry.id }}" target="submit_iframe{{entry.id}}">
   <input type="hidden" name="token" value="{{session.user.token}}">
+  <input type="hidden" name="ct" value="{{ct}}">
   {% if (caserow.0.case_status != 3) and (session.user.access <= 1) %}
 <p>  <select style="text-align:left;width:200px;" class="btn btn-{% if not entry.device_action %}danger{% else %}default{% endif %}" name="device_action" onchange="this.form.submit()">
   <option value="{{entry.device_action}}" selected="selected">{% set device_current_action = entry.device_action|split('|') %}{{device_current_action.1}}</option>
@@ -139,6 +140,7 @@ if (e.keyCode == 13) {
   </form>
   <p><form class="form form-horizontal" role="form" method="post" action="submit.php?type=change_device_location&db_row={{ entry.id }}" target="submit_iframe{{entry.id}}_void">
     <input type="hidden" name="token" value="{{session.user.token}}">
+    <input type="hidden" name="ct" value="{{ct}}">
   <select style="text-align:left;width:200px;" class="btn btn-{% if not entry.device_location %}danger{% else %}default{% endif %}" name="device_location" {% if session.user.access > 1 %}disabled{% else %}onchange="this.form.submit()"{% endif %}>
   <option value="{{entry.device_location}}" selected="selected">{{entry.device_location}}</option>
   <option disabled>---</option>
@@ -162,10 +164,11 @@ if (e.keyCode == 13) {
 <tr><td colspan="4" class="active">
 <form class="form form-horizontal" role="form" method="post" action="submit.php?type=devicememo&returnid={{ entry.id }}&tab=devices">
 <input type="hidden" name="token" value="{{session.user.token}}">
+<input type="hidden" name="ct" value="{{ct}}">
 <div class="col-md-6 text-left pull-left">
 <input type="checkbox" name="device_contains_evidence" value="1" {% if entry.device_contains_evidence == "1" %}checked{% endif %}> {{ lang.contains_evidence }}
 &nbsp;&nbsp;&nbsp;<input name="device_include_in_report" value="1" type="checkbox" {% if entry.device_include_in_report == "1" %}checked{% endif %}> {{ lang.show_examination_notes_in_report }}</div>
-<div class="col-md-6 text-right"><a type="button" class="btn btn-xs btn-danger" href="submit.php?type=set_removed&db_row={{ entry.id }}&returnid={{ entry.parent_id }}&token={{session.user.token}}" onclick="return confirm('Really remove device{% if entry.device_is_host == "1"%} and attached media{% endif %}?')">
+<div class="col-md-6 text-right"><a type="button" class="btn btn-xs btn-danger" href="submit.php?type=set_removed&db_row={{ entry.id }}&returnid={{ entry.parent_id }}&token={{session.user.token}}&ct={{ct}}" onclick="return confirm('Really remove device{% if entry.device_is_host == "1"%} and attached media{% endif %}?')">
 <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span> {{ lang.remove_device }} {% if entry.device_is_host == "1"%}{{ lang.and_associated_devices }}{% endif %}</a>{% endif %}</div>
 </td>
 </tr>
@@ -257,7 +260,8 @@ if (e.keyCode == 13) {
 {% else %}
 <label for="device_case" class="col-sm-1 control-label">{{ lang.move }}</label>
 <div class="col-sm-5">
-<select style="text-align:left;" class="btn btn-default" name="parent_id" id="parent_id">
+<input type="hidden" value="{{ caserow.0.id }}" name="parent_id">
+<select style="text-align:left;" class="btn btn-default" name="new_parent_id" id="new_parent_id">
 <option selected value="{{ caserow.0.id }}">{{ lang.move_device_to_another_request }}</option>
 {% for entry in allcases %}
 {% set db_row = entry.case_id ~ "/" ~ entry.case_added_date|date("Y") ~ " " ~ entry.case_name ~ " " ~ lang.27 ~ ": " ~ entry.case_suspect %}

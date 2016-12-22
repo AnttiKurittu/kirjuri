@@ -3,6 +3,13 @@
 require_once './include_functions.php';
 protect_page(2); // View only or higher.
 
+// Force end session
+if (!file_exists('cache/user_' . md5($_SESSION['user']['username']) . '.txt'))
+{
+  header('Location: submit.php?type=logout');
+  die;
+}
+
 if (empty($_GET['year'])) {
     $year = date('Y'); // Use current year if none specified
 } else {

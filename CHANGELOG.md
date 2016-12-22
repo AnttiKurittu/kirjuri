@@ -1,5 +1,16 @@
 CHANGELOG
 ------------
+2016-12-22 release 129:
+
+* Big feature update!
+* You can now set which index page columns are shown or not. The file to configure this behaviour is conf/index_columns.conf.
+* Per-case, per user access control added. Users can restrict access to examination requests and users are not able to view or edit requests where they don't belong to the access group. Administrators can see and set any case access group. Access groups are independent of user privilege level.
+* Case event logging; log files are now written for each case, and they are displayed on the examination request page to keep track of the investigation. Non-case related logs are written to kirjuri_case_0.log and errors to error.log. The logs are stored in kirjuri_errors.log and kirjuri_events.log when stored & cleared. All log events are also written to the database for audit purposes.
+* CSRF protection enhanced, now works as per-session to enable a tabbed workflow.
+* Implemented internal protections with case access tokens.
+* User passwords are now stored with the standard password_hash() function, not sha256 (what was I even thinking?)
+*
+
 2016-12-18 release 128:
 
 * Added CSRF protection to all pages, even though you shouldn't deploy Kirjuri on a network where this is an issue.

@@ -8,6 +8,13 @@ if ($_SESSION['user']['access'] === "3")
   die;
 }
 
+// Force end session
+if (!file_exists('cache/user_' . md5($_SESSION['user']['username']) . '.txt'))
+{
+  header('Location: submit.php?type=logout');
+  die;
+}
+
 $sort_j = isset($_GET['j']) ? $_GET['j'] : '';
 $sort_d = isset($_GET['d']) ? $_GET['d'] : '';
 $sort_s = isset($_GET['s']) ? $_GET['s'] : '';
@@ -110,8 +117,7 @@ if (isset($_GET['search']) && (!empty($_GET['search']))) {
     $query->execute(array(
     ':search_term' => $search_term,
     ':dateStart' => $dateRange['start'],
-    ':dateStop' => $dateRange['stop'],
-  ));
+    ':dateStop' => $dateRange['stop']));
   }
 }
 else
@@ -165,15 +171,28 @@ foreach (glob('attachments/*', GLOB_ONLYDIR) as $dir) {
         $dir_has_files = explode('/', $dir);
         $has_attachments[] = $dir_has_files[1];
     } else {
-        logline('Action', 'Empty directory autoremoved: '.$dir);
+        logline($dir, 'Action', 'Empty directory autoremoved: '.$dir);
         rmdir($dir); // Remove empty directories
     }
 }
 $_SESSION['message_set'] = false;
 
-csrf_init();
+
+
+if (file_exists('conf/index_columns.local'))
+{
+  $show_columns = parse_ini_file('conf/index_columns.local', true);
+}
+elseif (file_exists('conf/index_columns.conf'))
+{
+  $show_columns = parse_ini_file('conf/index_columns.conf', true);
+}
+else {
+  $show_columns = "";
+}
 
 echo $twig->render('index.html', array(
+  'show_columns' => $show_columns,
   'session' => $_SESSION,
   'has_attachments' => $has_attachments,
   'search_term' => $search_term,

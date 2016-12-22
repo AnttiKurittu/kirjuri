@@ -905,10 +905,12 @@ if ($_GET['type'] === 'devicememo')
   csrf_session_validate($_POST['token']);
   csrf_case_validate($_POST['ct'], $id);
   verify_owner($id);
-  if ($id !== $_POST['new_parent_id'])
+
+  if (isset($_POST['new_parent_id']) && ($id !== $_POST['new_parent_id']))
   {
     $id = num($_POST['new_parent_id']);
   }
+
   if (!empty($_POST['used_tool']))
    {
     $_POST['examiners_notes'] = sanitize_raw($_POST['examiners_notes']) . '<p>' . $_POST['used_tool'] . '</p>';

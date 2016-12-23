@@ -10,20 +10,20 @@ if (!file_exists('cache/user_' . md5($_SESSION['user']['username']) . '.txt'))
   die;
 }
 
-$query = $kirjuri_database->prepare('SELECT * FROM exam_requests WHERE is_removed != "1" AND id = :db_row LIMIT 1');
+$query = $kirjuri_database->prepare('SELECT * FROM exam_requests WHERE is_removed != "1" AND id = :uid LIMIT 1');
 $query->execute(array(
-  ':db_row' => $_GET['db_row'],
+  ':uid' => $_GET['uid'],
 ));
 $mediarow = $query->fetchAll(PDO::FETCH_ASSOC);
 
-$query = $kirjuri_database->prepare('SELECT id, device_type, device_manuf, device_model, device_host_id FROM exam_requests WHERE is_removed != "1" AND device_host_id = :db_row');
+$query = $kirjuri_database->prepare('SELECT id, device_type, device_manuf, device_model, device_host_id FROM exam_requests WHERE is_removed != "1" AND device_host_id = :uid');
 $query->execute(array(
-  ':db_row' => $_GET['db_row'],
+  ':uid' => $_GET['uid'],
 ));
 $connectedmediarow = $query->fetchAll(PDO::FETCH_ASSOC);
-$query = $kirjuri_database->prepare('SELECT id, device_type, device_manuf, device_model, device_host_id FROM exam_requests WHERE is_removed != "1" AND id = :db_row');
+$query = $kirjuri_database->prepare('SELECT id, device_type, device_manuf, device_model, device_host_id FROM exam_requests WHERE is_removed != "1" AND id = :uid');
 $query->execute(array(
-  ':db_row' => $mediarow[0]['device_host_id'],
+  ':uid' => $mediarow[0]['device_host_id'],
 ));
 $hostdevice = $query->fetchAll(PDO::FETCH_ASSOC);
 

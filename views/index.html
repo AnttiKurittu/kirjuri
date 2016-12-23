@@ -279,7 +279,7 @@
       {% if (entry.id != entry.parent_id) and (entry.is_removed == "0") %}
       <tr>
         <td colspan="999">
-          <i class="fa fa-cube"></i> {% set device_counter = (device_counter + 1) %}{{ lang.search_found_device }}: <a href="device_memo.php?db_row={{ entry.id }}">{{ entry.device_type }}, {{ entry.device_manuf }} {{ entry.device_model }}{% if entry.device_identifier %}, {{ lang.identifier }} {{ entry.device_identifier }}{% endif %}{% if entry.device_owner %}, {{ lang.owner }} {{ entry.device_owner }}{% endif %}</a> (<a href="edit_request.php?case={{ entry.parent_id }}&tab=devices">{{ lang.go_to_request }}</a>)
+          <i class="fa fa-cube"></i> {% set device_counter = (device_counter + 1) %}{{ lang.search_found_device }}: <a href="device_memo.php?uid={{ entry.id }}">{{ entry.device_type }}, {{ entry.device_manuf }} {{ entry.device_model }}{% if entry.device_identifier %}, {{ lang.identifier }} {{ entry.device_identifier }}{% endif %}{% if entry.device_owner %}, {{ lang.owner }} {{ entry.device_owner }}{% endif %}</a> (<a href="edit_request.php?case={{ entry.parent_id }}&tab=devices">{{ lang.go_to_request }}</a>)
         </td>
       </tr>
       {% endif %}

@@ -107,7 +107,7 @@ if (isset($_GET['search']) && (!empty($_GET['search']))) {
     }
     else
     {
-      header('Location: device_memo.php?db_row='.$get_uid_result['id']); // Jump to device.
+      header('Location: device_memo.php?uid='.$get_uid_result['id']); // Jump to device.
       die;
     }
   }

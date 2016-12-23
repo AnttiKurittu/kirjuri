@@ -78,6 +78,7 @@ if ($_GET['type'] === 'anon_login')
        {
         $_SESSION['user'] = $user;
         csrf_init();
+        file_put_contents('cache/user_' . md5($_SESSION['user']['username']) . '.txt', $_SESSION['user']['username'] . ' is logged in. Remove this file to force logout.');
         logline('0', 'Action', 'Anonymous login.');
         message('info', $_SESSION['lang']['anon_login']);
         header('Location: index.php');
@@ -609,7 +610,7 @@ if ($_GET['type'] === 'case_update')
   // Update examination request.
   protect_page(1);
   csrf_session_validate($_POST['token']);
-  verify_owner($_GET['db_row']);
+  verify_owner($_GET['uid']);
   if ($_POST['forensic_investigator'] !== '')
    {
     // Set the case as started if an f.investigator is assigned.
@@ -638,11 +639,11 @@ if ($_GET['type'] === 'case_update')
     ':case_confiscation_date' => $_POST['case_confiscation_date'],
     ':case_contains_mob_dev' => $_POST['case_contains_mob_dev'],
     ':case_status' => $case_status,
-    ':id' => $_GET['db_row'],
+    ':id' => $_GET['uid'],
     ':case_urgency' => $_POST['case_urgency']
   ));
-  logline($_GET['db_row'], 'Action', 'Updated request ' . $_POST['case_name'] . '');
-  $_POST['returnid'] = $_GET['db_row'];
+  logline($_GET['uid'], 'Action', 'Updated request ' . $_POST['case_name'] . '');
+  $_POST['returnid'] = $_GET['uid'];
   $_SESSION['post_cache'] = '';
   show_saved();
   header('Location: edit_request.php?case=' . $_POST['returnid']);
@@ -700,7 +701,7 @@ if ($_GET['type'] === 'set_removed')
   $sql = $kirjuri_database->prepare('UPDATE exam_requests SET is_removed = "1", last_updated = NOW() where id=:id AND parent_id = :returnid;
         UPDATE exam_requests SET is_removed = "1" where device_host_id=:id');
   $sql->execute(array(
-    ':id' => $_GET['db_row'],
+    ':id' => $_GET['uid'],
     ':returnid' => $_GET['returnid']
   ));
   $sql = $kirjuri_database->prepare('SELECT count(id) from exam_requests where id != parent_id AND parent_id=:id AND is_removed="0"');
@@ -716,7 +717,7 @@ if ($_GET['type'] === 'set_removed')
   ));
   $_POST['returnid'] = $_GET['returnid'];
   $_SESSION['post_cache'] = '';
-  logline($_GET['returnid'], 'Action', 'Removed device UID' . $_GET['db_row']);
+  logline($_GET['returnid'], 'Action', 'Removed device UID' . $_GET['uid']);
   message('info', $_SESSION['lang']['device_removed']);
   header('Location: edit_request.php?case=' . $_POST['returnid'] . '&tab=devices');
   die;
@@ -732,7 +733,7 @@ if ($_GET['type'] === 'device_attach')
     $sql = $kirjuri_database->prepare('UPDATE exam_requests SET device_host_id = :isanta, last_updated = NOW() where id=:id AND parent_id != id;
         UPDATE exam_requests SET device_is_host = "1" where id = :isanta;');
     $sql->execute(array(
-      ':id' => $_GET['db_row'],
+      ':id' => $_GET['uid'],
       ':isanta' => $_POST['isanta']
     ));
    }
@@ -750,7 +751,7 @@ if ($_GET['type'] === 'device_detach')
   csrf_session_validate($_GET['token']);
   $sql = $kirjuri_database->prepare('UPDATE exam_requests SET device_host_id = "0", last_updated = NOW() where id=:id AND parent_id != id');
   $sql->execute(array(
-    ':id' => $_GET['db_row']
+    ':id' => $_GET['uid']
   ));
   $_POST['returnid'] = $_GET['returnid'];
   $_SESSION['post_cache'] = '';
@@ -853,7 +854,7 @@ if ($_GET['type'] === 'change_device_status')
    }
   $sql = $kirjuri_database->prepare('SELECT parent_id FROM exam_requests where id=:id');
   $sql->execute(array(
-    ':id' => $_GET['db_row']
+    ':id' => $_GET['uid']
   ));
   $case_id = $sql->fetch(PDO::FETCH_ASSOC);
   csrf_session_validate($_POST['token']);
@@ -862,7 +863,7 @@ if ($_GET['type'] === 'change_device_status')
   $sql = $kirjuri_database->prepare('UPDATE exam_requests SET device_action = :device_action, last_updated = NOW() where id=:id AND parent_id != id');
   $sql->execute(array(
     ':device_action' => $_POST['device_action'],
-    ':id' => $_GET['db_row']
+    ':id' => $_GET['uid']
   ));
   $_SESSION['post_cache'] = '';
   echo $twig->render('progress_bar.html', array(
@@ -882,7 +883,7 @@ if ($_GET['type'] === 'change_device_location')
   }
   $sql = $kirjuri_database->prepare('SELECT parent_id FROM exam_requests where id=:id');
   $sql->execute(array(
-   ':id' => $_GET['db_row']
+   ':id' => $_GET['uid']
   ));
   $case_id = $sql->fetch(PDO::FETCH_ASSOC);
   csrf_session_validate($_POST['token']);
@@ -891,7 +892,7 @@ if ($_GET['type'] === 'change_device_location')
   $sql = $kirjuri_database->prepare('UPDATE exam_requests SET device_location = :device_location, last_updated = NOW() where id=:id AND parent_id != id');
   $sql->execute(array(
     ':device_location' => $_POST['device_location'],
-    ':id' => $_GET['db_row']
+    ':id' => $_GET['uid']
   ));
   $_SESSION['post_cache'] = '';
   die;
@@ -944,7 +945,7 @@ if ($_GET['type'] === 'devicememo')
   logline($id, 'Action', 'Updated device memo UID' . $_POST['id'] . '');
   $_SESSION['post_cache'] = '';
   show_saved();
-  header('Location: device_memo.php?db_row=' . $_POST['returnid']);
+  header('Location: device_memo.php?uid=' . $_POST['returnid']);
   die;
  }
 

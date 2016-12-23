@@ -87,7 +87,7 @@ if (e.keyCode == 13) {
               <div class="modal-body">
                 <b>{{ lang.no_examiner_assigned }}</b>
                 <p>{{ lang.pick_examiner }}</p>
-                <form name="add_forensic_investigator" class="form" role="form" method="post" action="submit.php?type=case_update&db_row={{ entry.parent_id }}">
+                <form name="add_forensic_investigator" class="form" role="form" method="post" action="submit.php?type=case_update&uid={{ entry.parent_id }}">
                   <input type="hidden" name="token" value="{{session.user.token}}">
                   <input type="hidden" name="ct" value="{{ct}}">
                   <div class="form-group">
@@ -264,7 +264,7 @@ if (e.keyCode == 13) {
           <a href="download_csv.php?case={{caserow.0.id}}" type="button" class="btn btn-warning"><i class="fa fa-download"></i> {{ lang.download_csv }}</a>
           {% if caserow.0.case_status != "3" %}<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#perustiedot"><i class="fa fa-info-circle"></i> {{ lang.edit_request_details }}</button>{% endif %}
 
-          <a href="print_sticker.php?db_row={{ entry.id }}&type=examination_request" target="_BLANK" type="button" class="btn btn-info"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> {{ lang.print_sticker }}</a>
+          <a href="print_sticker.php?uid={{ entry.id }}&type=examination_request" target="_BLANK" type="button" class="btn btn-info"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> {{ lang.print_sticker }}</a>
           <a type="button" class="btn btn-info" href="case_report.php?case={% for entry in caserow %}{{ entry.id }}{% endfor %}" target="_BLANK"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> {{ lang.print_report }}</a>
 
           <div class="form-group">
@@ -351,7 +351,7 @@ if (e.keyCode == 13) {
         {% for entry in mediarow %}
         {% set jutun_vaihe = entry.device_action|split('|') %}{% if entry.is_removed != "1" %}
         <div class="col-md-3">
-          <a href="device_memo.php?db_row={{ entry.id }}"><img src="views/img/svg/{% if entry.device_type %}{{ entry.device_type|lower|replace({" ": "_", "ä": "a", "ö": "o"}) }}{% else %}tuntematon{% endif %}.svg" title="UID {{ entry.id }} {{ entry.device_type }} {{ entry.device_model }} {{ entry.device_manuf }}" width="42px" style="float:left;padding-left:10px;padding-right:10px;"></a>
+          <a href="device_memo.php?uid={{ entry.id }}"><img src="views/img/svg/{% if entry.device_type %}{{ entry.device_type|lower|replace({" ": "_", "ä": "a", "ö": "o"}) }}{% else %}tuntematon{% endif %}.svg" title="UID {{ entry.id }} {{ entry.device_type }} {{ entry.device_model }} {{ entry.device_manuf }}" width="42px" style="float:left;padding-left:10px;padding-right:10px;"></a>
           <div class="progress" style="width:{{ settings.progress_bar_size }};">
             <div class="progress-bar {{ settings.progress_bar_style }} progress-bar-{% if settings.device_action_count == jutun_vaihe.0 %}success{% elseif jutun_vaihe.0 == "1" %}danger{% elseif jutun_vaihe.0 == "0" %}info{% else %}warning{% endif %}" role="progressbar"
             aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:{% if jutun_vaihe.0 == "0" %}100{% else %}{{ ((100 / settings.device_action_count) * jutun_vaihe.0)|round(0, "ceil") }}{% endif %}%">
@@ -371,7 +371,7 @@ if (e.keyCode == 13) {
             </div>
             <div class="modal-body">
               <!--- perustiedot -->
-              <form class="form form-horizontal" role="form" method="post" action="submit.php?type=case_update&db_row={{ entry.parent_id }}">
+              <form class="form form-horizontal" role="form" method="post" action="submit.php?type=case_update&uid={{ entry.parent_id }}">
                 <input type="hidden" name="token" value="{{session.user.token}}">
                 <input type="hidden" name="ct" value="{{ct}}">
                 <div class="form-group">
@@ -565,10 +565,10 @@ if (e.keyCode == 13) {
     <img src="views/img/svg/{% if entry.device_type %}{{ entry.device_type|lower|replace({" ": "_", "ä": "a", "ö": "o"}) }}{% else %}{{ lang.unknown }}{% endif %}.svg"  style="vertical-align:middle;float:left;padding:10px;width:64px;">
     </td>
     <td style="vertical-align:middle;white-space:nowrap;" {% if entry.device_contains_evidence %}class="success"{% endif %}>
-      <h4><a href="device_memo.php?db_row={{ entry.id }}">{% if entry.device_type %}{{ entry.device_type }}{% else %}<span style="color:red;">{{ lang.undefined_device_or_media_type }}</span>{% endif %}<br>
+      <h4><a href="device_memo.php?uid={{ entry.id }}">{% if entry.device_type %}{{ entry.device_type }}{% else %}<span style="color:red;">{{ lang.undefined_device_or_media_type }}</span>{% endif %}<br>
         {{ entry.device_manuf }} {{ entry.device_model }} {% if entry.device_size_in_gb > "0" %}{{ entry.device_size_in_gb }} GB{% endif %}</a><br>
         <small>
-            <a href="print_sticker.php?db_row={{entry.id}}&type=device" target="_BLANK"><i class="fa fa-print"></i> [UID{{ entry.id }}]</a>, {{ entry.device_document }} {{ lang.object_no }} {{ entry.device_item_number }}<br>
+            <a href="print_sticker.php?uid={{entry.id}}&type=device" target="_BLANK"><i class="fa fa-print"></i> [UID{{ entry.id }}]</a>, {{ entry.device_document }} {{ lang.object_no }} {{ entry.device_item_number }}<br>
           {{ lang.added }} {{ entry.case_added_date|date("d.m.Y H:i") }}{% if entry.case_added_date != entry.last_updated %}<br>{{ lang.updated|capitalize }} {{ entry.last_updated|date("d.m.Y H:i") }}{% endif %}
         {% if entry.report_notes %}<br>
         {% if entry.device_include_in_report == "1" %}
@@ -589,7 +589,7 @@ if (e.keyCode == 13) {
       {% set check = "1" %}
       {% else %}
       {% for media in media_objs if (entry.device_type == media) and (check != "1") %}
-      <form class="form form-inline" role="form" method="post" action="submit.php?type=device_attach&db_row={{ entry.id }}&returnid={{ entry.parent_id }}">
+      <form class="form form-inline" role="form" method="post" action="submit.php?type=device_attach&uid={{ entry.id }}&returnid={{ entry.parent_id }}">
         <input type="hidden" name="token" value="{{session.user.token}}">
         <input type="hidden" name="ct" value="{{ct}}">
         <select style="text-align:left;" class="btn btn-xs btn-default" name="isanta">
@@ -635,7 +635,7 @@ if (e.keyCode == 13) {
     </td>
 
     <td style="vertical-align:middle;align:left;">
-      <form class="form form-horizontal" role="form" method="post" action="submit.php?type=change_device_status&db_row={{ entry.id }}" target="submit_iframe{{entry.id}}">
+      <form class="form form-horizontal" role="form" method="post" action="submit.php?type=change_device_status&uid={{ entry.id }}" target="submit_iframe{{entry.id}}">
         <input type="hidden" name="token" value="{{session.user.token}}">
         <input type="hidden" name="ct" value="{{ct}}">
       {% if (caserow.0.case_status != 3) and (session.user.access <= 1) %}
@@ -653,7 +653,7 @@ if (e.keyCode == 13) {
       <input type="hidden" name="device_action" value="{{ entry.device_action }}">
       {% endif %}
       </form>
-      <p><form class="form form-horizontal" role="form" method="post" action="submit.php?type=change_device_location&db_row={{ entry.id }}" target="submit_iframe{{entry.id}}_void">
+      <p><form class="form form-horizontal" role="form" method="post" action="submit.php?type=change_device_location&uid={{ entry.id }}" target="submit_iframe{{entry.id}}_void">
         <input type="hidden" name="token" value="{{session.user.token}}">
         <input type="hidden" name="ct" value="{{ct}}">
       <select style="text-align:left;width:200px;" class="btn btn-{% if not entry.device_location %}danger{% else %}default{% endif %}" name="device_location" {% if session.user.access > 1 %}disabled{% else %}onchange="this.form.submit()"{% endif %}>
@@ -664,7 +664,7 @@ if (e.keyCode == 13) {
       {% endfor %}
       </select>​
     </form></p>
-    <p><iframe name="submit_iframe{{entry.id}}" allowtransparency="true" style="overflow:hidden; width:200px; height:16px; border:0px solid red; margin: 0 auto; display:block;" src="progress_bar_static.php?db_row={{entry.id}}"></iframe></p>
+    <p><iframe name="submit_iframe{{entry.id}}" allowtransparency="true" style="overflow:hidden; width:200px; height:16px; border:0px solid red; margin: 0 auto; display:block;" src="progress_bar_static.php?uid={{entry.id}}"></iframe></p>
     <iframe name="submit_iframe{{entry.id}}_void" style="display:none;"></iframe></p>
     </td>
   </tr>
@@ -677,10 +677,10 @@ if (e.keyCode == 13) {
     <img src="views/img/svg/{% if entry.device_type %}{{ entry.device_type|lower|replace({" ": "_", "ä": "a", "ö": "o"}) }}{% else %}tuntematon{% endif %}.svg"  style="vertical-align:middle;float:left;padding:10px;width:64px;">
     </td>
     <td style="vertical-align:middle;white-space:nowrap;" {% if entry.device_contains_evidence %}class="success"{% endif %}>
-      <h4><a href="device_memo.php?db_row={{ entry.id }}">{% if entry.device_type %}{{ entry.device_type }}{% else %}<span style="color:red;">{{ lang.undefined_device_or_media_type }}</span>{% endif %}<br>
+      <h4><a href="device_memo.php?uid={{ entry.id }}">{% if entry.device_type %}{{ entry.device_type }}{% else %}<span style="color:red;">{{ lang.undefined_device_or_media_type }}</span>{% endif %}<br>
         {{ entry.device_manuf }} {{ entry.device_model }} {% if entry.device_size_in_gb > "0" %}{{ entry.device_size_in_gb }} GB{% endif %}</a><br>
         <small>
-          <a href="print_sticker.php?db_row={{entry.id}}&type=device" target="_BLANK"><i class="fa fa-print"></i> [UID{{ entry.id }}]</a>, {{ entry.device_document }} {{ lang.object_no }} {{ entry.device_item_number }}<br>
+          <a href="print_sticker.php?uid={{entry.id}}&type=device" target="_BLANK"><i class="fa fa-print"></i> [UID{{ entry.id }}]</a>, {{ entry.device_document }} {{ lang.object_no }} {{ entry.device_item_number }}<br>
           {{ lang.added }} {{ entry.case_added_date|date("d.m.Y H:i") }}{% if entry.case_added_date != entry.last_updated %}<br>{{ lang.updated|capitalize }} {{ entry.last_updated|date("d.m.Y H:i") }}{% endif %}
         {% if entry.report_notes %}<br>
         {% if entry.device_include_in_report == "1" %}
@@ -696,7 +696,7 @@ if (e.keyCode == 13) {
         {% endif %}
         </small>
       </h4>
-      <a href="submit.php?type=device_detach&db_row={{ entry.id }}&returnid={{ entry.parent_id }}&token={{session.user.token}}" onclick="return confirm('{{ lang.remove_association_warning }}')"><i class="fa fa-unlink"></i> {{ lang.remove_association }}</a>
+      <a href="submit.php?type=device_detach&uid={{ entry.id }}&returnid={{ entry.parent_id }}&token={{session.user.token}}" onclick="return confirm('{{ lang.remove_association_warning }}')"><i class="fa fa-unlink"></i> {{ lang.remove_association }}</a>
     </td>
     <td style="vertical-align:middle;{% if entry.device_contains_evidence %}background:linear-gradient(to right, #e1f0d6 , #ffffff);{% endif %}">
       {% if hosting_dev_owner != entry.device_owner %}<span style="color:darkred;"><i class="fa fa-user"></i> {{ entry.device_owner }} {{ lang.different_owner }}</span><br>{% endif %}
@@ -719,7 +719,7 @@ if (e.keyCode == 13) {
       {% endif %}
     </td>
     <td style="vertical-align:middle;align:left;">
-      <form class="form form-horizontal" role="form" method="post" action="submit.php?type=change_device_status&db_row={{ entry.id }}" target="submit_iframe{{entry.id}}">
+      <form class="form form-horizontal" role="form" method="post" action="submit.php?type=change_device_status&uid={{ entry.id }}" target="submit_iframe{{entry.id}}">
         <input type="hidden" name="token" value="{{session.user.token}}">
 <input type="hidden" name="ct" value="{{ct}}">
       {% if (caserow.0.case_status != 3) and (session.user.access <= 1) %}
@@ -737,7 +737,7 @@ if (e.keyCode == 13) {
       <input type="hidden" name="device_action" value="{{ entry.device_action }}">
       {% endif %}
       </form>
-      <p><form class="form form-horizontal" role="form" method="post" action="submit.php?type=change_device_location&db_row={{ entry.id }}" target="submit_iframe{{entry.id}}_void">
+      <p><form class="form form-horizontal" role="form" method="post" action="submit.php?type=change_device_location&uid={{ entry.id }}" target="submit_iframe{{entry.id}}_void">
         <input type="hidden" name="token" value="{{session.user.token}}">
         <input type="hidden" name="ct" value="{{ct}}">
       <select style="text-align:left;width:200px;" class="btn btn-{% if not entry.device_location %}danger{% else %}default{% endif %}" name="device_location" {% if session.user.access > 1 %}disabled{% else %}onchange="this.form.submit()"{% endif %}>
@@ -748,7 +748,7 @@ if (e.keyCode == 13) {
       {% endfor %}
       </select>​
     </form></p>
-    <p><iframe name="submit_iframe{{entry.id}}" allowtransparency="true" style="overflow:hidden; width:200px; height:16px; border:0px solid red; margin: 0 auto; display:block;" src="progress_bar_static.php?db_row={{entry.id}}"></iframe></p>
+    <p><iframe name="submit_iframe{{entry.id}}" allowtransparency="true" style="overflow:hidden; width:200px; height:16px; border:0px solid red; margin: 0 auto; display:block;" src="progress_bar_static.php?uid={{entry.id}}"></iframe></p>
     <iframe name="submit_iframe{{entry.id}}_void" style="display:none;"></iframe></p>
     </td>
   </tr>

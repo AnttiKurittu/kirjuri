@@ -28,7 +28,7 @@
 {% if settings.motd and show_columns.message_of_the_day != "hide"%}
 <div class="panel panel-danger">
   <div class="panel-body">
-    <i class="fa fa-warning"></i> {{ settings.motd }}
+    <i class="fa fa-warning"></i> {{ settings.motd|raw }}
   </div>
 </div>
 {% endif %}

@@ -254,7 +254,7 @@ function logline($case_id, $event_level, $description) // Add an entry to event_
         }
 
         $log = date('Y-m-d H:i:s').' '.$event_level.' - '.$description.' [URL:'.$_SERVER['REQUEST_URI'].', IP: '.$_SERVER['REMOTE_ADDR']."]\r\n";
-        if ($event_level === "Error")
+        if (strtolower($event_level) === "error")
         {
           $logfile = 'logs/error.log';
         }
@@ -264,6 +264,20 @@ function logline($case_id, $event_level, $description) // Add an entry to event_
         }
         file_put_contents($logfile, $log, FILE_APPEND);
 
+        // The database was incorrectly designed, not allowing for IPv6 logging.
+        // This is a workaround so as to not mess with the databases of
+        // existing installations on upgrade.
+
+        $ipv6 = "";
+
+        if (strlen($_SERVER['REMOTE_ADDR']) > 15) {
+          $connecting_ip = "ipv6";
+          $ipv6 = "IPV6: " . $_SERVER['REMOTE_ADDR'];
+        }
+        else {
+          $connecting_ip = substr($_SERVER['REMOTE_ADDR'], 0, 16);
+        }
+
         $kirjuri_database = new PDO('mysql:host=localhost;dbname='.$mysql_config['mysql_database'].'', $mysql_config['mysql_username'], $mysql_config['mysql_password']);
         $kirjuri_database->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $kirjuri_database->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
@@ -271,8 +285,8 @@ function logline($case_id, $event_level, $description) // Add an entry to event_
         $event_insert_row = $kirjuri_database->prepare('INSERT INTO event_log (event_timestamp,event_level,event_descr,ip) VALUES (NOW(),:event_level,:event_descr,:ip)');
         $event_insert_row->execute(array(
          ':event_level' => $event_level,
-         ':event_descr' => $case_id . ',' . $description.' (Method: '.$_SERVER['REQUEST_METHOD'].' URI:'.$_SERVER['REQUEST_URI'].')',
-         ':ip' => $_SERVER['REMOTE_ADDR'],
+         ':event_descr' => $case_id . ',' . $description.' (Method: '.$_SERVER['REQUEST_METHOD'].' URI:'.$_SERVER['REQUEST_URI'].') ' . $ipv6,
+         ':ip' => $connecting_ip
        ));
 
         return true;

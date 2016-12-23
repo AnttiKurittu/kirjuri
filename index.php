@@ -9,7 +9,7 @@ if ($_SESSION['user']['access'] === "3")
 }
 
 // Force end session
-if (!file_exists('cache/user_' . md5($_SESSION['user']['username']) . '.txt'))
+if (!file_exists('cache/user_' . md5($_SESSION['user']['username']) . '/session_' . $_SESSION['user']['token'] . '.txt'))
 {
   header('Location: submit.php?type=logout');
   die;

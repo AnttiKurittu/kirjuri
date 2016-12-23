@@ -3,7 +3,7 @@
 require_once './include_functions.php';
 
 // Force end session
-if (!file_exists('cache/user_' . md5($_SESSION['user']['username']) . '.txt'))
+if (!file_exists('cache/user_' . md5($_SESSION['user']['username']) . '/session_' . $_SESSION['user']['token'] . '.txt'))
 {
   header('Location: submit.php?type=logout');
   die;

@@ -78,7 +78,8 @@ if ($_GET['type'] === 'anon_login')
        {
         $_SESSION['user'] = $user;
         csrf_init();
-        file_put_contents('cache/user_' . md5($_SESSION['user']['username']) . '.txt', $_SESSION['user']['username'] . ' is logged in. Remove this file to force logout.');
+        mkdir('cache/user_' . md5($_SESSION['user']['username']));
+        file_put_contents('cache/session_' . md5($_SESSION['user']['token']) . '.txt', $_SESSION['user']['username'] . ' is logged in. Remove this file to force logout.');
         logline('0', 'Action', 'Anonymous login.');
         message('info', $_SESSION['lang']['anon_login']);
         header('Location: index.php');
@@ -143,7 +144,9 @@ if ($_GET['type'] === 'login')
    {
     message('info', $_SESSION['lang']['logged_in_as'] . ' ' . $_SESSION['user']['username']);
     logline('0', 'Action', 'Login');
-    file_put_contents('cache/user_' . md5($_SESSION['user']['username']) . '.txt', $_SESSION['user']['username'] . ' is logged in. Remove this file to force logout.');
+    if (!file_exists('cache/user_' . md5($_SESSION['user']['username']))) mkdir('cache/user_' . md5($_SESSION['user']['username']));
+    file_put_contents('cache/user_' . md5($_SESSION['user']['username']) . '/session_' . $_SESSION['user']['token'] . '.txt',
+    $_SESSION['user']['username'] . ' is logged in at ' . $_SERVER['REMOTE_ADDR'] . ', user agent ' . $_SERVER['HTTP_USER_AGENT'] . '. Request timestamp ' . gmdate("Y-m-d\TH:i:s\Z", $_SERVER['REQUEST_TIME']) . ". Remove this file to force logout.\r\n");
     header('Location: index.php');
     die;
    }
@@ -162,7 +165,7 @@ if ($_GET['type'] === 'login')
 if ($_GET['type'] === 'logout')
  {
   logline('0', 'Action', 'Logout');
-  unlink('cache/user_' . md5($_SESSION['user']['username']) . '.txt');
+  unlink('cache/user_' . md5($_SESSION['user']['username']) . '/session_' . $_SESSION['user']['token'] . '.txt');
   session_destroy();
   $_SESSION['user'] = null;
   header('Location: index.php');
@@ -174,9 +177,9 @@ if ($_GET['type'] === 'logout')
    // Force end session
    csrf_session_validate($_GET['token']);
    protect_page(0);
-   if (file_exists('cache/user_' . md5(urldecode($_GET['user'])) . '.txt'))
+   if (file_exists('cache/user_' . md5(urldecode($_GET['user']))))
    {
-     unlink('cache/user_' . md5(urldecode($_GET['user'])) . '.txt');
+     deleteDirectory('cache/user_' . md5(urldecode($_GET['user'])));
      message('info', $_SESSION['lang']['user_logged_out']);
    }
    header('Location: '.$_SERVER['HTTP_REFERER']);

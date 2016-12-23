@@ -109,7 +109,7 @@ if ($_GET['type'] === 'login')
        else
         {
          message('error', $_SESSION['lang']['account_inactive']);
-         logline('0', 'Action', 'Login attempt with inactive account: ' . $_POST['username']);
+         logline('0', 'Action', 'Login attempt with inactivated account: ' . $_POST['username']);
          header('Location: login.php');
          die;
         }
@@ -155,7 +155,7 @@ if ($_GET['type'] === 'login')
     sleep(5);
     unlink('cache/BLOCK_' . md5(strtolower($_POST['username'])));
     message('error', $_SESSION['lang']['invalid_credentials']);
-    logline('0', 'Action', 'Login attempt: ' . $_POST['username']);
+    logline('0', 'Action', 'Invalid login attempt: ' . $_POST['username']);
     header('Location: login.php');
     die;
    }
@@ -181,6 +181,7 @@ if ($_GET['type'] === 'logout')
      deleteDirectory('cache/user_' . md5(urldecode($_GET['user'])));
      message('info', $_SESSION['lang']['user_logged_out']);
    }
+   logline('0', "Admin", "Admin terminated sessions: ".urldecode($_GET['user']));
    header('Location: '.$_SERVER['HTTP_REFERER']);
    die;
  }

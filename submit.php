@@ -78,8 +78,8 @@ if ($_GET['type'] === 'anon_login')
        {
         $_SESSION['user'] = $user;
         csrf_init();
-        mkdir('cache/user_' . md5($_SESSION['user']['username']));
-        file_put_contents('cache/session_' . md5($_SESSION['user']['token']) . '.txt', $_SESSION['user']['username'] . ' is logged in. Remove this file to force logout.');
+        if (!file_exists('cache/user_' . md5($_SESSION['user']['username']))) mkdir('cache/user_' . md5($_SESSION['user']['username']));
+        file_put_contents('cache/user_' . md5($_SESSION['user']['username']) . '/session_' . $_SESSION['user']['token'] . '.txt', $_SESSION['user']['username'] . ' is logged in at ' . $_SERVER['REMOTE_ADDR'] . ', user agent ' . $_SERVER['HTTP_USER_AGENT'] . '. Request timestamp ' . gmdate("Y-m-d\TH:i:s\Z", $_SERVER['REQUEST_TIME']) . ". Remove this file to force logout.\r\n");
         logline('0', 'Action', 'Anonymous login.');
         message('info', $_SESSION['lang']['anon_login']);
         header('Location: index.php');
@@ -145,16 +145,15 @@ if ($_GET['type'] === 'login')
     message('info', $_SESSION['lang']['logged_in_as'] . ' ' . $_SESSION['user']['username']);
     logline('0', 'Action', 'Login');
     if (!file_exists('cache/user_' . md5($_SESSION['user']['username']))) mkdir('cache/user_' . md5($_SESSION['user']['username']));
-    file_put_contents('cache/user_' . md5($_SESSION['user']['username']) . '/session_' . $_SESSION['user']['token'] . '.txt',
-    $_SESSION['user']['username'] . ' is logged in at ' . $_SERVER['REMOTE_ADDR'] . ', user agent ' . $_SERVER['HTTP_USER_AGENT'] . '. Request timestamp ' . gmdate("Y-m-d\TH:i:s\Z", $_SERVER['REQUEST_TIME']) . ". Remove this file to force logout.\r\n");
+    file_put_contents('cache/user_' . md5($_SESSION['user']['username']) . '/session_' . $_SESSION['user']['token'] . '.txt', $_SESSION['user']['username'] . ' is logged in at ' . $_SERVER['REMOTE_ADDR'] . ', user agent ' . $_SERVER['HTTP_USER_AGENT'] . '. Request timestamp ' . gmdate("Y-m-d\TH:i:s\Z", $_SERVER['REQUEST_TIME']) . ". Remove this file to force logout.\r\n");
     header('Location: index.php');
     die;
    }
   else
    {
-    file_put_contents('conf/BLOCK_' . hash('sha1', strtolower($_POST['username'])), "failed password attempt");
+    file_put_contents('cache/BLOCK_' . md5(strtolower($_POST['username'])), "failed password attempt");
     sleep(5);
-    unlink('conf/BLOCK_' . hash('sha1', strtolower($_POST['username'])));
+    unlink('cache/BLOCK_' . md5(strtolower($_POST['username'])));
     message('error', $_SESSION['lang']['invalid_credentials']);
     logline('0', 'Action', 'Login attempt: ' . $_POST['username']);
     header('Location: login.php');

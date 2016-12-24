@@ -100,7 +100,14 @@ function protect_page($required_access_level)
     } else {
         if ($_SESSION['user']['access'] > $required_access_level) {
             message('Access', $_SESSION['lang']['insufficient_privileges']);
-            header('Location: '.$_SERVER['HTTP_REFERER']);
+            if (isset($_SERVER['HTTP_REFERER']))
+            {
+                header('Location: '.$_SERVER['HTTP_REFERER']);
+            }
+            else
+            {
+              header('Location: index.php');
+            }
             die;
         } else {
             return true;

@@ -1,4 +1,8 @@
 <?php
+if (!isset($_SESSION['user']['username']))
+{
+  die;
+}
 session_start(); // Autorefresh session
 
 if (file_exists('conf/mysql_credentials.php')) {

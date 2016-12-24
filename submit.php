@@ -10,7 +10,7 @@ $dateRange = array(
 
 foreach ($_POST as $key => $value) // Sanitize all POST data
  {
-  if((!is_array($value)) || ($value !== "0"))
+  if(!is_array($value))
   {
     $value = sanitize_raw($value);
   }

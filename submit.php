@@ -218,7 +218,7 @@ if ($_GET['type'] === 'create_user')
           ':name' => trim(substr($_POST['name'], 0, 256)),
           ':password' => $user_password,
           ':flags' => $_POST['flag1'] . $_POST['flag2'] . $_POST['flag3'] . $_POST['flag4'],
-          ':access' => substr($_POST['access'], 0, 1),
+          ':access' => str_replace("A", "0", substr($_POST['access'], 0, 1)),
           ':attr_1' => 'User modified by ' . $_SESSION['user']['username'] . ' at ' . date('Y-m-d H:m')
         ));
         logline('0', 'Admin', 'User modified: ' . $username_input . ', access level ' . substr($_POST['access'], 0, 1));
@@ -228,10 +228,6 @@ if ($_GET['type'] === 'create_user')
        }
      }
 
-    if ($_POST['access'] === 'A')
-     {
-      $_POST['access'] = '0'; // Stupid PHP evaluates 0 as empty, so circumvent with "A" to write "0" as access.
-     }
     $query = $kirjuri_database->prepare('INSERT INTO users (username, password, name, access, flags, attr_1, attr_2, attr_3, attr_4, attr_5, attr_6, attr_7, attr_8) VALUES (
     :username, :password, :name, :access, :flags, :attr_1,
     NULL, NULL, NULL, NULL, NULL, NULL, NULL);');
@@ -240,7 +236,7 @@ if ($_GET['type'] === 'create_user')
       ':name' => trim(substr($_POST['name'], 0, 256)),
       ':password' => password_hash($_POST['password'], PASSWORD_DEFAULT),
       ':flags' => $_POST['flag1'] . $_POST['flag2'],
-      ':access' => substr($_POST['access'], 0, 1),
+      ':access' => str_replace("A", "0", substr($_POST['access'], 0, 1)),
       ':attr_1' => 'User created by ' . $_SESSION['user']['username'] . ' at ' . date('Y-m-d H:m')
     ));
     logline('0', 'Admin', 'User created: ' . $username_input . ', access level ' . substr($_POST['access'], 0, 1));

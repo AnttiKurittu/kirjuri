@@ -18,44 +18,10 @@ foreach ($_POST as $key => $value) // Sanitize all POST data
   $_POST[$key] = isset($value) ? $value : '';
  }
 
-$_POST['case_contains_mob_dev'] = isset($_POST['case_contains_mob_dev']) ? $_POST['case_contains_mob_dev'] : '';
-$_POST['device_contains_evidence'] = isset($_POST['device_contains_evidence']) ? $_POST['device_contains_evidence'] : '';
-$_POST['phone_investigator'] = isset($_POST['phone_investigator']) ? $_POST['phone_investigator'] : '';
-
-$_POST['flag1'] = isset($_POST['flag1']) ? $_POST['flag1'] : '';
-$_POST['flag2'] = isset($_POST['flag2']) ? $_POST['flag2'] : '';
-$_POST['flag3'] = isset($_POST['flag3']) ? $_POST['flag3'] : '';
-$_POST['flag4'] = isset($_POST['flag4']) ? $_POST['flag4'] : '';
-
-if ( (isset($_POST['case_contains_mob_dev'])) && (empty($_POST['case_contains_mob_dev']) ))
- {
-  $_POST['case_contains_mob_dev'] = "0";
- }
-
-if ( (isset($_POST['case_contains_evidence'])) && (empty($_POST['case_contains_evidence']) ))
- {
-  $_POST['case_contains_evidence'] = "0";
- }
-
-if ( (isset($_POST['device_host_id'])) && (empty($_POST['device_host_id']) ))
- {
-  $_POST['device_host_id'] = "0";
- }
-
-if ( (isset($_POST['device_item_number'])) && (empty($_POST['device_item_number']) ))
- {
-  $_POST['device_item_number'] = "0";
- }
-
-if ( (isset($_POST['device_size_in_gb'])) && (empty($_POST['device_size_in_gb']) ))
- {
-  $_POST['device_size_in_gb'] = "0";
- }
 if ( (isset($_POST['is_removed'])) && (empty($_POST['is_removed']) ))
  {
   $_POST['is_removed'] = "0";
  }
-
 
 $_SESSION['post_cache'] = $_POST;
 $_GET['type'] = isset($_GET['type']) ? $_GET['type'] : '';

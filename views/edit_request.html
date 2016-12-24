@@ -108,6 +108,7 @@ if (e.keyCode == 13) {
                   <b>{{ lang.request_contains_mobile_devices }}</b>
                   <p>{{ lang.pick_mobile_examiner }}</p>
                   <div class="form-group">
+                    <input type="hidden" name="phone_investigator" value="">
                     <select style="text-align:left;width:100%;" class="btn btn-default" name="phone_investigator" id="phone_investigator">
                       <option selected disabled>{{ lang.mobile_examiner_long }}</option>
 
@@ -471,6 +472,7 @@ if (e.keyCode == 13) {
             <div class="form-group">
             <label for="phone_investigator" class="col-sm-2 control-label"><a style="color:green;">{{ lang.mobile_examiner_long }}</a></label>
             <div class="col-sm-10">
+            <input type="hidden" name="phone_investigator" value="">
             <select style="text-align:left;" class="btn btn-default" name="phone_investigator" id="phone_investigator">
             {% if not entry.phone_investigator %}<option selected disabled value=""></option>{% endif %}
 
@@ -490,6 +492,7 @@ if (e.keyCode == 13) {
             </div>
             <div class="form-group">
             <div class="col-sm-10 col-sm-offset-2">
+            <input type="hidden" name="case_contains_mob_dev" value="0">
             <input {% if entry.case_status=="3" %}disabled{% endif %} type="checkbox" name="case_contains_mob_dev" value="1" {% if entry.case_contains_mob_dev=="1" %}checked{%endif%}> {{ lang.contains_mobile_devices }}
             </div>
             </div>
@@ -845,7 +848,7 @@ if (e.keyCode == 13) {
           <div class="form-group">
             <input type="hidden" name="parent_id" value="{{ caserow.0.id }}">
             <input type="hidden" name="is_removed" value="0">
-            <input type="hidden" value="{{ entry.id }}" name="device_host_id">
+            <input type="hidden" value="{% if entry.id %}{{ entry.id }}{% else %}0{% endif %}" name="device_host_id">
           </div>
       </div>
       <div class="modal-footer">

@@ -166,7 +166,9 @@ if (e.keyCode == 13) {
 <input type="hidden" name="token" value="{{session.user.token}}">
 <input type="hidden" name="ct" value="{{ct}}">
 <div class="col-md-6 text-left pull-left">
+<input type="hidden" name="device_contains_evidence" value="0">
 <input type="checkbox" name="device_contains_evidence" value="1" {% if entry.device_contains_evidence == "1" %}checked{% endif %}> {{ lang.contains_evidence }}
+<input type="hidden" name="device_include_in_report" value="0">
 &nbsp;&nbsp;&nbsp;<input name="device_include_in_report" value="1" type="checkbox" {% if entry.device_include_in_report == "1" %}checked{% endif %}> {{ lang.show_examination_notes_in_report }}</div>
 <div class="col-md-6 text-right"><a type="button" class="btn btn-xs btn-danger" href="submit.php?type=set_removed&uid={{ entry.id }}&returnid={{ entry.parent_id }}&token={{session.user.token}}&ct={{ct}}" onclick="return confirm('Really remove device{% if entry.device_is_host == "1"%} and attached media{% endif %}?')">
 <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span> {{ lang.remove_device }} {% if entry.device_is_host == "1"%}{{ lang.and_associated_devices }}{% endif %}</a>{% endif %}</div>
@@ -210,6 +212,7 @@ if (e.keyCode == 13) {
 <div class="form-group">
 <label for="device_size_in_gb" class="col-sm-1 control-label">{{ lang.size_in_gb_short }}</label>
 <div class="col-sm-5">
+<input type="hidden" name="device_size_in_gb" value="0">
 <input type="device_size_in_gb" class="form-control" id="device_size_in_gb" name="device_size_in_gb" placeholder="{{ lang.size_in_gb_long }}" onKeyPress="return numbersonly(this, event)" value="{{ entry.device_size_in_gb }}">
 </div>
 <label for="device_owner" class="col-sm-1 control-label">{{ lang.sort_label_owner }}</label>
@@ -236,6 +239,7 @@ if (e.keyCode == 13) {
 </div>
 <label for="device_item_number" class="col-sm-1 control-label">{{ lang.device_item_number_abbrev }}</label>
 <div class="col-sm-5">
+<input type="hidden" name="device_item_number" value="0">
 <input type="text" class="form-control" id="device_item_number" name="device_item_number" placeholder="{{ lang.device_item_number }}" onKeyPress="return numbersonly(this, event)" value="{{ entry.device_item_number }}">
 </div>
 </div>

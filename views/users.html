@@ -3,6 +3,24 @@
 <title>{{ lang.manage_users }} - {{ settings.title_text }}</title>
 {% endblock title %}
 {% block content %}
+<script>
+  $(document).ready(function (){
+      validate();
+      $('#current_password').change(validate);
+  });
+
+  function validate(){
+      if (
+          $('#current_password').val().length > 0) {
+          $("#user_save_button").prop("disabled", false);
+          $("#user_save_button").addClass("btn-success");
+      }
+      else {
+          $("#user_save_button").prop("disabled", true);
+          $("#user_save_button").removeClass("btn-success");
+      }
+  }
+</script>
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
   <h3>{{ lang.user_management_header}} </h3>
   <table class="table table-striped">
@@ -13,6 +31,7 @@
       <th class="text-center">{{ lang.forensic_examiner_long|capitalize }}</th>
       <th class="text-center">{{ lang.mobile_examiner_long|capitalize }}</th>
       <th class="text-center">{{ lang.api_access|capitalize }}</th>
+      <th class="text-center">{{ lang.ip_restrictions }}</th>
       <th class="text-center">{{ lang.active|capitalize }}</th>
       <th></th>
     </thead>
@@ -24,17 +43,19 @@
       <td class="text-center">{% if 'F' in user.flags == true %}<i style="color:green;" class="fa fa-check"></i>{% else %}<i style="color:red;" class="fa fa-remove"></i>{% endif %}</td>
       <td class="text-center">{% if 'M' in user.flags == true %}<i style="color:green;" class="fa fa-check"></i>{% else %}<i style="color:red;" class="fa fa-remove"></i>{% endif %}</td>
       <td class="text-center">{% if 'A' in user.flags == true %}<i style="color:green;" class="fa fa-check"></i>{% else %}<i style="color:red;" class="fa fa-remove"></i>{% endif %}</td>
+      <td class="text-center">{% if user.attr_2|length > 26 %}<i style="color:green;" class="fa fa-check"></i>{% else %}<i style="color:red;" class="fa fa-remove"></i>{% endif %}</td>
       <td class="text-center">{% if 'I' in user.flags == true %}<i style="color:red;" class="fa fa-remove"></i>{% else %}<i style="color:green;" class="fa fa-check"></i>{% endif %}</td>
-      <td><a href="submit.php?type=force_logout&user={{user.username|url_encode}}&token={{session.user.token}}">{{ lang.log_out }}</td>
+      <td><a href="submit.php?type=force_logout&user={{user.username|url_encode}}&token={{session.user.token}}">{{ lang.log_out }}</a></td>
     </tr>
     {% endfor %}
   </table>
 
 <form class="form-horizontal" role="form" method="post" action="submit.php?type=create_user">
   <input type="hidden" name="token" value="{{session.user.token}}">
-<div class="panel panel-default">
+  <input type="hidden" name="user_id" value="{{fields.id}}">
+<div class="panel panel-{% if not fields %}default{% else %}info{% endif %}">
   <div class="panel-heading">
-    <h3 class="panel-title"><a id="u"></a>{{ lang.manage_users }} | {{ lang.new_name_to_create }}</h3>
+    <h3 class="panel-title"><a id="u"></a>{% if not fields %}<i class="fa fa-plus"></i> {{ lang.new_name_to_create }}{% else %}<i class="fa fa-edit"></i> {{ fields.username }} [ID {{fields.id}}]{% endif %}</h3>
   </div>
   <div class="panel-body">
     <div class="form-group">
@@ -43,22 +64,36 @@
         {% if fields.username %}
         <input type="text" class="form-control" id="username" name="username" value="{{ fields.username }}" readonly>
         {% else %}
-        <input type="text" class="form-control" id="username" name="username" plahceholder="{{ lang.new_name_to_create }}">
+        <input type="text" class="form-control" id="username" name="username" placeholder="{{ lang.username_hint }}">
         {% endif %}
       </div>
     </div>
     <div class="form-group">
       <label for="name" class="col-md-2 control-label">{{ lang.real_name }}</label>
       <div class="col-md-10">
-        <input type="text" class="form-control" id="name" name="name" value="{{ fields.name }}">
+        <input type="text" class="form-control" id="name" name="name" value="{% if fields %}{{ fields.name }}{% endif %}" placeholder="{{ lang.name }}">
       </div>
     </div>
     <div class="form-group">
       <label for="password" class="col-md-2 control-label">{{ lang.password }}</label>
       <div class="col-md-10">
-        <input type="password" class="form-control" id="password" name="password" placeholder="{% if fields %}{{ lang.enter_new_to_change }}{% endif %}">
+        <input type="password" class="form-control" id="password" name="password" placeholder="{% if fields %}{{ lang.enter_new_to_change }}{% else %}{{ lang.new_user_password }}{% endif %}">
       </div>
     </div>
+    <div class="form-group">
+      <label for="ip_whitelist" class="col-md-2 control-label">{{ lang.ip_whitelist }}</label>
+      <div class="col-md-10">
+        <input type="text" class="form-control" id="ip_whitelist" name="ip_whitelist" placeholder="{{ lang.ip_addr_comma_list }}" value="{{ fields.whitelist }}">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="ip_blacklist" class="col-md-2 control-label">{{ lang.ip_blacklist }}</label>
+      <div class="col-md-10">
+        <input type="text" class="form-control" id="ip_blacklist" name="ip_blacklist" placeholder="{{ lang.ip_addr_comma_list }}" value="{{ fields.blacklist }}">
+      </div>
+    </div>
+
+    {% if fields.id != 2 %}
     <div class="form-group">
       <label for="access" class="col-md-2 control-label">{{ lang.access_level }}</label>
       <div class="col-md-10">
@@ -70,6 +105,7 @@
         </select>
       </div>
     </div>
+    {% endif %}
     <div class="form-group">
       <label for="flags" class="col-md-2 control-label">{{ lang.flags }}</label>
       <div class="col-md-10">
@@ -90,16 +126,27 @@
           <div class="checkbox">
              <label class="col-md-12">
                <input type="hidden" name="flag3" value="">
-               <input type="checkbox" name="flag4" value="A" {% if "A" in fields.flags %}checked{% endif %}> {{ lang.api_access }} {% if fields.apikey %} <i class="fa fa-key"></i> <span style="color:grey;">{{ fields.apikey }}{% endif %}
+               <input type="checkbox" name="flag3" value="A" {% if "A" in fields.flags %}checked{% endif %}> {{ lang.api_access }} {% if fields.apikey %} <i class="fa fa-key"></i> <span style="color:grey;">{{ fields.apikey }}{% endif %}
              </label>
            </div>
 
-          <div class="checkbox">
-             <label class="col-md-12">
-               <input type="hidden" name="flag4" value="">
-               <input type="checkbox" name="flag3" value="I" {% if "I" in fields.flags %}checked{% endif %}> {{ lang.flag_inactive }}
-             </label>
-           </div>
+           {% if fields.id != 2 %}
+           <div class="checkbox">
+              <label class="col-md-12">
+                <input type="hidden" name="flag4" value="">
+                <input type="checkbox" name="flag3" value="I" {% if "I" in fields.flags %}checked{% endif %}> {{ lang.flag_inactive }}
+              </label>
+            </div>
+          {% endif %}
+
+           {% if fields.id > 2 %}
+           <div class="checkbox">
+              <label class="col-md-12">
+                <input type="hidden" name="delete_user" value="no">
+                <input type="checkbox" name="delete_user" value="delete"> <span style="color:red;">{{ lang.delete_user }}</span>
+              </label>
+            </div>
+          {% endif %}
 
       </div>
     </div>
@@ -113,11 +160,12 @@
       <label for="attr_1" class="col-md-2 control-label"></label>
       <div class="col-md-10">
 <p>{{ fields.attr_1 }}</p>
+<p>{{ lang.your_ip_address }}{{ your_ip }}</p>
       </div>
     </div>
   </div>
   <div class="panel-footer">
-    <button type="submit" class="btn btn-success">{{ lang.save }}</button> <a href="users.php" class="btn btn-default">{{ lang.clear_form }}</a>
+    <button id="user_save_button" type="submit" class="btn btn-success">{{ lang.save }}</button> <a href="users.php#u" class="btn btn-default">{{ lang.clear_form }}</a>
   </div>
 </div>
 </form>

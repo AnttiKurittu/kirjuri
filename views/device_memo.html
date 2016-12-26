@@ -306,6 +306,7 @@ if (e.keyCode == 13) {
 <div class="form-group" style="width:100%;margin-left:0px;">
 <h3>{{lang.report_notes}} ({% if entry.device_include_in_report == "1" %}{{lang.will_be_shown}}{% else %}{{lang.will_not_be_shown}}{% endif %})</h3>
 <textarea id="richeditor" rows="25" name="report_notes">{% if entry.report_notes %}{{entry.report_notes}}{% else %}{{templates.report_notes}}{% endif %}</textarea>
+<input type="hidden" name="template_report_notes" value="{{templates.report_notes}}">
 <h3>{{lang.examiners_private_notes}}</h3>
 <textarea id="richeditor" rows="10" name="examiners_notes">{{entry.examiners_notes}}</textarea>
 <input type="hidden" name="returnid" value="{{ entry.id }}">

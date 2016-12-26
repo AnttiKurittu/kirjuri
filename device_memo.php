@@ -10,11 +10,17 @@ if (!file_exists('cache/user_' . md5($_SESSION['user']['username']) . '/session_
   die;
 }
 
-$query = $kirjuri_database->prepare('SELECT * FROM exam_requests WHERE is_removed != "1" AND id = :uid LIMIT 1');
+$query = $kirjuri_database->prepare('SELECT * FROM exam_requests WHERE is_removed != "1" AND id = :uid AND parent_id != id LIMIT 1');
 $query->execute(array(
   ':uid' => $_GET['uid'],
 ));
 $mediarow = $query->fetchAll(PDO::FETCH_ASSOC);
+
+if (count($mediarow) === 0)
+{
+  header('Location: index.php');
+  die;
+}
 
 $query = $kirjuri_database->prepare('SELECT id, device_type, device_manuf, device_model, device_host_id FROM exam_requests WHERE is_removed != "1" AND device_host_id = :uid');
 $query->execute(array(

@@ -21,6 +21,7 @@
       </div>
 
       <button type="submit" class="col-md-offset-1 btn btn-default">{{ lang.change_password }}</button>
+      <a class="btn btn-danger" href="submit.php?type=force_logout&user={{session.user.username|url_encode}}&token={{session.user.token}}">{{ lang.log_out_all_sessions }}</a>
   </form>
 </div>
 

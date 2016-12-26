@@ -12,10 +12,17 @@ foreach ($_POST as $key => $value) // Sanitize all POST data
  {
   if(!is_array($value))
   {
-    $value = sanitize_raw($value);
+    if ($value[3]) // Don't bother to sanitize string under 4 characters.
+    {
+      $value = sanitize_raw($value);
+    }
   }
   $_POST[$key] = isset($value) ? $value : '';
  }
+
+/* MySQL used to populate empty INT fields with 0. The newer versions throw an
+* error so some vars need to be set to 0 if empty.
+*/
 
 if ( (isset($_POST['is_removed'])) && (empty($_POST['is_removed']) ))
 {
@@ -52,7 +59,7 @@ if ( (isset($_POST['case_contains_mob_dev'])) && (empty($_POST['case_contains_mo
   $_POST['case_contains_mob_dev'] = "0";
 }
 
-
+// Get entires from cache if filling a form fails.
 $_SESSION['post_cache'] = $_POST;
 $_GET['type'] = isset($_GET['type']) ? $_GET['type'] : '';
 
@@ -92,15 +99,45 @@ if ($_GET['type'] === 'login')
    {
     sleep(5);
    }
-  foreach ($users as $user)
+  foreach ($users as $user)  // Find matching username and password
    {
      // Log user in.
      if ((strtolower($_POST['username']) === strtolower($user['username'])) && (password_verify($_POST['password'], $user['password']) ))
       {
-       if (strpos($user['flags'], 'I') === false)
+       if (strpos($user['flags'], 'I') === false) // See if account is flagged as inactive
         {
-         $_SESSION['user'] = $user;
-         csrf_init();
+         $access_allowed_from_ip = false; // Deny access by default
+         $ip_access_list = json_decode($user['attr_2'], TRUE);
+         if (strlen($ip_access_list['allow'][0]) !== 0) // If whitelist is set, go on
+         {
+           foreach($ip_access_list['allow'] as $ip)
+           {
+             if(ip_in_range($_SERVER['REMOTE_ADDR'], $ip)) // See whitelist
+             {
+               $access_allowed_from_ip = true; // If address in whitelist, allow
+             }
+           }
+         }
+         else
+         {
+           $access_allowed_from_ip = true; // No whitelist set, default to allow.
+         }
+         foreach($ip_access_list['deny'] as $ip) // See blacklist for matches
+         {
+           if (ip_in_range($_SERVER['REMOTE_ADDR'], $ip))
+           {
+             $access_allowed_from_ip = false; // If IP is on blacklist, deny.
+           }
+         }
+         if ($access_allowed_from_ip === false) // If IP is blocked, disallow login.
+         {
+           message('error', $_SERVER['REMOTE_ADDR'] . ": " . $_SESSION['lang']['ip_address_restricted']);
+           logline('0', 'Action', 'Login attempt from blacklisted IP address '.$_SERVER['REMOTE_ADDR'].': ' . $_POST['username']);
+           header('Location: login.php');
+           die;
+         }
+         $_SESSION['user'] = $user; // All checks passed, log user in.
+         csrf_init(); // Initialize session CSRF token.
         }
        else
         {
@@ -110,7 +147,7 @@ if ($_GET['type'] === 'login')
          die;
         }
       }
-      // See if user still has old, insecure password hash - update and log in.
+      // See if user still has old, insecure password hash - update if found and log user out.
     elseif ((strtolower($_POST['username']) === strtolower($user['username'])) && (hash('sha256', $_POST['password']) === $user['password']))
      {
       if (strpos($user['flags'], 'I') === false)
@@ -122,9 +159,10 @@ if ($_GET['type'] === 'login')
           ':username' => $_SESSION['user']['username'],
           ':legacy_password' => hash('sha256', $_POST['password'])
         ));
-        $_SESSION['user']['password'] = password_hash($_POST['password'], PASSWORD_DEFAULT);
+        session_destroy();
         logline('0', 'Info', 'Updated the legacy password hash for user.');
-        csrf_init();
+        header("Location: submit.php?type=logout");
+        die;
        }
       else
        {
@@ -160,7 +198,11 @@ if ($_GET['type'] === 'login')
 if ($_GET['type'] === 'logout')
  {
   logline('0', 'Action', 'Logout');
-  unlink('cache/user_' . md5($_SESSION['user']['username']) . '/session_' . $_SESSION['user']['token'] . '.txt');
+  $sessionfile = 'cache/user_' . md5($_SESSION['user']['username']) . '/session_' . $_SESSION['user']['token'] . '.txt';
+  if (file_exists($sessionfile))
+  {
+    unlink($sessionfile);
+  }
   session_destroy();
   $_SESSION['user'] = null;
   header('Location: index.php');
@@ -186,6 +228,29 @@ if ($_GET['type'] === 'create_user')
  {
   csrf_session_validate($_POST['token']);
   protect_page(0);
+  $ip_access_control['allow'] = explode(",", preg_replace("/[^0-9,\.\/]+/", "", $_POST['ip_whitelist']));
+  $ip_access_control['deny'] = explode(",", preg_replace("/[^0-9,\.\/]+/", "", $_POST['ip_blacklist']));
+  foreach($ip_access_control['allow'] as $ip)
+  {
+    if ((!empty($ip) && ((filter_var(explode("/", $ip)[0], FILTER_VALIDATE_IP) === false) || (explode("/", $ip)[1]) > "32")) )
+    {
+      message('error', $_SESSION['lang']['whitelist_not_a_valid_ip'] . ": " . $ip);
+      header('Location: users.php?populate=' . $_POST['user_id']);
+      die;
+    }
+  }
+
+  foreach($ip_access_control['deny'] as $ip)
+  {
+    if ((!empty($ip) && ((filter_var(explode("/", $ip)[0], FILTER_VALIDATE_IP) === false) || (explode("/", $ip)[1]) > "32")) )
+    {
+      message('error', $_SESSION['lang']['blacklist_not_a_valid_ip'] . ": " . $ip);
+      header('Location: users.php?populate=' . $_POST['user_id']);
+      die;
+    }
+  }
+
+  $ip_json = json_encode($ip_access_control);
   $username_input = strtolower(trim(substr(preg_replace("/[^a-zA-Z0-9\ äöåÄÖÅ]+/", "",$_POST['username']), 0, 64)));
   if (
     !empty($username_input) &&
@@ -194,6 +259,17 @@ if ($_GET['type'] === 'create_user')
     password_verify($_POST['current_password'], $_SESSION['user']['password'])
     )
    {
+    if ($_POST['delete_user'] === "delete" && $_SESSION['user']['access'] === "0")
+    {
+      $query = $kirjuri_database->prepare('DELETE FROM users WHERE username = :username AND id > 2');
+      $query->execute(array(
+       ':username' => $username_input
+      ));
+      logline('0', 'Admin', 'User deleted permanently: ' . $username_input);
+      message('info', $_SESSION['lang']['user_deleted']);
+      header('Location: submit.php?type=force_logout&user=' . urlencode($username_input) . '&token=' . $_SESSION['user']['token']);
+      die;
+    }
     foreach ($_SESSION['all_users'] as $user)
      {
       if ($user['username'] === $username_input)
@@ -209,17 +285,19 @@ if ($_GET['type'] === 'create_user')
          {
           $user_password = $user['password'];
          }
-        $query = $kirjuri_database->prepare('UPDATE users SET password = :password, name = :name, access = :access, flags = :flags, attr_1 = :attr_1 WHERE username = :username;
+
+        $query = $kirjuri_database->prepare('UPDATE users SET password = :password, name = :name, access = :access, flags = :flags, attr_1 = :attr_1, attr_2 = :attr_2 WHERE username = :username;
            UPDATE exam_requests SET forensic_investigator = :name WHERE forensic_investigator = :oldname;
            UPDATE exam_requests SET phone_investigator = :name WHERE phone_investigator = :oldname;');
         $query->execute(array(
           ':oldname' => $oldname,
           ':username' => $username_input,
-          ':name' => trim(substr($_POST['name'], 0, 256)),
+          ':name' => ucwords(trim(substr($_POST['name'], 0, 256))),
           ':password' => $user_password,
           ':flags' => $_POST['flag1'] . $_POST['flag2'] . $_POST['flag3'] . $_POST['flag4'],
           ':access' => str_replace("A", "0", substr($_POST['access'], 0, 1)),
-          ':attr_1' => 'User modified by ' . $_SESSION['user']['username'] . ' at ' . date('Y-m-d H:m')
+          ':attr_1' => 'User modified by ' . $_SESSION['user']['username'] . ' at ' . date('Y-m-d H:m'),
+          ':attr_2' => $ip_json
         ));
         logline('0', 'Admin', 'User modified: ' . $username_input . ', access level ' . substr($_POST['access'], 0, 1));
         message('info', $_SESSION['lang']['user_modified']);
@@ -229,15 +307,16 @@ if ($_GET['type'] === 'create_user')
      }
 
     $query = $kirjuri_database->prepare('INSERT INTO users (username, password, name, access, flags, attr_1, attr_2, attr_3, attr_4, attr_5, attr_6, attr_7, attr_8) VALUES (
-    :username, :password, :name, :access, :flags, :attr_1,
-    NULL, NULL, NULL, NULL, NULL, NULL, NULL);');
+    :username, :password, :name, :access, :flags, :attr_1, :attr_2,
+    NULL, NULL, NULL, NULL, NULL, NULL);');
     $query->execute(array(
       ':username' => $username_input,
-      ':name' => trim(substr($_POST['name'], 0, 256)),
+      ':name' => ucwords(trim(substr($_POST['name'], 0, 256))),
       ':password' => password_hash($_POST['password'], PASSWORD_DEFAULT),
       ':flags' => $_POST['flag1'] . $_POST['flag2'],
       ':access' => str_replace("A", "0", substr($_POST['access'], 0, 1)),
-      ':attr_1' => 'User created by ' . $_SESSION['user']['username'] . ' at ' . date('Y-m-d H:m')
+      ':attr_1' => 'User created by ' . $_SESSION['user']['username'] . ' at ' . date('Y-m-d H:m'),
+      ':attr_2' => $ip_json
     ));
     logline('0', 'Admin', 'User created: ' . $username_input . ', access level ' . substr($_POST['access'], 0, 1));
     message('info', $_SESSION['lang']['user_created']);
@@ -901,7 +980,10 @@ if ($_GET['type'] === 'devicememo')
   csrf_session_validate($_POST['token']);
   csrf_case_validate($_POST['ct'], $id);
   verify_owner($id);
-
+  if (trim(strtolower(strip_tags($_POST['report_notes']))) === trim(strtolower(strip_tags($_POST['template_report_notes']))))
+  {
+    $_POST['report_notes'] = "";
+  }
   if (isset($_POST['new_parent_id']) && ($id !== $_POST['new_parent_id']))
   {
     $id = num($_POST['new_parent_id']);
@@ -1048,7 +1130,6 @@ if ($_GET['type'] === 'device')
 if (($_POST['save'] === 'settings') && (isset($_POST['settings_conf'])))
  {
   // Save settings to file
-
   protect_page(1);
   csrf_session_validate($_POST['token']);
   if (file_exists($settings_file))

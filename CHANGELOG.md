@@ -1,5 +1,11 @@
 CHANGELOG
 ------------
+2016-12-25 release 130:
+
+* Enhanced user management - force logout, delete user permanently
+* Enhanced security features with per-user IP black/whitelisting. This will not restrict existing sessions but sets limits to new sessions.
+* Bugfixes and performance tweaks.
+
 2016-12-22 release 129:
 
 * Big feature update!

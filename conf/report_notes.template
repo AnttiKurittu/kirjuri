@@ -1,5 +1,5 @@
 <h3>Image file details</h3>
-<b>Disk image hash:</b>&nbsp;<br>
-<b>Disk image checksum:</b>&nbsp;<br>
-<b>Disk image location:</b>&nbsp;<br>
-<b>Disk image creator:</b>&nbsp;<br>
+<p>Disk image hash:</p>
+<p>Disk image checksum:</p>
+<p>Disk image location:</p>
+<p>Disk image creator:</p>

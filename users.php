@@ -22,12 +22,22 @@ foreach ($_SESSION['all_users'] as $user) { // Get user information based on GET
       $fields['access'] = $user['access'];
       $fields['flags'] = $user['flags'];
       $fields['attr_1'] = $user['attr_1'];
+      $ip_access_list = json_decode($user['attr_2'], TRUE);
       $fields['apikey'] = hash('sha1', $user['username'].$user['password']);
+      if ($ip_access_list['allow'][0])
+      {
+        $fields['whitelist'] = str_replace(",", ", ", implode(",", $ip_access_list['allow']));
+      }
+      if ($ip_access_list['deny'][0])
+      {
+        $fields['blacklist'] = str_replace(",", ", ", implode(",", $ip_access_list['deny']));
+      }
   }
 }
 
 $_SESSION['message_set'] = false;
 echo $twig->render('users.html', array(
+    'your_ip' => $_SERVER['SERVER_ADDR'],
     'session' => $_SESSION,
     'settings' => $settings,
     'lang' => $_SESSION['lang'],

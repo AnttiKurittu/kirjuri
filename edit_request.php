@@ -31,6 +31,12 @@ $query->execute(array(
 ));
 $caserow = $query->fetchAll(PDO::FETCH_ASSOC);
 
+if (count($caserow) === 0)
+{
+  header('Location: index.php');
+  die;
+}
+
 if (empty($_SESSION['case_token'][$case_number]))
 {
   $_SESSION['case_token'][$case_number] = substr(md5(microtime()),rand(0,26),16); // Initialize case token
@@ -118,7 +124,6 @@ if (file_exists('logs/kirjuri_case_' . $case_number . '.log'))
 else {
   $caselog = "";
 }
-
 
 $_SESSION['message_set'] = false; // Prevent a message from being shown twice.
 echo $twig->render('edit_request.html', array(

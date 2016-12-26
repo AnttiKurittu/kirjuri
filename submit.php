@@ -12,7 +12,7 @@ foreach ($_POST as $key => $value) // Sanitize all POST data
  {
   if(!is_array($value))
   {
-    if ($value[3]) // Don't bother to sanitize string under 4 characters.
+    if (isset($value[3])) // Don't bother to sanitize string under 4 characters.
     {
       $value = sanitize_raw($value);
     }

@@ -37,7 +37,7 @@ foreach ($_SESSION['all_users'] as $user) { // Get user information based on GET
 
 $_SESSION['message_set'] = false;
 echo $twig->render('users.html', array(
-    'your_ip' => $_SERVER['SERVER_ADDR'],
+    'your_ip' => $_SERVER['REMOTE_ADDR'],
     'session' => $_SESSION,
     'settings' => $settings,
     'lang' => $_SESSION['lang'],

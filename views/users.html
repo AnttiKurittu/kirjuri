@@ -105,7 +105,10 @@
         </select>
       </div>
     </div>
+    {% else %}
+    <input type="hidden" value="A" name="access">
     {% endif %}
+
     <div class="form-group">
       <label for="flags" class="col-md-2 control-label">{{ lang.flags }}</label>
       <div class="col-md-10">
@@ -130,22 +133,22 @@
              </label>
            </div>
 
+           <input type="hidden" name="flag4" value="">
            {% if fields.id != 2 %}
            <div class="checkbox">
               <label class="col-md-12">
-                <input type="hidden" name="flag4" value="">
                 <input type="checkbox" name="flag3" value="I" {% if "I" in fields.flags %}checked{% endif %}> {{ lang.flag_inactive }}
               </label>
             </div>
           {% endif %}
 
-           {% if fields.id > 2 %}
-           <div class="checkbox">
-              <label class="col-md-12">
-                <input type="hidden" name="delete_user" value="no">
-                <input type="checkbox" name="delete_user" value="delete"> <span style="color:red;">{{ lang.delete_user }}</span>
-              </label>
-            </div>
+          <input type="hidden" name="delete_user" value="no">
+          {% if fields.id > 2 %}
+          <div class="checkbox">
+            <label class="col-md-12">
+              <input type="checkbox" name="delete_user" value="delete"> <span style="color:red;">{{ lang.delete_user }}</span>
+            </label>
+          </div>
           {% endif %}
 
       </div>

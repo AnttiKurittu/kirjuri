@@ -285,10 +285,10 @@ if ($_GET['type'] === 'create_user')
          {
           $user_password = $user['password'];
          }
-
-        $query = $kirjuri_database->prepare('UPDATE users SET password = :password, name = :name, access = :access, flags = :flags, attr_1 = :attr_1, attr_2 = :attr_2 WHERE username = :username;
-           UPDATE exam_requests SET forensic_investigator = :name WHERE forensic_investigator = :oldname;
-           UPDATE exam_requests SET phone_investigator = :name WHERE phone_investigator = :oldname;');
+        $query = $kirjuri_database->prepare('UPDATE users SET password = :password, name = :name, access = :access,
+          flags = :flags, attr_1 = :attr_1, attr_2 = :attr_2 WHERE username = :username;
+          UPDATE exam_requests SET forensic_investigator = :name WHERE forensic_investigator = :oldname;
+          UPDATE exam_requests SET phone_investigator = :name WHERE phone_investigator = :oldname;');
         $query->execute(array(
           ':oldname' => $oldname,
           ':username' => $username_input,

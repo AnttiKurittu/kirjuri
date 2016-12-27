@@ -1,9 +1,10 @@
 <?php
+session_start(); // Autorefresh session
+
 if (!isset($_SESSION['user']['username']))
 {
   die;
 }
-session_start(); // Autorefresh session
 
 if (file_exists('conf/mysql_credentials.php')) {
     // Read credentials array from a file
@@ -38,6 +39,8 @@ $kirjuri_database = db_r('kirjuri-database'); // Read tools from database to set
 $query = $kirjuri_database->prepare('SELECT (SELECT COUNT(id) FROM messages WHERE msgto = :username AND received = "0") as new');
 $query->execute(array(':username' => $_SESSION['user']['username']));
 $_SESSION['unread'] = $query->fetch(PDO::FETCH_ASSOC);
-if($_SESSION['unread']['new'] > 0) {
+if ($_SESSION['unread']['new'] > 0) {
   echo '<span style="color:red;"><i class="fa fa-envelope-o"></i> ' . $_SESSION['unread']['new'] . '</span>';
+} else {
+  echo "aosdmop";
 }

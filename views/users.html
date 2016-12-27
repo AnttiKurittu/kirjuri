@@ -84,12 +84,14 @@
       <label for="ip_whitelist" class="col-md-2 control-label">{{ lang.ip_whitelist }}</label>
       <div class="col-md-10">
         <input type="text" class="form-control" id="ip_whitelist" name="ip_whitelist" placeholder="{{ lang.ip_addr_comma_list }}" value="{{ fields.whitelist }}">
+
       </div>
     </div>
     <div class="form-group">
       <label for="ip_blacklist" class="col-md-2 control-label">{{ lang.ip_blacklist }}</label>
       <div class="col-md-10">
         <input type="text" class="form-control" id="ip_blacklist" name="ip_blacklist" placeholder="{{ lang.ip_addr_comma_list }}" value="{{ fields.blacklist }}">
+        <small>&nbsp;{{ lang.your_ip_address }}{{ your_ip }}</small>
       </div>
     </div>
 
@@ -162,8 +164,26 @@
     <div class="form-group">
       <label for="attr_1" class="col-md-2 control-label"></label>
       <div class="col-md-10">
-<p>{{ fields.attr_1 }}</p>
-<p>{{ lang.your_ip_address }}{{ your_ip }}</p>
+<table class="table table-condensed">
+  <thead>
+    <th>{{ lang.session_file }}</th>
+    <th>{{ lang.session_details }}</th>
+    <th>{{ lang.drop }}</th>
+  </thead>
+  {% for session_file, session_content in fields.sessions %}
+  <tr>
+    <td>
+      {{ session_file }}
+    </td>
+    <td>
+      {{ session_content }}
+    </td>
+    <td class="text-center">
+      <a href="submit.php?type=drop_session&user={{fields.username|url_encode}}&user_id={{ fields.id }}&session={{ session_file|replace({".txt": "", "session_": ""}) }}&token={{ session.user.token }}"><i style="color:red;" class="fa fa-times"></i></a>
+    </td>
+  </tr>
+{% endfor %}
+</table>
       </div>
     </div>
   </div>

@@ -1,5 +1,12 @@
 CHANGELOG
 ------------
+2016-12-27 release 131:
+
+* Enhanced the request front page with a more concise layout.
+* Added session information and administrator ability to terminate single sessions for users.
+* Global black/whitelists for login IP addresses, configurable in conf/access_list.php.
+* Tweaks, bugfixes, etc.
+
 2016-12-25 release 130:
 
 * Enhanced user management - force logout, delete user permanently

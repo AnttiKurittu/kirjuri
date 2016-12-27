@@ -151,39 +151,122 @@ if (e.keyCode == 13) {
           </div>
         </div>
         {% endif %}
-        <div class="panel panel-default">
-          <div class="panel-body">
 
-        <h1 id="examination_request" class="page-header">{% if entry.case_status == "1" %}<i style="color:red;" class="fa fa-square"></i>{% endif %}{% if entry.case_status == "2" %}<i style="color:gold;" class="fa fa-square"></i>{% endif %}{% if entry.case_status == "3" %}<i style="color:green;" class="fa fa-square"></i>{% endif %} {{ entry.case_id }}/{{ entry.case_added_date|date("Y") }} {% if entry.case_name %}{{ entry.case_name }}{% elseif entry.case_suspect %}{{ lang.suspect_abbrev }} {{ entry.case_suspect }}{% else %}{{ lang.suspect_short }}{% endif %} ({{ entry.case_file_number }})
-          {% if entry.case_owner %}<span class="pull-right" style="color:red;"><i class="fa fa-lock"></i></span>{% endif %}</h1>
+        <h2 id="examination_request" class="panel-header">&nbsp;{% if entry.case_status == "1" %}<i style="color:red;" class="fa fa-pause"></i>{% endif %}{% if entry.case_status == "2" %}<i style="color:#666;" class="fa fa-square-o"></i>{% endif %}{% if entry.case_status == "3" %}<i style="color:green;" class="fa fa-check-square-o"></i>{% endif %} {{ entry.case_id }}/{{ entry.case_added_date|date("Y") }} {% if entry.case_name %}{{ entry.case_name }}{% elseif entry.case_suspect %}{{ lang.suspect_abbrev }} {{ entry.case_suspect }}{% else %}{{ lang.suspect_short }}{% endif %}
+          {% if entry.case_owner %}<span class="pull-right" style="color:red;"><i class="fa fa-lock"></i></span>{% endif %}</h2>
+      <table class="table table-condensed">
+      <tr>
+        <td width="100" style="white-space:nowrap;">
+          {{lang.crime|capitalize}}
+        </td>
+        <td>
+          {{ entry.case_file_number }}, {{ entry.classification }}, {{ entry.case_crime }}
+          {% if samerequest_file_number %}<br><i class="fa fa-exclamation" style="color:red;"></i> <a href='index.php?search="{{ entry.case_file_number|url_encode }}"'>{{ lang.requests_with_matching_complaint_number }}</a>
+          {% for entry in samerequest_file_number %}<a href="edit_request.php?case={{ entry.id }}">{{ entry.case_id }}/{{ entry.case_added_date|date("Y") }}</a>&nbsp;{% endfor %}
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td width="100" style="white-space:nowrap;">
+          {{ lang.target|capitalize }}
+        </td>
+        <td>
+          <a href='index.php?search="{{ entry.case_suspect|url_encode }}"'>{{ entry.case_suspect }}</a>
+        </td>
+      </tr>
 
-        <h4><span class="label label-default">{{lang.crime|capitalize}}</span> {{ entry.case_crime }} / {{ entry.classification }}</h4>
-        <h4><span class="label label-default">{{ lang.target|capitalize }}</span> {{ entry.case_suspect }}</h4>
+      <tr>
+        <td width="100" style="white-space:nowrap;">
+          {{ lang.head_of_investigation|capitalize }}
+        </td>
+        <td>
+          <a href='index.php?search="{{ entry.case_investigation_lead|url_encode }}"'>{{ entry.case_investigation_lead }}</a> (<a href='index.php?search="{{ entry.case_investigator_unit|url_encode }}"'>{{ entry.case_investigator_unit }}</a>)
+        </td>
+      </tr>
 
-        <h4><span class="label label-primary">{{ lang.head_of_investigation|capitalize }}</span> {{ entry.case_investigation_lead }} ({{ entry.case_investigator_unit }})</h4>
-        <h4><span class="label label-primary">{{ lang.investigator|capitalize }}</span> <b> {{ entry.case_investigator }}</b>, p. {{ entry.case_investigator_tel }}</h4>
-
+      <tr>
+        <td width="100" style="white-space:nowrap;">
+          {{ lang.investigator|capitalize }}
+        </td>
+        <td>
+          <a href='index.php?search="{{ entry.case_investigator|url_encode }}"'>{{ entry.case_investigator }}</a>, p. {{ entry.case_investigator_tel }}
+        </td>
+      </tr>
         {% if entry.forensic_investigator%}
-        <h4><span class="label label-primary">{{ lang.forensic_examiner_long|capitalize }}</span> {{ entry.forensic_investigator }}</h4>
+        <tr>
+          <td width="100" style="white-space:nowrap;">
+            {{ lang.forensic_examiner_long|capitalize }}
+          </td>
+          <td>
+            <a href='index.php?search="{{ entry.forensic_investigator|url_encode }}"'>{{ entry.forensic_investigator }}</a>
+          </td>
+        </tr>
         {% endif %}
 
         {% if entry.phone_investigator %}
-        <h4><span class="label label-primary">{{ lang.mobile_examiner_long|capitalize }}</span> {{ entry.phone_investigator }}</h4>
+        <tr>
+          <td width="100" style="white-space:nowrap;">
+            {{ lang.mobile_examiner_long|capitalize }}
+          </td>
+          <td>
+            <a href='index.php?search="{{ entry.phone_investigator|url_encode }}"'>{{ entry.phone_investigator }}</a>
+          </td>
+        </tr>
         {% endif %}
 
-        <p>{{ lang.requested|capitalize }} <b>{{ entry.case_added_date|date("d.m.Y") }}</b>, {{ lang.confiscation_date }} <b>{{ entry.case_confiscation_date|date("d.m.Y") }}</b>, {{ lang.latest_update }} {% if (entry.last_updated|date("U") < settings.stalled_case|date("U")) and (entry.case_status == "2")%}<i style="color:red;" class="fa fa-moon-o"></i> <b style="color:red;">{{ entry.last_updated|date("d.m.Y") }}</b>{% else %}<b>{{ entry.last_updated|date("d.m.Y") }}</b>{% endif %}</p>
-        <p>{{ lang.evidence_description|capitalize }}: <b>{{ entry.case_request_description }}</b>, {{ lang.request_details }}: <b>{{ entry.case_requested_action }}</b></p>
-        <p>{{ lang.urgency|capitalize }}: <b>{% if entry.case_urgency == "1" %}<a style="color:red;">{{ lang.urgency_urgent }}</a>{%endif %}{% if entry.case_urgency == "2" %}{{ lang.urgency_normal }}{%endif %}{% if entry.case_urgency == "3" %}{{ lang.urgency_can_wait }}{%endif %}</b>{% if entry.case_urg_justification %}, <b>{{ entry.case_urg_justification }}</b>
+        {% if entry.case_owner %}
+        <tr>
+          <td width="100" style="white-space:nowrap;">
+            {{ lang.access_control }}
+          </td>
+          <td>
+            <span style="color:green">{{ entry.case_owner|replace({";": ", "}) }}</span>
+          </td>
+        </tr>
         {% endif %}
-        </p>
-        <table class="table col-md-12">
+        <tr>
+          <td width="100" style="white-space:nowrap;">
+            {{ lang.evidence_description|capitalize }}
+          </td>
+          <td>
+          {{ entry.case_request_description }}
+        </td>
+      </tr>
+
+      <tr>
+        <td width="100" style="white-space:nowrap;">
+          {{ lang.request_details|capitalize }}
+        </td>
+        <td>
+        {{ entry.case_requested_action }}
+      </td>
+    </tr>
+      <tr>
+        <td width="100" style="white-space:nowrap;">
+        {{ lang.urgency|capitalize }}
+      </td>
+      <td>
+           {% if entry.case_urgency == "1" %}<b><a style="color:red;">{{ lang.urgency_urgent }}</a></b>{%endif %}{% if entry.case_urgency == "2" %}{{ lang.urgency_normal }}{%endif %}{% if entry.case_urgency == "3" %}{{ lang.urgency_can_wait }}{%endif %}{% if entry.case_urg_justification %}, <b>{{ entry.case_urg_justification }}</b>{% endif %}
+         </td>
+       </tr>
+       <tr>
+         <td width="100" style="white-space:nowrap;">
+           {{ lang.request_dates|capitalize }}
+         </td>
+         <td>
+           {{ lang.requested|capitalize }} <b>{{ entry.case_added_date|date("d.m.Y") }}</b>, {{ lang.confiscation_date }} <b>{{ entry.case_confiscation_date|date("d.m.Y") }}</b>, {{ lang.latest_update }} {% if (entry.last_updated|date("U") < settings.stalled_case|date("U")) and (entry.case_status == "2")%}<i style="color:red;" class="fa fa-moon-o"></i> <b style="color:red;">{{ entry.last_updated|date("d.m.Y") }}</b>{% else %}<b>{{ entry.last_updated|date("d.m.Y") }}</b>{% endif %}
+         </td>
+       </tr>
+
+     </table>
+        <table class="table col-md-12 table-bordered">
+        {% if filelist %}
           <thead>
             <th>{{lang.header_filename}}</th>
             <th>{% if settings.show_thumbnails == "1"%}{{lang.header_thumbnail}}{% endif %}</th>
             <th>{{lang.header_filetype}}</th>
             <th>{{lang.header_filesize}}</th>
           </thead>
-        {% if filelist %}
         {% for file in filelist %}<tr><td><a href="/attachments/{{ caserow.0.id }}/{{ file.filename }}" target="_BLANK">
           {% if "image" in file.filetype %}
           <i class="fa fa-file-image-o"></i>
@@ -220,7 +303,6 @@ if (e.keyCode == 13) {
 
           {% endfor%}
           {% else %}
-          <tr><td colspan="4">{{lang.no_attachments}}</td></tr>
           {% endif %}
           {% if (settings.allow_attachments == "1") and (caserow.0.case_status == "2") %}
           <tr><td colspan="4" class="active">
@@ -241,8 +323,7 @@ if (e.keyCode == 13) {
           {% endfor %}
 
         </table>
-</div>
-</div>
+
         {% if entry.case_status != "3" %}
         {% set progress_counter1 = "0" %}
         {% set progress_counter2 = "0" %}
@@ -307,14 +388,6 @@ if (e.keyCode == 13) {
             {% endif%}
         </form>
         </div>
-        {% if samerequest_file_number %}
-        <hr>
-        <p><i class="fa fa-exclamation" style="color:red;"></i> {{ lang.requests_with_matching_complaint_number }}
-          {% for entry in samerequest_file_number %}
-          <a style="font-size:0.9em;" href="edit_request.php?case={{ entry.id }}" class="label label-primary">{{ entry.case_id }}/{{ entry.case_added_date|date("Y") }}</a>&nbsp;
-          {% endfor %}
-        </p>
-        {% endif %}
         <hr>
         {% if caserow.0.report_notes %}
         <h3>{{ lang.examination_report }}</h3>

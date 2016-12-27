@@ -108,6 +108,20 @@ if ($_GET['type'] === 'login')
         {
          $access_allowed_from_ip = false; // Deny access by default
          $ip_access_list = json_decode($user['attr_2'], TRUE);
+         if (file_exists('conf/access_list.php')) // Process global black/whitelist
+         {
+           $global_ip_access_list = include('conf/access_list.php');
+           foreach($global_ip_access_list['allow'] as $ip)
+           {
+             array_push($ip_access_list['allow'], $ip);
+           }
+           foreach($global_ip_access_list['deny'] as $ip)
+           {
+             array_push($ip_access_list['deny'], $ip);
+           }
+           unset($global_ip_access_list);
+         }
+
          if (strlen($ip_access_list['allow'][0]) !== 0) // If whitelist is set, go on
          {
            foreach($ip_access_list['allow'] as $ip)
@@ -179,7 +193,8 @@ if ($_GET['type'] === 'login')
     message('info', $_SESSION['lang']['logged_in_as'] . ' ' . $_SESSION['user']['username']);
     logline('0', 'Action', 'Login');
     if (!file_exists('cache/user_' . md5($_SESSION['user']['username']))) mkdir('cache/user_' . md5($_SESSION['user']['username']));
-    file_put_contents('cache/user_' . md5($_SESSION['user']['username']) . '/session_' . $_SESSION['user']['token'] . '.txt', $_SESSION['user']['username'] . ' is logged in at ' . $_SERVER['REMOTE_ADDR'] . ', user agent ' . $_SERVER['HTTP_USER_AGENT'] . '. Request timestamp ' . gmdate("Y-m-d\TH:i:s\Z", $_SERVER['REQUEST_TIME']) . ". Remove this file to force logout.\r\n");
+    file_put_contents('cache/user_' . md5($_SESSION['user']['username']) . '/session_' . $_SESSION['user']['token'] . '.txt',
+    gmdate("Y-m-d\TH:i:s\Z", $_SERVER['REQUEST_TIME']) . " " . $_SESSION['user']['username'] . ' is logged in from ' . $_SERVER['REMOTE_ADDR'] . ', user agent ' . $_SERVER['HTTP_USER_AGENT']);
     header('Location: index.php');
     die;
    }
@@ -208,6 +223,16 @@ if ($_GET['type'] === 'logout')
   header('Location: index.php');
   die;
  }
+
+ if ($_GET['type'] === "drop_session")
+ {
+   csrf_session_validate($_GET['token']);
+   protect_page(0);
+   unlink('cache/user_' . md5(urldecode($_GET['user'])) . '/session_' . $_GET['session'] . '.txt');
+   header('Location: users.php?populate=' . $_GET['user_id'] . '#u');
+   die;
+ }
+
 
  if ($_GET['type'] === 'force_logout')
  {

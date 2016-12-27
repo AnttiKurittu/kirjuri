@@ -32,6 +32,21 @@ foreach ($_SESSION['all_users'] as $user) { // Get user information based on GET
       {
         $fields['blacklist'] = str_replace(",", ", ", implode(",", $ip_access_list['deny']));
       }
+
+      $fields['sessions'] = array();
+
+      if ( file_exists('cache/user_' . md5($user['username']) ))
+
+      {
+        $session_dir = scandir('cache/user_'.md5($user['username']));
+        foreach($session_dir as $sessionfile)
+        {
+          if ($sessionfile[0] !== ".")
+          {
+            $fields['sessions'][$sessionfile] = file_get_contents("cache/user_" . md5($user['username']) . "/" . $sessionfile);
+          }
+        }
+      }
   }
 }
 

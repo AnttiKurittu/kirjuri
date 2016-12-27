@@ -41,6 +41,4 @@ $query->execute(array(':username' => $_SESSION['user']['username']));
 $_SESSION['unread'] = $query->fetch(PDO::FETCH_ASSOC);
 if ($_SESSION['unread']['new'] > 0) {
   echo '<span style="color:red;"><i class="fa fa-envelope-o"></i> ' . $_SESSION['unread']['new'] . '</span>';
-} else {
-  echo "aosdmop";
 }

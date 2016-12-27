@@ -1,8 +1,9 @@
 <?php
 session_start(); // Autorefresh session
 
-if (!isset($_SESSION['user']['username']))
+if (!file_exists('cache/user_' . md5($_SESSION['user']['username']) . "/session_" . $_SESSION['user']['token'] . ".txt" ))
 {
+  echo '<i style="color:red;" class="fa fa-ban"></i>';
   die;
 }
 

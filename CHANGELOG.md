@@ -7,6 +7,7 @@ CHANGELOG
 * Gave an input form to set the admin password on install time instead of defaulting to "admin".
 * Removed adding extra examiners from settings file. Create users for this.
 * Switched some glyphicons to Font Awesome icons. Gotta finish this.
+* Ending an users session will force-logout after a while.
 
 2016-12-27 release 131:
 

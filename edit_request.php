@@ -23,7 +23,7 @@ $returntab = isset($_GET['tab']) ? $_GET['tab'] : '';
 $dev_owner = urldecode(isset($_GET['dev_owner'])) ? $_GET['dev_owner'] : '';
 $filelist = array();
 $case_number = preg_replace('/[^0-9]/', '', (substr($get_case, 0, 5)));
-$confCrimes = file_get_contents('conf/crimes_autofill.conf');
+$confCrimes = strip_tags(file_get_contents('conf/crimes_autofill.conf'));
 $kirjuri_database = db('kirjuri-database');
 $query = $kirjuri_database->prepare('SELECT * FROM exam_requests WHERE id=:id AND parent_id=:id LIMIT 1');
 $query->execute(array(
@@ -148,8 +148,6 @@ echo $twig->render('edit_request.html', array(
   'device_actions' => $_SESSION['lang']['device_actions'],
   'media_objs' => $_SESSION['lang']['media_objs'],
   'devices' => $_SESSION['lang']['devices'],
-  'forensic_investigators' => $settings_contents['forensic_investigators'],
-  'phone_investigators' => $settings_contents['phone_investigators'],
   'inv_units' => $settings_contents['inv_units'],
   'classifications' => $_SESSION['lang']['classifications'],
   'confCrimes' => $confCrimes,

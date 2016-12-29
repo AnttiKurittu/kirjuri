@@ -98,10 +98,7 @@ if (e.keyCode == 13) {
                           <option value="{{ user.name }}" {% if user.name == session.user.name %}selected{% endif %}>{{ user.name }} ({{user.username}})</option>
                         {% endif %}
                       {% endfor %}
-                      <option disabled>---</option>
-                      {% for entry in forensic_investigators %}
-                      <option value="{{ entry }}">{{ entry }}</option>
-                      {% endfor %}
+                      <option value="-">* {{ lang.mobile_examination_only }}</option>
                     </select>
                   </div>
                   {% if entry.case_contains_mob_dev == "1" %}
@@ -117,10 +114,7 @@ if (e.keyCode == 13) {
                           <option value="{{ user.name }}" {% if user.name == session.user.name %}selected{% endif %}>{{ user.name }} ({{user.username}})</option>
                         {% endif %}
                       {% endfor %}
-                      <option disabled>---</option>
-                      {% for entry in phone_investigators %}
-                      <option value="{{ entry }}">{{ entry }}</option>
-                      {% endfor %}
+                      <option value="-">* {{ lang.no_mobile_examination }}</option>
                     </select>
                   </div>
                   {% endif %}
@@ -128,9 +122,9 @@ if (e.keyCode == 13) {
               <div class="modal-footer">
               <button type="button" class="btn btn-default" data-dismiss="modal">{{ lang.close }}</button>
               {% if entry.case_status == "1" %}
-              <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{ lang.save }}</button>
+              <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> {{ lang.save }}</button>
               {% elseif entry.case_status == "2" %}
-              <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{ lang.update }}</button>
+              <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> {{ lang.update }}</button>
               {% endif %}
               <input type="hidden" name="case_request_description" value="{{ entry.case_request_description }}">
               <input type="hidden" name="case_crime" value="{{ entry.case_crime }}">
@@ -161,8 +155,7 @@ if (e.keyCode == 13) {
         </td>
         <td>
           {{ entry.case_file_number }}, {{ entry.classification }}, {{ entry.case_crime }}
-          {% if samerequest_file_number %}<br><i class="fa fa-exclamation" style="color:red;"></i> <a href='index.php?search="{{ entry.case_file_number|url_encode }}"'>{{ lang.requests_with_matching_complaint_number }}</a>
-          {% for entry in samerequest_file_number %}<a href="edit_request.php?case={{ entry.id }}">{{ entry.case_id }}/{{ entry.case_added_date|date("Y") }}</a>&nbsp;{% endfor %}
+          {% if samerequest_file_number %}<br><i class="fa fa-exclamation" style="color:red;"></i> <a href='index.php?search="{{ entry.case_file_number|url_encode }}"'>{{ lang.requests_with_matching_complaint_number }}</a>: {% for entry in samerequest_file_number %}<a href="edit_request.php?case={{ entry.id }}">{{ entry.case_id }}/{{ entry.case_added_date|date("Y") }}</a>{% if not loop.last%}, {% endif%}{% endfor %}
           {% endif %}
         </td>
       </tr>
@@ -346,8 +339,8 @@ if (e.keyCode == 13) {
           <a href="download_csv.php?case={{caserow.0.id}}" type="button" class="btn btn-warning"><i class="fa fa-download"></i> {{ lang.download_csv }}</a>
           {% if caserow.0.case_status != "3" %}<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#perustiedot"><i class="fa fa-info-circle"></i> {{ lang.edit_request_details }}</button>{% endif %}
 
-          <a href="print_sticker.php?uid={{ entry.id }}&type=examination_request" target="_BLANK" type="button" class="btn btn-info"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> {{ lang.print_sticker }}</a>
-          <a type="button" class="btn btn-info" href="case_report.php?case={% for entry in caserow %}{{ entry.id }}{% endfor %}" target="_BLANK"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> {{ lang.print_report }}</a>
+          <a href="print_sticker.php?uid={{ entry.id }}&type=examination_request" target="_BLANK" type="button" class="btn btn-info"><i class="fa fa-print"></i> {{ lang.print_sticker }}</a>
+          <a type="button" class="btn btn-info" href="case_report.php?case={% for entry in caserow %}{{ entry.id }}{% endfor %}" target="_BLANK"><i class="fa fa-print"></i> {{ lang.print_report }}</a>
 
           <div class="form-group">
             <input type="hidden" value="{{ entry.id }}" name="returnid">
@@ -355,7 +348,7 @@ if (e.keyCode == 13) {
             {% set progress_counter2 = "0" %}
             {% if not mediarow %}
             <input type="hidden" value="1" name="case_status">
-            <button type="submit" class="btn btn-danger"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{ lang.dismiss_request }}</button>
+            <button type="submit" class="btn btn-danger"><i class="fa fa-save"></i> {{ lang.dismiss_request }}</button>
             {% else %}
             {% for entry in mediarow %}
             {% set jutun_vaihe = entry.device_action|split('|') %}
@@ -367,20 +360,20 @@ if (e.keyCode == 13) {
             {% for entry in caserow %}
             {% if entry.case_status == "2" %}
             <input type="hidden" value="3" name="case_status">
-            <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{ lang.close_ready_request }}</button>
+            <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> {{ lang.close_ready_request }}</button>
             {% elseif entry.case_status == "3" %}
             <input type="hidden" value="2" name="case_status">
-            <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{ lang.reopen_closed_request }}</button>
+            <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> {{ lang.reopen_closed_request }}</button>
             {% endif %}
             {% endfor %}
             {% elseif (loop.last == true) and (progress_counter1 != progress_counter2) %}
             {% for entry in caserow %}
             {% if entry.case_status == "2" %}
             <!-- <input type="hidden" value="1" name="case_status">
-              <button type="submit" class="btn btn-danger"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{ lang.dismiss_request }}</button> -->
+              <button type="submit" class="btn btn-danger"><i class="fa fa-save"></i> {{ lang.dismiss_request }}</button> -->
             {% elseif entry.case_status == "1" %}
             <input type="hidden" value="2" name="case_status">
-            <button type="submit" class="btn btn-warning"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{ lang.start_investigation }}</button>
+            <button type="submit" class="btn btn-warning"><i class="fa fa-save"></i> {{ lang.start_investigation }}</button>
             {% endif %}
             {% endfor %}
             {% endif %}
@@ -534,10 +527,8 @@ if (e.keyCode == 13) {
                 <option {% if user.name == entry.forensic_investigator %}selected{% endif %} value="{{ user.name }}">{{ user.name }} ({{user.username}})</option>
               {% endif %}
             {% endfor %}
-            <option disabled>---</option>
-            {% for this_investigator in forensic_investigators %}
-            <option value="{{ this_investigator }}" {% if this_investigator == entry.forensic_investigator %}selected{% endif %}>{{ this_investigator }}</option>
-            {% endfor %}
+            <option value="-">* {{ lang.mobile_examination_only }}</option>
+
 
             </select>
             </div>
@@ -554,11 +545,7 @@ if (e.keyCode == 13) {
                 <option {% if user.name == entry.phone_investigator %}selected{% endif %} value="{{ user.name }}">{{ user.name }} ({{user.username}})</option>
               {% endif %}
             {% endfor %}
-            <option disabled>---</option>
-            {% for this_investigator in phone_investigators %}
-            <option value="{{ this_investigator }}" {% if this_investigator == entry.phone_investigator %}selected{% endif %}>{{ this_investigator }}</option>
-            {% endfor %}
-
+            <option value="-">* {{ lang.no_mobile_examination }}</option>
 
             </select>
             </div>
@@ -589,9 +576,9 @@ if (e.keyCode == 13) {
           <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">{{ lang.close }}</button>
           {% if entry.case_status == "1" %}
-          <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{ lang.save_case_details }}</button>
+          <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> {{ lang.save_case_details }}</button>
           {% elseif entry.case_status == "2" %}
-          <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{ lang.update_case_details }}</button>
+          <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> {{ lang.update_case_details }}</button>
           {% endif %}
           </form>
           {% endfor %}
@@ -926,7 +913,7 @@ if (e.keyCode == 13) {
       </div>
       <div class="modal-footer">
       <button type="button" class="btn btn-default" data-dismiss="modal">{{ lang.close }}</button>
-      <button id="save_button_2" type="submit" class="btn btn-success"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{ lang.save }}</button>
+      <button id="save_button_2" type="submit" class="btn btn-success"><i class="fa fa-save"></i> {{ lang.save }}</button>
       </form>
       </div>
     </div>
@@ -1022,7 +1009,7 @@ if (e.keyCode == 13) {
       </div>
       <div class="modal-footer">
       <button type="button" class="btn btn-default" data-dismiss="modal">{{ lang.close }}</button>
-      <button id="save_button_1" type="submit" class="btn btn-success"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{ lang.save }}</button>
+      <button id="save_button_1" type="submit" class="btn btn-success"><i class="fa fa-save"></i> {{ lang.save }}</button>
       </form>
       </div>
     </div>
@@ -1051,7 +1038,7 @@ if (e.keyCode == 13) {
     {% endfor %}
   </select>
   <td style="vertical-align:middle;">
-    <button type="submit" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{ lang.update_all }}</button>
+    <button type="submit" class="btn btn-warning btn-xs"><i class="fa fa-save"></i> {{ lang.update_all }}</button>
 </form>
 {% endif %}
 </div>
@@ -1062,11 +1049,11 @@ if (e.keyCode == 13) {
     <input type="hidden" name="token" value="{{session.user.token}}">
     <input type="hidden" name="ct" value="{{ct}}">
   <div class="form-group form-horizontal">
-  <textarea id="richeditor" class="textarea form-control" rows="25" style="height:500px;" name="report_notes">{% if caserow.0.report_notes %}{{ caserow.0.report_notes }}{% else %}{{ settings.report_notes_footer }}{% endif %}</textarea>
+  <textarea id="richeditor" class="textarea form-control" rows="25" style="height:500px;" name="report_notes">{% if caserow.0.report_notes %}{{ caserow.0.report_notes }}{% endif %}</textarea>
   </div>
   <input type="hidden" value="{{ caserow.0.parent_id }}" name="returnid">
   <div class="form-group">
-  <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{ lang.save_examination_report }}</button>
+  <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> {{ lang.save_examination_report }}</button>
   </div>
   </form>
   {% else %}
@@ -1092,7 +1079,7 @@ if (e.keyCode == 13) {
   </div>
   <input type="hidden" value="{{ caserow.0.parent_id }}" name="returnid">
   <div class="form-group">
-  <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> {{ lang.save_notes }}</button>
+  <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> {{ lang.save_notes }}</button>
   </div>
   </form>
   {% else %}
@@ -1195,7 +1182,7 @@ if (e.keyCode == 13) {
 </form>
 {% endif %}
 </div>
-
+{% if settings.show_log == "1" %}
 <div role="tabpanel" class="tab-pane{% if returntab == "caselog" %} active{% endif %}" id="tab-caselog">
 <h3 class="page-heading">{{ lang.case_log }}</h3>
 
@@ -1216,7 +1203,7 @@ if (e.keyCode == 13) {
 {% endif %}
 
 </div>
-
+{% endif %}
 </div>
 </div>
 <!-- tabit loppuu -->

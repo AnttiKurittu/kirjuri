@@ -1152,25 +1152,46 @@ if ($_GET['type'] === 'device')
   die;
  }
 
-if (($_POST['save'] === 'settings') && (isset($_POST['settings_conf'])))
- {
-  // Save settings to file
-  protect_page(1);
-  csrf_session_validate($_POST['token']);
-  if (file_exists($settings_file))
-   {
-    file_put_contents($settings_file, $_POST['settings_conf']);
-    logline('0', 'Admin', 'Settings saved.');
-   }
-  else
-   {
-    trigger_error('Settings file ' . $settings_file . ' not found.');
-   }
-  $_SESSION['post_cache'] = '';
-  show_saved();
+if ($_GET['type'] === "reset_default_settings")
+{
+  protect_page(0);
+  csrf_session_validate($_GET['token']);
+  unlink('conf/settings.local');
+  logline('0', 'Admin', 'Default settings restored.');
   header('Location: settings.php');
   die;
- }
+}
+
+
+if ($_GET['type'] === "save_settings")
+{
+  protect_page(0);
+  csrf_session_validate($_POST['token']);
+  $settings_output = "; Saved settings\r\n\r\n[settings]\r\n";
+  foreach($_POST['settings'] as $key => $value)
+  {
+    $settings_output = $settings_output . $key . " = \"" . $value . "\";\r\n";
+  }
+  $settings_output = $settings_output . "\r\n[inv_units]\r\n";
+  $units = explode(",", $_POST['inv_units']);
+  $unit_key = 1;
+  foreach ($units as $value) {
+    $unit_key++;
+    $settings_output = $settings_output . $unit_key . " = \"" . trim($value) . "\";\r\n";
+  }
+  $settings_output = $settings_output . "\r\n[statistics_chart_colors]\r\n";
+  foreach($_POST['chart'] as $key => $value)
+  {
+    $settings_output = $settings_output . $key . " = \"" . $value . "\";\r\n";
+  }
+  file_put_contents('conf/settings.local', $settings_output);
+  logline('0', 'Admin', 'Settings saved.');
+  show_saved();
+  $_SESSION['post_cache'] = '';
+  header('Location: settings.php');
+  die;
+
+}
 
 // Default to error if no handlers
 trigger_error('submit.php called with erroneous value.');

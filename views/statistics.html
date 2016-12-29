@@ -4,7 +4,7 @@
 {% block content %}
 <div class="col-sm-9 col-sm-offset-3
   col-md-10 col-md-offset-2 main">
-<h1 class="page-header">{{ lang.statistics }} {{ dateStart|date("Y") }} <a href='statistics.php?year={{ (dateStart|date("Y") - 1 ) }}'><span class="glyphicon glyphicon-triangle-left" aria-hidden="true"></span></a> <a href='statistics.php?year={{ (dateStart|date("Y") + 1 ) }}'><span class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span></a> </h1>
+<h1 class="page-header">{{ lang.statistics }} {{ dateStart|date("Y") }} <a href='statistics.php?year={{ (dateStart|date("Y") - 1 ) }}'><i class="fa fa-caret-left"></i></a> <a href='statistics.php?year={{ (dateStart|date("Y") + 1 ) }}'><i class="fa fa-caret-right"></i></a> </h1>
 <div class="col-md-3 col-sm-3 text-center">
   <h4>{{ lang.status_of_requests }}</h4>
   <canvas id="statusKaavio" style="width:200px;height:200px;"></canvas>

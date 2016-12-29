@@ -1,5 +1,13 @@
 CHANGELOG
 ------------
+2016-12-29 Release 132:
+
+* Made handling settings better - instead of editing a text file, fields are presented and settings file parsed from that.
+* More tweaks, bugfixes and other betterments.
+* Gave an input form to set the admin password on install time instead of defaulting to "admin".
+* Removed adding extra examiners from settings file. Create users for this.
+* Switched some glyphicons to Font Awesome icons. Gotta finish this.
+
 2016-12-27 release 131:
 
 * Enhanced the request front page with a more concise layout.

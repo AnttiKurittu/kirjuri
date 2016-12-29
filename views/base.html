@@ -94,7 +94,7 @@
       {
           $("#unreadcounter").load("unreadcounter.php");// a function which will load data from other file after x seconds
       }
-      setInterval('autoRefresh_div()', 60000); // Refresh the unread counter every minute
+      setInterval('autoRefresh_div()', 10000); // Refresh the unread counter every minute
     </script>
 
 
@@ -121,7 +121,7 @@
           {% if session.user %}
           {% if session.user.access <= 2 %}
           <ul class="nav nav-sidebar">
-            <li{% if "index.php" in settings.self %} class="active"{% endif %}><a href='index.php?year={{ dateStart|date("Y") }}'><span class="glyphicon glyphicon-home" aria-hidden="true"></span> {{ lang.front_page }} {{ dateStart|date("Y") }}<span class="sr-only">(current)</span></a></li>
+            <li{% if "index.php" in settings.self %} class="active"{% endif %}><a href='index.php?year={{ dateStart|date("Y") }}'><i class="fa fa-home"></i> {{ lang.front_page }} {{ dateStart|date("Y") }}<span class="sr-only">(current)</span></a></li>
           </ul>
 
           {% endif %}
@@ -132,7 +132,7 @@
             <li role="presentation"{% if returntab == "report_notes" %} class="active"{% endif %}><a href="#tab-report_notes" aria-controls="tab-report_notes" role="tab" data-toggle="tab">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {% if caserow.0.report_notes %}<b>{% endif %}{{ lang.examination_report }}{% if caserow.0.report_notes %}</b>{% endif %}</a></li>
             <li role="presentation"{% if returntab == "examiners_notes" %} class="active"{% endif %}><a href="#tab-examiners_notes" aria-controls="tab-examiners_notes" role="tab" data-toggle="tab">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {% if caserow.0.examiners_notes %}<b>{% endif %}{{ lang.examination_notes }}{% if caserow.0.examiners_notes %}</b>{% endif %}</a></li>
             <li role="presentation"{% if returntab == "access" %} class="active"{% endif %}><a href="#tab-access" aria-controls="tab-access" role="tab" data-toggle="tab">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {% if caserow.0.case_owner %}<b>{{ lang.access_control }}</b>{% else %}{{ lang.access_control }}{% endif %}</a></li>
-            <li role="presentation"{% if returntab == "caselog" %} class="active"{% endif %}><a href="#tab-caselog" aria-controls="tab-caselog" role="tab" data-toggle="tab">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {{ lang.case_log }}</a></li>
+            {% if settings.show_log == "1" %}<li role="presentation"{% if returntab == "caselog" %} class="active"{% endif %}><a href="#tab-caselog" aria-controls="tab-caselog" role="tab" data-toggle="tab">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {{ lang.case_log }}</a></li>{% endif %}
           </ul>
           {% endif %}
 
@@ -144,24 +144,26 @@
             <li role="presentation"><a href="edit_request.php?case={{ caserow.0.id }}&tab=report_notes">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {% if caserow.0.report_notes %}<b>{% endif %}{{ lang.examination_report }}{% if caserow.0.report_notes %}</b>{% endif %}</a></li>
             <li role="presentation"><a href="edit_request.php?case={{ caserow.0.id }}&tab=examiners_notes">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {% if caserow.0.examiners_notes %}<b>{% endif %}{{ lang.examination_notes }}{% if caserow.0.examiners_notes %}</b>{% endif %}</a></li>
             <li role="presentation"><a href="edit_request.php?case={{ caserow.0.id }}&tab=access">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {% if caserow.0.case_owner %}<b>{{ lang.access_control }}</b>{% else %}{{ lang.access_control }}{% endif %}</a></li>
-            <li role="presentation"><a href="edit_request.php?case={{ caserow.0.id }}&tab=caselog">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {{ lang.case_log }}</a></li>
+            {% if settings.show_log == "1" %}<li role="presentation"><a href="edit_request.php?case={{ caserow.0.id }}&tab=caselog">&nbsp;&nbsp;<i class="fa fa-caret-right"></i> {{ lang.case_log }}</a></li>{% endif %}
           </ul>
           {% endif %}
           {% if session.user.access <= 2 %}
           <ul class="nav nav-sidebar">
-            <li{% if "statistics.php" in settings.self %} class="active"{% endif %}><a href='statistics.php?year={{ dateStart|date("Y") }}'> <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> {{ lang.statistics }} {{ dateStart|date("Y") }}</a></li>
+            <li{% if "statistics.php" in settings.self %} class="active"{% endif %}><a href='statistics.php?year={{ dateStart|date("Y") }}'> <i class="fa fa-list"></i> {{ lang.statistics }} {{ dateStart|date("Y") }}</a></li>
           </ul>
           {% endif %}
           <ul class="nav nav-sidebar">
-            <li{% if "add_case.php" in settings.self %} class="active"{% endif %}><a href="add_case.php"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{ lang.add_a_request }}</a></li>
+            <li{% if "add_case.php" in settings.self %} class="active"{% endif %}><a href="add_case.php"><i class="fa fa-plus"></i> {{ lang.add_a_request }}</a></li>
           </ul>
           <ul class="nav nav-sidebar">
-            <li{% if "help.php" in settings.self %} class="active"{% endif %}><a href="help.php"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> {{ lang.help_licenses }}</a></li>
+            <li{% if "help.php" in settings.self %} class="active"{% endif %}><a href="help.php"><i class="fa fa-question"></i> {{ lang.help_licenses }}</a></li>
           </ul>
+          {% if session.user.access <= 2 %}
+          <ul class="nav nav-sidebar">
+            <li{% if "settings.php" in settings.self %} class="active"{% endif %}{% if session.user.access > 1 %} class="disabled"{% endif %}><a href="settings.php"><i class="fa fa-cog"></i> {{ lang.settings }}</a></li>
+          </ul>
+          {% endif %}
           {% if session.user.access <= 0 %}
-          <ul class="nav nav-sidebar">
-            <li{% if "settings.php" in settings.self %} class="active"{% endif %}{% if session.user.access > 1 %} class="disabled"{% endif %}><a href="settings.php"><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> {{ lang.settings }}</a></li>
-          </ul>
           <ul class="nav nav-sidebar">
             <li{% if "users.php" in settings.self %} class="active"{% endif %}{% if session.user.access > 0 %} class="disabled"{% endif %}><a href="users.php"><i class="fa fa-users"></i> {{ lang.manage_users }}</a></li>
           </ul>

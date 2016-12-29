@@ -139,7 +139,6 @@ foreach($cases_by_unit as $key => $unit)
 $_SESSION['message_set'] = false;
 echo $twig->render('statistics.html', array(
     'session' => $_SESSION,
-    'forensic_investigators' => $settings_contents['forensic_investigators'],
     'statistics_chart_colors' => $settings_contents['statistics_chart_colors'],
     'devices' => $_SESSION['lang']['devices'],
     'media_objs' => $_SESSION['lang']['media_objs'],

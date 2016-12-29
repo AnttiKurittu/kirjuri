@@ -1,7 +1,12 @@
+<?php
+session_start();
+session_destroy();
+?>
 <html>
 <body>
 <pre><h3>Kirjuri installer</h3>
 <?php
+
 if (file_exists("conf/mysql_credentials.php"))
 { echo "Installer has already been run on this instance. Please remove the file conf/mysql_credentials.php to run the installer again.";
   die;
@@ -57,7 +62,7 @@ if ((file_exists('conf/mysql_credentials.php')) || (file_exists('conf/settings.l
 
 // Continue the installer if data is present.
 
-if (empty($_POST)) {
+if ( (empty($_POST['u'])) ||  (empty($_POST['p'])) || (empty($_POST['d'])) || (empty($_POST['ap'])) ) {
     echo '<hr><form role="form" method="post">
 This script will install the necessary databases for Kirjuri to operate,
 save your credentials to <i>conf/mysql_credentials.php</i> and prepopulate
@@ -73,14 +78,17 @@ Please choose a name for your database. The default is "kirjuri".
 <input type="checkbox" name="drop_database" value="drop"> Drop existing database. <b style="color:red;">THIS WILL DELETE YOUR DATA AND USERS.</b>
 <input type="checkbox" name="migrate_old_database" value="migrate"> Migrate tutkinta.jutut database. <b style="color:red;">THIS WILL OVERWRITE YOUR EXISTING DATABASE.</b>
 
-MySQL username <input name="u" type="text">
-MySQL password <input name="p" type="password">
-MySQL database <input name="d" type="text" value="kirjuri">
+<input name="u" type="text"> MySQL username
+<input name="p" type="password"> MySQL password
+<input name="d" type="text" value="kirjuri"> MySQL database
+<input name="ap" type="password"> Create admin password
 
 <button type="submit">Install / rebuild databases</button></form>';
     die;
 } else {
     // If form is submitted
+
+  $admin_password = password_hash($_POST['ap'], PASSWORD_DEFAULT);
 
   $_POST['drop_database'] = isset($_POST['drop_database']) ? $_POST['drop_database'] : '';
     $_POST['migrate_old_database'] = isset($_POST['migrate_old_database']) ? $_POST['migrate_old_database'] : '';
@@ -231,7 +239,7 @@ MySQL database <input name="d" type="text" value="kirjuri">
       ':anon_access' => '3', // Add only access
       ':anon_attr1' => 'System account, do not remove.',
       ':admin_name' => 'admin',
-      ':admin_default_pw' => '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', // sha256(admin)
+      ':admin_default_pw' => $admin_password,
       ':anon_pw' => 'Not set.',
       ':admin_realname' => 'Administrator',
       ':admin_access' => '0',
@@ -358,7 +366,7 @@ MySQL database <input name="d" type="text" value="kirjuri">
       echo '<p style="color:red;">Caught MySQL exception: ', $e->getMessage(), '. This is expected with existing tables.</p>';
   }
 
-    echo '<p>Install script done, reload <a href="index.php">index.php</a>. The default credentials for Kirjuri are "admin" / "admin".</p>
+    echo '<p>Install script done, reload <a href="index.php">index.php</a>. The adming account is "admin", log in with the password you designated.</p>
    ';
     die;
 }

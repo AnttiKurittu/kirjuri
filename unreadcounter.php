@@ -3,7 +3,7 @@ session_start(); // Autorefresh session
 
 if (!file_exists('cache/user_' . md5($_SESSION['user']['username']) . "/session_" . $_SESSION['user']['token'] . ".txt" ))
 {
-  echo '<i style="color:red;" class="fa fa-ban"></i>';
+  echo '<i style="color:red;" class="fa fa-ban"></i><script>window.location.href = "index.php";</script>';
   die;
 }
 

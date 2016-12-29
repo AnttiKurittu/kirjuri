@@ -352,7 +352,6 @@ $settings_contents = parse_ini_file($settings_file, true); // Parse settings fil
 $settings = $settings_contents['settings']; // Get settings to a variable
 $settings['self'] = $_SERVER['PHP_SELF'];
 $settings['release'] = file_get_contents('conf/RELEASE');
-
 $_SESSION['lang'] = parse_ini_file('conf/'.$settings_contents['settings']['lang'], true); // Parse language file
 
 try

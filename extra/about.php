@@ -76,6 +76,8 @@
     <li>Icon file names convert spaces to underscores, lowercase letters and convert the umlauts <code>ä ö å Ä Ö Å</code> to <code>a o a A O A</code>: using the following Twig filter: <code>{{ entry.device_type|lower|replace({" ": "_", "ä": "a", "ö": "o"}) }}</code></li>
     <li>Please be mindful of possible problems with special characters in device names not converting cleanly to file paths.</li>
     <li>If you localize Kirjuri to a new language, please send me the language file and new icons and I'll gladly add them to the repository and credit you for them.</li>
+  </ul>
+  
   <h1 class="page-heading">Important security information</h4>
   <p>Kirjuri is <b>not designed</b> to be installed on an internet-facing server. Forensic evidence and the metadata about the devices and findings is usually extremely sensitive information. It is strongly recommended that you install Kirjuri on an <b>air-gapped network</b> to serve your forensic examiners locally. Familiarize yourself with the software prior to installing it into a production environment. The developers accept no liability on possible security breaches caused by programming errors.</p>
 

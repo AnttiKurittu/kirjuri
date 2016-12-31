@@ -328,7 +328,7 @@ if (e.keyCode == 13) {
         {% endif%}
         {% if (loop.last == true) and (progress_counter2 != "0") %}
         {% set current_request_progress = ((100 / progress_counter1) * progress_counter2)|round(0, "ceil") %}
-        <div class="alert alert-{% if current_request_progress <= 20 %}danger{% elseif current_request_progress <= 80 %}warning{% else %}success{% endif %} col-md-12"><b>{{ current_request_progress }}% {{ lang.devices_investigated }}</b> &nbsp;&nbsp;<a href="/edit_request.php?case={{ caserow.0.id }}"><i class="fa fa-refresh"></i> {{ lang.reload_hint_link}}</a> {{ lang.reload_hint }}</p></div>
+        <div class="alert alert-{% if current_request_progress <= 20 %}danger{% elseif current_request_progress <= 80 %}warning{% else %}success{% endif %} col-md-12"><b>{{ current_request_progress }}% {{ lang.devices_investigated }}</b> &nbsp;&nbsp;<a href="edit_request.php?case={{ caserow.0.id }}"><i class="fa fa-refresh"></i> {{ lang.reload_hint_link}}</a> {{ lang.reload_hint }}</p></div>
         {% endif%}
         {% endfor %}
         {% endif %}

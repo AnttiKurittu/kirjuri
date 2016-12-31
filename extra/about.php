@@ -6,17 +6,17 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link href="views/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="views/font-awesome-4.6.3/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
   </head>
   <body style="margin-top:40px;margin-bottom:40px;">
 <div class="container">
   <div class="jumbotron">
-  <h1 class="page-heading">About Kirjuri</h1>
-  <p>Kirjuri is a digital forensic evidence management system. It is a web application designed to help forensic labs manage, track and report devices delivered for forensic examination. It was born in the Helsinki Police Department, which handles over a thousand devices annually. Managing these devices and keeping track of the changes and locations to all this material proved to be a difficult task, since no ready software suites for multi-user management existed.</p>
+  <h1>About Kirjuri</h1>
+  <p>Kirjuri is a digital forensic evidence item management system. It is a web application designed to help forensic teams manage, track and report devices delivered for forensic examination. It was born in the <a href="https://www.poliisi.fi/en/helsinki">Helsinki Police Department</a>, which handles over a thousand devices annually. Managing these devices and keeping track of the changes and locations to all this material proved to be a difficult task, since no ready software suites for multi-user evidence device management existed.</p>
 
-  <p>Kirjuri was written from the ground-up with one task in mind - easing the clerical tasks of the forensic investigator by organizing devices under examination requests. It is easy to deploy on an internal network using a lightweight virtual machine as a server. The current public release for Kirjuri is <?php echo file_get_contents('conf/RELEASE') ?></p>
-  <a href="demo/login.php" class="btn btn-info btn-lg">Click here to try the Demo version</a>
+  <p>Kirjuri was written from the ground-up with one task in mind - easing the clerical tasks of the forensic investigator by organizing devices under examination requests. It is easy to deploy on an internal network using a Linux-based virtual machine as a server. The current public release for Kirjuri is <?php echo file_get_contents('https://raw.githubusercontent.com/AnttiKurittu/kirjuri/master/conf/RELEASE') ?>.</p>
+  <a href="demo/index.php" class="btn btn-info btn-lg">Click here to try the Demo version</a>
   </div>
 
   <h1 class="page-heading">Main features</h1>
@@ -77,7 +77,7 @@
     <li>Please be mindful of possible problems with special characters in device names not converting cleanly to file paths.</li>
     <li>If you localize Kirjuri to a new language, please send me the language file and new icons and I'll gladly add them to the repository and credit you for them.</li>
   </ul>
-  
+
   <h1 class="page-heading">Important security information</h4>
   <p>Kirjuri is <b>not designed</b> to be installed on an internet-facing server. Forensic evidence and the metadata about the devices and findings is usually extremely sensitive information. It is strongly recommended that you install Kirjuri on an <b>air-gapped network</b> to serve your forensic examiners locally. Familiarize yourself with the software prior to installing it into a production environment. The developers accept no liability on possible security breaches caused by programming errors.</p>
 

@@ -5,7 +5,7 @@ if (!file_exists('cache/user_' . md5($_SESSION['user']['username']) . "/session_
 { // Drop session if sessionfile has been removed.
   $_SESSION = array();
   session_destroy();
-  echo '<i style="color:red;" class="fa fa-ban"></i><script>window.location.href = "index.php";</script>';
+  echo '<i style="color:red;" class="fa fa-ban"></i><script>window.location.href = "login.php";</script>';
   die;
 }
 // Update session file timestamp

@@ -42,6 +42,7 @@
 
       $(document).ready(function() {
         $("#alert-success").fadeOut({{ settings.fadeout }});
+        $("#unreadcounter").load("unreadcounter.php");
       });
       $(function() {
         $(document).tooltip();
@@ -172,7 +173,9 @@
           </ul>
           {% endif %}
           <ul class="nav nav-sidebar">
-            <li{% if "messages.php" in settings.self and not show %} class="active"{% endif %}><a href="messages.php{% if (session.unread.new > 0) and "messages.php" not in settings.self %}?show=inbox{% endif %}"><i class="fa fa-inbox"></i> {{ lang.messages|capitalize }} <span class="pull-right"><div id="unreadcounter">{% if session.unread.new > 0 %}<span style="color:red;"><i class="fa fa-envelope-o"></i> {{session.unread.new}}</span>{% endif %}</div></span></a></li>
+            <li{% if "messages.php" in settings.self and not show %} class="active"{% endif %}>
+            <a href="messages.php{% if (session.unread.new > 0) and "messages.php" not in settings.self %}?show=inbox{% endif %}">
+              <i class="fa fa-inbox"></i> {{ lang.messages|capitalize }}<span class="pull-right"><div id="unreadcounter"><span style="color:white;" class="label label-danger">{{ session.unread.new }}</span>  </div></span></a></li>
           </ul>
           {% if ("messages.php" in settings.self) %}
           <ul class="nav nav-sidebar">

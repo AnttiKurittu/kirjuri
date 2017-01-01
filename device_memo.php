@@ -3,13 +3,6 @@
 require_once './include_functions.php';
 protect_page(2); // View only or higher
 
-// Force end session
-if (!file_exists('cache/user_' . md5($_SESSION['user']['username']) . '/session_' . $_SESSION['user']['token'] . '.txt'))
-{
-  header('Location: submit.php?type=logout');
-  die;
-}
-
 $query = $kirjuri_database->prepare('SELECT * FROM exam_requests WHERE is_removed != "1" AND id = :uid AND parent_id != id LIMIT 1');
 $query->execute(array(
   ':uid' => $_GET['uid'],
@@ -41,7 +34,7 @@ verify_owner($casefetch['parent_id']);
 
 if (empty($_SESSION['case_token'][ $casefetch['parent_id'] ]))
 {
-  $_SESSION['case_token'][$casefetch['parent_id']] = substr(md5(microtime()),rand(0,26),8); // Initialize case token
+  $_SESSION['case_token'][$casefetch['parent_id']] = bin2hex(random_bytes(8)); // Initialize case token
 }
 
 $query = $kirjuri_database->prepare('SELECT * FROM exam_requests WHERE is_removed != "1" AND id = :parent_id LIMIT 1');

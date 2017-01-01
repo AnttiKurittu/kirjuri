@@ -36,7 +36,7 @@
       <th></th>
     </thead>
     {% for user in session.all_users %}
-    <tr {% if session.user.username == user.username %}class="info"{% elseif 'I' in user.flags %}class="warning"{% endif %}>
+    <tr {% if fields.id == user.id %}class="info"{% elseif 'I' in user.flags %}class="warning"{% endif %}>
       <td><a href="users.php?populate={{user.id}}#u">{{ user.username }}</a>{% if session.user.username == user.username %} ({{ lang.logged_in|lower }}){% endif %}{% if 'I' in user.flags %} ({{ lang.flag_inactive|lower }}){% endif %}</td>
       <td>{{ user.name }}</td>
       <td>{% if user.access == 0 %}{{ lang.level_admin }}{% elseif user.access == 1 %}{{ lang.level_user }}{% elseif user.access == 2 %}{{ lang.level_viewonly }}{% elseif user.access == 3 %}{{ lang.level_addonly }}{% else %}???{% endif %}</td>
@@ -45,7 +45,7 @@
       <td class="text-center">{% if 'A' in user.flags == true %}<i style="color:green;" class="fa fa-check"></i>{% else %}<i style="color:red;" class="fa fa-remove"></i>{% endif %}</td>
       <td class="text-center">{% if user.attr_2|length > 26 %}<i style="color:green;" class="fa fa-check"></i>{% else %}<i style="color:red;" class="fa fa-remove"></i>{% endif %}</td>
       <td class="text-center">{% if 'I' in user.flags == true %}<i style="color:red;" class="fa fa-remove"></i>{% else %}<i style="color:green;" class="fa fa-check"></i>{% endif %}</td>
-      <td><a href="submit.php?type=force_logout&user={{user.username|url_encode}}&token={{session.user.token}}">{{ lang.log_out }}</a></td>
+      <td><a href="submit.php?type=force_logout&user={{user.username|url_encode}}&token={{session.user.token}}"><i class="fa fa-sign-out"></i> {{ lang.log_out }}</a></td>
     </tr>
     {% endfor %}
   </table>
@@ -174,9 +174,11 @@
   <tr>
     <td>
       {{ session_file }}
+      <p>{% if session_content.last_activity_sec <= "60" %}<span style="color:green;"><b>ONLINE</b></span>{% else %}<span style="color:red;">OFFLINE</span>{% endif %}
     </td>
     <td>
-      {{ session_content }}
+      <p>{{ session_content.content }}</p>
+      <p {% if session_content.last_activity_sec > "259200" %}style="color:red;"{% endif %}>Last activity: {{ session_content.last_activity }}</p>
     </td>
     <td class="text-center">
       <a href="submit.php?type=drop_session&user={{fields.username|url_encode}}&user_id={{ fields.id }}&session={{ session_file|replace({".txt": "", "session_": ""}) }}&token={{ session.user.token }}"><i style="color:red;" class="fa fa-times"></i></a>

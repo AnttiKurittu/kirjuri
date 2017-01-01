@@ -40,6 +40,13 @@ if ($_SESSION['message_set'] === false) {
     $_SESSION['message']['content'] = '';
 }
 
+function secondsToTime($seconds) {
+// Thanks to https://stackoverflow.com/questions/8273804/convert-seconds-into-days-hours-minutes-and-seconds
+    $dtF = new \DateTime('@0');
+    $dtT = new \DateTime("@$seconds");
+    return $dtF->diff($dtT)->format('%a days, %h hours, %i minutes and %s seconds');
+}
+
 function deleteDirectory($dir) {
 // Lazily stolen from http://stackoverflow.com/questions/1653771/how-do-i-remove-a-directory-that-is-not-empty
     if (!file_exists($dir)) {
@@ -84,7 +91,7 @@ function ip_in_range( $ip, $range ) {
 	return ( ( $ip_decimal & $netmask_decimal ) == ( $range_decimal & $netmask_decimal ) );
 }
 
-function csrf_session_validate($token) {
+function ksess_validate($token) {
   if ($token === $_SESSION['user']['token']) {
     return true;
   }
@@ -106,8 +113,22 @@ function csrf_case_validate($token, $case_id) {
   }
 }
 
-function csrf_init() {
-  $_SESSION['user']['token'] = substr(md5(microtime()),rand(0,26),16);
+function ksess_init() {
+  $_SESSION['user']['token'] = bin2hex(random_bytes(8)); // Set session token
+  if (!file_exists('cache/user_' . md5($_SESSION['user']['username'])))
+  {
+    mkdir('cache/user_' . md5($_SESSION['user']['username']));
+  }
+  file_put_contents('cache/user_' . md5($_SESSION['user']['username']) . '/session_' . $_SESSION['user']['token'] . '.txt', $_SESSION['user']['username'] . ' is logged in at ' . $_SERVER['REMOTE_ADDR'] . ', user agent ' . $_SERVER['HTTP_USER_AGENT'] . '. Request timestamp ' . gmdate("Y-m-d\TH:i:s\Z", $_SERVER['REQUEST_TIME']) . ". Remove this file to force logout.\r\n");
+}
+
+function ksess_destroy() {
+  session_start();
+  unlink('cache/user_' . md5($_SESSION['user']['username']) . '/session_' . $_SESSION['user']['token'] . '.txt');
+  $_SESSION = array();
+  session_destroy();
+  header('Location: login.php');
+  die;
 }
 
 // Check user access level before rendering page. User details are stored in a session variable.

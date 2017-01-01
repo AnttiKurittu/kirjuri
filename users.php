@@ -3,13 +3,6 @@
 require_once './include_functions.php';
 protect_page(0);
 
-// Force end session
-if (!file_exists('cache/user_' . md5($_SESSION['user']['username']) . '/session_' . $_SESSION['user']['token'] . '.txt'))
-{
-  header('Location: submit.php?type=logout');
-  die;
-}
-
 // Declare variables
 $_GET['populate'] = isset($_GET['populate']) ? $_GET['populate'] : '';
 $fields = array();
@@ -43,7 +36,9 @@ foreach ($_SESSION['all_users'] as $user) { // Get user information based on GET
         {
           if ($sessionfile[0] !== ".")
           {
-            $fields['sessions'][$sessionfile] = file_get_contents("cache/user_" . md5($user['username']) . "/" . $sessionfile);
+            $fields['sessions'][$sessionfile]['content'] = file_get_contents("cache/user_" . md5($user['username']) . "/" . $sessionfile);
+            $fields['sessions'][$sessionfile]['last_activity'] = secondsToTime( time() - filemtime( "cache/user_" . md5($user['username']) . "/" . $sessionfile));
+            $fields['sessions'][$sessionfile]['last_activity_sec'] = time() - filemtime( "cache/user_" . md5($user['username']) . "/" . $sessionfile);
           }
         }
       }

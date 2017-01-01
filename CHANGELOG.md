@@ -1,5 +1,13 @@
 CHANGELOG
 ------------
+2017-01-01 Release 133:
+
+* Made the user session management a bit more sanitize.
+* Handed the task of checking for a valid session to unreadcounter.php
+* Added checking for session timestamp to determine whether session is online or not.
+* Other tweaks and fixes.
+* Fixed a typo in the Finnish language file that made the setting fail.
+
 2016-12-29 Release 132:
 
 * Made handling settings better - instead of editing a text file, fields are presented and settings file parsed from that.

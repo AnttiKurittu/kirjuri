@@ -3,13 +3,6 @@
 require_once './include_functions.php';
 protect_page(1); // User only or higher, add or view only accounts cant change passwords.
 
-// Force end session
-if (!file_exists('cache/user_' . md5($_SESSION['user']['username']) . '/session_' . $_SESSION['user']['token'] . '.txt'))
-{
-  header('Location: submit.php?type=logout');
-  die;
-}
-
 $default_settings = parse_ini_file('conf/settings.conf', true);
 $diff = array_diff_key($default_settings['settings'], $settings_contents['settings']);
 foreach ($diff as $key => $value) {

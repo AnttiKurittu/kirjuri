@@ -80,9 +80,7 @@ if ($_GET['type'] === 'anon_login')
       else
        {
         $_SESSION['user'] = $user;
-        csrf_init();
-        if (!file_exists('cache/user_' . md5($_SESSION['user']['username']))) mkdir('cache/user_' . md5($_SESSION['user']['username']));
-        file_put_contents('cache/user_' . md5($_SESSION['user']['username']) . '/session_' . $_SESSION['user']['token'] . '.txt', $_SESSION['user']['username'] . ' is logged in at ' . $_SERVER['REMOTE_ADDR'] . ', user agent ' . $_SERVER['HTTP_USER_AGENT'] . '. Request timestamp ' . gmdate("Y-m-d\TH:i:s\Z", $_SERVER['REQUEST_TIME']) . ". Remove this file to force logout.\r\n");
+        ksess_init();
         logline('0', 'Action', 'Anonymous login.');
         message('info', $_SESSION['lang']['anon_login']);
         header('Location: index.php');
@@ -151,7 +149,7 @@ if ($_GET['type'] === 'login')
            die;
          }
          $_SESSION['user'] = $user; // All checks passed, log user in.
-         csrf_init(); // Initialize session CSRF token.
+         ksess_init(); // Initialize session
         }
        else
         {
@@ -192,9 +190,6 @@ if ($_GET['type'] === 'login')
    {
     message('info', $_SESSION['lang']['logged_in_as'] . ' ' . $_SESSION['user']['username']);
     logline('0', 'Action', 'Login');
-    if (!file_exists('cache/user_' . md5($_SESSION['user']['username']))) mkdir('cache/user_' . md5($_SESSION['user']['username']));
-    file_put_contents('cache/user_' . md5($_SESSION['user']['username']) . '/session_' . $_SESSION['user']['token'] . '.txt',
-    gmdate("Y-m-d\TH:i:s\Z", $_SERVER['REQUEST_TIME']) . " " . $_SESSION['user']['username'] . ' is logged in from ' . $_SERVER['REMOTE_ADDR'] . ', user agent ' . $_SERVER['HTTP_USER_AGENT']);
     header('Location: index.php');
     die;
    }
@@ -213,31 +208,24 @@ if ($_GET['type'] === 'login')
 if ($_GET['type'] === 'logout')
  {
   logline('0', 'Action', 'Logout');
-  $sessionfile = 'cache/user_' . md5($_SESSION['user']['username']) . '/session_' . $_SESSION['user']['token'] . '.txt';
-  if (file_exists($sessionfile))
-  {
-    unlink($sessionfile);
-  }
-  session_destroy();
-  $_SESSION['user'] = null;
+  ksess_destroy();
   header('Location: index.php');
   die;
  }
 
  if ($_GET['type'] === "drop_session")
  {
-   csrf_session_validate($_GET['token']);
+   ksess_validate($_GET['token']);
    protect_page(0);
    unlink('cache/user_' . md5(urldecode($_GET['user'])) . '/session_' . $_GET['session'] . '.txt');
    header('Location: users.php?populate=' . $_GET['user_id'] . '#u');
    die;
  }
 
-
  if ($_GET['type'] === 'force_logout')
  {
    // Force end session
-   csrf_session_validate($_GET['token']);
+   ksess_validate($_GET['token']);
    protect_page(0);
    if (file_exists('cache/user_' . md5(urldecode($_GET['user']))))
    {
@@ -251,7 +239,7 @@ if ($_GET['type'] === 'logout')
 
 if ($_GET['type'] === 'create_user')
  {
-  csrf_session_validate($_POST['token']);
+  ksess_validate($_POST['token']);
   protect_page(0);
   $ip_access_control['allow'] = explode(",", preg_replace("/[^0-9,\.\/]+/", "", $_POST['ip_whitelist']));
   $ip_access_control['deny'] = explode(",", preg_replace("/[^0-9,\.\/]+/", "", $_POST['ip_blacklist']));
@@ -358,7 +346,7 @@ if ($_GET['type'] === 'create_user')
 
 if ($_GET['type'] === 'update_password')
  {
-  csrf_session_validate($_POST['token']);
+  ksess_validate($_POST['token']);
   protect_page(1);
   if ((!empty($_POST['new_password'])) && (password_verify($_POST['current_password'], $_SESSION['user']['password'])))
    {
@@ -381,11 +369,21 @@ if ($_GET['type'] === 'update_password')
   die;
  }
 
+/*if ($_GET['type'] === "clear_cache")
+{
+  ksess_validate($_GET['token']);
+  protect_page(0);
+  deleteDirectory('cache');
+  mkdir('cache');
+  header('Location: login.php');
+  die;
+}*/
+
 // ----- Messages
 
 if ($_GET['type'] === 'send_message')
  {
-  csrf_session_validate($_POST['token']);
+  ksess_validate($_POST['token']);
   if (!empty($_POST['body']) && !empty($_POST['msgto']))
    {
     if ($_POST['msgto'] === "ALL_USERS")
@@ -440,7 +438,7 @@ if ($_GET['type'] === 'send_message')
 
 if ($_GET['type'] === 'delete_received')
  {
-  csrf_session_validate($_GET['token']);
+  ksess_validate($_GET['token']);
   $query = $kirjuri_database->prepare('UPDATE messages SET deleted_to = "1" WHERE id = :id AND (msgto = :user OR msgfrom = :user) AND archived_to = "1"');
   $query->execute(array(
     ':user' => $_SESSION['user']['username'],
@@ -453,7 +451,7 @@ if ($_GET['type'] === 'delete_received')
 
 if ($_GET['type'] === 'delete_sent')
  {
-  csrf_session_validate($_GET['token']);
+  ksess_validate($_GET['token']);
   $query = $kirjuri_database->prepare('UPDATE messages SET deleted_from = "1" WHERE id = :id AND (msgto = :user OR msgfrom = :user) AND archived_from = "1"');
   $query->execute(array(
     ':user' => $_SESSION['user']['username'],
@@ -466,7 +464,7 @@ if ($_GET['type'] === 'delete_sent')
 
 if ($_GET['type'] === 'delete_all')
  {
-  csrf_session_validate($_GET['token']);
+  ksess_validate($_GET['token']);
   $query = $kirjuri_database->prepare('UPDATE messages SET deleted_to = "1" WHERE msgto = :user AND archived_to = "1"');
   $query->execute(array(
     ':user' => $_SESSION['user']['username']
@@ -482,7 +480,7 @@ if ($_GET['type'] === 'delete_all')
 
 if ($_GET['type'] === 'archive_received')
  {
-  csrf_session_validate($_GET['token']);
+  ksess_validate($_GET['token']);
   $query = $kirjuri_database->prepare('UPDATE messages SET archived_to = "1" WHERE id = :id AND received != "0" AND (msgto = :user OR msgfrom = :user)');
   $query->execute(array(
     ':user' => $_SESSION['user']['username'],
@@ -495,7 +493,7 @@ if ($_GET['type'] === 'archive_received')
 
 if ($_GET['type'] === 'archive_sent')
  {
-  csrf_session_validate($_GET['token']);
+  ksess_validate($_GET['token']);
   $query = $kirjuri_database->prepare('UPDATE messages SET archived_from = "1" WHERE id = :id AND (msgto = :user OR msgfrom = :user)');
   $query->execute(array(
     ':user' => $_SESSION['user']['username'],
@@ -509,7 +507,7 @@ if ($_GET['type'] === 'archive_sent')
 
 if ($_GET['type'] === 'restore_received')
  {
-  csrf_session_validate($_GET['token']);
+  ksess_validate($_GET['token']);
   $query = $kirjuri_database->prepare('UPDATE messages SET archived_to = "0" WHERE id = :id AND (msgto = :user OR msgfrom = :user)');
   $query->execute(array(
     ':user' => $_SESSION['user']['username'],
@@ -522,7 +520,7 @@ if ($_GET['type'] === 'restore_received')
 
 if ($_GET['type'] === 'restore_sent')
  {
-  csrf_session_validate($_GET['token']);
+  ksess_validate($_GET['token']);
   $query = $kirjuri_database->prepare('UPDATE messages SET archived_from = "0" WHERE id = :id AND (msgto = :user OR msgfrom = :user)');
   $query->execute(array(
     ':user' => $_SESSION['user']['username'],
@@ -535,7 +533,7 @@ if ($_GET['type'] === 'restore_sent')
 
 if ($_GET['type'] === 'delete_message')
  {
-  csrf_session_validate($_GET['token']);
+  ksess_validate($_GET['token']);
   $query = $kirjuri_database->prepare('DELETE FROM messages WHERE id = :id AND msgto = :user');
   $query->execute(array(
     ':user' => $_SESSION['user']['username'],
@@ -551,7 +549,7 @@ if ($_GET['type'] === 'delete_message')
 if ($_GET['type'] === 'rotate_logs')
 {
   protect_page(0);
-  csrf_session_validate($_GET['token']);
+  ksess_validate($_GET['token']);
   logline('0', 'Admin', '----- LOG ROTATION -----'); // End log with rotation message
   $event_log = file_get_contents('logs/kirjuri_case_0.log');
   file_put_contents('logs/kirjuri_events.log', $event_log, FILE_APPEND);
@@ -571,7 +569,7 @@ if ($_GET['type'] === 'rotate_logs')
 if ($_GET['type'] === 'add_tool')
  {
   protect_page(0);
-  csrf_session_validate($_POST['token']);
+  ksess_validate($_POST['token']);
   if (!empty($_POST['product_name']))
    {
     $query = $kirjuri_database->prepare('INSERT INTO tools (product_name, hw_version, sw_version, serialno, flags, attr_1, attr_2, attr_3, attr_4, attr_5, attr_6, attr_7, attr_8) VALUES (
@@ -599,7 +597,7 @@ if ($_GET['type'] === 'add_tool')
 if ($_GET['type'] === 'update_tool')
  {
   protect_page(0);
-  csrf_session_validate($_POST['token']);
+  ksess_validate($_POST['token']);
   $query = $kirjuri_database->prepare('UPDATE tools SET product_name = :product_name, hw_version = :hw_version, sw_version = :sw_version, serialno = :serialno, attr_3 = :comment, flags = :flags,
       attr_2 = CONCAT(NOW(),";", :hw_version, ";", :sw_version, ";", :flags, ";", ", ", IFNULL(attr_2,"")) WHERE id = :tool_id');
   $query->execute(array(
@@ -623,7 +621,7 @@ if ($_GET['type'] === 'case_access')
  {
   $id = num($_GET['id']);
   protect_page(1);
-  csrf_session_validate($_POST['token']);
+  ksess_validate($_POST['token']);
   csrf_case_validate($_POST['ct'], $id);
   verify_owner($id);
 
@@ -652,7 +650,7 @@ if ($_GET['type'] === 'case_access')
 if ($_GET['type'] === 'examination_request')
  {
   // Create an examination request.
-  csrf_session_validate($_POST['token']);
+  ksess_validate($_POST['token']);
   if (empty($_POST['case_file_number']) || empty($_POST['case_investigator']) || empty($_POST['case_investigator_unit']) || empty($_POST['case_investigator_tel']) || empty($_POST['case_investigation_lead']) || empty($_POST['case_confiscation_date']) || empty($_POST['case_crime']) || empty($_POST['case_suspect']) || empty($_POST['case_request_description']) || empty($_POST['case_urgency']) || empty($_POST['case_requested_action']))
    {
     trigger_error('Fill all required fields.');
@@ -708,7 +706,7 @@ if ($_GET['type'] === 'case_update')
  {
   // Update examination request.
   protect_page(1);
-  csrf_session_validate($_POST['token']);
+  ksess_validate($_POST['token']);
   verify_owner($_GET['uid']);
   if ($_POST['forensic_investigator'] !== '')
    {
@@ -753,7 +751,7 @@ if ($_GET['type'] === 'report_notes')
  {
   // Save case report notes.
   protect_page(1);
-  csrf_session_validate($_POST['token']);
+  ksess_validate($_POST['token']);
   csrf_case_validate($_POST['ct'], $_POST['returnid']);
   verify_owner($_POST['returnid']);
   $sql = $kirjuri_database->prepare('UPDATE exam_requests SET report_notes = :report_notes, last_updated = NOW() where id=:id AND parent_id = :id AND is_removed != "1"');
@@ -774,7 +772,7 @@ if ($_GET['type'] === 'examiners_notes')
  {
   // Save examiners private notes
   protect_page(1);
-  csrf_session_validate($_POST['token']);
+  ksess_validate($_POST['token']);
   csrf_case_validate($_POST['ct'], $_POST['returnid']);
   verify_owner($_POST['returnid']);
   $sql = $kirjuri_database->prepare('UPDATE exam_requests SET examiners_notes = :examiners_notes, last_updated = NOW() where id=:id AND parent_id = :id AND is_removed != "1"');
@@ -794,7 +792,7 @@ if ($_GET['type'] === 'set_removed')
  {
   // Remove device from case
   protect_page(1);
-  csrf_session_validate($_GET['token']);
+  ksess_validate($_GET['token']);
   csrf_case_validate($_GET['ct'], $_GET['returnid']);
   verify_owner($_GET['returnid']);
   $sql = $kirjuri_database->prepare('UPDATE exam_requests SET is_removed = "1", last_updated = NOW() where id=:id AND parent_id = :returnid;
@@ -826,7 +824,7 @@ if ($_GET['type'] === 'device_attach')
  {
   // Associate a media/device with host device
   protect_page(1);
-  csrf_session_validate($_POST['token']);
+  ksess_validate($_POST['token']);
   if (isset($_POST['isanta']))
    {
     $sql = $kirjuri_database->prepare('UPDATE exam_requests SET device_host_id = :isanta, last_updated = NOW() where id=:id AND parent_id != id;
@@ -847,7 +845,7 @@ if ($_GET['type'] === 'device_detach')
  {
   // Remove device association
   protect_page(1);
-  csrf_session_validate($_GET['token']);
+  ksess_validate($_GET['token']);
   $sql = $kirjuri_database->prepare('UPDATE exam_requests SET device_host_id = "0", last_updated = NOW() where id=:id AND parent_id != id');
   $sql->execute(array(
     ':id' => $_GET['uid']
@@ -864,7 +862,7 @@ if ($_GET['type'] === 'set_removed_case')
   // Remove case
   $id = num($_POST['remove_exam_request']);
   protect_page(1);
-  csrf_session_validate($_POST['token']);
+  ksess_validate($_POST['token']);
   csrf_case_validate($_POST['ct'], $id);
   verify_owner($id);
   $sql = $kirjuri_database->prepare('UPDATE exam_requests SET is_removed = "1", last_updated = NOW() WHERE id=:id AND parent_id = :id');
@@ -884,7 +882,7 @@ if ($_GET['type'] === 'move_all')
   // Change all device locations and/or actions
 
   protect_page(1);
-  csrf_session_validate($_POST['token']);
+  ksess_validate($_POST['token']);
   csrf_case_validate($_POST['ct'], $_GET['returnid']);
   verify_owner($_GET['returnid']);
   if ($_POST['device_action'] != 'NO_CHANGE')
@@ -921,7 +919,7 @@ if ($_GET['type'] === 'update_request_status')
   // Set case status
   $id = num($_POST['returnid']);
   protect_page(1);
-  csrf_session_validate($_POST['token']);
+  ksess_validate($_POST['token']);
   csrf_case_validate($_POST['ct'], $id);
   verify_owner($id);
   if ($_POST['case_status'] === '1')
@@ -956,7 +954,7 @@ if ($_GET['type'] === 'change_device_status')
     ':id' => $_GET['uid']
   ));
   $case_id = $sql->fetch(PDO::FETCH_ASSOC);
-  csrf_session_validate($_POST['token']);
+  ksess_validate($_POST['token']);
   csrf_case_validate($_POST['ct'], $case_id['parent_id']);
   verify_owner($case_id['parent_id']);
   $sql = $kirjuri_database->prepare('UPDATE exam_requests SET device_action = :device_action, last_updated = NOW() where id=:id AND parent_id != id');
@@ -985,7 +983,7 @@ if ($_GET['type'] === 'change_device_location')
    ':id' => $_GET['uid']
   ));
   $case_id = $sql->fetch(PDO::FETCH_ASSOC);
-  csrf_session_validate($_POST['token']);
+  ksess_validate($_POST['token']);
   csrf_case_validate($_POST['ct'], $case_id['parent_id']);
   verify_owner($case_id['parent_id']);
   $sql = $kirjuri_database->prepare('UPDATE exam_requests SET device_location = :device_location, last_updated = NOW() where id=:id AND parent_id != id');
@@ -1002,7 +1000,7 @@ if ($_GET['type'] === 'devicememo')
   // Update individual device details.
   $id = num($_POST['parent_id']);
   protect_page(1);
-  csrf_session_validate($_POST['token']);
+  ksess_validate($_POST['token']);
   csrf_case_validate($_POST['ct'], $id);
   verify_owner($id);
   if (trim(strtolower(strip_tags($_POST['report_notes']))) === trim(strtolower(strip_tags($_POST['template_report_notes']))))
@@ -1056,7 +1054,7 @@ if ($_GET['type'] === 'device')
   // Create new device entry
   $id = num($_POST['parent_id']);
   protect_page(1);
-  csrf_session_validate($_POST['token']);
+  ksess_validate($_POST['token']);
   csrf_case_validate($_POST['ct'], $id);
   verify_owner($id);
   if ($_POST['device_host_id'] === '0')
@@ -1155,7 +1153,7 @@ if ($_GET['type'] === 'device')
 if ($_GET['type'] === "reset_default_settings")
 {
   protect_page(0);
-  csrf_session_validate($_GET['token']);
+  ksess_validate($_GET['token']);
   unlink('conf/settings.local');
   logline('0', 'Admin', 'Default settings restored.');
   header('Location: settings.php');
@@ -1166,7 +1164,7 @@ if ($_GET['type'] === "reset_default_settings")
 if ($_GET['type'] === "save_settings")
 {
   protect_page(0);
-  csrf_session_validate($_POST['token']);
+  ksess_validate($_POST['token']);
   $settings_output = "; Saved settings\r\n\r\n[settings]\r\n";
   foreach($_POST['settings'] as $key => $value)
   {

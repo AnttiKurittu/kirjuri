@@ -2,13 +2,6 @@
 
 require_once './include_functions.php';
 
-// Force end session
-if (!file_exists('cache/user_' . md5($_SESSION['user']['username']) . '/session_' . $_SESSION['user']['token'] . '.txt'))
-{
-  header('Location: submit.php?type=logout');
-  die;
-}
-
 $open = isset($_GET['open']) ? $_GET['open'] : '';
 $prefill_msgto = isset($_GET['msgto']) ? $_GET['msgto'] : '';
 $_SESSION['post_cache']['subject'] = urldecode(isset($_GET['subject']) ? $_GET['subject'] : '');

@@ -1,17 +1,9 @@
 <?php
-
 require_once './include_functions.php';
 protect_page(3); // View only or higher
 if ($_SESSION['user']['access'] === "3")
 {
   header('Location: add_case.php');
-  die;
-}
-
-// Force end session
-if (!file_exists('cache/user_' . md5($_SESSION['user']['username']) . '/session_' . $_SESSION['user']['token'] . '.txt'))
-{
-  header('Location: submit.php?type=logout');
   die;
 }
 

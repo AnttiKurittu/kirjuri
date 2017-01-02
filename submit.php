@@ -126,7 +126,7 @@ if ($_GET['type'] === 'login')
            unset($global_ip_access_list);
          }
 
-         if (!empty($ip_access_list['allow'])) // If whitelist is set, go on
+         if (!empty($ip_access_list['allow'][0])) // If whitelist is set, go on
          {
            foreach($ip_access_list['allow'] as $ip)
            {
@@ -136,7 +136,6 @@ if ($_GET['type'] === 'login')
              }
            }
          }
-
          else
          {
            $access_allowed_from_ip = true; // No whitelist set, default to allow.

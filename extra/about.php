@@ -65,8 +65,9 @@
   <ul>
     <li>Back up your existing installation and database! Using a virtual machine to host Kirjuri is recommended, because you can easily take snapshots to prevent problems from updating.</li>
     <li>Download the latest release, unzip it and copy the new Kirjuri files over your old ones.</li>
+    <li>Delete all files and folders from the <code>cache</code> folder, excluding the .gitignore file.</li>
     <li>If you get an error message after updating, Kirjuri might need some additional tables that do not exist yet on your installation. Run <code>/install.php</code> with your credentials and existing database name. The script will fail at creating a database and/or tables because some of them already exist, but it will write the new tables on your existing installation. It will not erase your existing database.</li>
-    <li>Re-set folder permissions if necessary and clear the <code>cache/</code> folder.</li>
+    <li>Re-set folder permissions if necessary.</li>
   </ul>
   <h1>Localizing Kirjuri</h1>
   <ul>

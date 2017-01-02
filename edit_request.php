@@ -34,7 +34,7 @@ if (count($caserow) === 0)
 
 if (empty($_SESSION['case_token'][$case_number]))
 {
-  $_SESSION['case_token'][$case_number] = generate_token(8); // Initialize case token
+  $_SESSION['case_token'][$case_number] = generate_token(16); // Initialize case token
 }
 
 if (!empty($caserow['0']['case_owner']))

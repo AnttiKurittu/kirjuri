@@ -7,11 +7,6 @@ function alnum($a)
     return preg_replace('/[^a-zA-Z0-9]/', '', $a);
 }
 
-function num($a)
-{
-    return preg_replace('/[^0-9]/', '', $a);
-}
-
 function return_with_code($i)
 {
     if ($i === '403') {

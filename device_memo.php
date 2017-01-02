@@ -34,7 +34,7 @@ verify_owner($casefetch['parent_id']);
 
 if (empty($_SESSION['case_token'][ $casefetch['parent_id'] ]))
 {
-  $_SESSION['case_token'][$casefetch['parent_id']] = generate_token(8); // Initialize case token
+  $_SESSION['case_token'][$casefetch['parent_id']] = generate_token(16); // Initialize case token
 }
 
 $query = $kirjuri_database->prepare('SELECT * FROM exam_requests WHERE is_removed != "1" AND id = :parent_id LIMIT 1');

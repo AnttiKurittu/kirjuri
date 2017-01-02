@@ -117,7 +117,7 @@ function csrf_case_validate($token, $case_id) {
 }
 
 function ksess_init() {
-  $_SESSION['user']['token'] = generate_token(8); // Set session token
+  $_SESSION['user']['token'] = generate_token(16); // Set session token
   if (!file_exists('cache/user_' . md5($_SESSION['user']['username'])))
   {
     mkdir('cache/user_' . md5($_SESSION['user']['username']));

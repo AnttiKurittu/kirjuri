@@ -1,7 +1,7 @@
 <?php
 // This is the 'header' file in all php files containing shared functions etc.
 // Go to installer if no credentials found.
-if ((!file_exists('conf/mysql_credentials.php')) && (!file_exists('/etc/kirjuri/conf/mysql_credentials.php'))) {
+if (!file_exists('conf/mysql_credentials.php')) {
     header('Location: install.php');
     die;
 }
@@ -10,7 +10,7 @@ require __DIR__.'/vendor/autoload.php';
 $generator = new \Picqer\Barcode\BarcodeGeneratorPNG();
 $loader = new Twig_Loader_Filesystem('views/');
 $twig = new Twig_Environment($loader, array(
-  'debug' => true,
+  // 'debug' => true,
   'cache' => 'cache'
 ));
 $twig->addExtension(new Twig_Extension_Debug());

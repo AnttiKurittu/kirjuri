@@ -10,6 +10,7 @@ require __DIR__.'/vendor/autoload.php';
 $generator = new \Picqer\Barcode\BarcodeGeneratorPNG();
 $loader = new Twig_Loader_Filesystem('views/');
 $twig = new Twig_Environment($loader, array(
+  'debug' => true,
   'cache' => 'cache'
 ));
 $twig->addExtension(new Twig_Extension_Debug());

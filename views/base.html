@@ -91,11 +91,11 @@
         }
         //-->
 
-     function autoRefresh_div()
+     function autoRefreshUnread_div()
       {
           $("#unreadcounter").load("unreadcounter.php");// a function which will load data from other file after x seconds
       }
-      setInterval('autoRefresh_div()', 10000); // Refresh the unread counter every minute
+      setInterval('autoRefreshUnread_div()', 20000); // Refresh the unread counter every minute
     </script>
 
 
@@ -175,7 +175,7 @@
           <ul class="nav nav-sidebar">
             <li{% if "messages.php" in settings.self and not show %} class="active"{% endif %}>
             <a href="messages.php{% if (session.unread.new > 0) and "messages.php" not in settings.self %}?show=inbox{% endif %}">
-              <i class="fa fa-inbox"></i> {{ lang.messages|capitalize }}<span class="pull-right"><div id="unreadcounter"><span style="color:white;" class="label label-danger">{{ session.unread.new }}</span>  </div></span></a></li>
+              <i class="fa fa-inbox"></i> {{ lang.messages|capitalize }}{% if session.unread.new > 0 %}<span class="pull-right"><div id="unreadcounter"><span style="color:white;" class="label label-danger">{{ session.unread.new }}</span></div></span>{% endif %}</a></li>
           </ul>
           {% if ("messages.php" in settings.self) %}
           <ul class="nav nav-sidebar">

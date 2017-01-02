@@ -39,6 +39,10 @@ if ($_SESSION['message_set'] === false) {
     $_SESSION['message']['content'] = '';
 }
 
+function generate_token($length) {
+  return substr(str_shuffle(md5(microtime() + mt_rand(0,450000))), 0, $length);
+}
+
 function secondsToTime($seconds) {
 // Thanks to https://stackoverflow.com/questions/8273804/convert-seconds-into-days-hours-minutes-and-seconds
     $dtF = new \DateTime('@0');
@@ -113,7 +117,7 @@ function csrf_case_validate($token, $case_id) {
 }
 
 function ksess_init() {
-  $_SESSION['user']['token'] = bin2hex(random_bytes(8)); // Set session token
+  $_SESSION['user']['token'] = generate_token(8); // Set session token
   if (!file_exists('cache/user_' . md5($_SESSION['user']['username'])))
   {
     mkdir('cache/user_' . md5($_SESSION['user']['username']));

@@ -169,8 +169,6 @@ foreach (glob('attachments/*', GLOB_ONLYDIR) as $dir) {
 }
 $_SESSION['message_set'] = false;
 
-
-
 if (file_exists('conf/index_columns.local'))
 {
   $show_columns = parse_ini_file('conf/index_columns.local', true);

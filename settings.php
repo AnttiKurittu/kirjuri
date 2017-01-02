@@ -5,8 +5,13 @@ ksess_verify(1); // User only or higher, add or view only accounts cant change p
 
 $default_settings = parse_ini_file('conf/settings.conf', true);
 $diff = array_diff_key($default_settings['settings'], $settings_contents['settings']);
-foreach ($diff as $key => $value) {
-    trigger_error('New setting added from '.$settings_file.': '.$key.' = "'.$value.'". Please save your settings.');
+
+if ($_SESSION['user']['access'] === "0")
+{
+  foreach ($diff as $key => $value)
+  {
+      trigger_error('New setting added from '.$settings_file.': '.$key.' = "'.$value.'". Please save your settings.');
+  }
 }
 
 if (file_exists('logs/kirjuri_case_0.log'))

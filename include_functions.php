@@ -1,6 +1,7 @@
 <?php
 // This is the 'header' file in all php files containing shared functions etc.
 // Go to installer if no credentials found.
+
 if (!file_exists('conf/mysql_credentials.php')) {
     header('Location: install.php');
     die;
@@ -10,7 +11,7 @@ require __DIR__.'/vendor/autoload.php';
 $generator = new \Picqer\Barcode\BarcodeGeneratorPNG();
 $loader = new Twig_Loader_Filesystem('views/');
 $twig = new Twig_Environment($loader, array(
-  // 'debug' => true,
+  //'debug' => true,
   'cache' => 'cache'
 ));
 $twig->addExtension(new Twig_Extension_Debug());
@@ -120,8 +121,8 @@ function ksess_init() {
   file_put_contents('cache/user_' . md5($_SESSION['user']['username']) . '/session_' . $_SESSION['user']['token'] . '.txt', $_SESSION['user']['username'] . ' is logged in at ' . $_SERVER['REMOTE_ADDR'] . ', user agent ' . $_SERVER['HTTP_USER_AGENT'] . '. Request timestamp ' . gmdate("Y-m-d\TH:i:s\Z", $_SERVER['REQUEST_TIME']) . ". Remove this file to force logout.\r\n");
 }
 
-function ksess_destroy() {
-  session_start();
+function ksess_destroy()
+{
   unlink('cache/user_' . md5($_SESSION['user']['username']) . '/session_' . $_SESSION['user']['token'] . '.txt');
   $_SESSION = array();
   session_destroy();
@@ -271,7 +272,7 @@ function kirjuri_error_handler($errno, $errstr, $errfile, $errline) // Trigger a
           '32767' => 'All errors'
         );
         $_SESSION['message']['type'] = 'error';
-        $_SESSION['message']['content'] = $errnums[$errno].': '.$errstr.'. In file '.$errfile.', line '.$errline.'.';
+        $_SESSION['message']['content'] = $errnums[$errno].': '.$errstr;
         $_SESSION['message_set'] = true;
     }
     logline('0', 'Error', $errno.' '.$errstr.', File: '.$errfile.', line '.$errline);

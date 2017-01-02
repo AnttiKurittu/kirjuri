@@ -8,7 +8,7 @@
       validate();
       $('#current_password').change(validate);
       {% for user in session.all_users %}
-         $("#user_status_{{ user.username }}").load("user_status.php?user={{ user.username|url_encode }}");
+         $("#user_status_{{ user.username|replace({" ": "_"}) }}").load("user_status.php?user={{ user.username|url_encode }}");
       {% endfor %}
   });
 
@@ -27,7 +27,7 @@
   function autoRefreshStatus_div()
    {
     {% for user in session.all_users %}
-       $("#user_status_{{ user.username }}").load("user_status.php?user={{ user.username|url_encode }}");
+       $("#user_status_{{ user.username|replace({" ": "_"}) }}").load("user_status.php?user={{ user.username|url_encode }}");
     {% endfor %}
    }
    setInterval('autoRefreshStatus_div()', 21000); // Refresh the unread counter
@@ -50,7 +50,7 @@
     </thead>
     {% for user in session.all_users %}
     <tr {% if fields.id == user.id %}class="info"{% elseif 'I' in user.flags %}class="warning"{% endif %}>
-      <td class="text-center"><div id="user_status_{{user.username}}"></div></td>
+      <td class="text-center"><div id="user_status_{{user.username|replace({" ": "_"}) }}"></div></td>
       <td><a href="users.php?populate={{user.id}}#u">{{ user.username }}</a>{% if session.user.username == user.username %} ({{ lang.logged_in|lower }}){% endif %}{% if 'I' in user.flags %} ({{ lang.flag_inactive|lower }}){% endif %}</td>
       <td>{{ user.name }}</td>
       <td>{% if user.access == 0 %}{{ lang.level_admin }}{% elseif user.access == 1 %}{{ lang.level_user }}{% elseif user.access == 2 %}{{ lang.level_viewonly }}{% elseif user.access == 3 %}{{ lang.level_addonly }}{% else %}???{% endif %}</td>

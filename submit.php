@@ -106,6 +106,12 @@ if ($_GET['type'] === 'login')
         {
          $access_allowed_from_ip = false; // Deny access by default
          $ip_access_list = json_decode($user['attr_2'], TRUE);
+         if (empty($ip_access_list))
+         {
+           $ip_access_list['allow'] = array();
+           $ip_access_list['deny'] = array();
+         }
+
          if (file_exists('conf/access_list.php')) // Process global black/whitelist
          {
            $global_ip_access_list = include('conf/access_list.php');
@@ -120,7 +126,7 @@ if ($_GET['type'] === 'login')
            unset($global_ip_access_list);
          }
 
-         if (strlen($ip_access_list['allow'][0]) !== 0) // If whitelist is set, go on
+         if (!empty($ip_access_list['allow'])) // If whitelist is set, go on
          {
            foreach($ip_access_list['allow'] as $ip)
            {
@@ -130,6 +136,7 @@ if ($_GET['type'] === 'login')
              }
            }
          }
+
          else
          {
            $access_allowed_from_ip = true; // No whitelist set, default to allow.

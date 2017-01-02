@@ -1,7 +1,7 @@
 <?php
 
 require_once './include_functions.php';
-protect_page(0);
+ksess_verify(0);
 
 // Declare variables
 $_GET['populate'] = isset($_GET['populate']) ? $_GET['populate'] : '';

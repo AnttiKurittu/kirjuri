@@ -1,6 +1,6 @@
 <?php
 require_once './include_functions.php';
-protect_page(3); // Add only or higher
+ksess_verify(3); // Add only or higher
 $confCrimes = strip_tags(file_get_contents('conf/crimes_autofill.conf'));
 echo $twig->render('add_case.html', array(
   'session' => $_SESSION,

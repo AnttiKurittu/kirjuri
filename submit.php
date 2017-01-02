@@ -216,7 +216,7 @@ if ($_GET['type'] === 'logout')
  if ($_GET['type'] === "drop_session")
  {
    ksess_validate($_GET['token']);
-   protect_page(0);
+   ksess_verify(0);
    unlink('cache/user_' . md5(urldecode($_GET['user'])) . '/session_' . $_GET['session'] . '.txt');
    header('Location: users.php?populate=' . $_GET['user_id'] . '#u');
    die;
@@ -226,7 +226,7 @@ if ($_GET['type'] === 'logout')
  {
    // Force end session
    ksess_validate($_GET['token']);
-   protect_page(0);
+   ksess_verify(0);
    if (file_exists('cache/user_' . md5(urldecode($_GET['user']))))
    {
      deleteDirectory('cache/user_' . md5(urldecode($_GET['user'])));
@@ -240,7 +240,7 @@ if ($_GET['type'] === 'logout')
 if ($_GET['type'] === 'create_user')
  {
   ksess_validate($_POST['token']);
-  protect_page(0);
+  ksess_verify(0);
   $ip_access_control['allow'] = explode(",", preg_replace("/[^0-9,\.\/]+/", "", $_POST['ip_whitelist']));
   $ip_access_control['deny'] = explode(",", preg_replace("/[^0-9,\.\/]+/", "", $_POST['ip_blacklist']));
   foreach($ip_access_control['allow'] as $ip)
@@ -347,7 +347,7 @@ if ($_GET['type'] === 'create_user')
 if ($_GET['type'] === 'update_password')
  {
   ksess_validate($_POST['token']);
-  protect_page(1);
+  ksess_verify(1);
   if ((!empty($_POST['new_password'])) && (password_verify($_POST['current_password'], $_SESSION['user']['password'])))
    {
     $query = $kirjuri_database->prepare('UPDATE users SET password = :newpassword WHERE username = :username AND id = :id');
@@ -372,7 +372,7 @@ if ($_GET['type'] === 'update_password')
 /*if ($_GET['type'] === "clear_cache")
 {
   ksess_validate($_GET['token']);
-  protect_page(0);
+  ksess_verify(0);
   deleteDirectory('cache');
   mkdir('cache');
   header('Location: login.php');
@@ -548,7 +548,7 @@ if ($_GET['type'] === 'delete_message')
 
 if ($_GET['type'] === 'rotate_logs')
 {
-  protect_page(0);
+  ksess_verify(0);
   ksess_validate($_GET['token']);
   logline('0', 'Admin', '----- LOG ROTATION -----'); // End log with rotation message
   $event_log = file_get_contents('logs/kirjuri_case_0.log');
@@ -568,7 +568,7 @@ if ($_GET['type'] === 'rotate_logs')
 
 if ($_GET['type'] === 'add_tool')
  {
-  protect_page(0);
+  ksess_verify(0);
   ksess_validate($_POST['token']);
   if (!empty($_POST['product_name']))
    {
@@ -596,7 +596,7 @@ if ($_GET['type'] === 'add_tool')
 
 if ($_GET['type'] === 'update_tool')
  {
-  protect_page(0);
+  ksess_verify(0);
   ksess_validate($_POST['token']);
   $query = $kirjuri_database->prepare('UPDATE tools SET product_name = :product_name, hw_version = :hw_version, sw_version = :sw_version, serialno = :serialno, attr_3 = :comment, flags = :flags,
       attr_2 = CONCAT(NOW(),";", :hw_version, ";", :sw_version, ";", :flags, ";", ", ", IFNULL(attr_2,"")) WHERE id = :tool_id');
@@ -620,7 +620,7 @@ if ($_GET['type'] === 'update_tool')
 if ($_GET['type'] === 'case_access')
  {
   $id = num($_GET['id']);
-  protect_page(1);
+  ksess_verify(1);
   ksess_validate($_POST['token']);
   csrf_case_validate($_POST['ct'], $id);
   verify_owner($id);
@@ -705,7 +705,7 @@ if ($_GET['type'] === 'examination_request')
 if ($_GET['type'] === 'case_update')
  {
   // Update examination request.
-  protect_page(1);
+  ksess_verify(1);
   ksess_validate($_POST['token']);
   verify_owner($_GET['uid']);
   if ($_POST['forensic_investigator'] !== '')
@@ -750,7 +750,7 @@ if ($_GET['type'] === 'case_update')
 if ($_GET['type'] === 'report_notes')
  {
   // Save case report notes.
-  protect_page(1);
+  ksess_verify(1);
   ksess_validate($_POST['token']);
   csrf_case_validate($_POST['ct'], $_POST['returnid']);
   verify_owner($_POST['returnid']);
@@ -771,7 +771,7 @@ if ($_GET['type'] === 'report_notes')
 if ($_GET['type'] === 'examiners_notes')
  {
   // Save examiners private notes
-  protect_page(1);
+  ksess_verify(1);
   ksess_validate($_POST['token']);
   csrf_case_validate($_POST['ct'], $_POST['returnid']);
   verify_owner($_POST['returnid']);
@@ -791,7 +791,7 @@ if ($_GET['type'] === 'examiners_notes')
 if ($_GET['type'] === 'set_removed')
  {
   // Remove device from case
-  protect_page(1);
+  ksess_verify(1);
   ksess_validate($_GET['token']);
   csrf_case_validate($_GET['ct'], $_GET['returnid']);
   verify_owner($_GET['returnid']);
@@ -823,7 +823,7 @@ if ($_GET['type'] === 'set_removed')
 if ($_GET['type'] === 'device_attach')
  {
   // Associate a media/device with host device
-  protect_page(1);
+  ksess_verify(1);
   ksess_validate($_POST['token']);
   if (isset($_POST['isanta']))
    {
@@ -844,7 +844,7 @@ if ($_GET['type'] === 'device_attach')
 if ($_GET['type'] === 'device_detach')
  {
   // Remove device association
-  protect_page(1);
+  ksess_verify(1);
   ksess_validate($_GET['token']);
   $sql = $kirjuri_database->prepare('UPDATE exam_requests SET device_host_id = "0", last_updated = NOW() where id=:id AND parent_id != id');
   $sql->execute(array(
@@ -861,7 +861,7 @@ if ($_GET['type'] === 'set_removed_case')
  {
   // Remove case
   $id = num($_POST['remove_exam_request']);
-  protect_page(1);
+  ksess_verify(1);
   ksess_validate($_POST['token']);
   csrf_case_validate($_POST['ct'], $id);
   verify_owner($id);
@@ -881,7 +881,7 @@ if ($_GET['type'] === 'move_all')
  {
   // Change all device locations and/or actions
 
-  protect_page(1);
+  ksess_verify(1);
   ksess_validate($_POST['token']);
   csrf_case_validate($_POST['ct'], $_GET['returnid']);
   verify_owner($_GET['returnid']);
@@ -918,7 +918,7 @@ if ($_GET['type'] === 'update_request_status')
  {
   // Set case status
   $id = num($_POST['returnid']);
-  protect_page(1);
+  ksess_verify(1);
   ksess_validate($_POST['token']);
   csrf_case_validate($_POST['ct'], $id);
   verify_owner($id);
@@ -999,7 +999,7 @@ if ($_GET['type'] === 'devicememo')
  {
   // Update individual device details.
   $id = num($_POST['parent_id']);
-  protect_page(1);
+  ksess_verify(1);
   ksess_validate($_POST['token']);
   csrf_case_validate($_POST['ct'], $id);
   verify_owner($id);
@@ -1053,7 +1053,7 @@ if ($_GET['type'] === 'device')
  {
   // Create new device entry
   $id = num($_POST['parent_id']);
-  protect_page(1);
+  ksess_verify(1);
   ksess_validate($_POST['token']);
   csrf_case_validate($_POST['ct'], $id);
   verify_owner($id);
@@ -1152,7 +1152,7 @@ if ($_GET['type'] === 'device')
 
 if ($_GET['type'] === "reset_default_settings")
 {
-  protect_page(0);
+  ksess_verify(0);
   ksess_validate($_GET['token']);
   unlink('conf/settings.local');
   logline('0', 'Admin', 'Default settings restored.');
@@ -1163,7 +1163,7 @@ if ($_GET['type'] === "reset_default_settings")
 
 if ($_GET['type'] === "save_settings")
 {
-  protect_page(0);
+  ksess_verify(0);
   ksess_validate($_POST['token']);
   $settings_output = "; Saved settings\r\n\r\n[settings]\r\n";
   foreach($_POST['settings'] as $key => $value)

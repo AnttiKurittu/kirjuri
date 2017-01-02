@@ -1,7 +1,7 @@
 <?php
 
 require_once './include_functions.php';
-protect_page(2); // View only or higher.
+ksess_verify(2); // View only or higher.
 
 if (empty($_GET['year'])) {
     $year = date('Y'); // Use current year if none specified

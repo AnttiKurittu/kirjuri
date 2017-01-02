@@ -2,7 +2,7 @@
 
 $case_number = preg_replace('/[^0-9]/', '', (substr($_GET['case'], 0, 5)));
 require_once './include_functions.php';
-protect_page(2); // View only or higher
+ksess_verify(2); // View only or higher
 
 verify_owner($case_number);
 

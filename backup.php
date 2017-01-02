@@ -1,6 +1,6 @@
 <?php
 require_once("./include_functions.php");
-protect_page(0);
+ksess_verify(0);
 header('Content-Description: File Transfer');
 header('Content-Encoding: UTF-8');
 header('Content-Type: text; charset=utf-8');

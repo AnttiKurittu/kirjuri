@@ -1,7 +1,7 @@
 <?php
 
 require_once './include_functions.php';
-protect_page(1); // User only or higher, add or view only accounts cant change passwords.
+ksess_verify(1); // User only or higher, add or view only accounts cant change passwords.
 
 $default_settings = parse_ini_file('conf/settings.conf', true);
 $diff = array_diff_key($default_settings['settings'], $settings_contents['settings']);

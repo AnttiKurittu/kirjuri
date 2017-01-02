@@ -1,6 +1,6 @@
 <?php
 require_once './include_functions.php';
-protect_page(3); // View only or higher
+ksess_verify(3); // View only or higher
 if ($_SESSION['user']['access'] === "3")
 {
   header('Location: add_case.php');

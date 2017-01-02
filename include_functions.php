@@ -1,19 +1,16 @@
 <?php
 // This is the 'header' file in all php files containing shared functions etc.
 // Go to installer if no credentials found.
-
 if ((!file_exists('conf/mysql_credentials.php')) && (!file_exists('/etc/kirjuri/conf/mysql_credentials.php'))) {
     header('Location: install.php');
     die;
 }
-
 // Load dependencies
 require __DIR__.'/vendor/autoload.php';
 $generator = new \Picqer\Barcode\BarcodeGeneratorPNG();
 $loader = new Twig_Loader_Filesystem('views/');
 $twig = new Twig_Environment($loader, array(
-  'debug' => true, // if you remove the cache directive, remember to remove the trailing comma from this line.
-  'cache' => 'cache' // This may be a source of errors if the WWW server process does not have ownership of the cache folder.
+  'cache' => 'cache'
 ));
 $twig->addExtension(new Twig_Extension_Debug());
 
@@ -132,28 +129,35 @@ function ksess_destroy() {
 }
 
 // Check user access level before rendering page. User details are stored in a session variable.
-function protect_page($required_access_level)
+function ksess_verify($required_access_level)
 {
-    if ((empty($_SESSION['user']) && $_SERVER['PHP_SELF'] !== '/api.php')) {
-        // Check if user variable is set.
+  if (!file_exists('cache/user_' . md5($_SESSION['user']['username']) . "/session_" . $_SESSION['user']['token'] . ".txt" ))
+  { // Drop session if sessionfile has been removed.
+    $_SESSION = array();
+    session_destroy();
     header('Location: login.php');
-        die;
-    } else {
-        if ($_SESSION['user']['access'] > $required_access_level) {
-            message('Access', $_SESSION['lang']['insufficient_privileges']);
-            if (isset($_SERVER['HTTP_REFERER']))
-            {
-                header('Location: '.$_SERVER['HTTP_REFERER']);
-            }
-            else
-            {
-              header('Location: index.php');
-            }
-            die;
-        } else {
-            return true;
-        }
-    }
+    die;
+  }
+  if ((empty($_SESSION['user']) && $_SERVER['PHP_SELF'] !== '/api.php')) {
+      // Check if user variable is set.
+  header('Location: login.php');
+      die;
+  } else {
+      if ($_SESSION['user']['access'] > $required_access_level) {
+          message('Access', $_SESSION['lang']['insufficient_privileges']);
+          if (isset($_SERVER['HTTP_REFERER']))
+          {
+              header('Location: '.$_SERVER['HTTP_REFERER']);
+          }
+          else
+          {
+            header('Location: index.php');
+          }
+          die;
+      } else {
+          return true;
+      }
+  }
 }
 
 function verify_owner($id)
@@ -225,12 +229,11 @@ function num($a)  // Filter out everything but numbers.
      return $decrypted;
  }
 
-function show_saved() // Display a "changed saved"-message
+function show_saved() // Display a "changes saved"-message
 {
     $_SESSION['message']['type'] = 'info';
     $_SESSION['message']['content'] = $_SESSION['lang']['changes_saved'];
     $_SESSION['message_set'] = true;
-
     return true;
 }
 
@@ -239,7 +242,6 @@ function message($type, $content) // Display a message. Message is rendered by T
     $_SESSION['message']['type'] = $type;
     $_SESSION['message']['content'] = $content;
     $_SESSION['message_set'] = true;
-
     return true;
 }
 
@@ -283,7 +285,6 @@ function db($database) // PDO Database connection
             $kirjuri_database->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $kirjuri_database->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
             $kirjuri_database->exec('SET NAMES utf8');
-
             return $kirjuri_database;
         } catch (PDOException $e) {
             session_destroy();
@@ -347,13 +348,13 @@ function logline($case_id, $event_level, $description) // Add an entry to event_
 
 set_error_handler('kirjuri_error_handler'); // Give errors to the custom error handler.
 
-if (file_exists('conf/mysql_credentials.php')) {
-    // Read credentials array from a file
+if (file_exists('conf/mysql_credentials.php')) // Read credentials array from a file
+{
   $mysql_config = include 'conf/mysql_credentials.php';
-} elseif (file_exists('/etc/kirjuri/mysql_credentials.php')) {
-    $mysql_config = include '/etc/kirjuri/mysql_credentials.php';
-} else {
-    header('Location: install.php'); // If file not found, assume install.php needs to be run.
+}
+else
+{
+  header('Location: install.php'); // If file not found, assume install.php needs to be run.
   die;
 }
 
@@ -365,7 +366,8 @@ elseif (file_exists('conf/settings.conf'))
 {
   $settings_file = 'conf/settings.conf'; // Fall back to default settings.
 }
-else {
+else
+{
   echo "Missing settings file at conf/settings.conf. Can not continue."; die;
 }
 
@@ -393,7 +395,7 @@ catch (PDOException $e)
 try
 {
   $kirjuri_database = db('kirjuri-database'); // Read tools from database to settings.
-  $query = $kirjuri_database->prepare('SELECT * from tools ORDER BY product_name;');
+  $query = $kirjuri_database->prepare('SELECT * FROM tools ORDER BY product_name;');
   $query->execute();
   $tools = $query->fetchAll(PDO::FETCH_ASSOC);
   $_SESSION['all_tools'] = $tools;
@@ -408,7 +410,7 @@ catch (PDOException $e)
 if($_SESSION['user']) { // Get unread message count
   try
   {
-    $query = $kirjuri_database->prepare('SELECT (SELECT COUNT(id) FROM messages WHERE msgto = :username AND received = "0") as new');
+    $query = $kirjuri_database->prepare('SELECT (SELECT COUNT(id) FROM messages WHERE msgto = :username AND received = "0") AS new');
     $query->execute(array(':username' => $_SESSION['user']['username']));
     $_SESSION['unread'] = $query->fetch(PDO::FETCH_ASSOC);
   }
@@ -417,5 +419,14 @@ if($_SESSION['user']) { // Get unread message count
     session_destroy();
     echo 'Database error: '.$e->getMessage().'. Run <a href="install.php">install</a> to create or upgrade tables and check your credentials.';
     die;
+  }
+}
+
+if (isset($_SESSION['instance']))
+{
+  if ($_SESSION['instance'] !== $_SERVER['SCRIPT_FILENAME']);
+  {
+    $_SESSION = array();
+    session_destroy();
   }
 }

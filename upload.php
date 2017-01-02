@@ -1,7 +1,7 @@
 <?php
 
 require_once './include_functions.php';
-protect_page(1);
+ksess_verify(1);
 
 $id = preg_replace('/[^0-9]/', '', (substr($_GET['case'], 0, 5)));
 

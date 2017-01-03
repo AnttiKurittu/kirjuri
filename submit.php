@@ -69,7 +69,7 @@ if ($_GET['type'] === 'anon_login')
  {
   foreach ($_SESSION['all_users'] as $user)
    {
-    if ($user['id'] === '1')
+    if (($user['id'] === '1') && ($user['password'] === "Not set."))
      {
       if (strpos($user['flags'], 'I') !== false)
        {
@@ -105,8 +105,8 @@ if ($_GET['type'] === 'login')
        if (strpos($user['flags'], 'I') === false) // See if account is flagged as inactive
         {
          $access_allowed_from_ip = false; // Deny access by default
-         $ip_access_list = json_decode($user['attr_2'], TRUE);
-         if (empty($ip_access_list))
+         $ip_access_list = json_decode($user['attr_2'], TRUE); // Get blacklists
+         if (empty($ip_access_list)) // Create array if not available
          {
            $ip_access_list['allow'] = array();
            $ip_access_list['deny'] = array();

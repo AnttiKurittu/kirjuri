@@ -127,7 +127,13 @@ function ksess_init() {
 
 function ksess_destroy()
 {
-  unlink('cache/user_' . md5($_SESSION['user']['username']) . '/session_' . $_SESSION['user']['token'] . '.txt');
+  if (!isset($_SESSION['user']['username']))
+  {
+    if (file_exists('cache/user_' . md5($_SESSION['user']['username']) . '/session_' . $_SESSION['user']['token'] . '.txt'))
+    {
+      unlink('cache/user_' . md5($_SESSION['user']['username']) . '/session_' . $_SESSION['user']['token'] . '.txt');
+    }
+  }
   $_SESSION = array();
   session_destroy();
   header('Location: login.php');
@@ -137,6 +143,13 @@ function ksess_destroy()
 // Check user access level before rendering page. User details are stored in a session variable.
 function ksess_verify($required_access_level)
 {
+  if (!isset($_SESSION['user']['username']))
+  {
+    $_SESSION['user'] = null;
+    session_destroy();
+    header('Location: login.php');
+    die;
+  }
   if (!file_exists('cache/user_' . md5($_SESSION['user']['username']) . "/session_" . $_SESSION['user']['token'] . ".txt" ))
   { // Drop session if sessionfile has been removed.
     $_SESSION = array();
@@ -215,25 +228,29 @@ function num($a)  // Filter out everything but numbers.
     return preg_replace('/[^0-9]/', '', $a);
 }
 
- function encrypt($in, $key) // Encrypt a string with AES-256-CBC
- {
-     $iv = trim(substr(str_shuffle('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'), 0, 16));
-     $key = base64_encode($key);
-     $in = gzencode($in);
-     $encrypted = openssl_encrypt($in, 'AES-256-CBC', $key, 0, $iv);
+function alnum($a)
+{
+    return preg_replace('/[^a-zA-Z0-9]/', '', $a);
+}
 
-     return $iv.$encrypted;
- }
 
- function decrypt($in, $key) // Decrypt a string.
- {
-     $iv = substr($in, 0, 16);
-     $key = base64_encode($key);
-     $decrypted = openssl_decrypt(substr($in, 16), 'AES-256-CBC', $key, 0, $iv);
-     $decrypted = gzdecode($decrypted);
+function encrypt($in, $key) // Encrypt a string with AES-256-CBC
+{
+   $iv = trim(substr(str_shuffle('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'), 0, 16));
+   $key = base64_encode($key);
+   $in = gzencode($in);
+   $encrypted = openssl_encrypt($in, 'AES-256-CBC', $key, 0, $iv);
+   return $iv.$encrypted;
+}
 
-     return $decrypted;
- }
+function decrypt($in, $key) // Decrypt a string.
+{
+   $iv = substr($in, 0, 16);
+   $key = base64_encode($key);
+   $decrypted = openssl_decrypt(substr($in, 16), 'AES-256-CBC', $key, 0, $iv);
+   $decrypted = gzdecode($decrypted);
+   return $decrypted;
+}
 
 function show_saved() // Display a "changes saved"-message
 {

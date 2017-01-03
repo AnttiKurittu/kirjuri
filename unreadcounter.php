@@ -1,5 +1,4 @@
 <?php
-
 session_start(); // Keep valid session alive.
 if (!file_exists('cache/user_' . md5($_SESSION['user']['username']) . "/session_" . $_SESSION['user']['token'] . ".txt" ))
 { // Drop session if sessionfile has been removed.

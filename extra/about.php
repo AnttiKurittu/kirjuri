@@ -16,6 +16,7 @@
   <p>Kirjuri is a digital forensic evidence item management system. It is a web application designed to help forensic teams manage, track and report devices delivered for forensic examination. It was born in the <a href="https://www.poliisi.fi/en/helsinki">Helsinki Police Department</a>, which handles over a thousand devices annually. Managing these devices and keeping track of the changes and locations to all this material proved to be a difficult task, since no ready software suites for multi-user evidence device management existed.</p>
 
   <p>Kirjuri was written from the ground-up with one task in mind - easing the clerical tasks of the forensic investigator by organizing devices under examination requests. It is easy to deploy on an internal network using a Linux-based virtual machine as a server. The current public release for Kirjuri is <?php echo file_get_contents('https://raw.githubusercontent.com/AnttiKurittu/kirjuri/master/conf/RELEASE') ?>.</p>
+
   <a href="demo/index.php" class="btn btn-info btn-lg">Click here to try the Demo version</a>
   </div>
 
@@ -30,6 +31,62 @@
     <li>See the <a href="https://github.com/AnttiKurittu/kirjuri/blob/master/CHANGELOG.md" target="_BLANK">changelog</a> for more details on what's new in the current release.</li>
     <li>Kirjuri supports English, Finnish and German and is easily localizable via a configuration file.</li>
   </ul>
+
+  <h1 class="page-heading">Screenshots</h1>
+
+
+    <div class="row">
+      <div class="col-xs-4 col-md-2">
+        <a href="https://raw.githubusercontent.com/AnttiKurittu/kirjuri/master/extra/screenshots/1.png" class="thumbnail">
+          <img src="https://raw.githubusercontent.com/AnttiKurittu/kirjuri/master/extra/screenshots/1.png" alt="Screenshot from Kirjuri">
+        </a>
+      </div>
+
+      <div class="col-xs-4 col-md-2">
+        <a href="https://raw.githubusercontent.com/AnttiKurittu/kirjuri/master/extra/screenshots/2.png" class="thumbnail">
+          <img src="https://raw.githubusercontent.com/AnttiKurittu/kirjuri/master/extra/screenshots/2.png" alt="Screenshot from Kirjuri">
+        </a>
+      </div>
+
+      <div class="col-xs-4 col-md-2">
+        <a href="https://raw.githubusercontent.com/AnttiKurittu/kirjuri/master/extra/screenshots/3.png" class="thumbnail">
+          <img src="https://raw.githubusercontent.com/AnttiKurittu/kirjuri/master/extra/screenshots/3.png" alt="Screenshot from Kirjuri">
+        </a>
+      </div>
+
+      <div class="col-xs-4 col-md-2">
+        <a href="https://raw.githubusercontent.com/AnttiKurittu/kirjuri/master/extra/screenshots/4.png" class="thumbnail">
+          <img src="https://raw.githubusercontent.com/AnttiKurittu/kirjuri/master/extra/screenshots/4.png" alt="Screenshot from Kirjuri">
+        </a>
+      </div>
+    </div>
+    <div class="row">
+
+      <div class="col-xs-4 col-md-2">
+        <a href="https://raw.githubusercontent.com/AnttiKurittu/kirjuri/master/extra/screenshots/6.png" class="thumbnail">
+          <img src="https://raw.githubusercontent.com/AnttiKurittu/kirjuri/master/extra/screenshots/6.png" alt="Screenshot from Kirjuri">
+        </a>
+      </div>
+
+      <div class="col-xs-4 col-md-2">
+        <a href="https://raw.githubusercontent.com/AnttiKurittu/kirjuri/master/extra/screenshots/7.png" class="thumbnail">
+          <img src="https://raw.githubusercontent.com/AnttiKurittu/kirjuri/master/extra/screenshots/7.png" alt="Screenshot from Kirjuri">
+        </a>
+      </div>
+
+      <div class="col-xs-4 col-md-2">
+        <a href="https://raw.githubusercontent.com/AnttiKurittu/kirjuri/master/extra/screenshots/8.png" class="thumbnail">
+          <img src="https://raw.githubusercontent.com/AnttiKurittu/kirjuri/master/extra/screenshots/8.png" alt="Screenshot from Kirjuri">
+        </a>
+      </div>
+
+      <div class="col-xs-4 col-md-2">
+        <a href="https://raw.githubusercontent.com/AnttiKurittu/kirjuri/master/extra/screenshots/9.png" class="thumbnail">
+          <img src="https://raw.githubusercontent.com/AnttiKurittu/kirjuri/master/extra/screenshots/9.png" alt="Screenshot from Kirjuri">
+        </a>
+      </div>
+    </div>
+
   <h1 class="page-heading">Installation and requirements</h1>
   <p>Kirjuri requires a web server with php and mysql installed. You can install Kirjuri by following these steps:</p>
   <ul>

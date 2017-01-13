@@ -1,5 +1,11 @@
 CHANGELOG
 ------------
+2016-12-08 release 127:
+
+* Added a passwords field to the "new request"-page. The investigator can now add all known passwords to the request at the time of submission, and they will be displayed in the private notes section. Fixed a few minor annoyances.
+* Statistics page will not load if no cases present.
+* This update does not alter database structures.
+
 2016-11-15:
 
 * Fixed an error on newest MySQL (at least Ver 14.14 Distrib 5.7.16) where inserting a value of '' no longer populates an INT field with "0" but instead fails. Some dirty workarounds on submit.php to fix this. No need to update if your version works fine.

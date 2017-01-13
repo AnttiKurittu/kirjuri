@@ -307,20 +307,6 @@ if (e.keyCode == 13) {
         </p>
         {% endif %}
         <hr>
-        {% if (caserow.0.case_status == "1") %}
-        {% if not mediarow %}
-        <div class="col-sm-12">
-          <form method="POST" class="form-inline pull-left" action="submit.php?type=set_removed_case">
-            <div class="form-group">
-              <input type="hidden" name="remove_exam_request" value="{{ caserow.0.id }}">
-            </div>
-            <button type="submit" class="btn btn-xs btn-danger">{{ lang.delete_request }}</button>
-          </form>
-        </div>
-        <hr>
-        {% endif %}
-        {% endif %}
-
         {% if caserow.0.report_notes %}
         <h3>{{ lang.examination_report }}</h3>
         {{ caserow.0.report_notes|raw }}
@@ -331,6 +317,26 @@ if (e.keyCode == 13) {
         {{ caserow.0.examiners_notes|raw }}
         <hr>
         {% endif %}
+
+
+        {% if (caserow.0.case_status == "1") %}
+        {% if not mediarow %}
+
+        <div class="col-sm-12">
+          <form method="POST" class="form-inline pull-left" action="submit.php?type=set_removed_case">
+            <div class="form-group">
+              <input type="hidden" name="remove_exam_request" value="{{ caserow.0.id }}">
+              <button type="submit" class="btn btn-xl btn-danger">{{ lang.delete_request }}</button>
+            </div>
+          </form>
+        </div>
+        
+
+        {% endif %}
+        {% endif %}
+
+
+
         {% set counter_no = "0" %}
         {% for entry in mediarow %}
         {% set jutun_vaihe = entry.device_action|split('|') %}{% if entry.is_removed != "1" %}

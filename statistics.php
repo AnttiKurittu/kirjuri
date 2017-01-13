@@ -17,6 +17,13 @@ $query->execute(array(
     ':datestop' => $dateRange['stop'],
 ));
 $all_cases = $query->fetchAll(PDO::FETCH_ASSOC);
+
+if (empty($all_cases)) {
+    message('error', $_SESSION['lang']['no_cases']);
+    header('Location: index.php');
+	die();
+}
+
 $query = $kirjuri_database->prepare('select * FROM exam_requests WHERE is_removed != "1" AND id != parent_id AND case_added_date BETWEEN :datestart AND :datestop');
 $query->execute(array(
     ':datestart' => $dateRange['start'],

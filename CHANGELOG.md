@@ -1,7 +1,7 @@
 CHANGELOG
 ------------
 
-2017-01-XX Version 0.9.0:
+2017-01-22 Version 0.9.0:
 
 * Dropped support for PHP5 - dependencies require this. Upgrade to PHP7.
 * Updated dependencies: Twig v2.1.0, HTMLPurifier v4.8.0, php-barcode-generator v0.2.1., TinyMCE v4.5.2

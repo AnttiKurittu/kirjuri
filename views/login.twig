@@ -1,0 +1,59 @@
+{% extends 'base.twig' %}
+{% block title %}
+<title>{{ lang.log_in }} - {{ settings.title_text }}</title>
+{% endblock title %}
+{% block content %}
+<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+  <h1 class="page-header">{{ lang.log_in }}</h1>
+  {% if settings.motd %}
+  <div class="panel panel-danger">
+    <div class="panel-body">
+      <i class="fa fa-warning"></i> {{ settings.motd|raw }}
+    </div>
+  </div>
+  {% endif %}
+
+  <form class="form-horizontal" role="form" method="post" action="submit.php?type=login">
+    <input type="hidden" name="token" value="{{session.user.token}}">
+    <div class="form-group">
+      <label for="username" class="col-sm-1 control-label">{{ lang.username }}</label>
+      <div class="col-sm-4">
+        <input type="text" class="form-control" id="username" name="username">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="password" class="col-sm-1 control-label">{{ lang.password }} </label>
+      <div class="col-sm-4">
+        <input type="password" class="form-control" id="password" name="password"maxlength="64">
+      </div>
+    </div>
+    {% if settings.enable_ldap_authentication == "1" %}
+    <div class="form-group">
+      <label for="account_type" class="col-sm-1 control-label"></label>
+      <div class="col-sm-4">
+        <select style="text-align:left;" class="btn btn-default" name="auth_type" id="auth_type">
+          <option value="ldap" selected>Domain</option>
+          <option value="local">Local</option>
+        </select>
+      </div>
+    </div>
+    {% else %}
+    <input type="hidden" name="auth_type" value="local">
+    {% endif %}
+
+    <div class="form-group">
+      <label for="password" class="col-sm-1 control-label"></label>
+      <div class="col-sm-4">
+        <button type="submit" class="btn btn-success" id="request_save_button"><i class="fa fa-sign-in"></i> {{ lang.log_in }}</button>
+        {% for user in session.all_users %}
+          {% if (user.id == 1) and ("I" not in user.flags) %}
+          <a href="submit.php?type=anon_login" class="btn btn-default">{{ lang.anon_login_button }}</a>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  <!-- <a href="https://github.com/AnttiKurittu/Kirjuri" target="_BLANK">Kirjuri</a> release <b>{{ settings.release }}</b> -->
+  </form>
+</div>
+{% endblock %}

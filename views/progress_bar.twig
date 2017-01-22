@@ -1,0 +1,6 @@
+<body style="background:#f5f5f5">
+<link href="vendor/twbs/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+{% set jutun_vaihe = device_action|split('|') %}
+{% if (jutun_vaihe.0 <= settings.device_action_count) %}
+<div class="progress" style="width:200px;height:15px;margin-bottom:0px;"><div class="progress-bar {{ settings.progress_bar_style }} progress-bar-{% if settings.device_action_count == jutun_vaihe.0 %}success{% elseif jutun_vaihe.0 == "1" %}danger{% elseif jutun_vaihe.0 == "0" %}info{% else %}warning{% endif %}" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:{% if jutun_vaihe.0 != "0" %}{{ ((100 / settings.device_action_count) * jutun_vaihe.0)|round(0, "ceil") }}{% else %}100{% endif %}%"></div></div>
+{% endif %}

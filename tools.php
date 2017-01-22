@@ -22,9 +22,9 @@ foreach ($_SESSION['all_tools'] as $tool) { // Get tool information based on GET
 }
 
 $_SESSION['message_set'] = false;
-echo $twig->render('tools.html', array(
+echo $twig->render('tools.twig', array(
     'session' => $_SESSION,
-    'settings' => $settings,
+    'settings' => $prefs['settings'],
     'lang' => $_SESSION['lang'],
     'fields' => $fields,
 ));

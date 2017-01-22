@@ -1,0 +1,229 @@
+{% extends 'base.twig' %}
+{% block title %}
+<title>{{ lang.messages|capitalize }}- {{ settings.title_text }}</title>
+{% endblock title %}
+{% block content %}
+<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+{% if show == "compose" %}
+<form class="form-horizontal" role="form" method="post" action="submit.php?type=send_message">
+  <input type="hidden" name="token" value="{{session.user.token}}">
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">{{ lang.send_a_message }}</h3>
+  </div>
+  <div class="panel-body">
+    <div class="form-group">
+      <div class="col-md-11">
+        {% if open > 0 %}
+        {% for msg in messages %}
+        {% if msg.id == open %}
+        <select name="msgto"><option value="{{ msg.msgfrom }}">{{ msg.msgfrom }}</option></select>
+        {% endif %}
+        {% endfor %}
+        {% else %}
+        <select name="msgto">
+          <option value="" {% if not prefill_msgto %}selected{% endif %} disabled>{{ lang.choose_recipient }}</option>
+          {% for user in session.all_users if user.username != session.user.username %}
+          <option value="{{ user.username }}"{% if prefill_msgto == user.name %} selected{% endif %}>{{ user.name }}</option>
+          {% endfor %}
+          <option disabled>---</option>
+          <option value="ALL_USERS">{{ lang.send_to_all }}</option>
+          <option value="{{ session.user.username }}">{{ lang.send_to_self }}</option>
+        </select>
+        {% endif %}
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-md-12">
+        <input type="text" class="form-control" id="subject" name="subject" placeholder="Message subject" value="{% if post %}{{ post.copy_subject }}{% endif %}{% for msg in messages %}{% if msg.id == open %}{{ lang.re }}{{ msg.subject }}{% endif %}{% endfor %}{{ session.post_cache.subject}}">
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-md-12">
+        <textarea rows="25" name="body">{% if post %}{{ post.copy_body }}{% endif %}{% for msg in messages %}{% if (msg.id == open) %}<br><br><p>---- From {{ msg.msgfrom }} {{ msg.attr_1 }}:</p>{{msg.body}}{% endif %}{% endfor %}{{ session.post_cache.body}}</textarea>
+      </div>
+    </div>
+  </div>
+  <div class="panel-footer">
+    <button type="submit" class="btn btn-success pull-right"><i class="fa fa-send"></i> {{ lang.send }}</button> <a href="messages.php?show=compose" class="btn btn-default">{{ lang.clear_form }}</a>
+  </div>
+</div>
+</form>
+{% endif %}
+
+{% if not show or show == "inbox" %}
+  <h3><a name="inbox"></a><a href="messages.php?show=inbox"><i class="fa fa-folder-o"></i> {{ lang.inbox }} {% if session.unread.msgcount_to > 0%}({{ session.unread.msgcount_to }}){% endif %}</a></h3>
+  <table class="table">
+    <thead>
+      <th style="width:200px;">{{ lang.from }}</th>
+      <th>{{ lang.subject }}</th>
+      <th style="width:180px;">{{ lang.sent }}</th>
+      <th style="width:180px;">{{ lang.received }}</th>
+      <th width="1px;"></th>
+    </thead>
+    {% for msg in messages %}
+    {% if msg.archived_to == 0 and msg.msgto == session.user.username %}
+    <tr {% if open == msg.id %}class="info"{% elseif not msg.received %}class="success"{% endif %} %}>
+      <td style="width:200px;">{% if msg.msgfrom == "Myself" %}<span style="color:green;"><i class="fa fa-caret-right"></i> <i class="fa fa-inbox"></i></span> <i>{{ session.user.name }}</i>{% elseif msg.msgfrom == session.user.username %}<span style="color:red;"><i class="fa fa-inbox"></i> <i class="fa fa-caret-right"></i></span> {% for entry in session.all_users %}{% if entry.username == msg.msgfrom %}{{ entry.name }}{% endif %}{% endfor %}{% else %}<span style="color:green;"><i class="fa fa-caret-right"> <i class="fa fa-inbox"></i> </i></span> {% for entry in session.all_users %}{% if entry.username == msg.msgfrom %}{{ entry.name }}{% endif %}{% endfor %}{% endif %}</td>
+      <td><a href="messages.php?open={{ msg.id }}&show=inbox">{% if not msg.subject %}<i>{{ lang.no_subject }}</i>{% else %}{{ msg.subject }}{% endif %}</a></td>
+      <td>{{ msg.attr_1 }}</td>
+      <td>{% if msg.received == "0" %}<i>{{ lang.new }}</i>{% else %}{{ msg.received }}{% endif %}</td>
+      <td>{% if msg.received != "0" %}<a href="submit.php?type=archive_received&id={{msg.id}}&token={{session.user.token}}"><i class="fa fa-archive"></i></a>{% endif %}</td>
+      {% if open == msg.id %}
+      <tr>
+        <td style="border:1px solid #DDD;background-color:#EEE;" colspan="5">
+          {{ msg.body|raw }}
+          <br>
+          <form class="form-horizontal" role="form" method="post" action="submit.php?type=send_message">
+            <input type="hidden" name="token" value="{{session.user.token}}">
+                  {% for msg in messages %}
+                  {% if msg.id == open %}
+                  <input type="hidden" name="msgto" value="{{ msg.msgfrom }}">
+                  {% endif %}
+                  {% endfor %}
+              <div class="form-group">
+                <div class="col-md-12">
+                  <input type="text" class="form-control" id="subject" name="subject" value="{% for msg in messages %}{% if msg.id == open %}{{ lang.re }}{{ msg.subject }}{% endif %}{% endfor %}">
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-md-12">
+                  <textarea rows="20" name="body">{% for msg in messages %}{% if (msg.id == open) %}
+                  <br><br><pre>---- {{ lang.original_message }} ----
+{{ lang.from }}: {% for entry in session.all_users %}{% if entry.username == msg.msgfrom %}{{ entry.name }}{% endif %}{% endfor %} ({{ msg.msgfrom }})
+{{ lang.to }}: {% for entry in session.all_users %}{% if entry.username == msg.msgto %}{{ entry.name }}{% endif %}{% endfor %} ({{ msg.msgto }})
+{{ lang.sent_date }}: {{ msg.attr_1 }}
+{{ lang.subject }}: {{msg.subject }}</pre>
+                  {{msg.body}}{% endif %}{% endfor %}</textarea>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-success btn-sm pull-right"><i class="fa fa-reply"></i> {{ lang.reply }}</button> <a class="btn btn-warning btn-sm" href="submit.php?type=archive_received&id={{msg.id}}&token={{session.user.token}}"><i class="fa fa-archive"></i> {{ lang.archive_message }}</a>
+            </div>
+          </form>
+        </td>
+      </tr>
+      {% endif %}
+    </tr>
+    {% endif %}
+    {% endfor %}
+    {% if session.unread.msgcount_to == 0 %}<tr><td colspan="5" class="active">{{ lang.no_messages|capitalize }}</tr></td>{% endif %}
+  </table>
+{% endif %}
+
+{% if not show or show == "outbox" %}
+  <h3><a name="outbox"></a><a href="messages.php?show=outbox"><i class="fa fa-folder-o"></i> {{ lang.outbox }} {% if session.unread.msgcount_from > 0%}({{ session.unread.msgcount_from }}){% endif %}</a></h3>
+  <table class="table">
+    <thead>
+      <th style="width:200px;">{{ lang.from }}</th>
+      <th style="width:200px;">{{ lang.to }}</th>
+      <th>{{ lang.subject }}</th>
+      <th style="width:160px;">{{ lang.sent }}</th>
+      <th style="width:160px;">{{ lang.received }}</th>
+      <th style="width:1px;"></th>
+    </thead>
+    {% for msg in messages %}
+    {% if msg.archived_from == "0" and ((msg.msgfrom == session.user.username)) %}
+    <tr {% if open == msg.id %}class="info"{% elseif not msg.received %}class="warning"{% endif %} %}>
+      <td style="width:200px;">{% if msg.msgfrom == session.user.username %}<span style="color:red;"><i class="fa fa-inbox"></i> <i class="fa fa-caret-right"></i></span> {% for entry in session.all_users %}{% if entry.username == msg.msgfrom %}{{ entry.name }}{% endif %}{% endfor %}{% else %}<span style="color:green;"><i class="fa fa-caret-right"> <i class="fa fa-inbox"></i> </i></span> {% for entry in session.all_users %}{% if entry.username == msg.msgfrom %}{{ entry.name }}{% endif %}{% endfor %}{% endif %}</td>
+      <td style="width:200px;">{% for entry in session.all_users %}{% if entry.username == msg.msgto %}{{ entry.name }}{% endif %}{% endfor %}</td>
+      <td><a href="messages.php?open={{ msg.id }}&show=outbox">{{ msg.subject }}</a></td>
+      <td>{{ msg.attr_1 }}</td>
+      <td>{% if msg.received == "0" %}<i>{{ lang.not_received }}</i>{% else %}{{ msg.received }}{% endif %}</td>
+      <td><a href="submit.php?type=archive_sent&id={{msg.id}}&token={{session.user.token}}"><i class="fa fa-archive"></i></a></td>
+      {% if open == msg.id %}
+      <tr>
+        <td style="border:1px solid #DDD;background-color:#EEE;" colspan="6">
+          {{ msg.body|raw }}
+          <br>
+          <span class="pull-right">
+          <form method="post" action="messages.php?show=compose">
+            <input type="hidden" name="token" value="{{session.user.token}}">
+            <input type="hidden" value="{{msg.body}}" name="copy_body">
+            <input type="hidden" value="{{msg.subject}}" name="copy_subject">
+            <input type="hidden" value="{{msg.msgto}}" name="copy_msgto">
+            <button type="submit" class="btn btn-sm btn-success"><i class="fa fa-copy"></i> {{ lang.copy_to_new }}</button>
+          <a class="btn btn-warning btn-sm" href="submit.php?type=archive_sent&id={{msg.id}}&token={{session.user.token}}"><i class="fa fa-archive"></i> {{ lang.archive_message }}</a>
+        </form></span>
+        </td>
+      </tr>
+      {% endif %}
+    </tr>
+    {% endif %}
+    {% endfor %}
+    {% if session.unread.msgcount_from == 0 %}<tr><td colspan="6" class="active">{{ lang.no_messages|capitalize }}</tr></td>{% endif %}
+  </table>
+{% endif %}
+
+{% if not show or show == "archive" %}
+  <h3><a name="archive"></a><a href="messages.php?show=archive"><i class="fa fa-folder-o"></i> {{ lang.archived }} {% if session.unread.msgcount_archived > 0%}({{ session.unread.msgcount_archived }}){% endif %}</a></h3>
+  <table class="table">
+    <thead>
+      <th style="width:200px;">{{ lang.from }}</th>
+      <th style="width:200px;">{{ lang.to }}</th>
+      <th>{{ lang.subject }}</th>
+      <th style="width:160px;">{{ lang.sent }}</th>
+      <th style="width:160px;">{{ lang.received }}</th>
+      <th style="width:1px;"></th>
+      <th width="1px;"></th>
+    </thead>
+    {% for msg in messages %}
+    {% if (msg.archived_to == 1 and msg.msgto == session.user.username) or (msg.archived_from == 1 and msg.msgfrom == session.user.username) %}
+      {% if (msg.deleted_to == 0 and msg.msgto == session.user.username) or (msg.deleted_from == 0 and msg.msgfrom == session.user.username) %}
+    <tr {% if open == msg.id %}class="info"{% elseif not msg.received %}class="warning"{% endif %} %}>
+      <td style="width:200px;">{% if msg.msgfrom == "Myself" %}<span style="color:green;"><i class="fa fa-caret-right"></i> <i class="fa fa-inbox"></i></span> {{ session.user.name }}{% elseif msg.msgfrom == session.user.username %}<span style="color:red;"><i class="fa fa-inbox"></i> <i class="fa fa-caret-right"></i></span> {% for entry in session.all_users %}{% if entry.username == msg.msgfrom %}{{ entry.name }}{% endif %}{% endfor %}{% else %}<span style="color:green;"><i class="fa fa-caret-right"> <i class="fa fa-inbox"></i> </i></span> {% for entry in session.all_users %}{% if entry.username == msg.msgfrom %}{{ entry.name }}{% endif %}{% endfor %}{% endif %}</td>
+      <td style="width:200px;">{% for entry in session.all_users %}{% if entry.username == msg.msgto %}{{ entry.name }}{% endif %}{% endfor %}</td>
+      <td><a href="messages.php?open={{ msg.id }}&show=archive">{% if not msg.subject %}<i>{{ lang.no_subject}}</i>{% else %}{{ msg.subject }}{% endif %}</a></td>
+      <td>{{ msg.attr_1 }}</td>
+      <td>{% if msg.received == "0" %}<i>{{ lang.not_received }}</i>{% else %}{{ msg.received }}{% endif %}</td>
+      <td>
+      {% if msg.archived_to == "1" %}
+      <a href="submit.php?type=restore_received&id={{msg.id}}&token={{session.user.token}}"><i class="fa fa-undo"></i></a>
+      {% elseif msg.archived_from == "1" %}
+      <a href="submit.php?type=restore_sent&id={{msg.id}}&token={{session.user.token}}"><i class="fa fa-undo"></i></a>
+      {% endif %}
+      </td>
+      <td>
+      {% if msg.msgto == session.user.username %}
+      <a href="submit.php?type=delete_received&id={{msg.id}}&token={{session.user.token}}"><i style="color:red;" class="fa fa-remove"></i></a>
+      {% elseif msg.msgfrom == session.user.username %}
+      <a href="submit.php?type=delete_sent&id={{msg.id}}&token={{session.user.token}}"><i style="color:red;" class="fa fa-remove"></i></a>
+      {% endif %}
+      </td>
+      {% if open == msg.id %}
+      <tr>
+        <td style="border:1px solid #DDD;background-color:#EEE;" colspan="7">
+          {{ msg.body|raw }}
+          <br>
+          <span class="pull-right">
+          <form method="post" action="messages.php?show=compose">
+            <input type="hidden" name="token" value="{{session.user.token}}">
+            <input type="hidden" value="{{msg.body}}" name="copy_body">
+            <input type="hidden" value="{{msg.subject}}" name="copy_subject">
+            <input type="hidden" value="{{msg.msgto}}" name="copy_msgto">
+            <button type="submit" class="btn btn-sm btn-success"><i class="fa fa-copy"></i> {{ lang.copy_to_new }}</button>
+          {% if msg.msgto == session.user.username %}
+          <a class="btn btn-warning btn-sm" href="submit.php?type=delete_received&id={{msg.id}}&token={{session.user.token}}"><i class="fa fa-remove"></i> {{ lang.delete_message }}</a>
+          {% elseif msg.msgfrom == session.user.username%}
+          <a class="btn btn-warning btn-sm" href="submit.php?type=delete_sent&id={{msg.id}}&token={{session.user.token}}"><i class="fa fa-remove"></i> {{ lang.delete_message }}</a>
+          {% endif %}
+          {% if msg.archived_to == "1" %}
+          <a class="btn btn-info btn-sm" href="submit.php?type=restore_received&id={{msg.id}}&token={{session.user.token}}"><i class="fa fa-archive"></i> {{ lang.restore_to_inbox }}</a>
+          {% elseif msg.archived_from == "1" %}
+          <a class="btn btn-info btn-sm" href="submit.php?type=restore_sent&id={{msg.id}}&token={{session.user.token}}"><i class="fa fa-archive"></i> {{ lang.restore_to_outbox }}</a>
+          {% endif %}
+          </form>
+        </span>
+        </td>
+      </tr>
+      {% endif %}
+    </tr>
+    {% endif %}
+    {% endif %}
+    {% endfor %}
+    {% if session.unread.msgcount_archived == 0 %}<tr><td colspan="7" class="active">{{ lang.no_messages|capitalize }}</tr></td>{% endif %}
+  </table>
+  {% if session.unread.msgcount_archived > 0 %}&nbsp;&nbsp;<a href="submit.php?type=delete_all&token={{session.user.token}}"><i style="color:red;" class="fa fa-remove"></i> {{ lang.delete_all_archived }}</a>{% endif%}
+{% endif %}
+
+</div>
+{% endblock %}

@@ -1,0 +1,197 @@
+{% extends 'base.twig' %}
+{% block title %}
+<title>{{ lang.add_an_examination_request }} - {{ settings.title_text }}</title>
+{% endblock title %}
+{% block content %}
+<script>
+  $(document).ready(function (){
+      validate();
+      $('#case_file_number, #classification, #case_suspect, #case_investigation_lead, #case_investigator, #case_investigator_unit, #case_investigator_tel, #case_confiscation_date, #case_request_description, #case_requested_action, #case_crime').change(validate);
+  });
+  function validate(){
+      if ($('#case_file_number').val().length  > {{ settings.organization_specific_prefix|length }}  &&
+          $('#classification').val().length  >   0   &&
+          $('#case_suspect').val().length  >   0   &&
+          $('#case_investigation_lead').val().length  >   0   &&
+          $('#case_investigator').val().length  >   0   &&
+          $('#case_investigator_unit').val().length  >   0   &&
+          $('#case_investigator_tel').val().length  >   0   &&
+          $('#case_confiscation_date').val().length  >   0   &&
+          $('#case_request_description').val().length  >   0   &&
+          $('#case_requested_action').val().length  >   0   &&
+          $('#case_crime').val().length    >   0) {
+          $("#request_save_button").prop("disabled", false);
+          $("#request_save_button").addClass("btn-success");
+          $("#ohje").hide();
+      }
+      else {
+          $("#request_save_button").prop("disabled", true);
+          $("#request_save_button").removeClass("btn-success");
+      }
+  }
+  $(function() {
+    var availableTags = [{{ confCrimes|raw }}];
+    $("#case_crime").autocomplete({
+      source: availableTags
+    });
+  });
+  $(function() {
+    $("#case_confiscation_date").datepicker({
+      dayNamesMin: ["{{ lang.weekday_7_short }}", "{{ lang.weekday_1_short }}", "{{ lang.weekday_2_short }}", "{{ lang.weekday_3_short }}", "{{ lang.weekday_4_short }}", "{{ lang.weekday_5_short }}", "{{ lang.weekday_6_short }}"],
+      dateFormat: "yy-mm-dd",
+      monthNames: ["{{ lang.month_1 }}", "{{ lang.month_2 }}", "{{ lang.month_3 }}", "{{ lang.month_4 }}", "{{ lang.month_5 }}", "{{ lang.month_6 }}", "{{ lang.month_7 }}", "{{ lang.month_8 }}", "{{ lang.month_9 }}", "{{ lang.month_10 }}", "{{ lang.month_11 }}", "{{ lang.month_12 }}"],
+      monthNamesShort: ["{{ lang.month_1|slice(0, 4) }}", "{{ lang.month_2|slice(0, 4) }}", "{{ lang.month_3|slice(0, 4) }}", "{{ lang.month_4|slice(0, 4) }}", "{{ lang.month_5|slice(0, 4) }}", "{{ lang.month_6|slice(0, 4) }}", "{{ lang.month_7|slice(0, 4) }}", "{{ lang.month_8|slice(0, 4) }}", "{{ lang.month_9|slice(0, 4) }}", "{{ lang.month_10|slice(0, 4) }}", "{{ lang.month_11|slice(0, 4) }}", "{{ lang.month_12|slice(0, 4) }}"],
+      firstDay: ["1"],
+      showButtonPanel: ["false"],
+      closeText: ["{{ lang.close }}"],
+      currentText: ["{{ lang.today }} "]
+    });
+  });
+
+</script>
+<script>
+  function showHint(str) {
+    var xhttp;
+    if (str.length == 0) {
+      document.getElementById("txtHint").innerHTML = "";
+      return;
+    }
+    xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+      if (xhttp.readyState == 4 && xhttp.status == 200) {
+        document.getElementById("txtHint").innerHTML = xhttp.responseText;
+      }
+    };
+    xhttp.open("GET", "request.php?case_file_number="+str, true);
+    xhttp.send();
+  }
+</script>
+<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+  <h1 class="page-header">{{ lang.add_an_examination_request }}</h1>
+  <form class="form-horizontal" role="form" method="post" action="submit.php?type=examination_request">
+    <input type="hidden" name="token" value="{{session.user.token}}">
+    <div class="form-group">
+      <label for="examination_request" class="col-sm-2 control-label">{{ lang.case_name }}</label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" id="examination_request" name="case_name" placeholder="{{ lang.please_designate_case_name }}">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="case_file_number" class="col-sm-2 control-label">{{ lang.criminal_case_number }} <span style="color:red;">*</span></label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" id="case_file_number" name="case_file_number" placeholder="{{ settings.organization_specific_prefix }}" value="{{ settings.organization_specific_prefix }}" maxlength="32" onkeyup="showHint(this.value)">
+        <span id="txtHint"></span>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="case_crime" class="col-sm-2 control-label">{{ lang.main_offense }} <span style="color:red;">*</span></label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" id="case_crime" name="case_crime" placeholder="{{ lang.specify_main_offense }}" maxlength="128">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="classification" class="col-sm-2 control-label">{{ lang.classification }} <span style="color:red;">*</span></label>
+      <div class="col-sm-2">
+        <select style="text-align:left;" class="btn btn-default" name="classification" id="classification">
+          <option value="" selected disabled>{{ lang.choose_classification }}</option>
+          {% for classification in classifications %}
+          <option value="{{ classification }}">{{ classification }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="case_suspect" class="col-sm-2 control-label">{{ lang.suspect_target }} <span style="color:red;">*</span></label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" id="case_suspect" name="case_suspect" placeholder="{{ lang.name }}"  maxlength="128">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="forensic_investigator" class="col-sm-2 control-label">{{ lang.head_of_investigation }} <span style="color:red;">*</span></label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" id="case_investigation_lead" name="case_investigation_lead" placeholder="{{ lang.name_and_rank }}"  maxlength="128">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="case_investigator" class="col-sm-2 control-label">{{ lang.case_investigator }} <span style="color:red;">*</span></label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" id="case_investigator" name="case_investigator" placeholder="{{ lang.name_and_rank }}" value=""  maxlength="128">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="case_investigator_tel" class="col-sm-2 control-label">{{ lang.investigators_tel_no }} <span style="color:red;">*</span></label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" id="case_investigator_tel" name="case_investigator_tel" placeholder="{{ lang.tel_no_abbrev }}" value="{{ settings.phone_number_prefix }}"  maxlength="128">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="case_crime" class="col-sm-2 control-label">{{ lang.unit }} <span style="color:red;">*</span></label>
+      <div class="col-sm-2">
+        <select  style="text-align:left;"  class="btn btn-default" name="case_investigator_unit" id="case_investigator_unit">
+          <option value="" disabled selected>{{ lang.investigating_unit }}</option>
+          {% for yksikko in inv_units %}
+          <option value="{{ yksikko }}">{{ yksikko }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="case_confiscation_date" class="col-sm-2 control-label">{{ lang.confiscation_date }} <span style="color:red;">*</span></label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" id="case_confiscation_date" name="case_confiscation_date" placeholder="{{ lang.confiscation_date_format_tip }}"  maxlength="10">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="case_request_description" class="col-sm-2 control-label">{{ lang.device_description }} <span style="color:red;">*</span></label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" id="case_request_description" name="case_request_description" placeholder='{{ lang.evidence_description }}' maxlength="1024">
+      </div>
+    </div>
+
+
+    <div class="form-group">
+      <label for="case_requested_action" class="col-sm-2 control-label">{{ lang.request_details }} <span style="color:red;">*</span></label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" id="case_requested_action" name="case_requested_action" placeholder="{{ lang.specify_request_details }}"  maxlength="1024">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="case_requested_action" class="col-sm-2 control-label">{{ lang.passwords }}</label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" id="examiners_notes" name="examiners_notes" placeholder="{{ lang.enter_passwords }}"  maxlength="2048">
+      </div>
+    </div>
+
+
+    <div class="form-group">
+      <label for="case_contains_mob_dev" class="col-sm-2 control-label"></label>
+      <div class="col-sm-6">
+        <input type="hidden" name="case_contains_mob_dev" value="0">
+        <input type="checkbox" name="case_contains_mob_dev" value="1"> {{ lang.request_contains_mobile_devices_descr }}
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="case_urgency" class="col-sm-2 control-label">{{ lang.urgency }}</label>
+      <div class="col-sm-2">
+        <select  style="text-align:left;" class="btn btn-default" name="case_urgency" id="case_urgency">
+          <option selected="selected" disabled>{{ lang.urgency }}</option>
+          <option value="1">{{ lang.urgency_urgent }}</option>
+          <option value="2" selected>{{ lang.urgency_normal }}</option>
+          <option value="3">{{ lang.urgency_can_wait }}</option>
+        </select>
+      </div>
+      <div class="col-sm-4">
+        <input type="text" class="form-control" id="perustelu" placeholder="{{ lang.urgency_must_be_justified }}" name="case_urg_justification" maxlength="128">
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-10">
+        <button type="submit" class="btn btn-success" id="request_save_button" disabled><i class="fa fa-save"></i> {{ lang.save_examination_request }}</button>
+        &nbsp;&nbsp;<input type="reset" class="btn btn-danger" value="{{ lang.clear_form }}">
+      </div>
+    </div>
+  </form>
+  <div class="col-md-offset-2" id="ohje"><span style="color:red;">*</span> {{ lang.fill_all_fields_warning }} </div>
+</div>
+{% endblock %}

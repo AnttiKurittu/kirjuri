@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Kirjuri - About</title>
+    <title>Kirjuri - Digital Forensic Evidence Item Management</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,7 +15,8 @@
   <h1>About Kirjuri</h1>
   <p>Kirjuri is a digital forensic evidence item management system. It is a web application designed to help forensic teams manage, track and report devices delivered for forensic examination. It was born in the <a href="https://www.poliisi.fi/en/helsinki">Helsinki Police Department</a>, which handles over a thousand devices annually. Managing these devices and keeping track of the changes and locations to all this material proved to be a difficult task, since no ready software suites for multi-user evidence device management existed.</p>
 
-  <p>Kirjuri was written from the ground-up with one task in mind - easing the clerical tasks of the forensic investigator by organizing devices under examination requests. It is easy to deploy on an internal network using a Linux-based virtual machine as a server. The current public release for Kirjuri is <?php echo file_get_contents('https://raw.githubusercontent.com/AnttiKurittu/kirjuri/master/conf/RELEASE') ?>.</p>
+  <p>Kirjuri was written from the ground-up with one task in mind - easing the clerical tasks of the forensic investigator by organizing devices under examination requests. It is easy to deploy on an internal network using a Linux-based virtual machine as a server. Kirjuri is being used by a number of private organizations and law enforcement agencies in a number of countries. The current public release for Kirjuri is <?php echo file_get_contents('https://raw.githubusercontent.com/AnttiKurittu/kirjuri/master/conf/RELEASE') ?>.</p>
+  <p>Kirjuri requires a web server with MySQL and PHP7 installed. Some performance issues have been noticed when running Kirjuri on a WAMP server, so installing on a Linux server is recommended.</p>
 
   <a href="demo/index.php" class="btn btn-info btn-lg">Click here to try the Demo version</a>
   </div>
@@ -28,13 +29,13 @@
     <li>Simple user interface designed for the needs of actual forensic examiners.</li>
     <li>Extensive internal logging for compliance and audit tasks.</li>
     <li>Highly customizable via configuration files for different organizational needs.</li>
+    <li>Supports attachments up to 16MB.</li>
+    <li>Export and import examination requests (with attachments) via .krf files.</li>
     <li>See the <a href="https://github.com/AnttiKurittu/kirjuri/blob/master/CHANGELOG.md" target="_BLANK">changelog</a> for more details on what's new in the current release.</li>
     <li>Kirjuri supports English, Finnish and German and is easily localizable via a configuration file.</li>
   </ul>
 
   <h1 class="page-heading">Screenshots</h1>
-
-
     <div class="row">
       <div class="col-xs-4 col-md-2">
         <a href="https://raw.githubusercontent.com/AnttiKurittu/kirjuri/master/extra/screenshots/1.png" class="thumbnail">
@@ -88,16 +89,16 @@
     </div>
 
   <h1 class="page-heading">Installation and requirements</h1>
-  <p>Kirjuri requires a web server with php and mysql installed. You can install Kirjuri by following these steps:</p>
+  <p>Kirjuri requires a web server with PHP7 and MySQL installed. You can install Kirjuri on your server by following these steps:</p>
   <ul>
     <li> Download or clone the Kirjuri code repository from <a href="https://github.com/AnttiKurittu/Kirjuri" target="_BLANK">GitHub</a>.</li>
-    <li> Place the downloaded copy into your webroot.</li>
-    <li> Modify folder permissions so that the web server owns the following folders: <code>cache</code>, <code>conf</code>, <code>logs</code> and <code>attachments</code>.</li>
+    <li> Place the downloaded copy into your webroot or a subfolder.</li>
+    <li> If you wish to configure a testing environment, simply copy the Kirjuri folder to an adjacent subfolder and run the installer again with a different database name.</li>
+    <li> Modify folder permissions so that the web server owns the following folders: <code>cache</code>, <code>conf</code> and <code>logs</code>.</li>
     <li> Browse to your web server and open the /install.php page.</li>
     <li> Fill in the fields and run the installer from your web browser.</li>
     <li> Go to "settings" on your admin account and set your preferences.</li>
-    <li> Create user accounts for your team.</li>
-    <li> If you wish to enable larger attachments, set the settings, server and PHP directives to match the maximum allowed file size.</li>
+    <li> Create user accounts for your team or configure LDAP access.</li>
     <li> If you want Kirjuri to speak your language, copy the lang_EN.conf file to a new file and translate the strings. If you do this, please send me the file so I can add it to the repository.</li>
   </ul>
   <p>Additionally, it is advisable to configure your web browser to not allow direct access to <code>cache</code>, <code>conf</code> or <code>logs</code> folders. This can be achieved by adding the following directives to your web server:</p>
@@ -139,12 +140,12 @@
   <h1 class="page-heading">Important security information</h4>
   <p>Kirjuri is <b>not designed</b> to be installed on an internet-facing server. Forensic evidence and the metadata about the devices and findings is usually extremely sensitive information. It is strongly recommended that you install Kirjuri on an <b>air-gapped network</b> to serve your forensic examiners locally. Familiarize yourself with the software prior to installing it into a production environment. The developers accept no liability on possible security breaches caused by programming errors.</p>
 
-  <p>If absolutely you need to deploy Kirjuri over the internet, it is advisable to <b>limit access by requiring VPN</b> to access the site. Per-user and global IP whitelists should be deployed both on Kirjuri itself and the server serving the application.</p>
-  <p>Even though care has been taken to protect Kirjuri from XSS, CSRF, SQLi and other common vulnerabilites, the author <b>will not accept any responsibility or liability</b> on the security of this software. Kirjuri <i>can be secure</i>, <b>if it is installed and used securely</b>. A PHP application cannot be trusted to handle that for the administrator.</p>
+  <p>If absolutely you need to deploy Kirjuri over the internet, it is advisable to <b>limit access by requiring VPN</b> to access the site. Additionally you can configure your web server to require client certificates and whitelist IP-addresses on server level. Per-user and global application IP whitelists should be deployed both on Kirjuri itself and the server serving the application.</p>
+  <p>Even though care has been taken to protect Kirjuri from unauthorized use, XSS, CSRF, SQLi and other common vulnerabilites, the author <b>will not accept any responsibility or liability</b> on the security of this software. Kirjuri <i>can be secure</i>, <b>if it is installed and used securely</b>. A PHP application cannot be trusted to handle that for the administrator and configuring your production server is <b>your responsibility</b>.</p>
 
   <h1 class="page-heading">License</h1>
   <p>Kirjuri has been released under the MIT License. See the <a href="https://github.com/AnttiKurittu/Kirjuri" target="_BLANK">GitHub repository</a> for licensing details. Kirjuri uses <a href="http://twig.sensiolabs.org" target="_BLANK">Twig</a>, <a href="http://htmlpurifier.org/" target="_BLANK">HTMLPurify</a>, <a href="http://getbootstrap.com" target="_BLANK">Bootstrap CSS</a>,
-  <a href="http://fontawesome.io" target="_BLANK">Font Awesome</a>, <a href="http://www.freepik.com" target="_BLANK">Freepik image resources</a>, <a href="http://www.chartjs.org" target="_BLANK">Chart.js</a>, <a href="https://www.tinymce.com" target="_BLANK">TinyMCE editor</a> and <a href="https://jquery.com" target="_BLANK">jQuery</a>.
+  <a href="http://fontawesome.io" target="_BLANK">Font Awesome</a>, <a href="http://www.freepik.com" target="_BLANK">Freepik image resources</a>, <a href="http://www.chartjs.org" target="_BLANK">Chart.js</a>, <a href="http://visjs.org/" target="_blank">vis.js</a>, <a href="https://www.tinymce.com" target="_BLANK">TinyMCE editor</a> and <a href="https://jquery.com" target="_BLANK">jQuery</a>.
 
   <hr>
   <h1 class="page-heading">Contributors</h1>

@@ -6,7 +6,7 @@ ksess_verify(2); // View only or higher.
 if (empty($_GET['year'])) {
     $year = date('Y'); // Use current year if none specified
 } else {
-    $year = preg_replace('/[^0-9]/', '', (substr($_GET['year'], 0, 4))); // Get year from GET
+    $year = filter_numbers((substr($_GET['year'], 0, 4))); // Get year from GET
 }
 
 $dateRange = array('start' => $year.'-01-01 00:00:00', 'stop' => ($year + 1).'-01-01 00:00:00');
@@ -85,7 +85,7 @@ $summed_size = $summa['SUM(device_size_in_gb)'];
 // Get sum of data of devices by unit to $device_data_by_unit
 
 $cases_by_unit = array();
-foreach($settings_contents['inv_units'] as $unit)
+foreach($prefs['inv_units'] as $unit)
 {
   $query = $kirjuri_database->prepare('select id FROM exam_requests WHERE is_removed != "1" AND id = parent_id AND case_investigator_unit = :unit AND case_added_date BETWEEN :datestart AND :datestop');
   $query->execute(array(
@@ -130,12 +130,12 @@ foreach($cases_by_unit as $key => $unit)
 
 
 $_SESSION['message_set'] = false;
-echo $twig->render('statistics.html', array(
+echo $twig->render('statistics.twig', array(
     'session' => $_SESSION,
-    'statistics_chart_colors' => $settings_contents['statistics_chart_colors'],
+    'statistics_chart_colors' => $prefs['statistics_chart_colors'],
     'devices' => $_SESSION['lang']['devices'],
     'media_objs' => $_SESSION['lang']['media_objs'],
-    'inv_units' => $settings_contents['inv_units'],
+    'inv_units' => $prefs['inv_units'],
     'classifications' => $_SESSION['lang']['classifications'],
     'all_cases' => $all_cases,
     'all_devices' => $all_devices,
@@ -150,6 +150,6 @@ echo $twig->render('statistics.html', array(
     'summed_size' => $summed_size,
     'device_data_by_unit' => $device_data_by_unit,
     'device_count_by_unit' => $device_count_by_unit,
-    'settings' => $settings,
+    'settings' => $prefs['settings'],
     'lang' => $_SESSION['lang'],
 ));

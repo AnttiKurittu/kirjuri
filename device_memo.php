@@ -57,7 +57,7 @@ $allcases = $query->fetchAll(PDO::FETCH_ASSOC);
 $imei_data = "";
 if ( strpos( strtoupper($mediarow[0]['device_identifier']), "IMEI") !== false)
 {
-  $imei_TAC =  substr(num($mediarow[0]['device_identifier']),0,8);
+  $imei_TAC =  substr(filter_numbers($mediarow[0]['device_identifier']),0,8);
   if (strlen($imei_TAC) === 8) {
     if (file_exists('conf/imei.txt'))
     {
@@ -88,7 +88,7 @@ else {
 }
 
 $_SESSION['message_set'] = false;
-echo $twig->render('device_memo.html', array(
+echo $twig->render('device_memo.twig', array(
   'ct' => $_SESSION['case_token'][$casefetch['parent_id']],
   'templates' => $templates,
   'imei_data' => $imei_data,
@@ -103,6 +103,6 @@ echo $twig->render('device_memo.html', array(
   'caserow' => $caserow,
   'devices' => $_SESSION['lang']['devices'],
   'media_objs' => $_SESSION['lang']['media_objs'],
-  'settings' => $settings,
+  'settings' => $prefs['settings'],
   'lang' => $_SESSION['lang'],
 ));

@@ -1,8 +1,25 @@
 CHANGELOG
 ------------
+
+2017-01-XX Version 0.9.0:
+
+* Dropped support for PHP5 - dependencies require this. Upgrade to PHP7.
+* Updated dependencies: Twig v2.1.0, HTMLPurifier v4.8.0, php-barcode-generator v0.2.1., TinyMCE v4.5.2
+* Greatly improved logging - Kirjuri logs events to logs/kirjuri.log and case events to case folders in the logs/-folder. Logging to database is deprecated, all logs now go to log files.
+* Case timeline - A neat visualization of case events.
+* Audit trail. All POST and GET requests that contain changes to requests or devices are saved locally. This enables auditing changes to requests and in some cases, restoring data to the database from previous POST requests. Audit logs are encrypted with a auto-generated key. You can change this key manually. You can access the audit logs and case timeline by clicking the green calendar icon in the case log.
+* You can now export and import individual cases in the form of .krf files. These files include the examination request, all devices and all attachments. The file is a JSON object compressed with gzencode(), so importing and exporting large cases might take a while.
+* LDAP authentication support, currently supports authenticating against Active Directory with the ldap_bind()-function. AD authentication creates a local account on first login. Authentication to this account is only allowed over LDAP. You can still use local accounts as usual, and disable this feature from the settings. If the feature is enabled, domain authentication is the default setting.
+* A cool new background image from Subtle Patterns! https://subtlepatterns.com/
+* Files are now uploaded to the database to simplify backup, to enable auditing file uploads & downloads and mitigate file inclusion vulnerabilities. If you have local files stored at the attachments/ subfolders, you can still access these, but uploading or removing local files is now deprecated. File size is limited to 16MB by database design to keep the database size reasonable, and files are compressed prior to writing to the database. Kirjuri is not designed to be used as a file storage, so this functionality is offered mainly for storing forensic reports, documents, images or other small files related to the case. Large files like drive images should be stored elsewhere.
+* Started working on a RESTful API. The rest_api.php script is disabled by default, as it can only read information for now.
+* Moved from incrementing release numbers to versioning.
+* Renamed views/\*.html files to .twig
+* A lot of small bugfixes.
+
 2017-01-01 Release 133:
 
-* Made the user session management a bit more sanitize.
+* Made the user session management a bit more sane.
 * Handed the task of checking for a valid session to unreadcounter.php
 * Added checking for session timestamp to determine whether session is online or not.
 * Other tweaks and fixes.

@@ -17,7 +17,7 @@ $search_term = '';
 if (empty($_GET['year'])) {
     $year = date('Y'); // Use current year if none specified
 } else {
-    $year = preg_replace('/[^0-9]/', '', (substr($_GET['year'], 0, 4))); // Get year from GET
+    $year = filter_numbers((substr($_GET['year'], 0, 4))); // Get year from GET
 }
 
 $dateRange = array('start' => $year.'-01-01 00:00:00', 'stop' => ($year + 1).'-01-01 00:00:00');
@@ -80,7 +80,7 @@ if (isset($_GET['search']) && (!empty($_GET['search']))) {
     // if the search is for UID, jump to that case.
   $search_term = substr($_GET['search'], 0, 128);
   if (substr($search_term, 0, 3) === "UID") {
-    $get_uid = preg_replace('/[^0-9]/', '', substr($search_term, 3, 11));
+    $get_uid = filter_numbers(substr($search_term, 3, 11));
     if (empty($get_uid)) { // If no UID present, return to index.
       header('Location: '.$_SERVER['HTTP_REFERER']);
       die;
@@ -151,22 +151,20 @@ $query->execute(array(
 ));
 $row_devices = $query->fetchAll(PDO::FETCH_ASSOC);
 
-// Scan attachment directories and return directories that have any files as an array.
-$subdirectories = scandir('attachments/');
-foreach (glob('attachments/*', GLOB_ONLYDIR) as $dir) {
-    $allFiles = scandir($dir); // Or any other directory
-  $files = array_diff($allFiles, array( // Exclude . and ..
-    '.',
-    '..',
-  ));
-    if (!empty($files)) {
-        $dir_has_files = explode('/', $dir);
-        $has_attachments[] = $dir_has_files[1];
-    } else {
-        logline($dir, 'Action', 'Empty directory autoremoved: '.$dir);
-        rmdir($dir); // Remove empty directories
-    }
+$query = $kirjuri_database->prepare('SELECT DISTINCT(request_id) AS request_id FROM attachments');
+$query->execute(array(
+  ':dateStart' => $dateRange['start'],
+  ':dateStop' => $dateRange['stop'],
+));
+$files = $query->fetchAll(PDO::FETCH_ASSOC);
+$attachments = array();
+foreach($files as $file) {
+  array_push($attachments, $file['request_id']);
 }
+unset($files);
+
+// Scan attachment directories and return directories that have any files as an array.
+
 $_SESSION['message_set'] = false;
 
 if (file_exists('conf/index_columns.local'))
@@ -181,10 +179,10 @@ else {
   $show_columns = "";
 }
 
-echo $twig->render('index.html', array(
+echo $twig->render('index.twig', array(
   'show_columns' => $show_columns,
   'session' => $_SESSION,
-  'has_attachments' => $has_attachments,
+  'attachments' => $attachments,
   'search_term' => $search_term,
   'sort_s' => $sort_s,
   'query_d' => $sort_d,
@@ -194,6 +192,6 @@ echo $twig->render('index.html', array(
   'dateStart' => $dateRange['start'],
   'row_cases' => $row_cases,
   'row_devices' => $row_devices,
-  'settings' => $settings,
+  'settings' => $prefs['settings'],
   'lang' => $_SESSION['lang'],
 ));

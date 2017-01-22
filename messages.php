@@ -14,7 +14,7 @@ foreach($_POST as $key => $value) // Sanitize all POST data
   $_POST[$key] = isset($value) ? $value : '';
 }
 
-$open = num($open);
+$open = filter_numbers($open);
 
 if ($open > 0)
 {
@@ -42,10 +42,10 @@ foreach($messages as $message) {
 }
 
 $_SESSION['message_set'] = false;
-echo $twig->render('messages.html', array(
+echo $twig->render('messages.twig', array(
     'post' => $_POST,
     'session' => $_SESSION,
-    'settings' => $settings,
+    'settings' => $prefs['settings'],
     'lang' => $_SESSION['lang'],
     'messages' => $messages,
     'open' => $open,

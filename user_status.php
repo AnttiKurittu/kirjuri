@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once './include_functions.php';
 
 $_SESSION['user']['access'] = isset($_SESSION['user']['access']) ? $_SESSION['user']['access'] : '';
 
@@ -10,21 +10,22 @@ if ($_SESSION['user']['access'] !== "0")
 }
 $active_session_found = false;
 $username = urldecode($_GET['user']);
-$user_dir = 'cache/user_'.md5($username);
-if (file_exists('cache/user_'.md5($username)))
+$user_dir = 'cache/user_'.$username;
+if (file_exists('cache/user_'.$username))
 {
-  $session_dir = scandir('cache/user_'.md5($username));
+  $session_dir = scandir('cache/user_'.$username);
   foreach($session_dir as $sessionfile)
   {
     if ($sessionfile[0] !== ".")
     {
-      if ( (time() - filemtime( "cache/user_" . md5($username) . "/" . $sessionfile)) <= 30)
+      if ( (time() - filemtime( "cache/user_" . $username . "/" . $sessionfile)) <= 30)
       {
         $active_session_found = true; // Found a fresh session file
       }
-      elseif ( (time() - filemtime( "cache/user_" . md5($username) . "/" . $sessionfile)) >= 259200)
+      elseif ( (time() - filemtime( "cache/user_" . $username . "/" . $sessionfile)) >= 259200)
       {
-        unlink("cache/user_" . md5($username) . "/" . $sessionfile); // Purge offline session files older than three days.
+        unlink("cache/user_" . $username . "/" . $sessionfile); // Purge offline session files older than three days.
+        log_write('0', 'Admin', 'Purged stale session ' . $sessionfile . ' for user ' . $username);
       }
     }
   }

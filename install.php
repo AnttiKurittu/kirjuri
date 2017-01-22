@@ -1,12 +1,17 @@
 <?php
+// Clear any lingering sessions.
+session_name('KirjuriSessionID');
 session_start();
 session_destroy();
+if (version_compare(PHP_VERSION, '7.0.0') <= 0) {
+    echo "Kirjuri requires PHP7 to run. You are using " . phpversion() . ". Please upgrade your PHP environment.";
+    die;
+}
 ?>
 <html>
-<body>
-<pre><h3>Kirjuri installer</h3>
+  <body>
+    <pre><h3>Kirjuri installer</h3>
 <?php
-
 if (file_exists("conf/mysql_credentials.php"))
 { echo "Installer has already been run on this instance. Please remove the file conf/mysql_credentials.php to run the installer again.";
   die;
@@ -18,18 +23,15 @@ function error_handler($n, $s, $f) // Custom error handler for the installation 
     echo '<p style="color:red;">Installation error: ('.$n.') '.$s.'</p>';
     $i = 0;
 }
-
 set_error_handler('error_handler');
 
 echo '<p>Web server running as "'.exec('whoami').'"</p>';
 echo '<p>Testing write permissions...</p>';
 
-
 $i = 0; // Count folders
 $test_folders = array(
   'conf',
   'cache',
-  'attachments',
   'logs',
 );
 foreach ($test_folders as $folder) {
@@ -45,7 +47,6 @@ foreach ($test_folders as $folder) {
 
 if ($i === count($test_folders)) {
     // See if all folders passed the write test
-
   echo '<b style="color:green;">   Write test passed!</b><hr>';
 } else {
     echo '<b style="color:red;">   Write test failed, please check that the www server process owns the following folders: </b><br>';
@@ -55,13 +56,7 @@ if ($i === count($test_folders)) {
     die;
 }
 
-if ((file_exists('conf/mysql_credentials.php')) || (file_exists('conf/settings.local'))) {
-    echo '<p style="color:blue;"><b>WARNING! Existing configuration files found. This install script will rewrite
-<i>mysq_credentials.php</i> and <i>settings.local</i>. If you wish to keep them intact, make backup copies.</b></p>';
-}
-
 // Continue the installer if data is present.
-
 if ( (empty($_POST['u'])) ||  (empty($_POST['p'])) || (empty($_POST['d'])) || (empty($_POST['ap'])) ) {
     echo '<hr><form role="form" method="post">
 This script will install the necessary databases for Kirjuri to operate,
@@ -85,16 +80,14 @@ Please choose a name for your database. The default is "kirjuri".
 
 <button type="submit">Install / rebuild databases</button></form>';
     die;
-} else {
+  } else {
     // If form is submitted
-
   $admin_password = password_hash($_POST['ap'], PASSWORD_DEFAULT);
-
   $_POST['drop_database'] = isset($_POST['drop_database']) ? $_POST['drop_database'] : '';
-    $_POST['migrate_old_database'] = isset($_POST['migrate_old_database']) ? $_POST['migrate_old_database'] : '';
-    $mysql_config['mysql_username'] = trim(preg_replace('/[^A-Za-z0-9\-]/', '', $_POST['u']));
-    $mysql_config['mysql_password'] = trim(preg_replace('/[^A-Za-z0-9\-]/', '', $_POST['p']));
-    $mysql_config['mysql_database'] = strtolower(trim(preg_replace('/[^A-Za-z0-9\-]/', '', $_POST['d'])));
+  $_POST['migrate_old_database'] = isset($_POST['migrate_old_database']) ? $_POST['migrate_old_database'] : '';
+  $mysql_config['mysql_username'] = trim(preg_replace('/[^A-Za-z0-9\-]/', '', $_POST['u']));
+  $mysql_config['mysql_password'] = $_POST['p'];
+  $mysql_config['mysql_database'] = strtolower(trim(preg_replace('/[^A-Za-z0-9\-]/', '', $_POST['d'])));
 
   // Check for invalid database names
   if (in_array($mysql_config['mysql_database'], array(
@@ -107,12 +100,6 @@ Please choose a name for your database. The default is "kirjuri".
       echo '<p style="color:red;">Reserved database name, please choose something else.</p>';
       die;
   }
-  // Save credentials to file
-  $mysql_config_file = '<?php return '.var_export($mysql_config, true).'; ?>'."\n";
-  // Write the local config file
-  $default_config = file_get_contents('conf/settings.conf');
-    file_put_contents('conf/settings.local', $default_config);
-    file_put_contents('conf/mysql_credentials.php', $mysql_config_file);
 
   // Open a MySQL connection for database creation
   $conn = new mysqli('localhost', $mysql_config['mysql_username'], $mysql_config['mysql_password']);
@@ -120,11 +107,16 @@ Please choose a name for your database. The default is "kirjuri".
   if ($conn->connect_error) {
       die('<p style="color:red;">Connection failed: '.$conn->connect_error.'</p>');
   }
+
+  // Save credentials to file
+  $mysql_config_file = '<?php return '.var_export($mysql_config, true).'; ?>'."\n";
+  file_put_contents('conf/mysql_credentials.php', $mysql_config_file);
+
   // Drop database if wanted
   if ($_POST['drop_database'] === 'drop') {
       // Drop database
-    $sql = 'DROP DATABASE '.$mysql_config['mysql_database'];
-      if ($conn->query($sql) === true) {
+    $query = 'DROP DATABASE '.$mysql_config['mysql_database'];
+      if ($conn->query($query) === true) {
           echo '<p style="color:green;">Database dropped successfully.</p>';
       } else {
           echo '<p style="color:red;">Error dropping database: '.$conn->error.'</p>';
@@ -132,8 +124,8 @@ Please choose a name for your database. The default is "kirjuri".
   }
 
   // Create new database
-  $sql = 'CREATE DATABASE '.$mysql_config['mysql_database'];
-    if ($conn->query($sql) === true) {
+  $query = 'CREATE DATABASE '.$mysql_config['mysql_database'];
+    if ($conn->query($query) === true) {
         echo '<p style="color:green;">Database created successfully.</p>';
     } else {
         echo '<p style="color:red;">Error creating database: '.$conn->error.'</p>'; // Fail if exists and continue.
@@ -361,13 +353,11 @@ Please choose a name for your database. The default is "kirjuri".
     ALTER TABLE exam_requests ADD is_protected INT(1);
     ');
       $query->execute(array());
-      echo '<p style="color:green;">Examination requests table upgraded (1/2).</p>';
+      echo '<p style="color:green;">Examination requests table upgraded.</p>';
   } catch (Exception $e) {
       echo '<p style="color:red;">Caught MySQL exception: ', $e->getMessage(), '. This is expected with existing tables.</p>';
   }
-
-    echo '<p>Install script done, reload <a href="index.php">index.php</a>. The adming account is "admin", log in with the password you designated.</p>
-   ';
+    echo '<p>Install script done, reload <a href="index.php">index.php</a>. The adming account is "admin", log in with the password you designated.</p>';
     die;
 }
 ?>

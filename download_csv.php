@@ -1,7 +1,7 @@
 <?php
 
-$case_number = preg_replace('/[^0-9]/', '', (substr($_GET['case'], 0, 5)));
 require_once './include_functions.php';
+$case_number = filter_numbers((substr($_GET['case'], 0, 5)));
 ksess_verify(2); // View only or higher
 
 verify_owner($case_number);

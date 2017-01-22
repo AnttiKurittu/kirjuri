@@ -1,0 +1,30 @@
+{% extends 'base.twig' %}
+{% block title %}
+<title>{{ lang.error }} - {{ settings.title_text }}</title>
+{% endblock title %}
+{% block content %}
+<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+<div class="alert alert-warning alert-dismissible" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  <strong>Error</strong>
+{% if errno == 2 %}
+{% set error_level = "Warning" %}
+{% elseif errno == 8 %}
+{% set error_level = "Notice" %}
+{% elseif errno == 256 %}
+{% set error_level = "User error" %}
+{% elseif errno == 512 %}
+{% set error_level = "User warning" %}
+{% elseif errno == 1024 %}
+{% set error_level = "User notice" %}
+{% elseif errno == 4096 %}
+{% set error_level = "Recoverable error" %}
+{% elseif errno == 8191 %}
+{% set error_level = "All warnings" %}
+{% else %}
+{% set error_level = "Unknown error " ~ errno %}
+{% endif %}
+  {{ error_level }}:<br>File {{ errfile }}, line <b>{{errline}}</b><br> {{ errstr }}
+</div>
+</div>
+{% endblock %}

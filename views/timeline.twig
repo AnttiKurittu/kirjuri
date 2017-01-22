@@ -1,0 +1,124 @@
+<html>
+  <head>
+    {% block title %}
+    <title>{{ settings.title_text }} - {{ lang.case_log }} {{ caserow.0.case_id }}/{{ caserow.0.case_added_date|date('Y') }}</title>
+    {% endblock title %}
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <script src="views/js/vis-4.18.0/dist/vis.js"></script>
+    <script src="views/js/jquery.min.js"></script>
+    <link href="views/js/vis-4.18.0/dist/vis-timeline-graph2d.min.css" rel="stylesheet" type="text/css" />
+    <link href="vendor/twbs/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="views/font-awesome-4.6.3/css/font-awesome.min.css">
+
+    <style>
+    .vis-item.vis-background.timeline-waiting {
+      background-color: rgba(255, 0, 255, 0.2);
+    }
+    .vis-item.vis-background.timeline-pending {
+      background-color: rgba(255, 0, 0, 0.2);
+    }
+    .vis-item.vis-background.timeline-active {
+      background-color: rgba(0, 255, 0, 0.2);
+    }
+    </style>
+    <script src="vendor/twbs/bootstrap/dist/js/bootstrap.min.js"></script>
+  </head>
+  <body>
+
+  <div class="container container-fluid col-md-12 col-sm-12">
+    <h3 class="page-heading">{{ lang.case_log }} {{ caserow.0.case_id }}/{{ caserow.0.case_added_date|date('Y') }}</h3>
+    <div id="visualization" style="background-color:#FFF;"></div>
+    <h3 class="page-heading text-center">&nbsp;
+      <button  class="btn btn-info" id="moveLeft"><i class="fa fa-arrow-left"></i>&nbsp;</button>
+      <button  class="btn btn-info" id="fit"><i class="fa fa-chevron-right"></i>...<i class="fa fa-chevron-left"></i></button>
+      <button  class="btn btn-info" id="zoomIn"><i class="fa fa-search"></i> <i class="fa fa-plus"></i></button>
+      <button  class="btn btn-info" id="zoomOut"><i class="fa fa-search"></i> <i class="fa fa-minus"></i></button>
+      <button  class="btn btn-info" id="moveRight"><i class="fa fa-arrow-right"></i>&nbsp;</button>
+      &nbsp;
+    </h3>
+    <div class="col-md-12"><br></div>
+  {% if caselog %}
+    <table class="table table-condensed" style=";background-color:#FFF;">
+      <thead>
+        <th style="width:100px;white-space:nowrap;">{{ lang.timestamp }}</th>
+        <th style="width:60px;white-space:nowrap;">{{ lang.user }}</th>
+        <th>{{ lang.event_details }}</th>
+        {% if session.user.access == "0" %}<th>Admin</i></th>{% endif %}
+      </thead>
+  {% set line_id = 0 %} {% for line in caselog %} {% set line_id = line_id + 1%}
+      <tr name="table-line-{{line_id}}" id="focus{{line_id}}">
+        {% set line = line|split(';') %}
+        <td style="width:100px;white-space:nowrap;">{{ line.0 }}</td>
+        <td style="width:60px;white-space:nowrap;">{% if session.user.username == line.1 %}<b>{{ line.1 }}</b>{% else %}{{ line.1 }}{% endif %}</td>
+        <td>{{ line.2 }}: {{ line.3|replace({"\"": ""}) }}</td>
+        {% if session.user.access == "0" %}<td><span class="label label-info">IP</span> {{ line.5 }} <span class="label label-info">AUDIT</span>
+          <a href="auditor.php?view={{ line.6 }}&returnid={{ caserow.0.id }}">{{line.6}}</a> <span class="label label-info">URI</span> {{ line.4 }}</td>{% endif %}
+      </tr>
+  {% endfor %}
+  </table>
+  {% else %}
+  <div class="alert alert-danger" role="alert">{{ lang.no_events }}</div>
+  {% endif %}
+
+  <script type="text/javascript">
+  // DOM element where the Timeline will be attached
+  var container = document.getElementById('visualization');
+  // Create a DataSet (allows two way data-binding)
+  var items = new vis.DataSet([
+    {id: 'A', content: '{{ lang.confiscation_date }}', start: '{{ caserow.0.case_confiscation_date|date("Y-m-d") }}', end: '{{ caserow.0.case_added_date|date("Y-m-d") }}', type: 'background', className: 'timeline-waiting'},
+    {id: 'B', content: '{{ lang.requested }}', start: '{{ caserow.0.case_added_date|date("Y-m-d") }}', end: '{{ caserow.0.case_start_date|date("Y-m-d") }}', type: 'background', className: 'timeline-pending'},
+    {id: 'C', content: '{{ lang.started }}', start: '{{ caserow.0.case_start_date|date("Y-m-d") }}', end: '{{ caserow.0.last_updated|date("Y-m-d") }}', type: 'background', className: 'timeline-active'},
+    {% set line_id = 0 %} {% for line in caselog %} {% set line_id = line_id + 1%} {% set line = line|split(';') %}
+    {id: {{ line_id }}, title: '{{ line.0 }} {{ line.1 }}', content: '{% if line.2 == "Add" %}<i class="fa fa-plus" style="color:green;"></i>{% elseif line.2 == "Access" %}<i class="fa fa-user" style="color:black;"></i>{% elseif line.2 == "Update" %}<i class="fa fa-refresh" style="color:blue;"></i>{% elseif line.2 == "Remove" %}<i class="fa fa-minus" style="color:red;"></i>{% elseif line.2 == "Error" %}<i class="fa fa-times" style="color:red;"></i>{% elseif line.2 == "Action" %}<i class="fa fa-arrow-right" style="color:blue;"></i>{% endif %} {{line.2}}', start: '{{ line.0|date("Y-m-d") }}'}{% if not loop.last %},{% endif %}
+
+    {% endfor %}
+  ]);
+  // Configuration for the Timeline
+  function move (percentage) {
+      var range = timeline.getWindow();
+      var interval = range.end - range.start;
+      timeline.setWindow({
+          start: range.start.valueOf() - interval * percentage,
+          end:   range.end.valueOf()   - interval * percentage
+      });
+  }
+  var options = {
+    clickToUse: true,
+    start: '{{ caserow.0.case_added_date|date('Y-m-d') }}',
+    end: '{{ caserow.0.last_updated|date('Y-m-d') }}',
+    min: new Date({{ (caserow.0.case_added_date|date('Y')) - 1 }}, {{ (caserow.0.case_added_date|date('m')) - 1 }}, {{ caserow.0.case_added_date|date('d') }}),                // lower limit of visible range
+    max: new Date({{ (caserow.0.last_updated|date('Y')) + 1}}, {{ (caserow.0.last_updated|date('m')) - 1 }}, {{ caserow.0.last_updated|date('d') }}),                // upper limit of visible range
+    showCurrentTime: true
+  };
+  // Create a Timeline
+  var timeline = new vis.Timeline(container, items, options);
+  document.getElementById('fit').onclick = function() { timeline.fit(); };
+  document.getElementById('zoomIn').onclick    = function () { timeline.zoomIn( 0.2); };
+  document.getElementById('zoomOut').onclick   = function () { timeline.zoomOut( 0.2); };
+  document.getElementById('moveLeft').onclick  = function () { move( 0.2); };
+  document.getElementById('moveRight').onclick = function () { move(-0.2); };
+  {% set line_id = 0 %}
+  {% for line in caselog %}
+    {% set line_id = line_id + 1%}
+  document.getElementById('focus{{ line_id }}').onclick = function() {
+    timeline.setSelection({{ line_id }}, {focus: focus.checked});
+    timeline.focus({{ line_id }});
+    $("tr").css("background-color", "#FFF");
+    $("tr[name=table-line-{{ line_id }}]").css("background-color", "#fcfbae");
+  };
+  {% endfor %}
+  timeline.on('select', function (properties) {
+    $("tr").css("background-color", "#FFF");
+    $("tr[name=table-line-" + properties.items + "]").css("background-color", "#fcfbae");
+  });
+  window.onload = function() {
+    timeline.fit();
+  };
+  </script>
+  </div>
+  </body>
+</html>

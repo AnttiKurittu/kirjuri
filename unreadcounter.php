@@ -1,6 +1,7 @@
 <?php
+session_name('KirjuriSessionID');
 session_start(); // Keep valid session alive.
-if (!file_exists('cache/user_' . md5($_SESSION['user']['username']) . "/session_" . $_SESSION['user']['token'] . ".txt" ))
+if (!file_exists('cache/user_' . $_SESSION['user']['username'] . "/session_" . $_SESSION['user']['token'] . ".txt" ))
 { // Drop session if sessionfile has been removed.
   $_SESSION = array();
   session_destroy();
@@ -8,7 +9,7 @@ if (!file_exists('cache/user_' . md5($_SESSION['user']['username']) . "/session_
   die;
 }
 // Update session file timestamp
-touch('cache/user_' . md5($_SESSION['user']['username']) . "/session_" . $_SESSION['user']['token'] . ".txt");
+touch('cache/user_' . $_SESSION['user']['username'] . "/session_" . $_SESSION['user']['token'] . ".txt");
 
 if (file_exists('conf/mysql_credentials.php')) {
     // Read credentials array from a file

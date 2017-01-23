@@ -364,6 +364,9 @@ function ksess_destroy() {
       unlink('cache/user_' . $_SESSION['user']['username'] . '/session_' . $_SESSION['user']['token'] . '.txt');
     }
   }
+  if (!isset($_SESSION['user']['token'])) {
+    $_SESSION['user']['token'] = "Not set.";
+  }
   log_write('0', "Auth", "Destroyed session " . $_SESSION['user']['token']);
   $_SESSION = null;
   session_destroy();

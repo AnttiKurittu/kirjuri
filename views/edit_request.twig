@@ -629,7 +629,7 @@ $(function() {
 <h1 class="page-header">{{ lang.no_devices_add_device }}</h1>
 {% endif %}
 {% if mediarow %}
-<div class="pull-right">{{ lang.sorted_by }}:
+<div class="pull-right" style="margin-bottom:10px;">{{ lang.sorted_by }}:
   {% if sort_order == "id" %}<b><i class="fa fa-sort"></i> {{ lang.sort_label_UID }}</b>{% else %}<a href="edit_request.php?case={{ caserow.0.id }}&tab=devices&j=id{% if dev_owner %}&dev_owner={{ dev_owner|url_encode }}{% endif %}">{{ lang.sort_label_UID }}</a>{% endif %} |
   {% if sort_order == "device_type" %}<b><i class="fa fa-sort"></i> {{ lang.sort_label_type }}</b>{% else %}<a href="edit_request.php?case={{ caserow.0.id }}&tab=devices&j=type{% if dev_owner %}&dev_owner={{ dev_owner|url_encode }}{% endif %}">{{ lang.sort_label_type }}</a>{% endif %} |
   {% if sort_order == "device_manuf" %}<b><i class="fa fa-sort"></i> {{ lang.sort_label_brand }}</b>{% else %}<a href="edit_request.php?case={{ caserow.0.id }}&tab=devices&j=dev_manuf{% if dev_owner %}&dev_owner={{ dev_owner|url_encode }}{% endif %}">{{ lang.sort_label_brand }}</a>{% endif %} |
@@ -644,7 +644,9 @@ $(function() {
 <a name="{{ entry.id }}"></a>
 {% if (entry.device_host_id == "0") and (entry.is_removed != "1") %}
 {% set isanta_id = entry.id %}
-<table class="table table-condensed" style="border: {% if dev_owner and (entry.device_owner == dev_owner) %}{% set korostus = True %}1px solid #F00{% else %}1px solid #AAA{% endif %};background-color:#FFF;">
+<table class="table table-condensed" style="-webkit-box-shadow: 2px 20px 47px -17px rgba(0,0,0,0.36);
+-moz-box-shadow: 2px 20px 47px -17px rgba(0,0,0,0.36);
+box-shadow: 2px 20px 47px -17px rgba(0,0,0,0.36);border: {% if dev_owner and (entry.device_owner == dev_owner) %}{% set korostus = True %}1px solid #F00{% else %}1px solid #DDD{% endif %};background-color:#FFF;">
 
   <thead style="background-color:{% if dev_owner and (entry.device_owner == dev_owner) %}#FCC{% else %}#CDE{% endif %};">
     <th style="width:1px;" class="text-center"><i class="fa fa-cube"></i></th>

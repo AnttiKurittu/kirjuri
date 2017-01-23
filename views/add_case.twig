@@ -67,7 +67,16 @@
   }
 </script>
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-  <h1 class="page-header">{{ lang.add_an_examination_request }}</h1>
+  <h1 class="page-header">{{ lang.add_an_examination_request }}
+<span class="pull-right">
+  <form class="form-inline" action="import_krf.php" method="post" enctype="multipart/form-data">
+  	<div class="form-group">
+  		<input class="btn btn-xs btn-default" type="file" name="fileToUpload[]" id="fileToUpload">
+  	</div>
+  	<button type="submit" class="btn btn-success btn-xs"><i class="fa fa-upload"></i>  {{ lang.upload|lower|trim(".")|capitalize }} .krf <span id="upload-file-info"></span></button>
+   </form>
+</span>
+</h1>
   <form class="form-horizontal" role="form" method="post" action="submit.php?type=examination_request">
     <input type="hidden" name="token" value="{{session.user.token}}">
     <div class="form-group">

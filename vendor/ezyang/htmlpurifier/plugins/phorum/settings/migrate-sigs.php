@@ -56,8 +56,8 @@ function phorum_htmlpurifier_migrate_sigs($offset)
 
     // query for highest ID in database
     $type = $PHORUM['DBCONFIG']['type'];
-    $query = "select MAX(user_id) from {$PHORUM['user_table']}";
-    $row = phorum_db_interact(DB_RETURN_ROW, $query);
+    $sql = "select MAX(user_id) from {$PHORUM['user_table']}";
+    $row = phorum_db_interact(DB_RETURN_ROW, $sql);
     $top_id = (int) $row[0];
 
     $offset += $increment;

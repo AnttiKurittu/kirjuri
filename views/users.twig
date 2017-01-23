@@ -133,30 +133,31 @@
       <div class="col-md-10">
         <div class="checkbox">
            <label class="col-md-12">
-             <input type="hidden" name="flag1" value="">
+             <input type="hidden" name="flag1" value="-">
              <input type="checkbox" name="flag1" value="F" {% if "F" in fields.flags %}checked{% endif %}> {{ lang.flag_forensic }}
            </label>
          </div>
 
          <div class="checkbox">
             <label class="col-md-12">
-              <input type="hidden" name="flag2" value="">
+              <input type="hidden" name="flag2" value="-">
               <input type="checkbox" name="flag2" value="M" {% if "M" in fields.flags %}checked{% endif %}> {{ lang.flag_mobile }}
             </label>
           </div>
 
           <div class="checkbox">
              <label class="col-md-12">
-               <input type="hidden" name="flag3" value="">
+               <input type="hidden" name="flag3" value="-">
                <input type="checkbox" name="flag3" value="A" {% if "A" in fields.flags %}checked{% endif %}> {{ lang.api_access }} {% if fields.apikey %} <i class="fa fa-key"></i> <span style="color:grey;">{{ fields.apikey }}{% endif %}
              </label>
            </div>
 
-           <input type="hidden" name="flag4" value="">
+           <input type="hidden" name="flag4" value="-">
            {% if fields.id != 2 %}
            <div class="checkbox">
               <label class="col-md-12">
-                <input type="checkbox" name="flag3" value="I" {% if "I" in fields.flags %}checked{% endif %}> {{ lang.flag_inactive }}
+                <input type="hidden" name="flag4" value="-">
+                <input type="checkbox" name="flag4" value="I" {% if "I" in fields.flags %}checked{% endif %}> {{ lang.flag_inactive }}
               </label>
             </div>
           {% endif %}
@@ -284,21 +285,21 @@
               <div class="col-md-9">
                 <div class="checkbox">
                    <label class="col-md-12">
-                     <input type="hidden" name="flag1" value="">
+                     <input type="hidden" name="flag1" value="-">
                      <input type="checkbox" name="flag1" value="F"> {{ lang.flag_forensic }}
                    </label>
                  </div>
 
                  <div class="checkbox">
                     <label class="col-md-12">
-                      <input type="hidden" name="flag2" value="">
+                      <input type="hidden" name="flag2" value="-">
                       <input type="checkbox" name="flag2" value="M"> {{ lang.flag_mobile }}
                     </label>
                   </div>
 
                   <div class="checkbox">
                      <label class="col-md-12">
-                       <input type="hidden" name="flag3" value="">
+                       <input type="hidden" name="flag3" value="-">
                        <input type="checkbox" name="flag3" value="A"> {{ lang.api_access }}
                      </label>
                    </div>
@@ -306,7 +307,8 @@
                    <input type="hidden" name="flag4" value="">
                    <div class="checkbox">
                       <label class="col-md-12">
-                        <input type="checkbox" name="flag3" value="I"> {{ lang.flag_inactive }}
+                        <input type="hidden" name="flag4" value="-">
+                        <input type="checkbox" name="flag4" value="I"> {{ lang.flag_inactive }}
                       </label>
                     </div>
 

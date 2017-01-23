@@ -588,6 +588,9 @@ case 'case_update':
   ksess_verify(1);
   ksess_validate($_POST['token']);
   verify_owner($_GET['uid']);
+  if (!isset($_POST['phone_investigator'])) {
+    $_POST['phone_investigator'] = "-";
+  }
   $audit_stamp = audit_write($_POST);
   if ($_POST['forensic_investigator'] !== '')
    {

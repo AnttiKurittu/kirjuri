@@ -56,7 +56,6 @@ function verify_keys($key) {
     49 => 'case_password',
     50 => 'case_owner',
     51 => 'is_protected',
-    52 => 'id',
     53 => 'request_id',
     54 => 'name',
     55 => 'description',

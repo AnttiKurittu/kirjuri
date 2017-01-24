@@ -366,7 +366,7 @@ Please choose a name for your database. The default is "kirjuri".
   } catch (Exception $e) {
       echo '<p style="color:red;">Caught MySQL exception: ', $e->getMessage(), '. This is expected with existing tables.</p>';
   }
-    echo '<p>Install script done, reload <a href="index.php">index.php</a>. The adming account is "admin", log in with the password you designated.</p></div>
+    echo '<p>Install script done, reload <a href="index.php">index.php</a>. The admininistrator account is "admin", log in with the password you designated.</p></div>
     </div>
     </body>
     </html>';

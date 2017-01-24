@@ -14,9 +14,20 @@ if ($_SESSION['user']['access'] === "0")
   }
 }
 
+$conffiles = scandir('conf/');
+foreach($conffiles as $file) {
+  if(substr($file,0,5) === "lang_") {
+    $langfile = substr(substr($file, 5),0, -5);
+    $langfiles[] = $langfile;
+  }
+}
+
+$langfiles = array_unique($langfiles);
+
 $_SESSION['message_set'] = false;
 echo $twig->render('settings.twig', array(
     'settings' => $prefs['settings'],
+    'langfiles' => $langfiles,
     'settings_contents' => $prefs,
     'diff' => $diff,
     'apikey' => hash('sha1', $_SESSION['user']['username'].$_SESSION['user']['password']),

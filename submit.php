@@ -1030,6 +1030,18 @@ case "reset_default_settings":
   header('Location: settings.php');
   die;
 
+case "save_langfile":
+  ksess_verify(0);
+  ksess_validate($_POST['token']);
+  $langfile_name = 'conf/lang_' . substr(filter_letters_and_numbers($_POST['countrycode']), 0, 3) . ".JSON";
+  unset($_POST['countrycode']);
+  unset($_POST['token']);
+  $langfile = json_encode($_POST, JSON_PRETTY_PRINT);
+  file_put_contents($langfile_name, $langfile);
+  show_saved();
+  header('Location: lang_editor.php');
+  die;
+
 case "save_settings":
   ksess_verify(0);
   ksess_validate($_POST['token']);

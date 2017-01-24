@@ -9,8 +9,13 @@ if (version_compare(PHP_VERSION, '7.0.0') <= 0) {
 }
 ?>
 <html>
+<head>
+  <link href="vendor/twbs/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
   <body>
-    <pre><h3>Kirjuri installer</h3>
+    <div class="container-fluid">
+      <div class="main">
+    <h3>Kirjuri installer</h3>
 <?php
 if (file_exists("conf/mysql_credentials.php"))
 { echo "Installer has already been run on this instance. Please remove the file conf/mysql_credentials.php to run the installer again.";
@@ -58,7 +63,7 @@ if ($i === count($test_folders)) {
 
 // Continue the installer if data is present.
 if ( (empty($_POST['u'])) ||  (empty($_POST['p'])) || (empty($_POST['d'])) || (empty($_POST['ap'])) ) {
-    echo '<hr><form role="form" method="post">
+    echo '<pre><form role="form" method="post">
 This script will install the necessary databases for Kirjuri to operate,
 save your credentials to <i>conf/mysql_credentials.php</i> and prepopulate
 the users with "admin" and "anonymous". If you wish to do this manually,
@@ -78,7 +83,11 @@ Please choose a name for your database. The default is "kirjuri".
 <input name="d" type="text" value="kirjuri"> MySQL database
 <input name="ap" type="password"> Create admin password
 
-<button type="submit">Install / rebuild databases</button></form>';
+<button type="submit">Install / rebuild databases</button></form></pre>
+</div>
+</div>
+</body>
+</html>';
     die;
   } else {
     // If form is submitted
@@ -357,7 +366,10 @@ Please choose a name for your database. The default is "kirjuri".
   } catch (Exception $e) {
       echo '<p style="color:red;">Caught MySQL exception: ', $e->getMessage(), '. This is expected with existing tables.</p>';
   }
-    echo '<p>Install script done, reload <a href="index.php">index.php</a>. The adming account is "admin", log in with the password you designated.</p>';
+    echo '<p>Install script done, reload <a href="index.php">index.php</a>. The adming account is "admin", log in with the password you designated.</p></div>
+    </div>
+    </body>
+    </html>';
     die;
 }
 ?>

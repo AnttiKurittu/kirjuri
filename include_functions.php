@@ -604,7 +604,13 @@ if (file_exists('conf/settings.local')) {
 $prefs = parse_ini_file($settings_file, true); // Parse settings file
 $prefs['settings']['self'] = $_SERVER['PHP_SELF'];
 $prefs['settings']['release'] = file_get_contents('conf/RELEASE');
-$_SESSION['lang'] = parse_ini_file('conf/'.$prefs['settings']['lang'], true); // Parse language file
+
+if (file_exists('conf/' . basename($prefs['settings']['lang'], '.conf') . '.JSON')) {
+  $_SESSION['lang'] = json_decode(file_get_contents('conf/' . basename($prefs['settings']['lang'], '.conf') . '.JSON'), true); // Parse language file
+} else {
+  $_SESSION['lang'] = parse_ini_file('conf/' . basename($prefs['settings']['lang'], '.conf') . '.conf', true); // Parse language file
+}
+
 
 try {
   // Create the attachments table.

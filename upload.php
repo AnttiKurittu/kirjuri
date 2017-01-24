@@ -12,7 +12,7 @@ $total = count($_FILES['fileToUpload']['name']);
   for ($i = 0; $i < $total; ++$i) {
     if ($_FILES['fileToUpload']['size'][$i] > $prefs['settings']['max_attachment_size']) {
         $_SESSION['failed_uploads'][] = $_FILES['fileToUpload']['name'][$i] . "(filesize too big)";
-        log_write($id, 'Error', 'Upload failed (filesize): '. basename($_FILES['fileToUpload']['name'][$i]));
+        event_log_write($id, 'Error', 'Upload failed (filesize): '. basename($_FILES['fileToUpload']['name'][$i]));
         continue;
     };
     $file['name'] = basename($_FILES['fileToUpload']['name'][$i]);
@@ -41,16 +41,16 @@ $total = count($_FILES['fileToUpload']['name']);
       ));
       $compression_ratio = (100 - (($size_in_database / $file['size']) * 100));
       $_POST['content'] = "File data, " . $file['size'] . " bytes, compressed to " . $size_in_database . " bytes. (Reduction of " . round($compression_ratio, 2) . "%). sha256: " . $file['hash'];
-      $audit_stamp = audit_write($_POST);
+      $audit_stamp = audit_log_write($_POST);
       $query = $kirjuri_database->prepare('UPDATE attachments SET attr_1 = :audit_stamp WHERE hash = :hash');
       $query->execute(array(
         ':audit_stamp' => $audit_stamp,
         ':hash' => $file['hash']
       ));
-      log_write($id, 'Add', 'Attachment uploaded: '. $file['name'] . ", file sha256: " . $file['hash'], $audit_stamp);
+      event_log_write($id, 'Add', 'Attachment uploaded: '. $file['name'] . ", file sha256: " . $file['hash'], $audit_stamp);
     } else {
       $_SESSION['failed_uploads'][] = $file['name'] . " (file already exists)";
-      log_write($id, 'Error', 'Upload failed (file exists): '. $file['name']);
+      event_log_write($id, 'Error', 'Upload failed (file exists): '. $file['name']);
     }
 }
 header('Location: '.preg_replace('/\?.*/', '', $_SERVER['HTTP_REFERER']).'?case='.$id);

@@ -1,7 +1,7 @@
 <?php
 
 require_once './include_functions.php';
-ksess_verify(1); // User only or higher, add or view only accounts cant change passwords.
+ksess_verify(9); // Admin only
 
 if (file_exists('conf/lang_EN.JSON')) {
   $langfile_default = json_decode(file_get_contents('conf/lang_EN.JSON'), true); // Parse language file

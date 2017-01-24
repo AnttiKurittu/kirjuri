@@ -3,7 +3,7 @@
 require_once './include_functions.php';
 ksess_verify(2); // View only or higher
 $id = filter_numbers($_GET['case']);
-verify_owner($id);
+verify_case_ownership($id);
 
 
 $query = $kirjuri_database->prepare('SELECT * FROM exam_requests WHERE id=:id AND parent_id=:id LIMIT 1');

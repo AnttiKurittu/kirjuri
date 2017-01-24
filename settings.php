@@ -26,7 +26,7 @@ $langfiles = array_unique($langfiles);
 
 $php_servertime = time();
 try {
-  $kirjuri_database = db('kirjuri-database');
+  $kirjuri_database = connect_database('kirjuri-database');
   $query = $kirjuri_database->prepare('SELECT @@global.time_zone AS tz');
   $query->execute();
   $mysql_timezone = $query->fetch(PDO::FETCH_ASSOC);

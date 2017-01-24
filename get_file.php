@@ -12,8 +12,8 @@ $query = $kirjuri_database->prepare('SELECT name, content, size, type, request_i
 $query->execute(array(':id' => $file_id));
 $file = $query->fetch(PDO::FETCH_ASSOC);
 csrf_case_validate($_GET['ct'], $file['request_id']);
-verify_owner($file['request_id']);
-log_write($file['request_id'], 'File', 'Attachment downloaded: '. $file['name'] . ", sha256: ". $file['hash']);
+verify_case_ownership($file['request_id']);
+event_log_write($file['request_id'], 'File', 'Attachment downloaded: '. $file['name'] . ", sha256: ". $file['hash']);
 
 if (!empty($file['content'])) {
     header('Content-Description: File Transfer');

@@ -10,7 +10,7 @@ $show = isset($_GET['show']) ? $_GET['show'] : '';
 
 foreach($_POST as $key => $value) // Sanitize all POST data
 {
-  $value = sanitize_raw($value);
+  $value = filter_html($value);
   $_POST[$key] = isset($value) ? $value : '';
 }
 

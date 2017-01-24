@@ -30,7 +30,7 @@ foreach ($mediarow as $entry) {
     $casefetch = $entry;
 }
 
-verify_owner($casefetch['parent_id']);
+verify_case_ownership($casefetch['parent_id']);
 
 if (empty($_SESSION['case_token'][ $casefetch['parent_id'] ]))
 {
@@ -76,12 +76,12 @@ if ( strpos( strtoupper($mediarow[0]['device_identifier']), "IMEI") !== false)
 if (file_exists('conf/report_notes.local'))
 {
   $templates['report_notes'] = file_get_contents('conf/report_notes.local');
-  $templates['report_notes'] = sanitize_raw($templates['report_notes']);
+  $templates['report_notes'] = filter_html($templates['report_notes']);
 }
 elseif (file_exists('conf/report_notes.template'))
 {
   $templates['report_notes'] = file_get_contents('conf/report_notes.template');
-  $templates['report_notes'] = sanitize_raw($templates['report_notes']);
+  $templates['report_notes'] = filter_html($templates['report_notes']);
 }
 else {
   $templates['report_notes'] = "";

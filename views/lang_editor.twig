@@ -56,9 +56,27 @@
       {% for subkey, value in value %}
       <div class="form-group">
         <label for="setting" class="col-md-2 control-label">{{ subkey|replace({"_": " "})|capitalize }}</label>
+        {% if primary == "devices" %}
+        <div class="col-md-8">
+          <input type="text" class="form-control warning" name="{{primary}}[{{ subkey }}]" value="{{ value }}" placeholder="{{ value }}">
+          &nbsp;&nbsp;Image file: <code>views/img/svg/{{ value|lower|replace({" ": "_", "ä": "a", "ö": "o"}) }}.svg</code>
+        </div>
+        <div class="col-md-2">
+            <img src="views/img/svg/{{ value|lower|replace({" ": "_", "ä": "a", "ö": "o"}) }}.svg" width="32px" style="padding-left:5px;padding-right:5px;">
+        </div>
+        {% elseif primary == "media_objs" %}
+        <div class="col-md-8">
+          <input type="text" class="form-control warning" name="{{primary}}[{{ subkey }}]" value="{{ value }}" placeholder="{{ value }}">
+          &nbsp;&nbsp;Image file: <code>views/img/svg/{{ value|lower|replace({" ": "_", "ä": "a", "ö": "o"}) }}.svg</code>
+        </div>
+          <div class="col-md-2">
+            <img src="views/img/svg/{{ value|lower|replace({" ": "_", "ä": "a", "ö": "o"}) }}.svg" width="32px" style="padding-left:5px;padding-right:5px;">
+        </div>
+        {% else %}
         <div class="col-md-10">
           <input type="text" class="form-control warning" name="{{primary}}[{{ subkey }}]" value="{{ value }}" placeholder="{{ value }}">
         </div>
+        {% endif %}
       </div>
       {% endfor %}
       {% endif %}

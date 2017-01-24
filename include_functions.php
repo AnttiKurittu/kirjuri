@@ -8,7 +8,6 @@ if (version_compare(PHP_VERSION, '7.0.0') <= 0) {
     die;
 }
 
-
 // Go to installer if no credentials found.
 if (!file_exists('conf/mysql_credentials.php')) {
     header('Location: install.php');
@@ -611,6 +610,9 @@ if (file_exists('conf/' . basename($prefs['settings']['lang'], '.conf') . '.JSON
   $_SESSION['lang'] = parse_ini_file('conf/' . basename($prefs['settings']['lang'], '.conf') . '.conf', true); // Parse language file
 }
 
+if (isset($prefs['settings']['timezone'])) {
+  date_default_timezone_set($prefs['settings']['timezone']);
+}
 
 try {
   // Create the attachments table.
@@ -627,7 +629,6 @@ try {
 
 try {
   // Read users from database to settings.
-  $kirjuri_database = db('kirjuri-database');
   $query = $kirjuri_database->prepare('SELECT * from users ORDER BY access, username;');
   $query->execute();
   $users = $query->fetchAll(PDO::FETCH_ASSOC);
@@ -640,7 +641,6 @@ try {
 
 try {
   // Read tools from database to settings.
-  $kirjuri_database = db('kirjuri-database');
   $query = $kirjuri_database->prepare('SELECT * FROM tools ORDER BY product_name;');
   $query->execute();
   $tools = $query->fetchAll(PDO::FETCH_ASSOC);

@@ -24,8 +24,26 @@ foreach($conffiles as $file) {
 
 $langfiles = array_unique($langfiles);
 
+$php_servertime = time();
+try {
+  $kirjuri_database = db('kirjuri-database');
+  $query = $kirjuri_database->prepare('SELECT @@global.time_zone AS tz');
+  $query->execute();
+  $mysql_timezone = $query->fetch(PDO::FETCH_ASSOC);
+  $mysql_timezone = $mysql_timezone['tz'];
+
+} catch (PDOException $e) {
+  session_destroy();
+  echo 'Database error: '.$e->getMessage().'. Run <a href="install.php">install</a> to create or upgrade tables and check your credentials.';
+  die;
+}
+
+
 $_SESSION['message_set'] = false;
 echo $twig->render('settings.twig', array(
+    'server_time' => $php_servertime,
+    'php_timezone' => date_default_timezone_get(),
+    'mysql_timezone' => $mysql_timezone,
     'settings' => $prefs['settings'],
     'langfiles' => $langfiles,
     'settings_contents' => $prefs,

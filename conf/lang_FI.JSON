@@ -1,4 +1,6 @@
 {
+    "server_time_is": "Palvelimen kellonaika:",
+    "timezone": "aikavy\u00f6hyke",
     "access": "P\u00e4\u00e4sy",
     "access_control": "P\u00e4\u00e4synhallinta",
     "access_level": "K\u00e4ytt\u00f6oikeudet",

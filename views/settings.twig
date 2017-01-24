@@ -66,6 +66,11 @@
       <h3 class="panel-title">{{ lang.global_settings }}<span class="pull-right"><i class="fa fa-file"></i> {{ settings_file }}</span></h3>
     </div>
     <div class="panel-body">
+      <div class="form-group">
+
+      <div class="col-md-10 col-md-offset-2">{{ lang.server_time_is }} <code>{{ php_servertime|date('Y-m-d H:i') }}</code> PHP {{ lang.timezone }}: <code>{{ php_timezone }}</code> MySQL {{ lang.timezone }}: <code>{{ mysql_timezone }}</code></div>
+
+</div>
       {% for key, value in settings_contents.settings %}
       {% if (key != "self") and (key != "release") and (key != "report_notes_footer") %}
       <div class="form-group">
@@ -97,7 +102,7 @@
           {% if (value == "0") or (value == "1") %}
           <input type="radio" name="settings[{{key}}]" value="1" {% if value == "1" %}checked{% endif %}> Yes &nbsp;&nbsp;<input type="radio" name="settings[{{key}}]" value="0" {% if value == "0" %}checked{% endif %}> No
           {% else %}
-          {<input type="text" class="form-control" name="settings[{{ key }}]" value="{{ value }}" placeholder="{{ value }}">
+          <input type="text" class="form-control" name="settings[{{ key }}]" value="{{ value }}" placeholder="{{ value }}">
           {% endif %}
         </div>
       </div>

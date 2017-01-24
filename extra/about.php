@@ -91,7 +91,9 @@
   <h1 class="page-heading">Installation and requirements</h1>
   <p>Kirjuri requires a web server with PHP7 and MySQL installed. You can install Kirjuri on your server by following these steps:</p>
   <ul>
-    <li> Download or clone the Kirjuri code repository from <a href="https://github.com/AnttiKurittu/Kirjuri" target="_BLANK">GitHub</a>.</li>
+    <li> Install PHP, MySQL and Git (Debian/Ubuntu: <code>sudo apt-get install git mysql-server php7.0 php7.0-fpm php7.0-mysql nginx-full</code>).</li>
+    <li> For a local, single-user installation, you can use a development server app like <a href="https://www.mamp.info/">MAMP</a>.</li>
+    <li> Download or clone the Kirjuri code repository from <a href="https://github.com/AnttiKurittu/Kirjuri/tree/master" target="_BLANK">GitHub</a>.</li>
     <li> Place the downloaded copy into your webroot or a subfolder.</li>
     <li> If you wish to configure a testing environment, simply copy the Kirjuri folder to an adjacent subfolder and run the installer again with a different database name.</li>
     <li> Modify folder permissions so that the web server owns the following folders: <code>cache</code>, <code>conf</code> and <code>logs</code>.</li>
@@ -144,7 +146,7 @@
   <p>Even though care has been taken to protect Kirjuri from unauthorized use, XSS, CSRF, SQLi and other common vulnerabilites, the author <b>will not accept any responsibility or liability</b> on the security of this software. Kirjuri <i>can be secure</i>, <b>if it is installed and used securely</b>. A PHP application cannot be trusted to handle that for the administrator and configuring your production server is <b>your responsibility</b>.</p>
 
   <h1 class="page-heading">License</h1>
-  <p>Kirjuri has been released under the MIT License. See the <a href="https://github.com/AnttiKurittu/Kirjuri" target="_BLANK">GitHub repository</a> for licensing details. Kirjuri uses <a href="http://twig.sensiolabs.org" target="_BLANK">Twig</a>, <a href="http://htmlpurifier.org/" target="_BLANK">HTMLPurify</a>, <a href="http://getbootstrap.com" target="_BLANK">Bootstrap CSS</a>,
+  <p>Kirjuri has been released under the MIT License. See the <a href="https://github.com/AnttiKurittu/Kirjuri/tree/master" target="_BLANK">GitHub repository</a> for licensing details. Kirjuri uses <a href="http://twig.sensiolabs.org" target="_BLANK">Twig</a>, <a href="http://htmlpurifier.org/" target="_BLANK">HTMLPurify</a>, <a href="http://getbootstrap.com" target="_BLANK">Bootstrap CSS</a>,
   <a href="http://fontawesome.io" target="_BLANK">Font Awesome</a>, <a href="http://www.freepik.com" target="_BLANK">Freepik image resources</a>, <a href="http://www.chartjs.org" target="_BLANK">Chart.js</a>, <a href="http://visjs.org/" target="_blank">vis.js</a>, <a href="https://www.tinymce.com" target="_BLANK">TinyMCE editor</a> and <a href="https://jquery.com" target="_BLANK">jQuery</a>.
 
   <hr>

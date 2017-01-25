@@ -623,6 +623,8 @@ $(function() {
   {% if (caserow.0.case_status == "2") or ((caserow.0.case_status == "1") and (caserow.0.phone_investigator != "")) %}
   <button type="button" class="btn btn-primary btn-md" data-toggle="modal" data-target="#add_device_media_modal">
   <i class="fa fa-plus"></i> {{ lang.add_device_or_media }}
+</button><button style="margin-left:15px;" type="button" class="btn btn-primary btn-md" data-toggle="modal" data-target="#add_task_modal">
+  <i class="fa fa-plus"></i> Add task{{ lang.add_task }}
   </button>{% endif %}
 </div>
 {% if not mediarow %}
@@ -640,6 +642,72 @@ $(function() {
   {% if sort_order == "device_document, device_item_number" %}<b><i class="fa fa-sort"></i> {{ lang.device_document }}</b>{% else %}<a href="edit_request.php?case={{ caserow.0.id }}&tab=devices&j=tvp{% if dev_owner %}&dev_owner={{ dev_owner|url_encode }}{% endif %}">{{ lang.device_document }}</a>{% endif %}
 </div>
 {% endif %}
+
+
+
+{% for entry in tasks %}
+{% set device_current_action = entry.device_action|split('|') %}
+<a name="{{ entry.id }}"></a>
+{% if (entry.device_host_id == "0") and (entry.is_removed != "1") %}
+<table class="table table-condensed" style="-webkit-box-shadow: 2px 20px 47px -17px rgba(0,0,0,0.36);-moz-box-shadow: 2px 20px 47px -17px rgba(0,0,0,0.36);box-shadow: 2px 20px 47px -17px rgba(0,0,0,0.36);border: 1px solid #DDD;background-color:#FFF;">
+  <tr>
+    <td style="vertical-align:middle;width:1px;" class="text-center">
+    {% if device_current_action.0 == 9 %}<img src="views/img/svg/task-done.svg"  style="vertical-align:middle;float:left;padding:10px;width:64px;">{% else %}<img src="views/img/svg/task-open.svg"  style="vertical-align:middle;float:left;padding:10px;width:64px;">{% endif %}
+    </td>
+    <td style="vertical-align:middle;white-space:nowrap;width:350px">
+      <h4>{% if device_current_action.0 == 9 %}<strike>Task: {{ entry.device_manuf }}</strike>{% else %}Task: {{ entry.device_manuf }}{% endif %}</h4>
+    </td>
+    <td style="vertical-align:middle;">
+      {% if entry.case_request_description %}{{ entry.case_request_description }}{% endif %} {% if device_current_action.0 == 9 %}<p><a href=""><i class="fa fa-times" style="color:red;"></i> remove task</a></p>{% endif %}
+    </td>
+
+    <td style="vertical-align:middle;align:left;width:1px">
+      <form class="form form-horizontal" role="form" method="post" action="submit.php?type=change_device_status&uid={{ entry.id }}" target="submit_iframe{{entry.id}}">
+        <input type="hidden" name="token" value="{{session.user.token}}">
+        <input type="hidden" name="ct" value="{{ct}}">
+      {% if (caserow.0.case_status != 3) and (session.user.access <= 1) %}
+    <p>
+      <select style="text-align:left;width:200px;" class="btn btn-default" name="device_action" onchange="this.form.submit()">
+      {% for percent in range(0, 9)%}
+        <option value="{{ percent }}|percent_done" {% if device_current_action.0 == percent %}selected{% endif %}>{% if percent >= 1 %}{{ (percent + 1) * 10 }}%{% else %}Pending{% endif %}</option>
+      {% endfor %}
+      </select>​</p>
+      {% else %}
+      {% set show_action_status = entry.device_action|split('|') %}
+      <div style="width:100px;">{{ show_action_status.0 }}%</div>
+      <input type="hidden" name="device_action" value="{{ entry.device_action }}">
+      {% endif %}
+      </form>
+      <p><form class="form form-horizontal" role="form" method="post" action="submit.php?type=change_device_location&uid={{ entry.id }}" target="submit_iframe{{entry.id}}_void">
+        <input type="hidden" name="token" value="{{session.user.token}}">
+        <input type="hidden" name="ct" value="{{ct}}">
+        <select style="text-align:left;width:200px;" class="btn btn-default" name="device_location" id="device_location">
+          <option selected disabled>Assigned to</option>
+          <option value="Nobody">Nobody</option>
+          {% for user in session.all_users %}
+          <option value="{{ user.username }}" {% if entry.device_location == user.username %}selected{% endif %}>{{ user.name }}</option>
+          {% endfor %}
+        </select>
+    </form></p>
+    <p><iframe name="submit_iframe{{entry.id}}" allowtransparency="true" style="overflow:hidden; width:200px; height:16px; border:0px solid red; margin: 0 auto; display:block;" src="progress_bar_static.php?uid={{entry.id}}"></iframe></p>
+    <iframe name="submit_iframe{{entry.id}}_void" style="display:none;"></iframe></p>
+    </td>
+  </tr>
+</table>
+{% endif %}
+{% endfor %}
+<!-- Modal -->
+
+
+
+
+
+
+
+
+
+
+
 {% for entry in mediarow %}
 <a name="{{ entry.id }}"></a>
 {% if (entry.device_host_id == "0") and (entry.is_removed != "1") %}
@@ -954,6 +1022,7 @@ box-shadow: 2px 20px 47px -17px rgba(0,0,0,0.36);border: {% if dev_owner and (en
 {% endif %}
 {% endfor %}
 <!-- Modal -->
+
 <div class="modal fade" id="add_device_media_modal" role="dialog" aria-labelledby="add_device_media_modal">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -1047,6 +1116,59 @@ box-shadow: 2px 20px 47px -17px rgba(0,0,0,0.36);border: {% if dev_owner and (en
     </div>
   </div>
 </div>
+
+<div class="modal fade" id="add_task_modal" role="dialog" aria-labelledby="add_task_modal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Add a new task{{ lang.add_task }}</h4>
+      </div>
+      <div class="modal-body">
+        <form class="form" role="form" method="post" action="submit.php?type=device">
+          <input type="hidden" name="token" value="{{session.user.token}}">
+          <input type="hidden" name="ct" value="{{ct}}">
+          <input type="hidden" name="device_type" value="task">
+
+          <div class="form-group">
+            <select style="text-align:left;" class="btn btn-default" name="device_action" id="device_action">
+              {% for percent in range(0, 9)%}
+              <option value="{{ percent }}|percent_done">{% if percent >= 1 %}{{ (percent + 1) * 10 }}%{% else %}Pending{% endif %}</option>
+              {% endfor %}
+            </select><span style="color:red;font-size:1.2em">&nbsp;*</span>
+          </div>
+          <div class="form-group">
+            <select style="text-align:left;" class="btn btn-default" name="device_location" id="device_location">
+              <option selected disabled>Assigned to</option>
+              {% for user in session.all_users %}
+              <option value="{{ user.username }}">{{ user.name }}</option>
+              {% endfor %}
+            </select><span style="color:red;font-size:1.2em">&nbsp;*</span>
+          </div>
+          <div class="form-group">
+            <label class="sr-only" for="device_manuf">Subject</label>
+            <input type="text" class="form-control" id="device_manuf" name="device_manuf" placeholder="Subject" value="{% if session.cache is defined %}{{ session_cache.device_manuf }}{% endif %}">
+          </div>
+          <div class="form-group">
+            <label class="sr-only" for="case_request_description">{{ lang.description }}</label>
+            <input type="text" class="form-control" id="case_request_description" name="case_request_description" placeholder="{{ lang.description }}" value="{% if session.cache is defined %}{{ session_cache.case_request_description }}{% endif %}">
+          </div>
+          <div class="form-group">
+            <input type="hidden" name="parent_id" value="{{ caserow.0.id }}">
+            <input type="hidden" name="is_removed" value="0">
+            <input type="hidden" name="device_host_id" value="0">
+          </div>
+      </div>
+      <div class="modal-footer">
+      <button type="button" class="btn btn-default" data-dismiss="modal">{{ lang.close }}</button>
+      <button id="save_button_1" type="submit" class="btn btn-success"><i class="fa fa-save"></i> {{ lang.save }}</button>
+      </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 {% if mediarow %}
 <form class="form form-inline pull-right" role="form" method="post" action="submit.php?type=move_all&returnid={{ caserow.0.parent_id }}">
   <input type="hidden" name="token" value="{{session.user.token}}">
@@ -1252,5 +1374,6 @@ box-shadow: 2px 20px 47px -17px rgba(0,0,0,0.36);border: {% if dev_owner and (en
 <!-- tabit loppuu -->
 </div>
 </div>
+<div class="pull-right">Icons made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
 </div>
 {% endblock %}

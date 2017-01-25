@@ -85,11 +85,19 @@ if ($sort_j === 'dev_owner') {
 } else {
     $j = 'device_type';
 }
-$query = $kirjuri_database->prepare('SELECT * FROM exam_requests WHERE id != :id AND parent_id=:id AND is_removed != "1" ORDER BY '.$j);
+$query = $kirjuri_database->prepare('SELECT * FROM exam_requests WHERE id != :id AND parent_id=:id AND device_type != "task" AND is_removed != "1" ORDER BY '.$j);
 $query->execute(array(
   ':id' => $case_number,
 ));
 $mediarow = $query->fetchAll(PDO::FETCH_ASSOC);
+
+$query = $kirjuri_database->prepare('SELECT * FROM exam_requests WHERE id != :id AND parent_id=:id AND device_type = "task" AND is_removed != "1" ORDER BY '.$j);
+$query->execute(array(
+  ':id' => $case_number,
+));
+$tasks = $query->fetchAll(PDO::FETCH_ASSOC);
+
+
 if (!file_exists('conf/instructions_'.str_replace(' ', '_', strtolower($caserow[0]['classification'])).'.txt')) {
     $instructions_text = 'File conf/instructions_'.str_replace(' ', '_', strtolower($caserow[0]['classification'])).'.txt not found.';
 } else {
@@ -136,6 +144,7 @@ echo $twig->render('edit_request.twig', array(
   'returntab' => $returntab,
   'caserow' => $caserow,
   'mediarow' => $mediarow,
+  'tasks' => $tasks,
   'settings' => $prefs['settings'],
   'device_locations' => $_SESSION['lang']['device_locations'],
   'device_actions' => $_SESSION['lang']['device_actions'],

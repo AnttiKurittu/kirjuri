@@ -655,10 +655,10 @@ $(function() {
     {% if device_current_action.0 == 9 %}<img src="views/img/svg/task-done.svg"  style="vertical-align:middle;float:left;padding:10px;width:64px;">{% else %}<img src="views/img/svg/task-open.svg"  style="vertical-align:middle;float:left;padding:10px;width:64px;">{% endif %}
     </td>
     <td style="vertical-align:middle;white-space:nowrap;width:350px">
-      <h4>{% if device_current_action.0 == 9 %}<strike>Task: {{ entry.device_manuf }}</strike>{% else %}Task: {{ entry.device_manuf }}{% endif %}</h4>
+      <h4>{% if device_current_action.0 == 9 %}<strike>Task: {{ entry.device_manuf }}</strike> <a href=""><i class="fa fa-times" style="color:red;"></i></a>{% else %}Task: {{ entry.device_manuf }}{% endif %}</h4>
     </td>
     <td style="vertical-align:middle;">
-      {% if entry.case_request_description %}{{ entry.case_request_description }}{% endif %} {% if device_current_action.0 == 9 %}<p><a href=""><i class="fa fa-times" style="color:red;"></i> remove task</a></p>{% endif %}
+      {% if entry.case_request_description %}{{ entry.case_request_description }}{% endif %} {% if device_current_action.0 == 9 %}{% endif %}
     </td>
 
     <td style="vertical-align:middle;align:left;width:1px">

@@ -65,7 +65,7 @@
       <td><a href="submit.php?type=force_logout&user={{user.username|url_encode}}&token={{session.user.token}}"><i class="fa fa-sign-out"></i> {{ lang.log_out }}</a></td>
     </tr>
     {% endfor %}
-    <tr><td></td><td colspan="999"><button type="button" class="btn btn-primary btn-md" data-toggle="modal" data-target="#add_device_media_modal"><i class="fa fa-plus"></i> <i class="fa fa-user"></i></button></td></tr>
+    <tr><td></td><td colspan="999"><button type="button" class="btn btn-primary btn-md" data-toggle="modal" data-target="#add_device_media_modal"><i class="fa fa-plus"></i> <i class="fa fa-user"></i> {{ lang.add_a_new_local_user }}</button></td></tr>
 </table>
 
 {% if fields is not empty %}

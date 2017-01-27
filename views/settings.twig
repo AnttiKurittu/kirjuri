@@ -136,11 +136,25 @@
     </div>
   </div>
 </form>
-
-
-
 {% endif %}
+
+<form class="form-horizontal" role="form" method="post" action="submit.php?type=save_template&template=report_notes">
+  <input type="hidden" name="token" value="{{session.user.token}}">
+  <div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">{{ lang.edit_template }}</h3>
+  </div>
+  <div class="panel-body">
+<input type="hidden" name="token" value="{{session.user.token}}">
+<textarea id="richeditor" class="textarea form-control" rows="25" style="height:500px;" name="templatefile">{{ template_report_notes }}</textarea>
 </div>
+<div class="panel-footer">
+  <button type="submit" class="btn btn-success">{{ lang.save }} {{ lang.report_notes_template }}</button>
+</div>
+</div>
+</form>
+
+
 
 
 

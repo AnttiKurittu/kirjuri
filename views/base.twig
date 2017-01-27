@@ -32,7 +32,7 @@
       width: 5em;
       }
     </style>
-    <script src="views/js/jquery.min.js"></script>
+    <script src="views/js/jquery-3.1.1.min.js"></script>
     <script src="views/js/Chart.js"></script>
     <script src="vendor/twbs/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="views/jquery-ui/jquery-ui.min.js"></script>
@@ -48,9 +48,7 @@
         $("#alert-success").fadeOut({{ settings.fadeout }});
         $("#unreadcounter").load("unreadcounter.php");
       });
-      $(function() {
-        $(document).tooltip();
-      });
+<!--      $(function() {$(document).tooltip();});  -->
 
       <!--
         // copyright 1999 Idocs, Inc. http://www.idocs.com
@@ -152,6 +150,8 @@
           <ul class="nav nav-sidebar">
             <li{% if "users.php" in settings.self %} class="active"{% endif %}><a href="users.php"><i class="fa fa-users"></i> {{ lang.manage_users }}</a></li>
           </ul>
+          {% endif %}
+          {% if session.user.access <= 1 %}
           <ul class="nav nav-sidebar">
             <li{% if "tools.php" in settings.self %} class="active"{% endif %}><a href="tools.php"><i class="fa fa-wrench"></i> {{ lang.manage_tools|capitalize }}</a></li>
           </ul>

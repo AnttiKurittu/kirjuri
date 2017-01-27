@@ -2,6 +2,7 @@
 /* This is the 'header' file in all php files containing shared functions etc.
 ** It also performs some other tasks.
 */
+$mysql_timer_start = microtime(true);
 
 if (version_compare(PHP_VERSION, '7.0.0') <= 0) {
     echo "Kirjuri requires PHP7 to run. You are using " . phpversion() . ". Please upgrade your PHP environment.";
@@ -479,7 +480,7 @@ function filter_numbers($a)  // Filter out everything but numbers.
 
 function filter_letters_and_numbers($a)
 {
-    return preg_replace('/[^a-zA-Z0-9]/', '', $a);
+    return preg_replace('/[^a-zA-Z0-9_]/', '', $a);
 }
 
 function encrypt($in, $key) {
@@ -527,11 +528,20 @@ function message($type = "info", $content) {
 }
 
 function connect_database($database) {
+
   // PDO Database connector
   global $mysql_config;
+  global $prefs;
+	if (!isset($prefs['settings']['mysql_server_address'])) {
+		$server = 'localhost';
+	} else {
+		$server = $prefs['settings']['mysql_server_address'];
+	}
   if ($database === 'kirjuri-database') {
     try {
-      $kirjuri_database = new PDO('mysql:host=localhost;dbname='.$mysql_config['mysql_database'].'', $mysql_config['mysql_username'], $mysql_config['mysql_password']);
+
+      $pdo_connect_string = 'mysql:host='.$server.';dbname='.$mysql_config['mysql_database'];
+	    $kirjuri_database = new PDO($pdo_connect_string, $mysql_config['mysql_username'], $mysql_config['mysql_password']);
       $kirjuri_database->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
       $kirjuri_database->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
       $kirjuri_database->exec('SET NAMES utf8');
@@ -661,6 +671,10 @@ if($_SESSION['user']) { // Get unread message count
     echo 'Database error: '.$e->getMessage().'. Run <a href="install.php">install</a> to create or upgrade tables and check your credentials.';
     die;
   }
+}
+
+if ( (microtime(true) - $mysql_timer_start) > "2.0") {
+	trigger_error("Your MySQL connection is slow. This might be a timeout issue when resolving the localhost hostname to an IP address. Try setting the MySQL server to your server IP from the settings.");
 }
 
 /* Really extensive access logging.

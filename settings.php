@@ -38,9 +38,23 @@ try {
   die;
 }
 
+if (file_exists('conf/report_notes.local'))
+{
+  $templates['report_notes'] = file_get_contents('conf/report_notes.local');
+  $templates['report_notes'] = filter_html($templates['report_notes']);
+}
+elseif (file_exists('conf/report_notes.template'))
+{
+  $templates['report_notes'] = file_get_contents('conf/report_notes.template');
+  $templates['report_notes'] = filter_html($templates['report_notes']);
+}
+else {
+  $templates['report_notes'] = "";
+}
 
 $_SESSION['message_set'] = false;
 echo $twig->render('settings.twig', array(
+    'template_report_notes' => $templates['report_notes'],
     'server_time' => $php_servertime,
     'php_timezone' => date_default_timezone_get(),
     'mysql_timezone' => $mysql_timezone,

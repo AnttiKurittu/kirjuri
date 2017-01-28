@@ -29,11 +29,8 @@ foreach ($_SESSION['all_users'] as $user) { // Get user information based on GET
       {
         $fields['blacklist'] = str_replace(",", ", ", implode(",", $ip_access_list['deny']));
       }
-
       $fields['sessions'] = array();
-
       if ( file_exists('cache/user_' . $user['username'] ))
-
       {
         $session_dir = scandir('cache/user_'.$user['username']);
         foreach($session_dir as $sessionfile)

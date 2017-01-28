@@ -3,13 +3,7 @@
 require_once './include_functions.php';
 ksess_verify(9); // Admin only
 
-if (file_exists('conf/lang_EN.JSON')) {
-  $langfile_default = json_decode(file_get_contents('conf/lang_EN.JSON'), true); // Parse language file
-} else {
-  $langfile_default = parse_ini_file('conf/lang_EN.conf', true); // Parse language file
-}
-
-$langfile_default = json_decode(file_get_contents('conf/lang_EN.JSON'), true);
+$langfile_default = json_decode(file_get_contents('conf/lang_EN.JSON'), true); // Parse language file
 
 $conffiles = scandir('conf/');
 foreach($conffiles as $file) {

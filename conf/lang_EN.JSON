@@ -1,5 +1,4 @@
 {
-    "add_a_new_local_user": "Add a new local user",
     "access": "Access",
     "access_control": "Access control",
     "access_level": "Access level",
@@ -7,6 +6,7 @@
     "account_updated": "Your account was updated. Please log in again.",
     "action_status": "Action status",
     "active": "active",
+    "add_a_new_local_user": "Add a new local user",
     "add_a_request": "Add a request",
     "add_a_tool": "add a tool",
     "add_an_assoc_media": "Add an associated media",
@@ -165,7 +165,7 @@
     "help_button_navigation": "Navigation",
     "help_button_print": "Print",
     "help_button_save": "Save",
-    "help_licenses": "Help and license",
+    "help_licenses": "Help and licenses",
     "hw_version": "HW version",
     "hw_version_short": "HW v.",
     "id": "ID",

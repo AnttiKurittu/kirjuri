@@ -2,12 +2,12 @@
 /* This is the 'header' file in all php files containing shared functions etc.
 ** It also performs some other tasks.
 */
+$mysql_timer_start = microtime(true);
 
 if (version_compare(PHP_VERSION, '7.0.0') <= 0) {
     echo "Kirjuri requires PHP7 to run. You are using " . phpversion() . ". Please upgrade your PHP environment.";
     die;
 }
-
 
 // Go to installer if no credentials found.
 if (!file_exists('conf/mysql_credentials.php')) {
@@ -47,7 +47,7 @@ if ($_SESSION['message_set'] === false) {
   $_SESSION['message']['content'] = '';
 }
 
-function log_write($case_id = "0", $event_level = "Action", $description, $audit_log_file = "-") {
+function event_log_write($case_id = "0", $event_level = "Action", $description, $audit_log_file = "-") {
   // Logging function.
   if (!isset($_SESSION['user']['token'])) {
 	  $sessiontoken = "-";
@@ -110,7 +110,7 @@ function kirjuri_error_handler($errno, $errstr, $errfile, $errline) // Trigger a
     $_SESSION['message']['content'] = $errnums[$errno].': '.$errstr;
     $_SESSION['message_set'] = true;
     }
-    log_write('0', 'Error', $errno.' '.$errstr.', File: '.$errfile.', line '.$errline);
+    event_log_write('0', 'Error', $errno.' '.$errstr.', File: '.$errfile.', line '.$errline);
 }
 
 function array_trim($array) {
@@ -124,9 +124,9 @@ function array_trim($array) {
 
 function local_authenticate($username, $password) {
   // Authenticate against a local account
-  $username = sanitize_username($username);
+  $username = filter_username($username);
   try {
-    $kirjuri_database = db('kirjuri-database');
+    $kirjuri_database = connect_database('kirjuri-database');
     $query = $kirjuri_database->prepare('SELECT * FROM users WHERE username = :username AND (NOT attr_3 = :attr_3 OR attr_3 IS NULL) LIMIT 1');
     $query->execute(array(':username' => $username, ':attr_3' => "LDAP_AUTH_ONLY"));
     $user_record = $query->fetch(PDO::FETCH_ASSOC);
@@ -137,18 +137,18 @@ function local_authenticate($username, $password) {
   }
   if (password_verify($password, $user_record['password'])) {
     $_SESSION['user'] = $user_record;
-    log_write('0', "Auth", "Succesful local authentication for user " . $username);
+    event_log_write('0', "Auth", "Succesful local authentication for user " . $username);
     return true;
   } else {
     $_SESSION['user'] = null;
-    log_write('0', "Auth", "Failure on local authentication for user " . $username);
+    event_log_write('0', "Auth", "Failure on local authentication for user " . $username);
     return false;
   }
 }
 
 function ldap_authenticate($username, $password) {
   // Source: https://www.exchangecore.com/blog/how-use-ldap-active-directory-authentication-php/
-  //$username = sanitize_username($username);
+  //$username = filter_username($username);
   global $prefs;
   if ($prefs['settings']['enable_ldap_authentication'] !== "1") {
     return false;
@@ -162,7 +162,7 @@ function ldap_authenticate($username, $password) {
   $bind = @ldap_bind($ldap, $ldaprdn, $password);
   if ($bind) { // On succesfull LDAP auth.
     try {
-      $kirjuri_database = db('kirjuri-database');
+      $kirjuri_database = connect_database('kirjuri-database');
       $query = $kirjuri_database->prepare('SELECT * FROM users WHERE username = :username AND attr_3 = "LDAP_AUTH_ONLY" LIMIT 1');
       $query->execute(array(':username' => $username));
       $user_record = $query->fetch(PDO::FETCH_ASSOC);
@@ -186,7 +186,7 @@ function ldap_authenticate($username, $password) {
       $query->execute(array(':username' => $username, ':attr_3' => "LDAP_AUTH_ONLY"));
       $user_record = $query->fetch(PDO::FETCH_ASSOC);
       if ($user_record !== false) {
-        log_write('0', "Error", "Local-only account exists for succesfully remote authenticated user " . $username);
+        event_log_write('0', "Error", "Local-only account exists for succesfully remote authenticated user " . $username);
         return false; // FAIL LOGIN IF LOCAL ACCOUNT EXISTS
       } else {
         $query = $kirjuri_database->prepare('INSERT INTO users (username, password, name, access, flags, attr_1, attr_2, attr_3, attr_4, attr_5, attr_6, attr_7, attr_8)
@@ -202,7 +202,7 @@ function ldap_authenticate($username, $password) {
           ':attr_3' => "LDAP_AUTH_ONLY"
         ));
       }
-      log_write('0', "Auth", "LDAP: Created account for user " . $username);
+      event_log_write('0', "Auth", "LDAP: Created account for user " . $username);
       $query = $kirjuri_database->prepare('SELECT * FROM users WHERE username = :username AND name = :name AND attr_3 = :attr_3');
       $query->execute(array(
         ':username' => $username,
@@ -211,11 +211,11 @@ function ldap_authenticate($username, $password) {
       ));
       $user_record = $query->fetch(PDO::FETCH_ASSOC);
       $_SESSION['user'] = $user_record;
-      log_write('0', "Auth", "Succesful remote authentication for user " . $username);
+      event_log_write('0', "Auth", "Succesful remote authentication for user " . $username);
       return true;
 
     } elseif ($username === $user_record['username']) {
-      log_write('0', "Auth", "Succesful remote authentication for user " . $username);
+      event_log_write('0', "Auth", "Succesful remote authentication for user " . $username);
       $_SESSION['user'] = $user_record;
       return true;
 
@@ -264,14 +264,14 @@ function ip_allowed() {
   return $access_allowed_from_ip;
 }
 
-function sanitize_username($username) {
+function filter_username($username) {
   $strip_chars = array("!", "<", ">", "'",":", ";", ".", "/", "\"", "#", "%", "\\", "&", "|", "?", "*", "$", ")", "(", "[", "]", "{", "}");
   $username = strtolower(trim(str_replace($strip_chars, "", $username)));
   return $username;
 }
 
 function upgrade_insecure_password($username, $password) {
-  $kirjuri_database = db('kirjuri-database');
+  $kirjuri_database = connect_database('kirjuri-database');
   $query = $kirjuri_database->prepare('UPDATE users SET password = :secure_password_hash WHERE username = :username AND password = :legacy_password');
   $query->execute(array(
     ':secure_password_hash' => password_hash($password, PASSWORD_DEFAULT),
@@ -286,14 +286,14 @@ function generate_token($length) {
   return substr(str_shuffle(hash('sha256', random_bytes(1024))), 0, $length);
 }
 
-function secondsToTime($seconds) {
+function seconds_to_time($seconds) {
   // Thanks to https://stackoverflow.com/questions/8273804/convert-seconds-into-days-hours-minutes-and-seconds
   $dtF = new \DateTime('@0');
   $dtT = new \DateTime("@$seconds");
   return $dtF->diff($dtT)->format('%a days, %h hours, %i minutes and %s seconds');
 }
 
-function deleteDirectory($dir) {
+function delete_directory($dir) {
   // Thanks to http://stackoverflow.com/questions/1653771/how-do-i-remove-a-directory-that-is-not-empty
   if (!file_exists($dir)) {
     return true;
@@ -305,7 +305,7 @@ function deleteDirectory($dir) {
     if ($item == '.' || $item == '..') {
       continue;
     }
-    if (!deleteDirectory($dir . DIRECTORY_SEPARATOR . $item)) {
+    if (!delete_directory($dir . DIRECTORY_SEPARATOR . $item)) {
       return false;
     }
   }
@@ -367,7 +367,7 @@ function ksess_destroy() {
   if (!isset($_SESSION['user']['token'])) {
     $_SESSION['user']['token'] = "Not set.";
   }
-  log_write('0', "Auth", "Destroyed session " . $_SESSION['user']['token']);
+  event_log_write('0', "Auth", "Destroyed session " . $_SESSION['user']['token']);
   $_SESSION = null;
   session_destroy();
   header('Location: login.php');
@@ -430,7 +430,7 @@ function ksess_verify($required_access_level) {
   }
 }
 
-function verify_owner($id)
+function verify_case_ownership($id)
 {
   global $kirjuri_database;
   if ($_SESSION['user']['access'] === "0")
@@ -446,14 +446,14 @@ function verify_owner($id)
     return true;
   }
   else {
-    log_write($id, 'Error', 'User initiated out-of-bounds POST request to case where not in access group.');
+    event_log_write($id, 'Error', 'User initiated out-of-bounds POST request to case where not in access group.');
     message('error', $_SESSION['lang']['not_in_access_group']);
     header('Location: index.php');
     die;
   }
 }
 
-function sanitize_raw($string) // Purify HTML content for raw presentation.
+function filter_html($string) // Purify HTML content for raw presentation.
 {
   if(empty($string))
   {
@@ -480,14 +480,14 @@ function filter_numbers($a)  // Filter out everything but numbers.
 
 function filter_letters_and_numbers($a)
 {
-    return preg_replace('/[^a-zA-Z0-9]/', '', $a);
+    return preg_replace('/[^a-zA-Z0-9_]/', '', $a);
 }
 
 function encrypt($in, $key) {
   // Encrypt a string with AES-256-CBC
   if (!function_exists('openssl_encrypt'))
   {
-   log_write('0', 'Error', 'Missing dependency: OpenSSL. Can not encrypt audit log files. Please install OpenSSL.');
+   event_log_write('0', 'Error', 'Missing dependency: OpenSSL. Can not encrypt audit log files. Please install OpenSSL.');
    return $in;
   }
   $iv = trim(substr(str_shuffle('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'), 0, 16));
@@ -501,7 +501,7 @@ function decrypt($in, $key) {
   // Decrypt a string.
   if (!function_exists('openssl_decrypt'))
   {
-    log_write('0', 'Error', 'Missing dependency: OpenSSL. Can not decrypt audit log files. Please install OpenSSL.');
+    event_log_write('0', 'Error', 'Missing dependency: OpenSSL. Can not decrypt audit log files. Please install OpenSSL.');
     return $in;
   }
   $iv = substr($in, 0, 16);
@@ -511,7 +511,7 @@ function decrypt($in, $key) {
   return $decrypted;
 }
 
-function show_saved() {
+function show_saved_succesfully() {
   // Display a "changes saved"-message
   $_SESSION['message']['type'] = 'info';
   $_SESSION['message']['content'] = $_SESSION['lang']['changes_saved'];
@@ -527,12 +527,21 @@ function message($type = "info", $content) {
   return true;
 }
 
-function db($database) {
+function connect_database($database) {
+
   // PDO Database connector
   global $mysql_config;
+  global $prefs;
+	if (!isset($prefs['settings']['mysql_server_address'])) {
+		$server = 'localhost';
+	} else {
+		$server = $prefs['settings']['mysql_server_address'];
+	}
   if ($database === 'kirjuri-database') {
     try {
-      $kirjuri_database = new PDO('mysql:host=localhost;dbname='.$mysql_config['mysql_database'].'', $mysql_config['mysql_username'], $mysql_config['mysql_password']);
+
+      $pdo_connect_string = 'mysql:host='.$server.';dbname='.$mysql_config['mysql_database'];
+	    $kirjuri_database = new PDO($pdo_connect_string, $mysql_config['mysql_username'], $mysql_config['mysql_password']);
       $kirjuri_database->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
       $kirjuri_database->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
       $kirjuri_database->exec('SET NAMES utf8');
@@ -545,15 +554,15 @@ function db($database) {
   }
 }
 
-function audit_write($post_data) {
+function audit_log_write($post_data) {
   // Store an audit log entry of the request.
   if (!file_exists('conf/audit_credentials.php')) {
   // Autogenerate an audit log encryption key on first entry.
     file_put_contents('conf/audit_credentials.php', '<?php return "'.generate_token(64).'" ?>');
-    log_write('0', 'Audit', 'No encryption key found at conf/audit_credentials.php, audit log encryption key autogenerated.');
+    event_log_write('0', 'Audit', 'No encryption key found at conf/audit_credentials.php, audit log encryption key autogenerated.');
   }
   if (isset($post_data['REVERT_FROM_AUDIT'])) {
-    log_write('0', 'Update', "Pushed audit log entry back to database: " . $post_data['REVERT_FROM_AUDIT']);
+    event_log_write('0', 'Update', "Pushed audit log entry back to database: " . $post_data['REVERT_FROM_AUDIT']);
   }
   $data['user']['username'] = $_SESSION['user']['username'];
   $data['user']['ip_address'] = $_SERVER['REMOTE_ADDR'];
@@ -572,7 +581,7 @@ function audit_write($post_data) {
   }
   $auditfile_identifier = $audit_file_epoch . "_". strtoupper(generate_token(4)) . ".log";
   if (file_put_contents('logs/audit/' . substr($audit_file_epoch, 0, 6) . '/' . $auditfile_identifier, $data)) {
-	log_write('0', 'Audit', 'Logged request '. $auditfile_identifier .', sha256: '. $audit_file_sha256);
+	event_log_write('0', 'Audit', 'Logged request '. $auditfile_identifier .', sha256: '. $audit_file_sha256);
     return $auditfile_identifier;
   }
   else {
@@ -604,11 +613,20 @@ if (file_exists('conf/settings.local')) {
 $prefs = parse_ini_file($settings_file, true); // Parse settings file
 $prefs['settings']['self'] = $_SERVER['PHP_SELF'];
 $prefs['settings']['release'] = file_get_contents('conf/RELEASE');
-$_SESSION['lang'] = parse_ini_file('conf/'.$prefs['settings']['lang'], true); // Parse language file
+
+if (file_exists('conf/' . basename($prefs['settings']['lang'], '.conf') . '.JSON')) {
+  $_SESSION['lang'] = json_decode(file_get_contents('conf/' . basename($prefs['settings']['lang'], '.conf') . '.JSON'), true); // Parse language file
+} else {
+  $_SESSION['lang'] = parse_ini_file('conf/' . basename($prefs['settings']['lang'], '.conf') . '.conf', true); // Parse language file
+}
+
+if (isset($prefs['settings']['timezone'])) {
+  date_default_timezone_set($prefs['settings']['timezone']);
+}
 
 try {
   // Create the attachments table.
-  $kirjuri_database = db('kirjuri-database');
+  $kirjuri_database = connect_database('kirjuri-database');
   $query = $kirjuri_database->prepare('CREATE TABLE IF NOT EXISTS attachments (id INT(10) AUTO_INCREMENT PRIMARY KEY,
   request_id INT(10), name VARCHAR(256), description TEXT, type VARCHAR(256), size INT NOT NULL, content MEDIUMBLOB NOT NULL,
   uploader VARCHAR(256), date_uploaded DATETIME, hash VARCHAR(256), attr_1 TEXT, attr_2 TEXT, attr_3 TEXT) ');
@@ -621,7 +639,6 @@ try {
 
 try {
   // Read users from database to settings.
-  $kirjuri_database = db('kirjuri-database');
   $query = $kirjuri_database->prepare('SELECT * from users ORDER BY access, username;');
   $query->execute();
   $users = $query->fetchAll(PDO::FETCH_ASSOC);
@@ -634,7 +651,6 @@ try {
 
 try {
   // Read tools from database to settings.
-  $kirjuri_database = db('kirjuri-database');
   $query = $kirjuri_database->prepare('SELECT * FROM tools ORDER BY product_name;');
   $query->execute();
   $tools = $query->fetchAll(PDO::FETCH_ASSOC);
@@ -657,12 +673,16 @@ if($_SESSION['user']) { // Get unread message count
   }
 }
 
+if ( (microtime(true) - $mysql_timer_start) > "2.0") {
+	trigger_error("Your MySQL connection is slow. This might be a timeout issue when resolving the localhost hostname to an IP address. Try setting the MySQL server to your server IP from the settings.");
+}
+
 /* Really extensive access logging.
 
 if (isset($_SERVER['HTTP_REFERER'])) {
 	$url = "http".(!empty($_SERVER['HTTPS'])?"s":"")."://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
 	if ($_SERVER['HTTP_REFERER'] !== $url) {
-		log_write('0', "Access", $_SERVER['HTTP_REFERER'] . ' -> ' . $url);
+		event_log_write('0', "Access", $_SERVER['HTTP_REFERER'] . ' -> ' . $url);
 	}
 }
 

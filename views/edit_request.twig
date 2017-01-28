@@ -67,18 +67,6 @@ $(function() {
     source: availableTags
   });
 });
-$(function() {
-  $("#case_confiscation_date").datepicker({
-    dayNamesMin: ["{{ lang.weekday_7_short }}", "{{ lang.weekday_1_short }}", "{{ lang.weekday_2_short }}", "{{ lang.weekday_3_short }}", "{{ lang.weekday_4_short }}", "{{ lang.weekday_5_short }}", "{{ lang.weekday_6_short }}"],
-    dateFormat: "yy-mm-dd",
-    monthNames: ["{{ lang.month_1 }}", "{{ lang.month_2 }}", "{{ lang.month_3 }}", "{{ lang.month_4 }}", "{{ lang.month_5 }}", "{{ lang.month_6 }}", "{{ lang.month_7 }}", "{{ lang.month_8 }}", "{{ lang.month_9 }}", "{{ lang.month_10 }}", "{{ lang.month_11 }}", "{{ lang.month_12 }}"],
-    monthNamesShort: ["{{ lang.month_1|slice(0, 4) }}", "{{ lang.month_2|slice(0, 4) }}", "{{ lang.month_3|slice(0, 4) }}", "{{ lang.month_4|slice(0, 4) }}", "{{ lang.month_5|slice(0, 4) }}", "{{ lang.month_6|slice(0, 4) }}", "{{ lang.month_7|slice(0, 4) }}", "{{ lang.month_8|slice(0, 4) }}", "{{ lang.month_9|slice(0, 4) }}", "{{ lang.month_10|slice(0, 4) }}", "{{ lang.month_11|slice(0, 4) }}", "{{ lang.month_12|slice(0, 4) }}"],
-    firstDay: ["1"],
-    showButtonPanel: ["false"],
-    closeText: ["{{ lang.close }}"],
-    currentText: ["{{ lang.today }} "]
-  });
-});
 
 </script>
 
@@ -543,7 +531,7 @@ $(function() {
                 <div class="form-group {% if (settings.notify_after_4_months == " 1 ") and (entry.case_confiscation_date != " 0000-00-00 ") and ((entry.case_confiscation_date|date("U ")) < ("-4 months "|date("U "))) %}has-error{%endif%}">
                 <label for="case_confiscation_date" class="col-sm-2 control-label">{{ lang.confiscation_date_abbrev }}</label>
                 <div class="col-sm-10">
-                  <input {% if entry.case_status=="3" %}disabled{% endif %} type="text" class="form-control warning" id="case_confiscation_date" name="case_confiscation_date" placeholder="{{ lang.date_format }}" value="{{ entry.case_confiscation_date }}">
+                  <input {% if entry.case_status=="3" %}disabled{% endif %} type="date" class="form-control warning" id="case_confiscation_date" name="case_confiscation_date" placeholder="{{ lang.date_format }}" value="{{ entry.case_confiscation_date }}">
                 </div>
             </div>
             <div class="form-group">
@@ -623,7 +611,7 @@ $(function() {
   {% if (caserow.0.case_status == "2") or ((caserow.0.case_status == "1") and (caserow.0.phone_investigator != "")) %}
   <button type="button" class="btn btn-primary btn-md" data-toggle="modal" data-target="#add_device_media_modal">
   <i class="fa fa-plus"></i> {{ lang.add_device_or_media }}
-  </button>{% endif %}
+</button>{% endif %}
 </div>
 {% if not mediarow %}
 <h1 class="page-header">{{ lang.no_devices_add_device }}</h1>
@@ -640,6 +628,7 @@ $(function() {
   {% if sort_order == "device_document, device_item_number" %}<b><i class="fa fa-sort"></i> {{ lang.device_document }}</b>{% else %}<a href="edit_request.php?case={{ caserow.0.id }}&tab=devices&j=tvp{% if dev_owner %}&dev_owner={{ dev_owner|url_encode }}{% endif %}">{{ lang.device_document }}</a>{% endif %}
 </div>
 {% endif %}
+
 {% for entry in mediarow %}
 <a name="{{ entry.id }}"></a>
 {% if (entry.device_host_id == "0") and (entry.is_removed != "1") %}
@@ -954,6 +943,7 @@ box-shadow: 2px 20px 47px -17px rgba(0,0,0,0.36);border: {% if dev_owner and (en
 {% endif %}
 {% endfor %}
 <!-- Modal -->
+
 <div class="modal fade" id="add_device_media_modal" role="dialog" aria-labelledby="add_device_media_modal">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -1047,6 +1037,7 @@ box-shadow: 2px 20px 47px -17px rgba(0,0,0,0.36);border: {% if dev_owner and (en
     </div>
   </div>
 </div>
+
 {% if mediarow %}
 <form class="form form-inline pull-right" role="form" method="post" action="submit.php?type=move_all&returnid={{ caserow.0.parent_id }}">
   <input type="hidden" name="token" value="{{session.user.token}}">

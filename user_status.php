@@ -25,7 +25,7 @@ if (file_exists('cache/user_'.$username))
       elseif ( (time() - filemtime( "cache/user_" . $username . "/" . $sessionfile)) >= 259200)
       {
         unlink("cache/user_" . $username . "/" . $sessionfile); // Purge offline session files older than three days.
-        log_write('0', 'Admin', 'Purged stale session ' . $sessionfile . ' for user ' . $username);
+        event_log_write('0', 'Admin', 'Purged stale session ' . $sessionfile . ' for user ' . $username);
       }
     }
   }

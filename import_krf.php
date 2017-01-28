@@ -56,7 +56,6 @@ function verify_keys($key) {
     49 => 'case_password',
     50 => 'case_owner',
     51 => 'is_protected',
-    52 => 'id',
     53 => 'request_id',
     54 => 'name',
     55 => 'description',
@@ -124,7 +123,7 @@ foreach ($input as $key => $value) {
 }
 
 $pdo_query = $query_builder = substr($query_builder, 0, -2) . "); UPDATE exam_requests SET parent_id=last_insert_id() WHERE id=last_insert_id();";
-$kirjuri_database = db('kirjuri-database');
+$kirjuri_database = connect_database('kirjuri-database');
 $query = $kirjuri_database->prepare($pdo_query);
 $pdo_data = array();
 foreach ($input as $key => $value) {
@@ -160,7 +159,7 @@ if (!empty($case_array['children'])) {
       }
     }
     $pdo_query = $query_builder = substr($query_builder, 0, -2) . ");";
-    $kirjuri_database = db('kirjuri-database');
+    $kirjuri_database = connect_database('kirjuri-database');
     $query = $kirjuri_database->prepare($pdo_query);
     $pdo_data = array();
     foreach ($input as $key => $value) {
@@ -211,7 +210,7 @@ if (isset($case_array['files'])) {
       }
     }
     $pdo_query = $query_builder = substr($query_builder, 0, -2) . ");";
-    $kirjuri_database = db('kirjuri-database');
+    $kirjuri_database = connect_database('kirjuri-database');
     $query = $kirjuri_database->prepare($pdo_query);
     $pdo_data = array();
     foreach ($file as $key => $value) {
@@ -226,7 +225,7 @@ mkdir('logs/cases/uid' . $new_parent['id']);
 file_put_contents('logs/cases/uid' . $new_parent['id'] . '/events.log', base64_decode($case_array['caselog']));
 file_put_contents('logs/cases/uid' . $new_parent['id'] . '/import.log', json_encode($case_array['metadata'], JSON_PRETTY_PRINT));
 
-log_write($new_parent['id'], "Add", "Imported case from file: " . $_FILES['fileToUpload']['name'][0]);
-show_saved();
+event_log_write($new_parent['id'], "Add", "Imported case from file: " . $_FILES['fileToUpload']['name'][0]);
+show_saved_succesfully();
 header('Location: edit_request.php?case=' . $new_parent['id']);
 die;

@@ -1,108 +1,139 @@
 <html>
-<head>
-  {% block title %}
-  <title>{{ settings.title_text }} - {{ filename }}</title>
-  {% endblock title %}
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <link rel="stylesheet" href="views/jquery-ui/jquery-ui.min.css">
-  <link href="vendor/twbs/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- <link href="vendor/twbs/bootstrap/dist/css/bootstrap-theme.min.css" rel="stylesheet"> -->
-  <link href="views/css/dashboard.css" rel="stylesheet">
-  <link rel="stylesheet" href="views/font-awesome-4.6.3/css/font-awesome.min.css">
-  <title>{{ settings.title_text }}</title>
-</head>
-<body>
-  <div class="col-sm-12  col-md-12 main">
-{% if data %}
-    {% if session.message.content %}
-    {{ session.message.type }} {{ session.message.content }}
-    {% endif %}
-    <h3><a class="btn btn-success" href="timeline.php?case={{ returnid }}"><i class="fa fa-arrow-left"></i>&nbsp;</a> {% if output_format == "JSON" %}
-<a href="auditor.php?view={{ filename }}&returnid={{returnid}}" class="btn btn-info">Data</a></span>
-{% elseif not output_format %}
-<a href="auditor.php?view={{ filename }}&format=JSON&returnid={{returnid}}" class="btn btn-info">JSON</a></span>
-{% endif %} {{ filename }} <span class="pull-right"><i class="fa fa-clock-o"></i> {{timestamp}} | {{ file_age }}</span></h3>
-    {% if not output_format %}
-    <table class="table">
-      <thead>
-        <th colspan="999">
-      </thead>
-      {% for a_key, upper_entry in data_array %}
-      <tr class="active">
-        <td>
-          <b>{{ a_key }}</b>
-        </td>
-        <td>
-        </td>
-        <td>
-        </td>
-      </tr>
-      {% for b_key, entry in upper_entry %}
-      <tr {% if b_key == "REVERT_FROM_AUDIT" %}class="danger"{% endif %}>
-        <td>
-        </td>
-        <td>
-          {{ b_key }}
-        </td>
-        <td>
-          {% if entry is iterable %}
-          {% for key, value in entry %}<p>{{ key }} => {{ value }}</p>{% endfor %}
-          {% else %}
-          {% if entry %}{% if b_key == "REVERT_FROM_AUDIT" %}<a href="auditor.php?view={{entry}}">{{ entry }}</a>{% else %}{{ entry }}{% endif %}{% else %}<span style="color:#BBB">no value</span>{% endif %}
-          {% endif %}
-        </td>
-      </tr>
-      {% endfor %}
-      {% endfor %}
-   	{% if log_matches %}
-  <tr><td colspan="999" class="active"><b>Log matches</b></td></tr>
-	{% for line in log_matches %}
-	<tr>
-	<td colspan="999">
-	<small>{{ line|replace({";": ", "}) }}</small>
-	</td>
-	</tr>
-	{% endfor %}
+    <head>
+        {% block title %}
+            <title>{{ settings.title_text }}
+                -
+                {{ filename }}</title>
+        {% endblock title %}
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <link rel="stylesheet" href="views/jquery-ui/jquery-ui.min.css">
+        <link href="vendor/twbs/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+        <!-- <link href="vendor/twbs/bootstrap/dist/css/bootstrap-theme.min.css" rel="stylesheet"> -->
+        <link href="views/css/dashboard.css" rel="stylesheet">
+        <link rel="stylesheet" href="views/font-awesome-4.6.3/css/font-awesome.min.css">
+        <title>{{ settings.title_text }}</title>
+    </head>
+    <body>
+        <div class="col-sm-12  col-md-12 main">
+            {% if data %}
+                {% if session.message.content %}
+                    {{ session.message.type }}
+                    {{ session.message.content }}
+                {% endif %}
+                <h3>
+                    <a class="btn btn-success" href="timeline.php?case={{ returnid }}">
+                        <i class="fa fa-arrow-left"></i>&nbsp;</a>
+                    {% if output_format == "JSON" %}
+                        <a href="auditor.php?view={{ filename }}&returnid={{returnid}}" class="btn btn-info">Data</a>
+                    </span>
+                {% elseif not output_format %}
+                    <a href="auditor.php?view={{ filename }}&format=JSON&returnid={{returnid}}" class="btn btn-info">JSON</a>
+                </span>
+            {% endif %}
+            {{ filename }}
+            <span class="pull-right">
+                <i class="fa fa-clock-o"></i>
+                {{timestamp}}
+                |
+                {{ file_age }}</span>
+        </h3>
+        {% if not output_format %}
+            <table class="table">
+                <thead>
+                    <th colspan="999"></thead>
+                    {% for a_key, upper_entry in data_array %}
+                        <tr class="active">
+                            <td>
+                                <b>{{ a_key }}</b>
+                            </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        {% for b_key, entry in upper_entry %}
+                            <tr {% if b_key == "REVERT_FROM_AUDIT" %} class="danger" {% endif %}>
+                                <td></td>
+                                <td>
+                                    {{ b_key }}
+                                </td>
+                                <td>
+                                    {% if entry is iterable %}
+                                        {% for key, value in entry %}
+                                            <p>{{ key }}
+                                                =>
+                                                {{ value }}</p>
+                                        {% endfor %}
+                                    {% else %}
+                                        {% if entry %}
+                                            {% if b_key == "REVERT_FROM_AUDIT" %}
+                                                <a href="auditor.php?view={{entry}}">{{ entry }}</a>
+                                            {% else %}{{ entry }}{% endif %}
+                                        {% else %}
+                                            <span style="color:#BBB">no value</span>
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% endfor %}
+                    {% if log_matches %}
+                        <tr>
+                            <td colspan="999" class="active">
+                                <b>Log matches</b>
+                            </td>
+                        </tr>
+                        {% for line in log_matches %}
+                            <tr>
+                                <td colspan="999">
+                                    <small>{{ line|replace({";": ", "}) }}</small>
+                                </td>
+                            </tr>
+                        {% endfor %}
 
-	{% else %}
-	<span style="color:red">No matching log entries for audit file!</span>
-	{% endif %}
+                    {% else %}
+                        <span style="color:red">No matching log entries for audit file!</span>
+                    {% endif %}
 
-	</table>
-{% elseif output_format == "JSON" %}
-  <pre>{{ data }}</pre>
-{% endif %}
+                </table>
+            {% elseif output_format == "JSON" %}
+                <pre>{{ data }}</pre>
+            {% endif %}
 
-<span class="pull-right">
-  <form method="POST" action="{{ data_array.user.request_uri }}">
-    {% for key, value in request_contents %}
-    {% if key == "token" %}
-    <input type="hidden" name="token" value="{{ session.user.token }}"><!-- current token -->
-    {% elseif value is iterable %}
-    {% for key, value in value %}
-    <input type="hidden" name="access[{{ key }}]" value="{{ value }}">
-    {% endfor %}
-    {% else %}
-    <input type="hidden" name="{{ key }}" value="{{ value }}">
-    {% endif %}
-    {% endfor %}
-    <input type="hidden" name="REVERT_FROM_AUDIT" value="{{ filename }}">
-    <button type="submit" class="btn btn-danger"><i class="fa fa-arrow-right"></i> <i class="fa fa-database"></i></button>
-  </form>
-</span>
-{% else %}
+            <span class="pull-right">
+                <form method="POST" action="{{ data_array.user.request_uri }}">
+                    {% for key, value in request_contents %}
+                        {% if key == "token" %}
+                            <input type="hidden" name="token" value="{{ session.user.token }}">
+                            <!-- current token -->
+                        {% elseif value is iterable %}
+                            {% for key, value in value %}
+                                <input type="hidden" name="access[{{ key }}]" value="{{ value }}">
+                            {% endfor %}
+                        {% else %}
+                            <input type="hidden" name="{{ key }}" value="{{ value }}">
+                        {% endif %}
+                    {% endfor %}
+                    <input type="hidden" name="REVERT_FROM_AUDIT" value="{{ filename }}">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fa fa-arrow-right"></i>
+                        <i class="fa fa-database"></i>
+                    </button>
+                </form>
+            </span>
+        {% else %}
 
-<form method="get">
-  <div class="form-group">
-    <label for="audit_file">View audit log</label>
-    <input type="text" class="form-control" name="view" id="audit_log_file_id" placeholder="Audit log file to view">
-  </div>
-  <button type="submit" class="btn btn-default"><i class="fa fa-arrow-right"></i></button>
-</form>
+            <form method="get">
+                <div class="form-group">
+                    <label for="audit_file">View audit log</label>
+                    <input type="text" class="form-control" name="view" id="audit_log_file_id" placeholder="Audit log file to view">
+                </div>
+                <button type="submit" class="btn btn-default">
+                    <i class="fa fa-arrow-right"></i>
+                </button>
+            </form>
 
-{% endif %}
-</div>
+        {% endif %}
+    </div>
 </body>

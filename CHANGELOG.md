@@ -1,6 +1,14 @@
 CHANGELOG
 ------------
 
+2017-01    Version 0.9.1
+
+* Made some tweaks to the user interface on user settings.
+* Added a language file editor to easily localize Kirjuri. You can access it from settings -> lang -> click the "Lang"-title link. Language files are stored as JSON files. Older .conf files will be loaded if no .JSON file is present, but saved as JSON on first edit.
+* Added a reservation calendar for the tools.
+* Branched the Kirjuri git project to "develop" and "master", "develop" contains the bleeding edge changes which are still untested. These changes will be merged to master after enough testing has been done to make sure nothing breaks.
+* Some bugfixes.
+
 2017-01-22 Version 0.9.0:
 
 * Dropped support for PHP5 - dependencies require this. Upgrade to PHP7.

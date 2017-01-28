@@ -8,7 +8,7 @@ if (isset($_GET['view'])) {
   $audit_file_epoch = substr($_GET['view'], 0, 10);
   $output_format = "";
   $audit_file_date = strftime("%d/%b/%Y:%H:%M:%S %z", $audit_file_epoch);
-  $audit_file_age = secondsToTime(time() - $audit_file_epoch);
+  $audit_file_age = seconds_to_time(time() - $audit_file_epoch);
   if (isset($_GET['format']))
   {
     $output_format = $_GET['format'];
@@ -23,7 +23,7 @@ if (isset($_GET['view'])) {
   $data_array = json_decode($data, true);
   $data_array['user']['audit_file_sha256'] = hash('sha256', $data);
 
-  //log_write('0', 'Audit', 'Request viewed: ' . $audit_file);
+  //event_log_write('0', 'Audit', 'Request viewed: ' . $audit_file);
 
   // https://stackoverflow.com/questions/3686177/php-to-search-within-txt-file-and-echo-the-whole-line
   $matches = array();

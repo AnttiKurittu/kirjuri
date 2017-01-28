@@ -4,9 +4,9 @@ require_once './include_functions.php';
 ksess_verify(2); // View only or higher
 $get_case = isset($_GET['case']) ? $_GET['case'] : '';
 $case_number = filter_numbers((substr($get_case, 0, 5)));
-verify_owner($case_number);
+verify_case_ownership($case_number);
 
-$kirjuri_database = db('kirjuri-database');
+$kirjuri_database = connect_database('kirjuri-database');
 $query = $kirjuri_database->prepare('SELECT * FROM exam_requests WHERE id=:id AND parent_id=:id LIMIT 1');
 $query->execute(array(
   ':id' => $case_number,

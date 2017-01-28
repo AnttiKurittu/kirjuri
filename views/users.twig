@@ -65,10 +65,10 @@
       <td><a href="submit.php?type=force_logout&user={{user.username|url_encode}}&token={{session.user.token}}"><i class="fa fa-sign-out"></i> {{ lang.log_out }}</a></td>
     </tr>
     {% endfor %}
-    <tr><td></td><td colspan="999"><button type="button" class="btn btn-primary btn-md" data-toggle="modal" data-target="#add_device_media_modal"><i class="fa fa-plus"></i> <i class="fa fa-user"></i></button></td></tr>
+    <tr><td></td><td colspan="999"><button type="button" class="btn btn-primary btn-md" data-toggle="modal" data-target="#add_user_modal"><i class="fa fa-plus"></i> <i class="fa fa-user"></i> {{ lang.add_a_new_local_user }}</button></td></tr>
 </table>
 
-{% if fields is not empty %}
+{% if fields.id is not empty %}
 <form class="form-horizontal" role="form" method="post" action="submit.php?type=create_user">
   <input type="hidden" name="token" value="{{session.user.token}}">
   <input type="hidden" name="user_id" value="{{fields.id}}">
@@ -221,7 +221,7 @@
 
 
 <!-- Modal -->
-<div class="modal fade" id="add_device_media_modal" role="dialog" aria-labelledby="add_user_modal">
+<div class="modal fade" id="add_user_modal" role="dialog" aria-labelledby="add_user_modal">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -331,7 +331,6 @@
           </div>
 
       <div class="modal-footer">
-
       <button type="button" class="btn btn-default" data-dismiss="modal">{{ lang.close }}</button>
       <button id="user_save_button" type="submit" class="btn btn-success">{{ lang.save }}</button> <input class="btn btn-default" type="reset" value="{{ lang.clear_form }}">
       </form>

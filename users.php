@@ -29,11 +29,8 @@ foreach ($_SESSION['all_users'] as $user) { // Get user information based on GET
       {
         $fields['blacklist'] = str_replace(",", ", ", implode(",", $ip_access_list['deny']));
       }
-
       $fields['sessions'] = array();
-
       if ( file_exists('cache/user_' . $user['username'] ))
-
       {
         $session_dir = scandir('cache/user_'.$user['username']);
         foreach($session_dir as $sessionfile)
@@ -41,7 +38,7 @@ foreach ($_SESSION['all_users'] as $user) { // Get user information based on GET
           if ($sessionfile[0] !== ".")
           {
             $fields['sessions'][$sessionfile]['content'] = file_get_contents("cache/user_" . $user['username'] . "/" . $sessionfile);
-            $fields['sessions'][$sessionfile]['last_activity'] = secondsToTime( time() - filemtime( "cache/user_" . $user['username'] . "/" . $sessionfile));
+            $fields['sessions'][$sessionfile]['last_activity'] = seconds_to_time( time() - filemtime( "cache/user_" . $user['username'] . "/" . $sessionfile));
             $fields['sessions'][$sessionfile]['last_activity_sec'] = time() - filemtime( "cache/user_" . $user['username'] . "/" . $sessionfile);
           }
         }

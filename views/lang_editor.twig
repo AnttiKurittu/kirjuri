@@ -1,0 +1,99 @@
+{% extends 'base.twig' %} {% block title %}
+<title>{{ lang.settings }} - {{ settings.title_text }}</title>
+{% endblock title %}
+{% block content %}
+<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+<h1>{{ lang.settings }} - {{ lang.edit_language_file }} </h1>
+
+<form class="form-horizontal" role="form" method="post" action="submit.php?type=save_langfile">
+  <input type="hidden" name="token" value="{{session.user.token}}">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">{{ lang.language_strings }}<span class="pull-right"><button type="submit" class="btn btn-success btn-xs">{{ lang.save }}</button></span></h3>
+    </div>
+    <div class="panel-body">
+
+<p>{{ lang.edit_strings }}</p>
+<hr>
+
+      <div class="form-group">
+        <label for="setting" class="col-md-2 control-label">{{ lang.save_as|capitalize }}...</label>
+        <div class="col-md-10">
+          <div class="input-group">
+            <span class="input-group-addon">lang_</span>
+            <input type="text" class="form-control" name="countrycode" value="{{ langfile_name|replace({'lang_': "", '.JSON': "", '.conf': ""})}}" placeholder="Three letter country code" maxlength="3">
+
+          </div>
+          <small>&nbsp;&nbsp;{{ lang.existing_files }}: {% for ccode in langfiles %}{% if ccode in langfile_name %}<b>{{ ccode }}</b>{% else %}{{ ccode }}{% endif %}{% if not loop.last%}, {% endif %}{% endfor %}
+        </div>
+      </div>
+      <hr>
+      {% for key, value in diff %}
+      <div class="form-group">
+        <label for="setting" class="col-md-2 control-label"><b style="color:red;"><span class="pull-left"><i class="fa fa-warning"></i></span> {{ key|replace({"_": " "})|capitalize }}</b></label>
+        <div class="col-md-10">
+          <input type="text" class="form-control" name="{{ key }}" value="{{ value }}" placeholder="{{ value }}">
+        </div>
+      </div>
+      {% endfor %}
+
+      {% for key, value in langfile %}
+      {% if value is not iterable %}
+      <div class="form-group">
+        <label for="setting" class="col-md-2 control-label">{{ key|replace({"_": " "})|capitalize }}</label>
+        <div class="col-md-10">
+          <input type="text" class="form-control" name="{{ key }}" value="{{ value }}" placeholder="{{ value }}">
+        </div>
+      </div>
+      {% endif %}
+      {% endfor %}
+
+      {% for key, value in langfile %}
+      {% if value is iterable %}
+      <h3>{{ key|replace({"_": " "})|capitalize }}</h3>
+      <hr>
+      {% set primary = key %}
+      {% for subkey, value in value %}
+      <div class="form-group">
+        <label for="setting" class="col-md-2 control-label">{{ subkey|replace({"_": " "})|capitalize }}</label>
+        {% if primary == "devices" %}
+        <div class="col-md-8">
+          <input type="text" class="form-control warning" name="{{primary}}[{{ subkey }}]" value="{{ value }}" placeholder="{{ value }}">
+          &nbsp;&nbsp;{{ lang.image_file }}: <code>views/img/svg/{{ value|lower|replace({" ": "_", "ä": "a", "ö": "o"}) }}.svg</code>
+        </div>
+        <div class="col-md-2">
+            <img src="views/img/svg/{{ value|lower|replace({" ": "_", "ä": "a", "ö": "o"}) }}.svg" width="32px" style="padding-left:5px;padding-right:5px;">
+        </div>
+        {% elseif primary == "media_objs" %}
+        <div class="col-md-8">
+          <input type="text" class="form-control warning" name="{{primary}}[{{ subkey }}]" value="{{ value }}" placeholder="{{ value }}">
+          &nbsp;&nbsp;{{ lang.image_file }}: <code>views/img/svg/{{ value|lower|replace({" ": "_", "ä": "a", "ö": "o"}) }}.svg</code>
+        </div>
+          <div class="col-md-2">
+            <img src="views/img/svg/{{ value|lower|replace({" ": "_", "ä": "a", "ö": "o"}) }}.svg" width="32px" style="padding-left:5px;padding-right:5px;">
+        </div>
+        {% else %}
+        <div class="col-md-10">
+          <input type="text" class="form-control warning" name="{{primary}}[{{ subkey }}]" value="{{ value }}" placeholder="{{ value }}">
+        </div>
+        {% endif %}
+      </div>
+      {% endfor %}
+      {% endif %}
+    {% endfor %}
+
+    </div>
+    <div class="panel-footer">
+      <button type="submit" class="btn btn-success">{{ lang.save }}</button>
+    </div>
+  </div>
+</form>
+
+</div>
+
+
+
+</div>
+</div>
+</div>
+{% endblock %}

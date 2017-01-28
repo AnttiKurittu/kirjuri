@@ -30,6 +30,7 @@ $query->execute(array(
     ':datestop' => $dateRange['stop'],
 ));
 $all_devices = $query->fetchAll(PDO::FETCH_ASSOC);
+
 $query = $kirjuri_database->prepare('select COUNT(id) FROM exam_requests WHERE is_removed != "1" AND case_status = "1" AND id=parent_id AND case_added_date BETWEEN :datestart AND :datestop');
 $query->execute(array(
     ':datestart' => $dateRange['start'],
@@ -139,6 +140,7 @@ echo $twig->render('statistics.twig', array(
     'classifications' => $_SESSION['lang']['classifications'],
     'all_cases' => $all_cases,
     'all_devices' => $all_devices,
+    'device_count' => count($all_devices),
     'count_total' => $count_total,
     'count_new' => $count_new,
     'count_open' => $count_open,

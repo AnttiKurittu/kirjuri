@@ -8,7 +8,7 @@
 
 // curl -X POST -i -d @./request.json "http://localhost:7888/kirjuri-wamp/api.php"
 
-function db($database) {
+function connect_database($database) {
   $mysql_config = include('conf/mysql_credentials.php');
   if ($database === 'kirjuri-database') {
     try {
@@ -35,7 +35,7 @@ function array_trim($array) {
 
 function verify_ownership($username, $uid) {
 
-  $kirjuri_database = db('kirjuri-database');
+  $kirjuri_database = connect_database('kirjuri-database');
   $query = $kirjuri_database->prepare('SELECT case_owner FROM exam_requests WHERE id = :id');
   $query->execute(array(
     ':id' => $uid,
@@ -60,7 +60,7 @@ $key_found = false;
 $api_key = preg_replace('/[^a-zA-Z0-9]/', '', ($_GET['key']));
 try {
   // Read users from database to settings.
-  $kirjuri_database = db('kirjuri-database');
+  $kirjuri_database = connect_database('kirjuri-database');
   $query = $kirjuri_database->prepare('SELECT * from users');
   $query->execute();
   $users = $query->fetchAll(PDO::FETCH_ASSOC);
@@ -126,7 +126,7 @@ $output = array();
 switch ($_SERVER['REQUEST_METHOD']) {
   case 'GET':
     if($path[0] === 'case') {
-    $kirjuri_database = db('kirjuri-database');
+    $kirjuri_database = connect_database('kirjuri-database');
     $query = $kirjuri_database->prepare('SELECT * FROM exam_requests WHERE case_id = :case_id AND is_removed != "1" AND case_added_date BETWEEN :dateStart AND :dateStop');
     $query->execute(array(
       ':case_id' => $case_id,
@@ -194,7 +194,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
         }
       }
       $pdo_query = $query_builder = substr($query_builder, 0, -2) . "); UPDATE exam_requests SET parent_id=last_insert_id() WHERE id=last_insert_id();";
-      $kirjuri_database = db('kirjuri-database');
+      $kirjuri_database = connect_database('kirjuri-database');
       $query = $kirjuri_database->prepare($pdo_query);
       $pdo_data = array();
       foreach($input as $key => $value) {
@@ -260,7 +260,7 @@ die;
       }
     }
     $pdo_query = $query_builder = substr($query_builder, 0, -2) . ");";
-    $kirjuri_database = db('kirjuri-database');
+    $kirjuri_database = connect_database('kirjuri-database');
     $query = $kirjuri_database->prepare($pdo_query);
     $pdo_data = array();
     foreach($data as $key => $value) {

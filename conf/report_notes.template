@@ -1,5 +1,13 @@
-<h3>Image file details</h3>
-<p>Disk image hash:</p>
-<p>Disk image checksum:</p>
-<p>Disk image location:</p>
-<p>Disk image creator:</p>
+<h2>Device findings and evidence</h2>
+<hr /><p>Describe your findings here.</p>
+<h2>Tasks</h2>
+<hr /><ul><li>Add tasks related to this device or media</li>
+<li></li>
+</ul><h2>Image file details</h2>
+<hr /><table style="width:100%;border:1px solid #888;"><tbody><tr><td style="width:1px;white-space:nowrap;padding:3px;">Disk image hash</td>
+<td> </td>
+</tr><tr><td style="width:1px;white-space:nowrap;padding:3px;">Disk image location</td>
+<td> </td>
+</tr><tr><td style="width:1px;white-space:nowrap;padding:3px;">Disk image creator</td>
+<td> </td>
+</tr></tbody></table>

@@ -15,7 +15,7 @@ $dev_owner = urldecode(isset($_GET['dev_owner'])) ? $_GET['dev_owner'] : '';
 $filelist = array();
 $case_number = filter_numbers((substr($get_case, 0, 5)));
 $confCrimes = strip_tags(file_get_contents('conf/crimes_autofill.conf'));
-$kirjuri_database = db('kirjuri-database');
+$kirjuri_database = connect_database('kirjuri-database');
 $query = $kirjuri_database->prepare('SELECT * FROM exam_requests WHERE id=:id AND parent_id=:id LIMIT 1');
 $query->execute(array(
   ':id' => $case_number,
@@ -38,7 +38,7 @@ if (!empty($caserow['0']['case_owner']))
   $case_owner = explode(";", $caserow['0']['case_owner']);
   if ( ($_SESSION['user']['access'] > "0") && !in_array($_SESSION['user']['username'], $case_owner))
   {
-    log_write($caserow[0]['id'], "Access", "Denied, user not in access group.");
+    event_log_write($caserow[0]['id'], "Access", "Denied, user not in access group.");
     $_SESSION['message']['type'] = 'error';
     $_SESSION['message']['content'] = sprintf($_SESSION['lang']['not_in_access_group']);
     $_SESSION['message_set'] = true;
@@ -85,11 +85,19 @@ if ($sort_j === 'dev_owner') {
 } else {
     $j = 'device_type';
 }
-$query = $kirjuri_database->prepare('SELECT * FROM exam_requests WHERE id != :id AND parent_id=:id AND is_removed != "1" ORDER BY '.$j);
+$query = $kirjuri_database->prepare('SELECT * FROM exam_requests WHERE id != :id AND parent_id=:id AND device_type != "task" AND is_removed != "1" ORDER BY '.$j);
 $query->execute(array(
   ':id' => $case_number,
 ));
 $mediarow = $query->fetchAll(PDO::FETCH_ASSOC);
+
+$query = $kirjuri_database->prepare('SELECT * FROM exam_requests WHERE id != :id AND parent_id=:id AND device_type = "task" AND is_removed != "1" ORDER BY '.$j);
+$query->execute(array(
+  ':id' => $case_number,
+));
+$tasks = $query->fetchAll(PDO::FETCH_ASSOC);
+
+
 if (!file_exists('conf/instructions_'.str_replace(' ', '_', strtolower($caserow[0]['classification'])).'.txt')) {
     $instructions_text = 'File conf/instructions_'.str_replace(' ', '_', strtolower($caserow[0]['classification'])).'.txt not found.';
 } else {
@@ -136,6 +144,7 @@ echo $twig->render('edit_request.twig', array(
   'returntab' => $returntab,
   'caserow' => $caserow,
   'mediarow' => $mediarow,
+  'tasks' => $tasks,
   'settings' => $prefs['settings'],
   'device_locations' => $_SESSION['lang']['device_locations'],
   'device_actions' => $_SESSION['lang']['device_actions'],

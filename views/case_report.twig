@@ -68,7 +68,7 @@
       {% for entry in mediarow %}{% if (entry.is_removed == "0") and (entry.device_is_host == "1") %}
       <li>{{ lang.device|upper }} {% if entry.device_document %}{{ entry.device_document }}{% endif %}{% if entry.device_item_number %} {{ lang.object_no }} {{ entry.device_item_number }}{% endif %}
         <b>{{ entry.device_type }}, {{ entry.device_manuf }} {{ entry.device_model }} {% if entry.device_size_in_gb %}({{ lang.size }} {{ entry.device_size_in_gb }} GB){% endif %}</b>
-        {% if entry.device_identifier %}<br>{{ lang.identifier }}: {{ entry.device_identifier }}{% endif %}, {{ lang.uid_long }} {{ entry.id }}
+        {% if entry.device_identifier %}<br>{{ lang.identifier }}: {{ entry.device_identifier }}{% endif %}, UID{{ entry.id }}
         {% if entry.case_request_description %}<br>{{ lang.description }}: <i>{{ entry.case_request_description }}</i>{% endif %}
         {% endif %}
       </li>
@@ -76,12 +76,13 @@
       {% for entry in mediarow %}
       {% if (entry.device_host_id == this_parent) and (entry.is_removed == "0") %}
       <ul>
-        <li>{{ lang.media|upper }}{% if entry.device_document %}{{ entry.device_document }}{% endif %}{% if entry.device_item_number %} {{ lang.object_no }} {{ entry.device_item_number }}{% endif %}
+        <li><i class="fa fa-arrow-right"></i>{% if entry.device_document %}{{ entry.device_document }}{% endif %}{% if entry.device_item_number %} {{ lang.object_no }} {{ entry.device_item_number }}{% endif %}
           <b>{{ entry.device_type }}, {{ entry.device_manuf }} {{ entry.device_model }} {% if entry.device_size_in_gb %}({{ lang.size }} {{ entry.device_size_in_gb }} GB){% endif %}</b>
-          {% if entry.device_identifier %}<br>{{ lang.identifier }}: {{ entry.device_identifier }}, {% endif %}{{ lang.uid_long }} {{ entry.id }}
+          {% if entry.device_identifier %}<br>{{ lang.identifier }}: {{ entry.device_identifier }}, {% endif %}UID{{ entry.id }}
           {% if entry.case_request_description %}<br>{{ lang.description }}: <i>{{ entry.case_request_description }}</i>{% endif %}
         </li>
       </ul>
+      <br>
       {% endif %}{% endfor %}{% endfor %}
   </div>
   <div class="page">
@@ -89,8 +90,8 @@
   <hr>
   {% for entry in mediarow %}
   {% if (entry.is_removed == "0") and (entry.report_notes) and (entry.device_include_in_report == "1")%}
-  <h4>&nbsp;&nbsp;{{ entry.device_type }}, {{ entry.device_manuf }} {{ entry.device_model }} {% if entry.device_size_in_gb %}(koko {{ entry.device_size_in_gb }} GB){% endif %} {% if entry.device_identifier %}[{{ entry.device_identifier }}]{% endif %}</h4>
-  <div class="well well-sm">{{ entry.report_notes|raw }}</div>
+  <h4 class="label label-default" style="font-size:2em;">[UID{{ entry.id }}] {{ entry.device_type }}, {{ entry.device_manuf }} {{ entry.device_model }} {% if entry.device_size_in_gb %}({{ entry.device_size_in_gb }} GB){% endif %} {% if entry.device_identifier %}[{{ entry.device_identifier }}]{% endif %}</h4>
+  {{ entry.report_notes|raw }}
   {% endif %}
   {% endfor %}
   </div>

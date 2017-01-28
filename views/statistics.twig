@@ -7,27 +7,27 @@
 <h1 class="page-header">{{ lang.statistics }} {{ dateStart|date("Y") }} <a href='statistics.php?year={{ (dateStart|date("Y") - 1 ) }}'><i class="fa fa-caret-left"></i></a> <a href='statistics.php?year={{ (dateStart|date("Y") + 1 ) }}'><i class="fa fa-caret-right"></i></a> </h1>
 <div class="col-md-3 col-sm-3 text-center">
   <h4>{{ lang.status_of_requests }}</h4>
-  <canvas id="statusKaavio" style="width:200px;height:200px;"></canvas>
+  <canvas id="status_visualization" style="width:200px;height:200px;"></canvas>
   <script>
-    var ctx = document.getElementById("statusKaavio").getContext("2d");
+    var ctx = document.getElementById("status_visualization").getContext("2d");
     var data = [
     {
       value: {{ count_finished }},
       color: "#5BC764",
       highlight: "#FF5A5E",
-      label: "Valmis"
+      label: "{{ lang.ready }}"
     },
     {
       value: {{ count_open }},
       color: "#E8D861",
       highlight: "#FF5A5E",
-      label: "Kesken"
+      label: "{{ lang.open }}"
     },
     {
       value: {{ count_new }},
       color: "#E8747C",
       highlight: "#FF5A5E",
-      label: "Uusi"
+      label: "{{ lang.new }}"
     }
     ]
     var myNewChart = new Chart(ctx).Doughnut(data);
@@ -35,21 +35,21 @@
 </div>
 <div class="col-md-3 col-sm-3  text-center">
   <h4>{{ lang.requests_containing_phones }}</h4>
-  <canvas id="puhelinKaavio" style="width:200px;height:200px;"></canvas>
+  <canvas id="puhelin_visualization" style="width:200px;height:200px;"></canvas>
   <script>
-    var ctx = document.getElementById("puhelinKaavio").getContext("2d");
+    var ctx = document.getElementById("puhelin_visualization").getContext("2d");
     var data = [
     {
       value: {{ (count_phones / (count_new + count_open + count_finished) * 100)|round }},
       color:"{{ statistics_chart_colors.1 }}",
       highlight: "#FF5A5E",
-      label: "Puhelimia"
+      label: '{{ lang.contains_mobile_devices }}'
     },
     {
       value: {{ (100 - (count_phones / (count_new + count_open + count_finished) * 100)|round) }},
       color:"#F0F0F0",
       highlight: "#FF5A5E",
-      label: "Ei puhelimia"
+      label: "{{ lang.no_mobile_examination }}"
     },
     ]
     var myNewChart = new Chart(ctx).Doughnut(data);
@@ -57,9 +57,9 @@
 </div>
 <div class="col-md-3 col-sm-3 text-center">
   <h4>{{ lang.requests_by_classification }}</h4>
-  <canvas id="classificationKaavio" style="width:200px;height:200px;"></canvas>
+  <canvas id="classification_visualization" style="width:200px;height:200px;"></canvas>
   <script>
-    var ctx = document.getElementById("classificationKaavio").getContext("2d");
+    var ctx = document.getElementById("classification_visualization").getContext("2d");
     var data = [
     {% for classification in classifications %}{% set laskuri = "0"%}
     {
@@ -75,16 +75,16 @@
 </div>
 <div class="col-sm-3 col-md-3 text-center">
   <h4>{{ lang.requests_by_unit }}</h4>
-  <canvas id="yksikkoKaavio" style="width:200px;height:200px;"></canvas>
+  <canvas id="investigating_unit_visualization" style="width:200px;height:200px;"></canvas>
   <script>
-    var ctx = document.getElementById("yksikkoKaavio").getContext("2d");
+    var ctx = document.getElementById("investigating_unit_visualization").getContext("2d");
     var data = [
-    {% for yksikko in inv_units %}{% set laskuri = "0"%}
+    {% for investigating_unit in inv_units %}{% set laskuri = "0"%}
     {
-      value: {% for entry in all_cases %}{% if entry.case_investigator_unit == yksikko %}{% set laskuri = laskuri + 1 %}{% endif %}{% if loop.last == true %}{{ laskuri }}{% endif %}{% endfor %},
+      value: {% for entry in all_cases %}{% if entry.case_investigator_unit == investigating_unit %}{% set laskuri = laskuri + 1 %}{% endif %}{% if loop.last == true %}{{ laskuri }}{% endif %}{% endfor %},
       color:"#{{ random(['B7','C4','E8','D1','CF','E7']) }}{{ random(['B7','C4','E8','D1','CF','E7']) }}{{ random(['B7','C4','E8','D1','CF','E7']) }}",
       highlight: "#FF5A5E",
-      label: "{{ yksikko }}"
+      label: "{{ investigating_unit }}"
     }{% if loop.last == true %}{% else %},{% endif %}
     {% endfor %}
     ]
@@ -121,7 +121,7 @@
     </td>
     {% endfor %}
     <td>
-      <b>{{ count_devices }}</b>
+      <b>{{ device_count }}</b>
     </td>
   </tr>
   <tr>
@@ -230,9 +230,9 @@
   </tr>
 </table>
 <div class="col-sm-12">
-  <canvas id="dataKaavio" style="width:100%;height:400px;"></canvas>
+  <canvas id="data_visualization" style="width:100%;height:400px;"></canvas>
   <script>
-    var ctx = document.getElementById("dataKaavio").getContext("2d");
+    var ctx = document.getElementById("data_visualization").getContext("2d");
     var data = {
       labels: ["{{ lang.month_1 }}", "{{ lang.month_2 }}", "{{ lang.month_3 }}", "{{ lang.month_4 }}", "{{ lang.month_5 }}", "{{ lang.month_6 }}", "{{ lang.month_7 }}", "{{ lang.month_8 }}", "{{ lang.month_9 }}", "{{ lang.month_10 }}", "{{ lang.month_11 }}", "{{ lang.month_12 }}"],
       datasets: [
@@ -254,9 +254,9 @@
 <div class="col-md-12" style="height:40px;"></div>
 <h3>{{ lang.cumulative_data_from_start_of_year }}</h3>
 <div class="col-sm-12">
-  <canvas id="dataKaavio2" style="width:100%;height:400px;"></canvas>
+  <canvas id="data_visualization2" style="width:100%;height:400px;"></canvas>
   <script>
-    var ctx = document.getElementById("dataKaavio2").getContext("2d");
+    var ctx = document.getElementById("data_visualization2").getContext("2d");
     var data = {
       labels: ["{{ lang.month_1 }}", "{{ lang.month_2 }}", "{{ lang.month_3 }}", "{{ lang.month_4 }}", "{{ lang.month_5 }}", "{{ lang.month_6 }}", "{{ lang.month_7 }}", "{{ lang.month_8 }}", "{{ lang.month_9 }}", "{{ lang.month_10 }}", "{{ lang.month_11 }}", "{{ lang.month_12 }}"],
       datasets: [
@@ -277,9 +277,9 @@
 <div class="col-md-12" style="height:40px;"></div>
 <h3>{{ lang.data_by_unit }}</h3>
 <div class="col-sm-12">
-  <canvas id="dataKaavio3" style="width:100%;height:400px;"></canvas>
+  <canvas id="data_visualization3" style="width:100%;height:400px;"></canvas>
   <script>
-    var ctx = document.getElementById("dataKaavio3").getContext("2d");
+    var ctx = document.getElementById("data_visualization3").getContext("2d");
     var data = {
       labels: [{% for unit in inv_units %}"{{unit}}"{% if not loop.last %},{% endif %}{% endfor %}],
       datasets: [
@@ -300,9 +300,9 @@
 <div class="col-md-12" style="height:40px;"></div>
 <h3>{{ lang.count_by_unit }}</h3>
 <div class="col-sm-12">
-  <canvas id="dataKaavio4" style="width:100%;height:400px;"></canvas>
+  <canvas id="data_visualization4" style="width:100%;height:400px;"></canvas>
   <script>
-    var ctx = document.getElementById("dataKaavio4").getContext("2d");
+    var ctx = document.getElementById("data_visualization4").getContext("2d");
     var data = {
       labels: [{% for unit in inv_units %}"{{unit}}"{% if not loop.last %},{% endif %}{% endfor %}],
       datasets: [
@@ -471,19 +471,19 @@
       <td>{{ lang.month_12 }}</td>
       <td><b>{{ lang.total }}</b></td>
     </thead>
-    {% for yksikko in inv_units %}
+    {% for investigating_unit in inv_units %}
     <tr>
-      <td>{{ yksikko }}
+      <td>{{ investigating_unit }}
       </td>
       {% for month_col in 1..13 %}
       <td>
         {% if month_col != "13" %}
         {% set laskuri = "0" %}{% set monthBeginsAt = "01." ~ month_col ~ "." ~ dateStart|date("Y") %}{% set monthStopsAt = "31." ~ month_col ~ "." ~ dateStart|date("Y") %}{% for entry in all_cases %}{% if (entry.case_added_date|date("U") >= monthBeginsAt|date("U")) and (entry.case_added_date|date("U") <= monthStopsAt|date("U")) %}
-        {% if entry.case_investigator_unit == yksikko %}{% set laskuri = laskuri + 1%}{% endif%}{% endif %}{% if loop.last == true %}{% if laskuri >= "1" %}{{ laskuri }}{% else %}<span style="color:#D0D0D0;">{{ laskuri }}</span>{% endif %}{% endif %}{% endfor %}
+        {% if entry.case_investigator_unit == investigating_unit %}{% set laskuri = laskuri + 1%}{% endif%}{% endif %}{% if loop.last == true %}{% if laskuri >= "1" %}{{ laskuri }}{% else %}<span style="color:#D0D0D0;">{{ laskuri }}</span>{% endif %}{% endif %}{% endfor %}
         {% else %}
         {% set laskuri = "0"%}
         {% for entry in all_cases %}
-        {% if entry.case_investigator_unit == yksikko %}{% set laskuri = laskuri + 1 %}{% endif %}
+        {% if entry.case_investigator_unit == investigating_unit %}{% set laskuri = laskuri + 1 %}{% endif %}
         {% if loop.last == true %}<b>{% if laskuri >= "1" %}{{ laskuri }}{% else %}<span style="color:#D0D0D0;">{{ laskuri }}</span>{% endif %}</b>{% endif %}
         {% endfor %}
         {% endif %}

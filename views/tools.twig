@@ -24,18 +24,22 @@
         <hr>
 
         {% if not fields %}
+            {% if session.user.access == "0" %}
             &nbsp;<button type="button" class="btn btn-primary btn-md" data-toggle="modal" data-target="#add_tool_modal">
                 <i class="fa fa-plus"></i>
                 {{ lang.add_a_tool|capitalize }}</button>
+                {% endif %}
         {% else %}
             &nbsp;<a href="tools.php" class="btn btn-success">
                 <i class="fa fa-arrow-left"></i>
                 {{ lang.back }}</a>
+            {% if session.user.access == "0" %}
             <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#add_tool_modal">
                 <i class="fa fa-edit"></i>
                 {{ lang.edit_tool|capitalize }}
                 {{ fields.product_name }}
             </button>
+            {% endif %}
         {% endif %}
 
         <table class="table table-striped" style="margin-top:20px;background-color:#FFF;">
@@ -330,7 +334,7 @@
                   {% endfor %}
               </table>
         {% endif %}
-
+{% if session.user.access == "0" %}
         <div class="modal fade" id="add_tool_modal" role="dialog" aria-labelledby="add_tool_modal">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -427,5 +431,5 @@
 
                 </div>
             </div>
-
+{% endif %}
         {% endblock %}

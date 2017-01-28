@@ -604,8 +604,8 @@ case 'update_tool':
       ':tool_id' => $_POST['tool_id'],
       ':hw_version' => trim(substr($_POST['hw_version'], 0, 64)),
       ':sw_version' => trim(substr($_POST['sw_version'], 0, 64)),
-      ':hw_version_old' => trim(substr($_POST['hw_version'], 0, 64)),
-      ':sw_version_old' => trim(substr($_POST['sw_version'], 0, 64)),
+      ':hw_version_old' => trim(substr($_POST['hw_version_old'], 0, 64)),
+      ':sw_version_old' => trim(substr($_POST['sw_version_old'], 0, 64)),
       ':comment' => $_POST['comment'],
       ':flags' => $_POST['flag1']
     ));

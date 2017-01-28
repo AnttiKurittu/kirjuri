@@ -34,6 +34,7 @@ foreach ($request['parent'] as $key => $value) {
 }
 
 $request['parent'] = array_trim($request['parent']);
+$request['files'] = array();
 
 $i = 0;
 foreach ($request['children'] as $child) {

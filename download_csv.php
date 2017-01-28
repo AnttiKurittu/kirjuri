@@ -12,11 +12,6 @@ $query->execute(array(
 ));
 $request_items = $query->fetchAll(PDO::FETCH_ASSOC);
 
-$query = $kirjuri_database->prepare('SELECT * FROM exam_requests WHERE parent_id = :id AND is_removed != "0" ORDER BY id');
-$query->execute(array(
-  ':id' => $case_number,
-));
-$request_items_removed = $query->fetchAll(PDO::FETCH_ASSOC);
 $filename = 'Kirjuri '.$request_items[0]['case_id'].'-'.date('Y', strtotime($request_items[0]['case_added_date'])).' '.$request_items[0]['case_name'];
 header('Content-Description: File Transfer');
 header('Content-Encoding: UTF-8');
@@ -36,20 +31,5 @@ foreach ($request_items as $result) {
         $item = str_replace(';', ',', $item);
         echo '"'.$item.'";';
     }
-  ;
     echo "\n";
 }
-;
-echo 'Removed items:'."\n";
-foreach ($request_items_removed as $result) {
-    foreach ($result as $result) {
-        $item = str_replace("'", '"', $result);
-        $item = str_replace('"', '""', $item);
-        $item = str_replace('\\', '', $item);
-        $item = str_replace(';', ',', $item);
-        echo '"'.$item.'";';
-    }
-  ;
-    echo "\n";
-}
-;

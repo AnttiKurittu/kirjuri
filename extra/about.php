@@ -25,6 +25,7 @@
   <ul>
     <li>Organize devices into examination requests and track their location and status.</li>
     <li>Make notes about forensic findings and generate a simple report to document them.</li>
+    <li>Organize your tools and manage reservations for them.</li>
     <li>User management with case-by-case access management and different access leves.</li>
     <li>Simple user interface designed for the needs of actual forensic examiners.</li>
     <li>Extensive internal logging for compliance and audit tasks.</li>

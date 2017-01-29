@@ -3,7 +3,7 @@
 /*
  * This file is part of Twig.
  *
- * (c) 2009 Fabien Potencier
+ * (c) Fabien Potencier
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -18,7 +18,7 @@
  * {% endmacro %}
  * </pre>
  */
-class Twig_TokenParser_Macro extends Twig_TokenParser
+final class Twig_TokenParser_Macro extends Twig_TokenParser
 {
     public function parse(Twig_Token $token)
     {
@@ -35,7 +35,7 @@ class Twig_TokenParser_Macro extends Twig_TokenParser
             $value = $token->getValue();
 
             if ($value != $name) {
-                throw new Twig_Error_Syntax(sprintf('Expected endmacro for macro "%s" (but "%s" given).', $name, $value), $stream->getCurrent()->getLine(), $stream->getFilename());
+                throw new Twig_Error_Syntax(sprintf('Expected endmacro for macro "%s" (but "%s" given).', $name, $value), $stream->getCurrent()->getLine(), $stream->getSourceContext());
             }
         }
         $this->parser->popLocalScope();

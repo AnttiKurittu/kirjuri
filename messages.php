@@ -1,13 +1,7 @@
 <?php
 
 require_once './include_functions.php';
-
-// Force end session
-if (!file_exists('cache/user_' . md5($_SESSION['user']['username']) . '/session_' . $_SESSION['user']['token'] . '.txt'))
-{
-  header('Location: submit.php?type=logout');
-  die;
-}
+ksess_verify(3);
 
 $open = isset($_GET['open']) ? $_GET['open'] : '';
 $prefill_msgto = isset($_GET['msgto']) ? $_GET['msgto'] : '';
@@ -16,11 +10,11 @@ $show = isset($_GET['show']) ? $_GET['show'] : '';
 
 foreach($_POST as $key => $value) // Sanitize all POST data
 {
-  $value = sanitize_raw($value);
+  $value = filter_html($value);
   $_POST[$key] = isset($value) ? $value : '';
 }
 
-$open = num($open);
+$open = filter_numbers($open);
 
 if ($open > 0)
 {
@@ -48,10 +42,10 @@ foreach($messages as $message) {
 }
 
 $_SESSION['message_set'] = false;
-echo $twig->render('messages.html', array(
+echo $twig->render('messages.twig', array(
     'post' => $_POST,
     'session' => $_SESSION,
-    'settings' => $settings,
+    'settings' => $prefs['settings'],
     'lang' => $_SESSION['lang'],
     'messages' => $messages,
     'open' => $open,

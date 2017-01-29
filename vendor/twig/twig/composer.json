@@ -27,10 +27,11 @@
         "forum": "https://groups.google.com/forum/#!forum/twig-users"
     },
     "require": {
-        "php": ">=5.2.7"
+        "php": "^7.0",
+        "symfony/polyfill-mbstring": "~1.0"
     },
     "require-dev": {
-        "symfony/phpunit-bridge": "~2.7",
+        "symfony/phpunit-bridge": "~3.2",
         "symfony/debug": "~2.7"
     },
     "autoload": {
@@ -38,9 +39,14 @@
             "Twig_" : "lib/"
         }
     },
+    "autoload-dev": {
+        "psr-0" : {
+            "Twig_Tests_" : "test/"
+        }
+    },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.24-dev"
+            "dev-master": "2.1-dev"
         }
     }
 }

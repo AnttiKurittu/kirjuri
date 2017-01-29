@@ -1,0 +1,100 @@
+{% extends 'base.twig' %}
+{% block title %}
+<title>{{ lang.examination_report }} - {{ settings.title_text }}</title>
+{% endblock title %}
+{% block bodytag %}
+<body style="margin-left:20px;margin-right:40px;">
+  {% endblock bodytag %}
+  {% block upperframe %}
+  {% endblock upperframe %}
+  {% block logo %}
+  {% endblock logo %}
+  {% block navi %}
+  {% endblock navi %}
+  {% block content %}
+  {% for entry in caserow %}
+  <div class="page">
+    <table>
+      <tr>
+        <td>
+          <img src="{{ settings.report_logo }}" width="{{ settings.report_logo_width }}" style="horizontal-align:left;vertical-align:top;">
+        </td>
+        <td style="padding-left:50px;">
+          <h2>{{ lang.forensic_examination_report }}</h2>
+          <h3>{{ settings.organization }}</h3>
+          <h3>{{ entry.case_file_number }}</h3>
+          <h3>
+          {{ lang.addendum_number }}</h1>
+          <p>{{ lang.crime }}: {{ entry.case_crime }}</p>
+          <p>{{ lang.suspect_target }}: {{ entry.case_suspect }}<br>
+          <p>{{ lang.head_of_investigation }}: {{ entry.case_investigation_lead }}.</p>
+          <p>{{ lang.investigators_multiple }}: {{ entry.case_investigator }} (p. {{ entry.case_investigator_tel }})<br>
+          <p>{{ lang.forensic_examiner_long }}: {{ entry.forensic_investigator }}</p>
+          {% if (entry.phone_investigator) and (entry.phone_investigator != entry.forensic_investigator) %}
+          <p>{{ lang.mobile_examiner_long }}: {{ entry.phone_investigator }}</p>
+          {% endif %}</p>
+          <p>{{ lang.examination_request_submitted }} {{ entry.case_added_date|date("d.m.Y") }}.<br>
+            {{ lang.examination_started }} {{ entry.case_start_date|date("d.m.Y") }}.<br>
+            {{ lang.request_latest_update }} {{ entry.case_ready_date|date("d.m.Y") }}.
+          </p>
+          <br>
+          <br>
+          ____________________________________________<br>
+          {{ entry.forensic_investigator }}<br><br>
+          {% if entry.phone_investigator and (entry.phone_investigator != entry.forensic_investigator)%}
+          ____________________________________________<br>
+          {{ entry.phone_investigator }}<br>
+          {% endif %}
+          <br>
+          <p>{{ settings.signature_location }} {{ "now"|date("d.m.Y") }}</p>
+        </td>
+      </tr>
+    </table>
+  </div>
+  {% if entry.report_notes %}
+  <div class="page">
+    <h1>{{ lang.forensic_examination_report }}</h1>
+    <hr>
+    {{ entry.report_notes|raw }}
+  </div>
+  {% endif %}
+  <div class="page">
+    <h4>
+      {{ lang.examined_devices }}
+      <div class="pull-right">{{ entry.case_file_number }}</div>
+    </h4>
+    <hr>
+    <ul>
+      {% for entry in mediarow %}{% if (entry.is_removed == "0") and (entry.device_is_host == "1") %}
+      <li>{{ lang.device|upper }} {% if entry.device_document %}{{ entry.device_document }}{% endif %}{% if entry.device_item_number %} {{ lang.object_no }} {{ entry.device_item_number }}{% endif %}
+        <b>{{ entry.device_type }}, {{ entry.device_manuf }} {{ entry.device_model }} {% if entry.device_size_in_gb %}({{ lang.size }} {{ entry.device_size_in_gb }} GB){% endif %}</b>
+        {% if entry.device_identifier %}<br>{{ lang.identifier }}: {{ entry.device_identifier }}{% endif %}, UID{{ entry.id }}
+        {% if entry.case_request_description %}<br>{{ lang.description }}: <i>{{ entry.case_request_description }}</i>{% endif %}
+        {% endif %}
+      </li>
+      {% set this_parent = entry.id %}
+      {% for entry in mediarow %}
+      {% if (entry.device_host_id == this_parent) and (entry.is_removed == "0") %}
+      <ul>
+        <li><i class="fa fa-arrow-right"></i>{% if entry.device_document %}{{ entry.device_document }}{% endif %}{% if entry.device_item_number %} {{ lang.object_no }} {{ entry.device_item_number }}{% endif %}
+          <b>{{ entry.device_type }}, {{ entry.device_manuf }} {{ entry.device_model }} {% if entry.device_size_in_gb %}({{ lang.size }} {{ entry.device_size_in_gb }} GB){% endif %}</b>
+          {% if entry.device_identifier %}<br>{{ lang.identifier }}: {{ entry.device_identifier }}, {% endif %}UID{{ entry.id }}
+          {% if entry.case_request_description %}<br>{{ lang.description }}: <i>{{ entry.case_request_description }}</i>{% endif %}
+        </li>
+      </ul>
+      <br>
+      {% endif %}{% endfor %}{% endfor %}
+  </div>
+  <div class="page">
+  <h4>{{ lang.device_findings }}<div class="pull-right">{{ entry.case_file_number }}</div></h4>
+  <hr>
+  {% for entry in mediarow %}
+  {% if (entry.is_removed == "0") and (entry.report_notes) and (entry.device_include_in_report == "1")%}
+  <h4 class="label label-default" style="font-size:2em;">[UID{{ entry.id }}] {{ entry.device_type }}, {{ entry.device_manuf }} {{ entry.device_model }} {% if entry.device_size_in_gb %}({{ entry.device_size_in_gb }} GB){% endif %} {% if entry.device_identifier %}[{{ entry.device_identifier }}]{% endif %}</h4>
+  {{ entry.report_notes|raw }}
+  {% endif %}
+  {% endfor %}
+  </div>
+  </ul>
+  {% endfor %}
+  {% endblock %}

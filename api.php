@@ -2,16 +2,6 @@
 
 require_once './include_functions.php';
 
-function alnum($a)
-{
-    return preg_replace('/[^a-zA-Z0-9]/', '', $a);
-}
-
-function num($a)
-{
-    return preg_replace('/[^0-9]/', '', $a);
-}
-
 function return_with_code($i)
 {
     if ($i === '403') {
@@ -29,7 +19,7 @@ function return_with_code($i)
 }
 // Set which year to read from, default to current year.
 if (isset($_GET['year'])) {
-    $year = num($_GET['year']);
+    $year = filter_numbers($_GET['year']);
 } else {
     $year = date('y');
 }
@@ -38,11 +28,11 @@ if (isset($_GET['year'])) {
 
 $dateRange = array('start' => $year.'-01-01 00:00:00', 'stop' => ($year + 1).'-01-01 00:00:00');
 $key = preg_replace('/[^a-z0-9]/', '', (substr($_GET['key'], 0, 40)));
-$request_id = num(substr($_GET['id'], 0, 9));
+$request_id = filter_numbers(substr($_GET['id'], 0, 9));
 $key_found = false;
 $output = array();
 
-$operation = substr(alnum($_GET['operation']), 0, 6);
+$operation = substr(filter_letters_and_numbers($_GET['operation']), 0, 6);
 
 if (in_array($operation, array(
   'add',
@@ -229,10 +219,10 @@ if ($key_found === false) {
         ':classification' => $_POST['classification'],
         ':case_suspect' => $_POST['case_suspect'],
         ':case_request_description' => $_POST['case_request_description'],
-        ':case_urgency' => num($_POST['case_urgency']),
+        ':case_urgency' => filter_numbers($_POST['case_urgency']),
         ':case_urg_justification' => $_POST['case_urg_justification'],
         ':case_requested_action' => $_POST['case_requested_action'],
-        ':case_contains_mob_dev' => num($_POST['case_contains_mob_dev']),
+        ':case_contains_mob_dev' => filter_numbers($_POST['case_contains_mob_dev']),
       ));
           logline('0', 'API', 'Row inserted.');
       } catch (Exception $e) {

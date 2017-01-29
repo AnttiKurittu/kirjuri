@@ -1,12 +1,12 @@
 <?php
 require_once './include_functions.php';
-protect_page(3);
-$release_version = num(file_get_contents('conf/RELEASE'));
+ksess_verify(3);
+$release_version = file_get_contents('conf/RELEASE');
 $_SESSION['message_set'] = false;
-echo $twig->render('help.html', array(
+echo $twig->render('help.twig', array(
     'release_version' => $release_version,
     'session' => $_SESSION,
-    'settings' => $settings,
+    'settings' => $prefs['settings'],
     'lang' => $_SESSION['lang'],
     'readme' => file_get_contents('README.md'),
 ));

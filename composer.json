@@ -1,6 +1,9 @@
 {
     "require": {
         "picqer/php-barcode-generator": "^0.2.0",
-        "ezyang/htmlpurifier": "^4.8"
+        "ezyang/htmlpurifier": "^4.8",
+        "twig/twig": "^2.0",
+	"tinymce/tinymce": ">= 4",
+        "twbs/bootstrap": "^3.3"
     }
 }

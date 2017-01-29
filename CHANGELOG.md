@@ -1,5 +1,60 @@
 CHANGELOG
 ------------
+
+2017-01    Version 0.9.1
+
+* Made some tweaks to the user interface on user settings.
+* Added a language file editor to easily localize Kirjuri. You can access it from settings -> lang -> click the "Lang"-title link. Language files are stored as JSON files. Older .conf files will be loaded if no .JSON file is present, but saved as JSON on first edit.
+* Added a reservation calendar for the tools.
+* Branched the Kirjuri git project to "develop" and "master", "develop" contains the bleeding edge changes which are still untested. These changes will be merged to master after enough testing has been done to make sure nothing breaks.
+* Some bugfixes.
+
+2017-01-22 Version 0.9.0:
+
+* Dropped support for PHP5 - dependencies require this. Upgrade to PHP7.
+* Updated dependencies: Twig v2.1.0, HTMLPurifier v4.8.0, php-barcode-generator v0.2.1., TinyMCE v4.5.2
+* Greatly improved logging - Kirjuri logs events to logs/kirjuri.log and case events to case folders in the logs/-folder. Logging to database is deprecated, all logs now go to log files.
+* Case timeline - A neat visualization of case events.
+* Audit trail. All POST and GET requests that contain changes to requests or devices are saved locally. This enables auditing changes to requests and in some cases, restoring data to the database from previous POST requests. Audit logs are encrypted with a auto-generated key. You can change this key manually. You can access the audit logs and case timeline by clicking the green calendar icon in the case log.
+* You can now export and import individual cases in the form of .krf files. These files include the examination request, all devices and all attachments. The file is a JSON object compressed with gzencode(), so importing and exporting large cases might take a while.
+* LDAP authentication support, currently supports authenticating against Active Directory with the ldap_bind()-function. AD authentication creates a local account on first login. Authentication to this account is only allowed over LDAP. You can still use local accounts as usual, and disable this feature from the settings. If the feature is enabled, domain authentication is the default setting.
+* A cool new background image from Subtle Patterns! https://subtlepatterns.com/
+* Files are now uploaded to the database to simplify backup, to enable auditing file uploads & downloads and mitigate file inclusion vulnerabilities. If you have local files stored at the attachments/ subfolders, you can still access these, but uploading or removing local files is now deprecated. File size is limited to 16MB by database design to keep the database size reasonable, and files are compressed prior to writing to the database. Kirjuri is not designed to be used as a file storage, so this functionality is offered mainly for storing forensic reports, documents, images or other small files related to the case. Large files like drive images should be stored elsewhere.
+* Started working on a RESTful API. The rest_api.php script is disabled by default, as it can only read information for now.
+* Moved from incrementing release numbers to versioning.
+* Renamed views/\*.html files to .twig
+* A lot of small bugfixes.
+
+2017-01-01 Release 133:
+
+* Made the user session management a bit more sane.
+* Handed the task of checking for a valid session to unreadcounter.php
+* Added checking for session timestamp to determine whether session is online or not.
+* Other tweaks and fixes.
+* Fixed a typo in the Finnish language file that made the setting fail.
+
+2016-12-29 Release 132:
+
+* Made handling settings better - instead of editing a text file, fields are presented and settings file parsed from that.
+* More tweaks, bugfixes and other betterments.
+* Gave an input form to set the admin password on install time instead of defaulting to "admin".
+* Removed adding extra examiners from settings file. Create users for this.
+* Switched some glyphicons to Font Awesome icons. Gotta finish this.
+* Ending an users session will force-logout after a while.
+
+2016-12-27 release 131:
+
+* Enhanced the request front page with a more concise layout.
+* Added session information and administrator ability to terminate single sessions for users.
+* Global black/whitelists for login IP addresses, configurable in conf/access_list.php.
+* Tweaks, bugfixes, etc.
+
+2016-12-25 release 130:
+
+* Enhanced user management - force logout, delete user permanently
+* Enhanced security features with per-user IP black/whitelisting. This will not restrict existing sessions but sets limits to new sessions.
+* Bugfixes and performance tweaks.
+
 2016-12-22 release 129:
 
 * Big feature update!
@@ -14,7 +69,7 @@ CHANGELOG
 2016-12-18 release 128:
 
 * Added CSRF protection to all pages, even though you shouldn't deploy Kirjuri on a network where this is an issue.
-* Updated the German language file with the new language directives. Translation courtesy of Daniel Schreiber, thank you very much!
+* Updated the German language file with the new language directives. Translation courtesy of Dennis Schreiber, thank you very much!
 * Shuffled the message buttons around so that the tooltip doesn't cover the essential buttons.
 * Added a possibility to create a device memo report template, so that you can add your own "fields" to it. Currently it has rows for imaging details. You can edit this file at conf/report_notes.template. HTML is allowed, the file is sanitized before presentation. You can copy the file to report_notes.local to preserver your local changes through updates.
 * The "add-only" user now only sees the "Add a new request"-page.

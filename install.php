@@ -1,6 +1,21 @@
+<?php
+// Clear any lingering sessions.
+session_name('KirjuriSessionID');
+session_start();
+session_destroy();
+if (version_compare(PHP_VERSION, '7.0.0') <= 0) {
+    echo "Kirjuri requires PHP7 to run. You are using " . phpversion() . ". Please upgrade your PHP environment.";
+    die;
+}
+?>
 <html>
-<body>
-<pre><h3>Kirjuri installer</h3>
+<head>
+  <link href="vendor/twbs/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+  <body>
+    <div class="container-fluid">
+      <div class="main">
+    <h3>Kirjuri installer</h3>
 <?php
 if (file_exists("conf/mysql_credentials.php"))
 { echo "Installer has already been run on this instance. Please remove the file conf/mysql_credentials.php to run the installer again.";
@@ -13,18 +28,15 @@ function error_handler($n, $s, $f) // Custom error handler for the installation 
     echo '<p style="color:red;">Installation error: ('.$n.') '.$s.'</p>';
     $i = 0;
 }
-
 set_error_handler('error_handler');
 
 echo '<p>Web server running as "'.exec('whoami').'"</p>';
 echo '<p>Testing write permissions...</p>';
 
-
 $i = 0; // Count folders
 $test_folders = array(
   'conf',
   'cache',
-  'attachments',
   'logs',
 );
 foreach ($test_folders as $folder) {
@@ -40,7 +52,6 @@ foreach ($test_folders as $folder) {
 
 if ($i === count($test_folders)) {
     // See if all folders passed the write test
-
   echo '<b style="color:green;">   Write test passed!</b><hr>';
 } else {
     echo '<b style="color:red;">   Write test failed, please check that the www server process owns the following folders: </b><br>';
@@ -50,15 +61,9 @@ if ($i === count($test_folders)) {
     die;
 }
 
-if ((file_exists('conf/mysql_credentials.php')) || (file_exists('conf/settings.local'))) {
-    echo '<p style="color:blue;"><b>WARNING! Existing configuration files found. This install script will rewrite
-<i>mysq_credentials.php</i> and <i>settings.local</i>. If you wish to keep them intact, make backup copies.</b></p>';
-}
-
 // Continue the installer if data is present.
-
-if (empty($_POST)) {
-    echo '<hr><form role="form" method="post">
+if ( (empty($_POST['u'])) ||  (empty($_POST['p'])) || (empty($_POST['d'])) || (empty($_POST['ap'])) ) {
+    echo '<pre><form role="form" method="post">
 This script will install the necessary databases for Kirjuri to operate,
 save your credentials to <i>conf/mysql_credentials.php</i> and prepopulate
 the users with "admin" and "anonymous". If you wish to do this manually,
@@ -73,20 +78,25 @@ Please choose a name for your database. The default is "kirjuri".
 <input type="checkbox" name="drop_database" value="drop"> Drop existing database. <b style="color:red;">THIS WILL DELETE YOUR DATA AND USERS.</b>
 <input type="checkbox" name="migrate_old_database" value="migrate"> Migrate tutkinta.jutut database. <b style="color:red;">THIS WILL OVERWRITE YOUR EXISTING DATABASE.</b>
 
-MySQL username <input name="u" type="text">
-MySQL password <input name="p" type="password">
-MySQL database <input name="d" type="text" value="kirjuri">
+<input name="u" type="text"> MySQL username
+<input name="p" type="password"> MySQL password
+<input name="d" type="text" value="kirjuri"> MySQL database
+<input name="ap" type="password"> Create admin password
 
-<button type="submit">Install / rebuild databases</button></form>';
+<button type="submit">Install / rebuild databases</button></form></pre>
+</div>
+</div>
+</body>
+</html>';
     die;
-} else {
+  } else {
     // If form is submitted
-
+  $admin_password = password_hash($_POST['ap'], PASSWORD_DEFAULT);
   $_POST['drop_database'] = isset($_POST['drop_database']) ? $_POST['drop_database'] : '';
-    $_POST['migrate_old_database'] = isset($_POST['migrate_old_database']) ? $_POST['migrate_old_database'] : '';
-    $mysql_config['mysql_username'] = trim(preg_replace('/[^A-Za-z0-9\-]/', '', $_POST['u']));
-    $mysql_config['mysql_password'] = trim(preg_replace('/[^A-Za-z0-9\-]/', '', $_POST['p']));
-    $mysql_config['mysql_database'] = strtolower(trim(preg_replace('/[^A-Za-z0-9\-]/', '', $_POST['d'])));
+  $_POST['migrate_old_database'] = isset($_POST['migrate_old_database']) ? $_POST['migrate_old_database'] : '';
+  $mysql_config['mysql_username'] = trim(preg_replace('/[^A-Za-z0-9\-]/', '', $_POST['u']));
+  $mysql_config['mysql_password'] = $_POST['p'];
+  $mysql_config['mysql_database'] = strtolower(trim(preg_replace('/[^A-Za-z0-9\-]/', '', $_POST['d'])));
 
   // Check for invalid database names
   if (in_array($mysql_config['mysql_database'], array(
@@ -99,12 +109,6 @@ MySQL database <input name="d" type="text" value="kirjuri">
       echo '<p style="color:red;">Reserved database name, please choose something else.</p>';
       die;
   }
-  // Save credentials to file
-  $mysql_config_file = '<?php return '.var_export($mysql_config, true).'; ?>'."\n";
-  // Write the local config file
-  $default_config = file_get_contents('conf/settings.conf');
-    file_put_contents('conf/settings.local', $default_config);
-    file_put_contents('conf/mysql_credentials.php', $mysql_config_file);
 
   // Open a MySQL connection for database creation
   $conn = new mysqli('localhost', $mysql_config['mysql_username'], $mysql_config['mysql_password']);
@@ -112,11 +116,16 @@ MySQL database <input name="d" type="text" value="kirjuri">
   if ($conn->connect_error) {
       die('<p style="color:red;">Connection failed: '.$conn->connect_error.'</p>');
   }
+
+  // Save credentials to file
+  $mysql_config_file = '<?php return '.var_export($mysql_config, true).'; ?>'."\n";
+  file_put_contents('conf/mysql_credentials.php', $mysql_config_file);
+
   // Drop database if wanted
   if ($_POST['drop_database'] === 'drop') {
       // Drop database
-    $sql = 'DROP DATABASE '.$mysql_config['mysql_database'];
-      if ($conn->query($sql) === true) {
+    $query = 'DROP DATABASE '.$mysql_config['mysql_database'];
+      if ($conn->query($query) === true) {
           echo '<p style="color:green;">Database dropped successfully.</p>';
       } else {
           echo '<p style="color:red;">Error dropping database: '.$conn->error.'</p>';
@@ -124,8 +133,8 @@ MySQL database <input name="d" type="text" value="kirjuri">
   }
 
   // Create new database
-  $sql = 'CREATE DATABASE '.$mysql_config['mysql_database'];
-    if ($conn->query($sql) === true) {
+  $query = 'CREATE DATABASE '.$mysql_config['mysql_database'];
+    if ($conn->query($query) === true) {
         echo '<p style="color:green;">Database created successfully.</p>';
     } else {
         echo '<p style="color:red;">Error creating database: '.$conn->error.'</p>'; // Fail if exists and continue.
@@ -231,7 +240,7 @@ MySQL database <input name="d" type="text" value="kirjuri">
       ':anon_access' => '3', // Add only access
       ':anon_attr1' => 'System account, do not remove.',
       ':admin_name' => 'admin',
-      ':admin_default_pw' => '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', // sha256(admin)
+      ':admin_default_pw' => $admin_password,
       ':anon_pw' => 'Not set.',
       ':admin_realname' => 'Administrator',
       ':admin_access' => '0',
@@ -353,13 +362,14 @@ MySQL database <input name="d" type="text" value="kirjuri">
     ALTER TABLE exam_requests ADD is_protected INT(1);
     ');
       $query->execute(array());
-      echo '<p style="color:green;">Examination requests table upgraded (1/2).</p>';
+      echo '<p style="color:green;">Examination requests table upgraded.</p>';
   } catch (Exception $e) {
       echo '<p style="color:red;">Caught MySQL exception: ', $e->getMessage(), '. This is expected with existing tables.</p>';
   }
-
-    echo '<p>Install script done, reload <a href="index.php">index.php</a>. The default credentials for Kirjuri are "admin" / "admin".</p>
-   ';
+    echo '<p>Install script done, reload <a href="index.php">index.php</a>. The admininistrator account is "admin", log in with the password you designated.</p></div>
+    </div>
+    </body>
+    </html>';
     die;
 }
 ?>

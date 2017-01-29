@@ -1,0 +1,160 @@
+{% extends 'base.twig' %} {% block title %}
+<title>{{ lang.settings }} - {{ settings.title_text }}</title>
+{% endblock title %}
+{% block content %}
+<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+<h1>{{ lang.settings }}</h1>
+
+<form class="form-horizontal" role="form" method="post" action="submit.php?type=update_password">
+  <input type="hidden" name="token" value="{{session.user.token}}">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">{{ lang.user_settings }}</h3>
+    </div>
+    <div class="panel-body">
+      <div class="form-group">
+        <label for="username" class="col-md-2 control-label">{{ lang.username }}</label>
+        <div class="col-md-10">
+          <input type="text" class="form-control" id="username" value="{{session.user.username}}" readonly>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="name" class="col-md-2 control-label">{{ lang.name }}</label>
+        <div class="col-md-10">
+          <input type="text" class="form-control" id="name" value="{{session.user.name}}" readonly>
+        </div>
+      </div>
+{% if "A" in session.user.flags %}
+      <div class="form-group">
+        <label for="password" class="col-md-2 control-label">API <i class="fa fa-key"></i></label>
+        <div class="col-md-10">
+          <input type="text" class="form-control" id="apikey" value="{{ apikey }}" readonly>
+        </div>
+      </div>
+{% endif %}
+{% if session.user.attr_3 != "LDAP_AUTH_ONLY" %}
+      <div class="form-group">
+        <label for="password" class="col-md-2 control-label">{{ lang.current_password }}</label>
+        <div class="col-md-10">
+          <input type="password" class="form-control" id="current_password" name="current_password" placeholder="{{ lang.password }}">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="password" class="col-md-2 control-label">{{ lang.new_password }}</label>
+        <div class="col-md-10">
+          <input type="password" class="form-control" id="new_password" name="new_password" placeholder="{{ lang.password }}">
+        </div>
+      </div>
+{% endif %}
+
+        <div class="col-md-2"></div>
+        <div class="col-md-10">{% if "F" in session.user.flags %}<i style="color:green;" class="fa fa-check"></i>{% else %}<i style="color:red;" class="fa fa-times"></i>{% endif %} {{ lang.forensic_examiner_long }}&nbsp;&nbsp;&nbsp;{% if "M" in session.user.flags %}<i style="color:green;" class="fa fa-check"></i>{% else %}<i style="color:red;" class="fa fa-times"></i>{% endif %} {{ lang.mobile_examiner_long }}</div>
+      </div>
+
+    <div class="panel-footer">
+      <button id="user_save_button" type="submit" class="btn btn-success">{{ lang.change_password }}</button> <a class="btn btn-danger" href="submit.php?type=force_logout&user={{session.user.username|url_encode}}&token={{session.user.token}}">{{ lang.log_out_all_sessions }}</a>
+      {% if session.user.access == "0" %}<a class="btn btn-default" href="backup.php" target="_BLANK"><i class="fa fa-download"></i> Back up database...</a>{% endif %}
+    </div>
+  </div>
+</form>
+
+{% if session.user.access == "0" %}
+<form class="form-horizontal" role="form" method="post" action="submit.php?type=save_settings">
+  <input type="hidden" name="token" value="{{session.user.token}}">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">{{ lang.global_settings }}<span class="pull-right"><i class="fa fa-file"></i> {{ settings_file }}</span></h3>
+    </div>
+    <div class="panel-body">
+      <div class="form-group">
+
+      <div class="col-md-10 col-md-offset-2">{{ lang.server_time_is }} <code>{{ php_servertime|date('Y-m-d H:i') }}</code> PHP {{ lang.timezone }}: <code>{{ php_timezone }}</code> MySQL {{ lang.timezone }}: <code>{{ mysql_timezone }}</code></div>
+
+</div>
+      {% for key, value in settings_contents.settings %}
+      {% if (key != "self") and (key != "release") and (key != "report_notes_footer") %}
+      <div class="form-group">
+        <label for="setting" class="col-md-2 control-label">{% if key == "lang" %}<a href="lang_editor.php"><i class="fa fa-edit"></i> {% endif %}{{ key|replace({"_": " "})|capitalize }}{% if key == "lang" %}</a>{% endif %}</label>
+        <div class="col-md-10">
+          {% if (value == "0") or (value == "1") %}
+          <input type="radio" name="settings[{{key}}]" value="1" {% if value == "1" %}checked{% endif %}> Yes &nbsp;&nbsp;<input type="radio" name="settings[{{key}}]" value="0" {% if value == "0" %}checked{% endif %}> No
+
+          {% elseif key == "lang" %}
+          <select name="settings[lang]">
+            {% for ccode in langfiles %}
+            <option value="lang_{{ ccode }}" {% if ccode in settings_contents.settings.lang %}selected{% endif %}>{{ ccode }}</option>
+            {% endfor %}
+          </select>
+
+
+          {% else %}
+          <input type="text" class="form-control" name="settings[{{ key }}]" value="{{ value }}" placeholder="{{ value }}">
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
+      {% endfor %}
+      {% for key, value in diff %}
+      {% if (key != "self") and (key != "release") and (key != "report_notes_footer") %}
+      <div class="form-group">
+        <label for="setting" class="col-md-2 control-label" style="color:red;">{{ key|replace({"_": " "})|capitalize }}</label>
+        <div class="col-md-10">
+          {% if (value == "0") or (value == "1") %}
+          <input type="radio" name="settings[{{key}}]" value="1" {% if value == "1" %}checked{% endif %}> Yes &nbsp;&nbsp;<input type="radio" name="settings[{{key}}]" value="0" {% if value == "0" %}checked{% endif %}> No
+          {% else %}
+          <input type="text" class="form-control" name="settings[{{ key }}]" value="{{ value }}" placeholder="{{ value }}">
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
+      {% endfor %}
+      <hr>
+      <div class="col-md-offset-2 col-md-10">
+      <h4>{{ lang.investigation_units }}</h4>
+      </div>
+      <div class="form-group">
+        <label for="setting" class="col-md-2 control-label">{{ lang.list_units }}</label>
+        <div class="col-md-10">
+          <input type="text" class="form-control" name="inv_units" value="{% for value in settings_contents.inv_units %}{{ value }}{% if not loop.last %}, {% endif %}{% endfor %}" placeholder="{% for value in settings_contents.inv_units %}{{ value }}, {% endfor %}">
+        </div>
+      </div>
+      <hr>
+      <div class="col-md-offset-2 col-md-10">
+      <h4>{{ lang.statistics_chart_colors }}</h4>
+      </div>
+      {% for key, value in settings_contents.statistics_chart_colors %}
+      <div class="form-group">
+        <label for="setting" class="col-md-2 control-label">{{ lang.chart_color }} {{ key }} <i style="color:{{value}};" class="fa fa-square"></i></label>
+        <div class="col-md-10">
+          <input type="text" class="form-control" name="chart[{{ key }}]" value="{{ value }}" placeholder="{{ value }}">
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="panel-footer">
+      <button id="user_save_button" type="submit" class="btn btn-success">{{ lang.save }}</button> <a class="btn btn-warning" hreF="submit.php?type=reset_default_settings&token={{ session.user.token }}">{{ lang.reset_default_settings }}</a>
+    </div>
+  </div>
+</form>
+
+<form class="form-horizontal" role="form" method="post" action="submit.php?type=save_template&template=report_notes">
+  <input type="hidden" name="token" value="{{session.user.token}}">
+  <div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">{{ lang.edit_template }}</h3>
+  </div>
+  <div class="panel-body">
+<input type="hidden" name="token" value="{{session.user.token}}">
+<textarea id="richeditor" class="textarea form-control" rows="25" style="height:500px;" name="templatefile">{{ template_report_notes }}</textarea>
+</div>
+<div class="panel-footer">
+  <button type="submit" class="btn btn-success">{{ lang.save }} {{ lang.report_notes_template }}</button>
+</div>
+</div>
+</form>
+{% endif %}
+
+</div>
+</div>
+</div>
+{% endblock %}

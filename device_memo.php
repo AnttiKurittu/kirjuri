@@ -1,20 +1,19 @@
 <?php
 
 require_once './include_functions.php';
-protect_page(2); // View only or higher
+ksess_verify(2); // View only or higher
 
-// Force end session
-if (!file_exists('cache/user_' . md5($_SESSION['user']['username']) . '/session_' . $_SESSION['user']['token'] . '.txt'))
-{
-  header('Location: submit.php?type=logout');
-  die;
-}
-
-$query = $kirjuri_database->prepare('SELECT * FROM exam_requests WHERE is_removed != "1" AND id = :uid LIMIT 1');
+$query = $kirjuri_database->prepare('SELECT * FROM exam_requests WHERE is_removed != "1" AND id = :uid AND parent_id != id LIMIT 1');
 $query->execute(array(
   ':uid' => $_GET['uid'],
 ));
 $mediarow = $query->fetchAll(PDO::FETCH_ASSOC);
+
+if (count($mediarow) === 0)
+{
+  header('Location: index.php');
+  die;
+}
 
 $query = $kirjuri_database->prepare('SELECT id, device_type, device_manuf, device_model, device_host_id FROM exam_requests WHERE is_removed != "1" AND device_host_id = :uid');
 $query->execute(array(
@@ -31,11 +30,11 @@ foreach ($mediarow as $entry) {
     $casefetch = $entry;
 }
 
-verify_owner($casefetch['parent_id']);
+verify_case_ownership($casefetch['parent_id']);
 
 if (empty($_SESSION['case_token'][ $casefetch['parent_id'] ]))
 {
-  $_SESSION['case_token'][$casefetch['parent_id']] = substr(md5(microtime()),rand(0,26),8); // Initialize case token
+  $_SESSION['case_token'][$casefetch['parent_id']] = generate_token(16); // Initialize case token
 }
 
 $query = $kirjuri_database->prepare('SELECT * FROM exam_requests WHERE is_removed != "1" AND id = :parent_id LIMIT 1');
@@ -58,7 +57,7 @@ $allcases = $query->fetchAll(PDO::FETCH_ASSOC);
 $imei_data = "";
 if ( strpos( strtoupper($mediarow[0]['device_identifier']), "IMEI") !== false)
 {
-  $imei_TAC =  substr(num($mediarow[0]['device_identifier']),0,8);
+  $imei_TAC =  substr(filter_numbers($mediarow[0]['device_identifier']),0,8);
   if (strlen($imei_TAC) === 8) {
     if (file_exists('conf/imei.txt'))
     {
@@ -77,19 +76,19 @@ if ( strpos( strtoupper($mediarow[0]['device_identifier']), "IMEI") !== false)
 if (file_exists('conf/report_notes.local'))
 {
   $templates['report_notes'] = file_get_contents('conf/report_notes.local');
-  $templates['report_notes'] = sanitize_raw($templates['report_notes']);
+  $templates['report_notes'] = filter_html($templates['report_notes']);
 }
 elseif (file_exists('conf/report_notes.template'))
 {
   $templates['report_notes'] = file_get_contents('conf/report_notes.template');
-  $templates['report_notes'] = sanitize_raw($templates['report_notes']);
+  $templates['report_notes'] = filter_html($templates['report_notes']);
 }
 else {
   $templates['report_notes'] = "";
 }
 
 $_SESSION['message_set'] = false;
-echo $twig->render('device_memo.html', array(
+echo $twig->render('device_memo.twig', array(
   'ct' => $_SESSION['case_token'][$casefetch['parent_id']],
   'templates' => $templates,
   'imei_data' => $imei_data,
@@ -104,6 +103,6 @@ echo $twig->render('device_memo.html', array(
   'caserow' => $caserow,
   'devices' => $_SESSION['lang']['devices'],
   'media_objs' => $_SESSION['lang']['media_objs'],
-  'settings' => $settings,
+  'settings' => $prefs['settings'],
   'lang' => $_SESSION['lang'],
 ));

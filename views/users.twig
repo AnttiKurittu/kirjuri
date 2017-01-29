@@ -1,0 +1,348 @@
+{% extends 'base.twig' %}
+{% block title %}
+<title>{{ lang.manage_users }} - {{ settings.title_text }}</title>
+{% endblock title %}
+{% block content %}
+<script>
+  $(document).ready(function (){
+      validate();
+      $('#current_password').change(validate);
+      {% for user in session.all_users %}
+         $("#user_status_{{ user.username|replace({" ": "_"}) }}").load("user_status.php?user={{ user.username|url_encode }}");
+      {% endfor %}
+  });
+
+  function validate(){
+      if (
+          $('#current_password').val().length > 0) {
+          $("#user_save_button").prop("disabled", false);
+          $("#user_save_button").addClass("btn-success");
+      }
+      else {
+          $("#user_save_button").prop("disabled", true);
+          $("#user_save_button").removeClass("btn-success");
+      }
+  }
+
+  function autoRefreshStatus_div()
+   {
+    {% for user in session.all_users %}
+       $("#user_status_{{ user.username|replace({" ": "_"}) }}").load("user_status.php?user={{ user.username|url_encode }}");
+    {% endfor %}
+   }
+   setInterval('autoRefreshStatus_div()', 21000); // Refresh the unread counter
+
+</script>
+<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+  <h3>{{ lang.user_management_header}} </h3>
+  <table class="table table-striped">
+    <thead>
+      <th class="text-center"></th>
+      <th>{{ lang.username|capitalize}}</th>
+      <th>{{ lang.name|capitalize }}</th>
+      <th>{{ lang.access_level|capitalize }}</th>
+      <th class="text-center">LDAP</th>
+      <th class="text-center">{{ lang.forensic_examiner_long|capitalize }}</th>
+      <th class="text-center">{{ lang.mobile_examiner_long|capitalize }}</th>
+      <th class="text-center">{{ lang.api_access|capitalize }}</th>
+      <th class="text-center">{{ lang.ip_restrictions }}</th>
+      <th class="text-center">{{ lang.active|capitalize }}</th>
+      <th></th>
+    </thead>
+    {% for user in session.all_users %}
+    <tr {% if fields.id == user.id %}class="info"{% elseif 'I' in user.flags %}class="warning"{% endif %}>
+      <td class="text-center"><div id="user_status_{{user.username|replace({" ": "_"}) }}"></div></td>
+      <td><a href="users.php?populate={{user.id}}#u">{{ user.username }}</a>{% if session.user.username == user.username %} ({{ lang.logged_in|lower }}){% endif %}{% if 'I' in user.flags %} ({{ lang.flag_inactive|lower }}){% endif %}</td>
+      <td>{{ user.name }}</td>
+      <td>{% if user.access == 0 %}{{ lang.level_admin }}{% elseif user.access == 1 %}{{ lang.level_user }}{% elseif user.access == 2 %}{{ lang.level_viewonly }}{% elseif user.access == 3 %}{{ lang.level_addonly }}{% else %}???{% endif %}</td>
+      <td class="text-center">{% if user.attr_3 == "LDAP_AUTH_ONLY" %}<i style="color:green;" class="fa fa-check"></i>{% else %}<i style="color:red;" class="fa fa-remove"></i>{% endif %}</td>
+      <td class="text-center">{% if 'F' in user.flags == true %}<i style="color:green;" class="fa fa-check"></i>{% else %}<i style="color:red;" class="fa fa-remove"></i>{% endif %}</td>
+      <td class="text-center">{% if 'M' in user.flags == true %}<i style="color:green;" class="fa fa-check"></i>{% else %}<i style="color:red;" class="fa fa-remove"></i>{% endif %}</td>
+      <td class="text-center">{% if 'A' in user.flags == true %}<i style="color:green;" class="fa fa-check"></i>{% else %}<i style="color:red;" class="fa fa-remove"></i>{% endif %}</td>
+      <td class="text-center">{% if user.attr_2|length > 26 %}<i style="color:green;" class="fa fa-check"></i>{% else %}<i style="color:red;" class="fa fa-remove"></i>{% endif %}</td>
+
+      <td class="text-center">{% if 'I' in user.flags == true %}<i style="color:red;" class="fa fa-remove"></i>{% else %}<i style="color:green;" class="fa fa-check"></i>{% endif %}</td>
+      <td><a href="submit.php?type=force_logout&user={{user.username|url_encode}}&token={{session.user.token}}"><i class="fa fa-sign-out"></i> {{ lang.log_out }}</a></td>
+    </tr>
+    {% endfor %}
+    <tr><td></td><td colspan="999"><button type="button" class="btn btn-primary btn-md" data-toggle="modal" data-target="#add_user_modal"><i class="fa fa-plus"></i> <i class="fa fa-user"></i> {{ lang.add_a_new_local_user }}</button></td></tr>
+</table>
+
+{% if fields.id is not empty %}
+<form class="form-horizontal" role="form" method="post" action="submit.php?type=create_user">
+  <input type="hidden" name="token" value="{{session.user.token}}">
+  <input type="hidden" name="user_id" value="{{fields.id}}">
+<div class="panel panel-{% if not fields %}default{% else %}info{% endif %}">
+  <div class="panel-heading">
+    <h3 class="panel-title"><i class="fa fa-edit"></i> {{ fields.username }} [ID {{fields.id}}]</h3>
+  </div>
+  <div class="panel-body">
+    <div class="form-group">
+      <label for="username" class="col-md-2 control-label">{{ lang.username }}</label>
+      <div class="col-md-10">
+        <input type="text" class="form-control" id="username" name="username" value="{{ fields.username }}" readonly>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="name" class="col-md-2 control-label">{{ lang.real_name }}</label>
+      <div class="col-md-10">
+        <input type="text" class="form-control" id="name" name="name" value="{% if fields %}{{ fields.name }}{% endif %}" placeholder="{{ lang.name }}">
+      </div>
+    </div>
+{% if fields.attr_3 != "LDAP_AUTH_ONLY" %}
+    <div class="form-group">
+      <label for="password" class="col-md-2 control-label">{{ lang.password }}</label>
+      <div class="col-md-10">
+        <input type="password" class="form-control" id="password" name="password" placeholder="{% if fields %}{{ lang.enter_new_to_change }}{% else %}{{ lang.new_user_password }}{% endif %}">
+      </div>
+    </div>
+{% endif %}
+    <div class="form-group">
+      <label for="ip_whitelist" class="col-md-2 control-label">{{ lang.ip_whitelist }}</label>
+      <div class="col-md-10">
+        <input type="text" class="form-control" id="ip_whitelist" name="ip_whitelist" placeholder="{{ lang.ip_addr_comma_list }}" value="{{ fields.whitelist }}">
+
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="ip_blacklist" class="col-md-2 control-label">{{ lang.ip_blacklist }}</label>
+      <div class="col-md-10">
+        <input type="text" class="form-control" id="ip_blacklist" name="ip_blacklist" placeholder="{{ lang.ip_addr_comma_list }}" value="{{ fields.blacklist }}">
+        <small>&nbsp;{{ lang.your_ip_address }}{{ your_ip }}</small>
+      </div>
+    </div>
+
+    {% if fields.id != 2 %}
+    <div class="form-group">
+      <label for="access" class="col-md-2 control-label">{{ lang.access_level }}</label>
+      <div class="col-md-10">
+        <select class="btn btn-default" name="access" id="access">
+          <option value="A" {% if fields.access == "0" %}selected{% endif %}>{{ lang.level_admin }} [0]</option>
+          <option value="1" {% if fields.access == "1" %}selected{% endif %}{% if not fields %}selected{% endif %}>{{ lang.level_user }} [1]</option>
+          <option value="2" {% if fields.access == "2" %}selected{% endif %}>{{ lang.level_viewonly }} [2]</option>
+          <option value="3" {% if fields.access == "3" %}selected{% endif %}>{{ lang.level_addonly }} [3]</option>
+        </select>
+      </div>
+    </div>
+    {% else %}
+    <input type="hidden" value="A" name="access">
+    {% endif %}
+
+    <div class="form-group">
+      <label for="flags" class="col-md-2 control-label">{{ lang.flags }}</label>
+      <div class="col-md-10">
+        <div class="checkbox">
+           <label class="col-md-12">
+             <input type="hidden" name="flag1" value="-">
+             <input type="checkbox" name="flag1" value="F" {% if "F" in fields.flags %}checked{% endif %}> {{ lang.flag_forensic }}
+           </label>
+         </div>
+
+         <div class="checkbox">
+            <label class="col-md-12">
+              <input type="hidden" name="flag2" value="-">
+              <input type="checkbox" name="flag2" value="M" {% if "M" in fields.flags %}checked{% endif %}> {{ lang.flag_mobile }}
+            </label>
+          </div>
+
+          <div class="checkbox">
+             <label class="col-md-12">
+               <input type="hidden" name="flag3" value="-">
+               <input type="checkbox" name="flag3" value="A" {% if "A" in fields.flags %}checked{% endif %}> {{ lang.api_access }} {% if fields.apikey %} <i class="fa fa-key"></i> <span style="color:grey;">{{ fields.apikey }}{% endif %}
+             </label>
+           </div>
+
+           <input type="hidden" name="flag4" value="-">
+           {% if fields.id != 2 %}
+           <div class="checkbox">
+              <label class="col-md-12">
+                <input type="hidden" name="flag4" value="-">
+                <input type="checkbox" name="flag4" value="I" {% if "I" in fields.flags %}checked{% endif %}> {{ lang.flag_inactive }}
+              </label>
+            </div>
+          {% endif %}
+
+          <input type="hidden" name="delete_user" value="no">
+          {% if fields.id > 2 %}
+          <div class="checkbox">
+            <label class="col-md-12">
+              <input type="checkbox" name="delete_user" value="delete"> <span style="color:red;">{{ lang.delete_user }}</span>
+            </label>
+          </div>
+          {% endif %}
+
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="current_password" class="col-md-2 control-label">{{ lang.verify_password_for }} <b>{{ session.user.username }}</b></label>
+      <div class="col-md-10">
+        <input type="password" class="form-control" id="current_password" name="current_password" placeholder="{{ lang.your_password }}">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="attr_1" class="col-md-2 control-label"></label>
+      <div class="col-md-10">
+<table class="table table-condensed">
+  <thead>
+    <th>{{ lang.session_file }}</th>
+    <th>{{ lang.session_details }}</th>
+    <th>{{ lang.drop }}</th>
+  </thead>
+  {% for session_file, session_content in fields.sessions %}
+  <tr>
+    <td>
+      {{ session_file }}
+      <p>{% if session_content.last_activity_sec <= "60" %}<span style="color:green;"><b>ONLINE</b></span>{% else %}<span style="color:red;">OFFLINE</span>{% endif %}
+    </td>
+    <td>
+      <p>{{ session_content.content }}</p>
+      <p {% if session_content.last_activity_sec > "259200" %}style="color:red;"{% endif %}>Last activity: {{ session_content.last_activity }}</p>
+    </td>
+    <td class="text-center">
+      <a href="submit.php?type=drop_session&user={{fields.username|url_encode}}&user_id={{ fields.id }}&session={{ session_file|replace({".txt": "", "session_": ""}) }}&token={{ session.user.token }}"><i style="color:red;" class="fa fa-times"></i></a>
+    </td>
+  </tr>
+{% endfor %}
+</table>
+      </div>
+    </div>
+  </div>
+  <div class="panel-footer">
+    <button id="user_save_button" type="submit" class="btn btn-success">{{ lang.save }}</button> <a href="users.php" class="btn btn-default">{{ lang.clear_form }}</a>
+  </div>
+</div>
+</form>
+{% endif %}
+
+</div>
+
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="add_user_modal" role="dialog" aria-labelledby="add_user_modal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">{{ lang.new_name_to_create }}</h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal" role="form" method="post" action="submit.php?type=create_user">
+          <input type="hidden" name="token" value="{{session.user.token}}">
+          <input type="hidden" name="user_id" value="{{fields.id}}">
+            <div class="form-group">
+              <label for="username" class="col-md-3 control-label">{{ lang.username }}</label>
+              <div class="col-md-9">
+                <input type="text" class="form-control" id="username" name="username" placeholder="{{ lang.username_hint }}">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="name" class="col-md-3 control-label">{{ lang.real_name }}</label>
+              <div class="col-md-9">
+                <input type="text" class="form-control" id="name" name="name" placeholder="{{ lang.name }}">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="password" class="col-md-3 control-label">{{ lang.password }}</label>
+              <div class="col-md-9">
+                <input type="password" class="form-control" id="password" name="password" placeholder="{{ lang.new_user_password }}">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="ip_whitelist" class="col-md-3 control-label">{{ lang.ip_whitelist }}</label>
+              <div class="col-md-9">
+                <input type="text" class="form-control" id="ip_whitelist" name="ip_whitelist" placeholder="{{ lang.ip_addr_comma_list }}">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="ip_blacklist" class="col-md-3 control-label">{{ lang.ip_blacklist }}</label>
+              <div class="col-md-9">
+                <input type="text" class="form-control" id="ip_blacklist" name="ip_blacklist" placeholder="{{ lang.ip_addr_comma_list }}">
+                <small>&nbsp;{{ lang.your_ip_address }}{{ your_ip }}</small>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="access" class="col-md-3 control-label">{{ lang.access_level }}</label>
+              <div class="col-md-9">
+                <select class="btn btn-default" name="access" id="access">
+                  <option value="A">{{ lang.level_admin }} [0]</option>
+                  <option value="1" selected>{{ lang.level_user }} [1]</option>
+                  <option value="2">{{ lang.level_viewonly }} [2]</option>
+                  <option value="3">{{ lang.level_addonly }} [3]</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="flags" class="col-md-3 control-label">{{ lang.flags }}</label>
+              <div class="col-md-9">
+                <div class="checkbox">
+                   <label class="col-md-12">
+                     <input type="hidden" name="flag1" value="-">
+                     <input type="checkbox" name="flag1" value="F"> {{ lang.flag_forensic }}
+                   </label>
+                 </div>
+
+                 <div class="checkbox">
+                    <label class="col-md-12">
+                      <input type="hidden" name="flag2" value="-">
+                      <input type="checkbox" name="flag2" value="M"> {{ lang.flag_mobile }}
+                    </label>
+                  </div>
+
+                  <div class="checkbox">
+                     <label class="col-md-12">
+                       <input type="hidden" name="flag3" value="-">
+                       <input type="checkbox" name="flag3" value="A"> {{ lang.api_access }}
+                     </label>
+                   </div>
+
+                   <input type="hidden" name="flag4" value="">
+                   <div class="checkbox">
+                      <label class="col-md-12">
+                        <input type="hidden" name="flag4" value="-">
+                        <input type="checkbox" name="flag4" value="I"> {{ lang.flag_inactive }}
+                      </label>
+                    </div>
+
+
+                  <input type="hidden" name="delete_user" value="no">
+
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="current_password" class="col-md-3 control-label">{{ lang.verify_password_for }} <b>{{ session.user.username }}</b></label>
+              <div class="col-md-9">
+                <input type="password" class="form-control" id="current_password" name="current_password" placeholder="{{ lang.your_password }}">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="attr_1" class="col-md-3 control-label"></label>
+              <div class="col-md-9">
+              </div>
+            </div>
+          </div>
+
+      <div class="modal-footer">
+      <button type="button" class="btn btn-default" data-dismiss="modal">{{ lang.close }}</button>
+      <button id="user_save_button" type="submit" class="btn btn-success">{{ lang.save }}</button> <input class="btn btn-default" type="reset" value="{{ lang.clear_form }}">
+      </form>
+
+
+
+      </div>
+    </div>
+
+
+
+
+
+
+{% endblock %}

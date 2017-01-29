@@ -3,7 +3,7 @@
 /*
  * This file is part of Twig.
  *
- * (c) 2010 Fabien Potencier
+ * (c) Fabien Potencier
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -31,7 +31,7 @@ abstract class Twig_Test_IntegrationTestCase extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return Twig_SimpleFilter[]
+     * @return Twig_Filter[]
      */
     protected function getTwigFilters()
     {
@@ -39,7 +39,7 @@ abstract class Twig_Test_IntegrationTestCase extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return Twig_SimpleFunction[]
+     * @return Twig_Function[]
      */
     protected function getTwigFunctions()
     {
@@ -47,7 +47,7 @@ abstract class Twig_Test_IntegrationTestCase extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return Twig_SimpleTest[]
+     * @return Twig_Test[]
      */
     protected function getTwigTests()
     {
@@ -154,12 +154,9 @@ abstract class Twig_Test_IntegrationTestCase extends PHPUnit_Framework_TestCase
             }
 
             // avoid using the same PHP class name for different cases
-            // only for PHP 5.2+
-            if (PHP_VERSION_ID >= 50300) {
-                $p = new ReflectionProperty($twig, 'templateClassPrefix');
-                $p->setAccessible(true);
-                $p->setValue($twig, '__TwigTemplate_'.hash('sha256', uniqid(mt_rand(), true), false).'_');
-            }
+            $p = new ReflectionProperty($twig, 'templateClassPrefix');
+            $p->setAccessible(true);
+            $p->setValue($twig, '__TwigTemplate_'.hash('sha256', uniqid(mt_rand(), true), false).'_');
 
             try {
                 $template = $twig->loadTemplate('index.twig');
@@ -167,15 +164,10 @@ abstract class Twig_Test_IntegrationTestCase extends PHPUnit_Framework_TestCase
                 if (false !== $exception) {
                     $message = $e->getMessage();
                     $this->assertSame(trim($exception), trim(sprintf('%s: %s', get_class($e), $message)));
-                    $this->assertSame('.', substr($message, strlen($message) - 1), $message, 'Exception message must end with a dot.');
+                    $last = substr($message, strlen($message) - 1);
+                    $this->assertTrue('.' === $last || '?' === $last, $message, 'Exception message must end with a dot or a question mark.');
 
                     return;
-                }
-
-                if ($e instanceof Twig_Error_Syntax) {
-                    $e->setTemplateFile($file);
-
-                    throw $e;
                 }
 
                 throw new Twig_Error(sprintf('%s: %s', get_class($e), $e->getMessage()), -1, $file, $e);
@@ -190,11 +182,7 @@ abstract class Twig_Test_IntegrationTestCase extends PHPUnit_Framework_TestCase
                     return;
                 }
 
-                if ($e instanceof Twig_Error_Syntax) {
-                    $e->setTemplateFile($file);
-                } else {
-                    $e = new Twig_Error(sprintf('%s: %s', get_class($e), $e->getMessage()), -1, $file, $e);
-                }
+                $e = new Twig_Error(sprintf('%s: %s', get_class($e), $e->getMessage()), -1, $file, $e);
 
                 $output = trim(sprintf('%s: %s', get_class($e), $e->getMessage()));
             }
@@ -211,8 +199,7 @@ abstract class Twig_Test_IntegrationTestCase extends PHPUnit_Framework_TestCase
 
                 foreach (array_keys($templates) as $name) {
                     echo "Template: $name\n";
-                    $source = $loader->getSource($name);
-                    echo $twig->compile($twig->parse($twig->tokenize($source, $name)));
+                    echo $twig->compile($twig->parse($twig->tokenize($twig->getLoader()->getSourceContext($name))));
                 }
             }
             $this->assertEquals($expected, $output, $message.' (in '.$file.')');

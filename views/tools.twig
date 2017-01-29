@@ -1,0 +1,434 @@
+{% extends 'base.twig' %}
+{% block title %}
+    <title>{{ lang.tool_management|capitalize }}
+        -
+        {{ settings.title_text }}</title>
+{% endblock title %}
+
+{% block reroute %}
+    <link href='views/js/fullcalendar-3.1.0/fullcalendar.min.css' rel='stylesheet'/>
+    <link href='views/js/fullcalendar-3.1.0/fullcalendar.print.min.css' rel='stylesheet' media='print'/>
+    <script src='views/js/fullcalendar-3.1.0/lib/moment.min.js'></script>
+    <script src='views/js/fullcalendar-3.1.0/fullcalendar.min.js'></script>
+{% endblock %}
+
+{% block content %}
+    {% set current_date = "now" | date("Y-m-d") %}
+    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <h3>{{ lang.tool_management|capitalize }}
+            {% if fields %}:
+                {{ fields.product_name }}
+                {{ fields.hw_version }}
+                {{ fields.sw_version }}{% endif %}
+        </h3>
+        <hr>
+
+        {% if not fields %}
+            {% if session.user.access == "0" %}
+            &nbsp;<button type="button" class="btn btn-primary btn-md" data-toggle="modal" data-target="#add_tool_modal">
+                <i class="fa fa-plus"></i>
+                {{ lang.add_a_tool|capitalize }}</button>
+                {% endif %}
+        {% else %}
+            &nbsp;<a href="tools.php" class="btn btn-success">
+                <i class="fa fa-arrow-left"></i>
+                {{ lang.back }}</a>
+            {% if session.user.access == "0" %}
+            <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#add_tool_modal">
+                <i class="fa fa-edit"></i>
+                {{ lang.edit_tool|capitalize }}
+                {{ fields.product_name }}
+            </button>
+            {% endif %}
+        {% endif %}
+
+        <table class="table table-striped" style="margin-top:20px;background-color:#FFF;">
+            <thead>
+                <th>{{ lang.product_name|capitalize }}</th>
+                <th>{{ lang.hardware_version|capitalize }}</th>
+                <th>{{ lang.software_version|capitalize }}</th>
+                <th>{{ lang.serial_no|capitalize }}</th>
+                <th>{{ lang.created|capitalize }}</th>
+                <th>{{ lang.last_update|capitalize }}</th>
+                <th class="text-center">{{ lang.active|capitalize }}</th>
+                <th class="text-center">{{ lang.comment|capitalize }}</th>
+            </thead>
+            {% for tool in session.all_tools if 'I' in tool.flags == false %}
+                <tr {% if (fields is not empty) and (fields.id == tool.id) %} class="info" {% endif %}>
+                    <td>
+                        <a href="tools.php?populate={{ tool.id }}">{{ tool.product_name }}</a>
+                    </td>
+                    <td>{{ tool.hw_version }}</td>
+                    <td>{{ tool.sw_version }}</td>
+                    <td>{{ tool.serialno }}</td>
+                    <td>{{ tool.attr_1 }}</td>
+                    <td>{% set updated = tool.attr_2 | split(',') %}
+                        {% set updated = updated.0 | split(';') %}
+                        {{ updated.0 }}</td>
+                    <td class="text-center">
+                        {% if 'I' in tool.flags == true %}
+                            <i style="color:red;" class="fa fa-remove"></i>
+                        {% else %}
+                            <i style="color:green;" class="fa fa-check"></i>
+                        {% endif %}
+                    </td>
+                    <td class="text-center">
+                        {% if not tool.attr_3 %}
+                            <i style="color:red;" class="fa fa-remove"></i>
+                        {% else %}
+                            <i style="color:green;" class="fa fa-check"></i>
+                        {% endif %}
+                    </td>
+                    <td></td>
+                </tr>
+            {% endfor %}
+            {% for tool in session.all_tools if 'I' in tool.flags == true %}
+                <tr {% if fields is not empty and fields.id == tool.id %} class="info" {% else %} class="warning" {% endif %}>
+                    <td>
+                        <a href="tools.php?populate={{ tool.id }}">{{ tool.product_name }}</a>
+                    </td>
+                    <td>{{ tool.hw_version }}</td>
+                    <td>{{ tool.sw_version }}</td>
+                    <td>{{ tool.serialno }}</td>
+                    <td>{{ tool.attr_1 }}</td>
+                    <td>{% set updated = tool.attr_2 | split(',') %}
+                        {% set updated = updated.0 | split(';') %}
+                        {{ updated.0 }}</td>
+                    <td class="text-center">
+                        {% if 'I' in tool.flags == true %}
+                            <i style="color:red;" class="fa fa-remove"></i>
+                        {% else %}
+                            <i style="color:green;" class="fa fa-check"></i>
+                        {% endif %}
+                    </td>
+                    <td class="text-center">
+                        {% if not tool.attr_3 %}
+                            <i style="color:red;" class="fa fa-remove"></i>
+                        {% else %}
+                            <i style="color:green;" class="fa fa-check"></i>
+                        {% endif %}
+                    </td>
+                    <td></td>
+                </tr>
+            {% endfor %}
+        </table>
+
+        {% if fields.attr_3 %}
+        <div class="alert alert-info">{{ fields.attr_3 }}</div>
+        {% endif %}
+
+        <h3>{{ lang.upcoming_reservations }}:
+            {{ fields.product_name }}</h3>
+
+        {% if fields %}
+            <form class="form-horizontal" role="form" method="post" action="submit.php?type=reserve_tool">
+                <input type="hidden" name="token" value="{{ session.user.token }}">
+                <input type="hidden" name="tool_id" value="{{ fields.id }}">
+                <table class="table">
+                    <thead>
+                        <th>{{ lang.reserved_for }}</th>
+                        <th colspan="2">{{ lang.start_date }}</th>
+                        <th colspan="999">{{ lang.end_date }}</th>
+
+                    </thead>
+                    {% if "I" in fields.flags == true %}
+                        <tr class="danger">
+                            <td colspan="999">
+                                {{ lang.tool_marked_as_inactive }}
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td>
+                                <select class="form-control" name="reserved_for">
+                                    {% for user in session.all_users %}
+                                        <option value="{{ user.name }}" {% if session.user.username == user.username %} selected{% endif %}>{{ user.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            <td>
+                                <input type="date" class="form-control" name="reserve_start_date" value='{{ "now"|date("Y-m-d") }}'>
+                            </td>
+                            <td>
+                                <input type="time" class="form-control" name="reserve_start_time" value="08:00">
+                            </td>
+                            <td>
+                                <input type="date" class="form-control" name="reserve_end_date" value='{{ "now"|date("Y-m-d") }}'>
+                            </td>
+                            <td>
+                                <input type="time" class="form-control" name="reserve_end_time" value="16:00">
+                            </td>
+
+                            <td>
+                                <input type="text" class="form-control" name="comment" placeholder="{{ lang.comment|capitalize }}">
+                            </td>
+
+                            <td>
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    {% endif %}
+                </form>
+                {% for key, entry in fields.attr_4 %}
+                    {% if (entry.reserve_end | date("U")) >= (current_date | date("U")) %}
+                        <tr {% if highlight == key %} class="success" {% endif %}>
+                            <td>{{ entry.reserved_for }}</td>
+                            <td colspan="2">{{ entry.reserve_start }}</td>
+                            <td colspan="2">{{ entry.reserve_end }}</td>
+                            <td>{{ entry.comment }}</td>
+                            <td style="width:1px;" class="text-center">
+                                {% if (session.user.name == entry.reserved_for)
+                                    or(session.user.access == "0") %}
+                                    <a href="submit.php?type=reserve_tool&drop={{ key }}&returnid={{ fields.id }}&token={{ session.user.token }}">
+                                        <i class="fa fa-times" style="color:red;"></i>
+                                    </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+
+            </table>
+        {% else %}
+            <script>
+                $(document).ready(function() {
+                    $('#calendar').fullCalendar({
+                        timeFormat: 'HH:mm',
+                        buttonText: {
+                            today: '{{ lang.today }}',
+                            month: '{{ lang.month }}',
+                            week: '{{ lang.week }}',
+                            day: '{{ lang.day }}',
+                            list: '{{ lang.list }}'
+                        },
+                        businessHours: {
+                            dow: [
+                                1, 2, 3, 4, 5
+                            ], // Monday - Friday
+                            start: '08:00', // a start time (10am in this example)
+                            end: '18:00' // an end time (6pm in this example)
+                        },
+                        height: 700,
+                        firstDay: 1,
+                        defaultView: 'agendaWeek',
+                        monthNames: [
+                            '{{ lang.month_1 }}',
+                            '{{ lang.month_2 }}',
+                            '{{ lang.month_3 }}',
+                            '{{ lang.month_4 }}',
+                            '{{ lang.month_5 }}',
+                            '{{ lang.month_6 }}',
+                            '{{ lang.month_7 }}',
+                            '{{ lang.month_8 }}',
+                            '{{ lang.month_9 }}',
+                            '{{ lang.month_10 }}',
+                            '{{ lang.month_11 }}',
+                            '{{ lang.month_12 }}'
+                        ],
+                        monthNamesShort: [
+                            '{{ lang.month_1_short }}',
+                            '{{ lang.month_2_short }}',
+                            '{{ lang.month_3_short }}',
+                            '{{ lang.month_4_short }}',
+                            '{{ lang.month_5_short }}',
+                            '{{ lang.month_6_short }}',
+                            '{{ lang.month_7_short }}',
+                            '{{ lang.month_8 }}',
+                            '{{ lang.month_9 }}',
+                            '{{ lang.month_10 }}',
+                            '{{ lang.month_11 }}',
+                            '{{ lang.month_12 }}'
+                        ],
+                        dayNames: [
+                            '{{ lang.weekday_7_long }}',
+                            '{{ lang.weekday_1_long }}',
+                            '{{ lang.weekday_2_long }}',
+                            '{{ lang.weekday_3_long }}',
+                            '{{ lang.weekday_4_long }}',
+                            '{{ lang.weekday_5_long }}',
+                            '{{ lang.weekday_6_long }}'
+                        ],
+                        dayNamesShort: [
+                            '{{ lang.weekday_7_short }}',
+                            '{{ lang.weekday_1_short }}',
+                            '{{ lang.weekday_2_short }}',
+                            '{{ lang.weekday_3_short }}',
+                            '{{ lang.weekday_4_short }}',
+                            '{{ lang.weekday_5_short }}',
+                            '{{ lang.weekday_6_short }}'
+                        ],
+                        header: {
+                            left: 'prev,next today',
+                            center: 'title',
+                            right: 'month,agendaWeek,agendaDay,listWeek'
+                        },
+                        defaultDate: '{{ "now"|date("Y-m-d") }}',
+                        navLinks: true, // can click day/week names to navigate views
+                        editable: false,
+                        eventLimit: true, // allow "more" link when too many events
+                        events: [
+                                        {% for tool_key, res_value in tool_reservations %}
+                                {% for tool in session.all_tools %}
+                                    {% if tool.id == tool_key %}
+                                        {% set evcolor = evcolors[tool_key] %}
+                                        {% for res_key, entry in res_value %}
+                                            {
+                                                title: '{{ tool.product_name }}: {{ entry.comment }} ({{ entry.reserved_for }})',
+                                                url: 'tools.php?populate={{ tool.id }}&highlight={{ res_key }}',
+                                                start: '{{ entry.reserve_start }}',
+                                                end: '{{ entry.reserve_end }}',
+                                                color: '{{ evcolor }}'
+                                            },
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endfor %}
+                            {% endfor %}
+                            {
+                                title: 'dummy entry',
+                                start: '2016-01-01',
+                                end: '2016-01-01'
+                            }
+                        ]
+                    });
+                });
+            </script>
+            <style>
+                #calendar {
+                    background-color: #FFF;
+                    padding: 5px;
+                    border: 1px solid #DDD;
+                    margin: 0 auto;
+                }
+
+            </style>
+            <div id='calendar'></div>
+        {% endif %}
+
+        {% if fields %}
+            <h3>{{ lang.update_history|capitalize }}</h3>
+                  <table class="table table-condensed">
+                  {% for update in fields.attr_2 %}
+                      <tr>
+                      <td>{% set update = update | split(";") %}{{update.0}}</td>
+                      <td>{% if update.1 is not empty %}{{ lang.hw_version }}
+                              {{update.1}}
+                          {% endif %}
+                      </td>
+                      <td>
+                          {% if update.2 is not empty %}{{ lang.sw_version }}
+                              {{update.2}}
+                          {% endif %}
+                      </td>
+                      <td>{% if update.3 is defined %}
+                              {% if "I" in update.3 %}
+                                  <span style="color:red;">{{ lang.inactive|capitalize }}</span>
+                              {% else %}
+                                  <span style="color:green;">{{ lang.active|capitalize }}</span>
+                              {% endif %}
+                          {% endif %}
+                      </td>
+                    </tr>
+                  {% endfor %}
+              </table>
+        {% endif %}
+{% if session.user.access == "0" %}
+        <div class="modal fade" id="add_tool_modal" role="dialog" aria-labelledby="add_tool_modal">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" id="add_tool_modal_title">{{ lang.manage_tools }}
+                            |
+                            {% if fields %}{{ lang.edit_tool|capitalize }}
+                            {% else %}{{ lang.add_a_tool|capitalize }}{% endif %}
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal" role="form" method="post" action="submit.php?type={% if fields %}update_tool{% else %}add_tool{% endif %}">
+                            <input type="hidden" name="token" value="{{session.user.token}}">
+                            {% if fields %}<input type="hidden" name="tool_id" value="{% if fields is not empty %}{{ fields.id }}{% endif %}">{% endif %}
+
+                            <div class="form-group">
+                                <input type="hidden" name="product_name" value="{{ fields.product_name }}">
+                                <label for="product_name" class="col-md-2 control-label">{{ lang.product_name|capitalize }}</label>
+                                <div class="col-md-10">
+                                    <input type="text" {% if fields is not empty %}disabled {% endif %}class="form-control" id="product_name" name="product_name" value="{% if fields is not empty %}{{ fields.product_name }}{% endif %}">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="name" class="col-md-2 control-label">{{ lang.hardware_version|capitalize }}</label>
+                                <div class="col-md-10">
+                                    <input type="hidden" name="hw_version_old" value="{{ fields.hw_version }}">
+                                    <input type="text" class="form-control" id="hw_version" name="hw_version" value="{% if fields is not empty %}{{ fields.hw_version }}{% endif %}">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="name" class="col-md-2 control-label">{{ lang.software_version|capitalize }}</label>
+                                <div class="col-md-10">
+                                  <input type="hidden" name="sw_version_old" value="{{ fields.sw_version }}">
+                                  <input type="text" class="form-control" id="sw_version" name="sw_version" value="{% if fields is not empty %}{{ fields.sw_version }}{% endif %}">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="name" class="col-md-2 control-label">{{ lang.serial_no|capitalize }}</label>
+                                <div class="col-md-10">
+                                    <input type="hidden" name="serialno" value="{{ fields.serialno }}">
+                                    <input type="text" {% if fields is not empty %}disabled {% endif %}class="form-control" id="serialno" name="serialno" value="{% if fields is not empty %}{{ fields.serialno }}{% endif %}">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="name" class="col-md-2 control-label">{{ lang.comment|capitalize }}</label>
+                                <div class="col-md-10">
+                                  <input type="hidden" name="comment_old" value="{{ fields.attr_3 }}">
+                                    <input type="text" class="form-control" id="comment" name="comment" value="{% if fields is not empty %}{{ fields.attr_3 }}{% endif %}">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="flags" class="col-md-2 control-label">&nbsp;</label>
+                                <div class="col-md-10">
+                                    <div class="checkbox">
+                                        <label class="col-md-12">
+                                            <input type="hidden" name="flag1" value="">
+                                            <input type="checkbox" name="flag1" value="I" {% if fields is not empty %} {% if "I" in fields.flags %} checked{% endif %} {% endif %}>
+                                            {{ lang.flag_inactive }}
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="flags" class="col-md-2 control-label">&nbsp;</label>
+                                <div class="col-md-10">
+                                    <div class="checkbox">
+                                        <label class="col-md-12">
+                                            <input type="hidden" name="drop_tool" value="no">
+                                            <input type="checkbox" name="drop_tool" value="yes">
+                                            <span style="color:red;">{{ lang.remove_tool_permanently }}</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">{{ lang.close }}</button>
+                            <button type="submit" class="btn btn-success">{{ lang.save }}</button>
+                            <a href="tools.php" class="btn btn-default">{{ lang.clear_form }}</a>
+                        </form>
+                    </form>
+
+                </div>
+            </div>
+{% endif %}
+        {% endblock %}

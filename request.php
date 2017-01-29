@@ -14,29 +14,29 @@ if (!empty($case_file_number)) {
     ));
     $out = $query->fetchAll(PDO::FETCH_ASSOC);
     if (!empty($out)) {
-        echo "<h4><i class='fa fa-exclamation' style='color:red;'></i> NOTICE! Possible duplicate request:</h4>";
+        echo "<h4><i class='fa fa-exclamation' style='color:red;'></i> " .$_SESSION['lang']['notice_duplicate_request']. ":</h4>";
         foreach ($out as $entry) {
             if (empty($entry['case_name'])) {
-                $case_name = 'RE '.$entry['case_suspect'];
+                $case_name = $_SESSION['lang']['suspect_abbrev']." ".$entry['case_suspect'];
             } else {
                 $case_name = $entry['case_name'].', RE '.$entry['case_suspect'];
             }
             ;
             if ($entry['case_status'] === '3') {
-                $tila = 'success';
-                $vaihe = 'valmis';
+                $case_status = 'success';
+                $case_progress = $_SESSION['lang']['ready'];
             } elseif ($entry['case_status'] === '2') {
-                $tila = 'warning';
-                $vaihe = 'kesken';
+                $case_status = 'warning';
+                $case_progress = $_SESSION['lang']['open'];
             } elseif ($entry['case_status'] === '1') {
-                $tila = 'danger';
-                $vaihe = 'uusi';
+                $case_status = 'danger';
+                $case_progress = $_SESSION['lang']['new'];
             } else {
-                $tila = 'danger';
-                $vaihe = 'TUNTEMATON';
+                $case_status = 'danger';
+                $case_progress = '???';
             }
             ;
-            echo "<p><a class='btn btn-".$tila." btn-xs' href='edit_request.php?case=".$entry['id']."'>".$entry['case_id'].'/'.substr($entry['case_added_date'], 0, 4).' '.$case_name.' ('.$vaihe.')</a></p>';
+            echo "<p><a class='btn btn-".$case_status." btn-xs' href='edit_request.php?case=".$entry['id']."'>".$entry['case_id'].'/'.substr($entry['case_added_date'], 0, 4).' '.$case_name.' ('.$case_progress.')</a></p>';
         }
         ;
         echo '';

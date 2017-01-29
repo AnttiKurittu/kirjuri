@@ -3,7 +3,7 @@
 /*
  * This file is part of Twig.
  *
- * (c) 2009 Fabien Potencier
+ * (c) Fabien Potencier
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -14,16 +14,13 @@
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-class Twig_NodeVisitor_Sandbox extends Twig_BaseNodeVisitor
+final class Twig_NodeVisitor_Sandbox extends Twig_BaseNodeVisitor
 {
-    protected $inAModule = false;
-    protected $tags;
-    protected $filters;
-    protected $functions;
+    private $inAModule = false;
+    private $tags;
+    private $filters;
+    private $functions;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function doEnterNode(Twig_Node $node, Twig_Environment $env)
     {
         if ($node instanceof Twig_Node_Module) {
@@ -51,16 +48,13 @@ class Twig_NodeVisitor_Sandbox extends Twig_BaseNodeVisitor
 
             // wrap print to check __toString() calls
             if ($node instanceof Twig_Node_Print) {
-                return new Twig_Node_SandboxedPrint($node->getNode('expr'), $node->getLine(), $node->getNodeTag());
+                return new Twig_Node_SandboxedPrint($node->getNode('expr'), $node->getTemplateLine(), $node->getNodeTag());
             }
         }
 
         return $node;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function doLeaveNode(Twig_Node $node, Twig_Environment $env)
     {
         if ($node instanceof Twig_Node_Module) {
@@ -72,9 +66,6 @@ class Twig_NodeVisitor_Sandbox extends Twig_BaseNodeVisitor
         return $node;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getPriority()
     {
         return 0;

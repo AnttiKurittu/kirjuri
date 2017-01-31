@@ -66,8 +66,6 @@ $query = $kirjuri_database->prepare('SELECT id, name, size, uploader, type FROM 
 $query->execute(array(':id' => $caserow[0]['id']));
 $attachment_files = $query->fetchAll(PDO::FETCH_ASSOC);
 
-$samerequest_file_number = $query->fetchAll(PDO::FETCH_ASSOC);
-
 if ($sort_j === 'dev_owner') {
     $j = 'device_owner';
 } elseif ($sort_j === 'dev_manuf') {
@@ -97,13 +95,6 @@ $query->execute(array(
 ));
 $tasks = $query->fetchAll(PDO::FETCH_ASSOC);
 
-
-if (!file_exists('conf/instructions_'.str_replace(' ', '_', strtolower($caserow[0]['classification'])).'.txt')) {
-    $instructions_text = 'File conf/instructions_'.str_replace(' ', '_', strtolower($caserow[0]['classification'])).'.txt not found.';
-} else {
-    $instructions_text = file_get_contents('conf/instructions_'.str_replace(' ', '_', strtolower($caserow[0]['classification'])).'.txt');
-}
-
 if (file_exists('attachments/'.$case_number.'/')) {
     $i = 0;
     $case_attachments = scandir('attachments/'.$case_number.'/', 0);
@@ -132,12 +123,10 @@ echo $twig->render('edit_request.twig', array(
   'caselog' => $caselog,
   'case_owner' => $case_owner,
   'session' => $_SESSION,
-
   'session_cache' => $session_cache,
   'free_disk_space' => disk_free_space('/'),
   'attachment_files' => $attachment_files,
   'filelist' => $filelist,
-  'samerequest_file_number' => $samerequest_file_number,
   'dev_owner' => $dev_owner,
   'j' => $sort_j,
   'sort_order' => $j,
@@ -153,6 +142,5 @@ echo $twig->render('edit_request.twig', array(
   'inv_units' => $prefs['inv_units'],
   'classifications' => $_SESSION['lang']['classifications'],
   'confCrimes' => $confCrimes,
-  'instructions_text' => $instructions_text,
   'lang' => $_SESSION['lang'],
 ));

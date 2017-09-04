@@ -121,7 +121,7 @@ foreach($cases_by_unit as $key => $unit)
   foreach($unit as $case_id)
   {
     $query = $kirjuri_database->prepare('
-    select COUNT(id) AS sum FROM exam_requests WHERE is_removed != "1" AND parent_id = :case_id');
+    select COUNT(id) AS sum FROM exam_requests WHERE is_removed != "1" AND parent_id = :case_id AND id != :case_id');
     $query->execute(array(':case_id' => $case_id));
     $device_count = $query->fetch(PDO::FETCH_ASSOC);
     $device_count_by_unit[$key] = $device_count_by_unit[$key] + $device_count['sum'];

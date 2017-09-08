@@ -4,6 +4,8 @@ Kirjuri is a simple php/mysql web application for managing physical forensic evi
 
 [See the official Kirjuri home page for more details.](https://kirjuri.kurittu.org/)
 
+NOTICE: Kirjuri is no longer actively developed since 09/2017, as I don't have time for this project anymore. If you are interested in developing this tool further, please contact me.
+
 OVERVIEW & LICENSE
 ------------
 

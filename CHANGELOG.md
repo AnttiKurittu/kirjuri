@@ -1,6 +1,11 @@
 CHANGELOG
 ------------
 
+2017-09
+
+* Fixed a few bugs
+* Last release, I will no longer actively develop this project as I don't have time for it anymore. If you are interested in taking the lead in developing this project, please contact me at antti.kurittu@gmail.com.
+
 2017-01    Version 0.9.1
 
 * Made some tweaks to the user interface on user settings.

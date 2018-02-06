@@ -164,7 +164,9 @@ function ldap_authenticate($username, $password) {
     $ldaprdn = $ldap_domain . "\\" . $username;
     if (strpos($username, '@') !== false) {
         $ldaprdn = $username;
+        $username = substr( $ldaprdn, 0, strpos($username, '@') );
     }
+    event_log_write('0', 'Auth', 'LDAP login attempt: ' . $ldaprdn . ' for ' . $username);
     $ldap = ldap_connect($prefs['settings']['ldap_server_address']);
     ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);
     ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0);
@@ -276,7 +278,7 @@ function ip_allowed() {
 
 
 function filter_username($username) {
-    $strip_chars = array("!", "<", ">", "'", ":", ";", ".", "/", "\"", "#", "%", "\\", "&", "|", "?", "*", "$", ")", "(", "[", "]", "{", "}");
+    $strip_chars = array("!", "<", ">", "'", ":", ";", "/", "\"", "#", "%", "\\", "&", "|", "?", "*", "$", ")", "(", "[", "]", "{", "}");
     $username = strtolower(trim(str_replace($strip_chars, "", $username)));
     return $username;
 }

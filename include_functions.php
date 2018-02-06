@@ -162,6 +162,9 @@ function ldap_authenticate($username, $password) {
     $ldap_domain = $prefs['settings']['ldap_domain'];
     $search_string = $prefs['settings']['ldap_search_string'];
     $ldaprdn = $ldap_domain . "\\" . $username;
+    if (strpos($username, '@') !== false) {
+        $ldaprdn = $username;
+    }
     $ldap = ldap_connect($prefs['settings']['ldap_server_address']);
     ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);
     ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0);

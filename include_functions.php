@@ -172,6 +172,40 @@ function ldap_authenticate($username, $password) {
     ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0);
     $bind = @ldap_bind($ldap, $ldaprdn, $password);
     if ($bind) { // On succesfull LDAP auth.
+        $allowedNetgroups = explode(',', str_replace(' ', '', $prefs['settings']['ldap_allowed_netgroups']) );
+        // see if user is a member of an allowed netgroup
+        $filter="(sAMAccountName=".$username.")";
+        $result = ldap_search($ldap, $search_string, $filter);
+        $info = ldap_get_entries($ldap, $result);
+        $isMember = false;
+        if ($prefs['settings']['ldap_allowed_netgroups'] == '') {
+            $isMember = true;
+        }
+        for ($i=0; $i<$info['count']; $i++) {
+            if ($info['count'] > 1)
+                break;
+            $ldap_realname = $info[$i]["displayname"][0];
+            for ($j=0; $j<$info[$i]['memberof']['count']; $j++) {
+                if ($isMember) {
+                    break;
+                }
+                foreach ($allowedNetgroups as $this) {
+                    $thisGroup = 'CN=' . $this . ',';
+                    $thisLen = strlen($thisGroup);
+                    if (substr($info[$i]['memberof'][$j],0,$thisLen) === $thisGroup) {
+                        $isMember = true;
+                        event_log_write('0', 'Auth', 'LDAP netgroup match found: ' . $this);
+                        break;
+                    }
+                }
+            }
+        }
+	if ($isMember === false) {
+            event_log_write('0', 'Auth', 'LDAP user not a member of any required group');
+            return false;
+        }
+        @ldap_close($ldap);
+            
         try {
             $kirjuri_database = connect_database('kirjuri-database');
             $query = $kirjuri_database->prepare('SELECT * FROM users WHERE username = :username AND attr_3 = "LDAP_AUTH_ONLY" LIMIT 1');
@@ -183,16 +217,6 @@ function ldap_authenticate($username, $password) {
             die;
         }
         if (empty($user_record)) {
-            $filter="(sAMAccountName=".$username.")";
-            $result = ldap_search($ldap, $search_string, $filter);
-            ldap_sort($ldap, $result, "sn");
-            $info = ldap_get_entries($ldap, $result);
-            for ($i=0; $i<$info["count"]; $i++) {
-                if ($info['count'] > 1)
-                    break;
-                $ldap_realname = $info[$i]["displayname"][0];
-            }
-            @ldap_close($ldap);
             $query = $kirjuri_database->prepare('SELECT * FROM users WHERE username = :username AND (NOT attr_3 = :attr_3 OR attr_3 IS NULL) LIMIT 1');
             $query->execute(array(':username' => $username, ':attr_3' => "LDAP_AUTH_ONLY"));
             $user_record = $query->fetch(PDO::FETCH_ASSOC);

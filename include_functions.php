@@ -192,7 +192,7 @@ function ldap_authenticate($username, $password) {
                 foreach ($allowedNetgroups as $this) {
                     $thisGroup = 'CN=' . $this . ',';
                     $thisLen = strlen($thisGroup);
-                    if (substr($info[$i]['memberof'][$j],0,$thisLen) === $thisGroup) {
+                    if (substr($info[$i]['memberof'][$j], 0, $thisLen) === $thisGroup) {
                         $isMember = true;
                         event_log_write('0', 'Auth', 'LDAP netgroup match found: ' . $this);
                         break;
@@ -200,12 +200,12 @@ function ldap_authenticate($username, $password) {
                 }
             }
         }
-	if ($isMember === false) {
+        if ($isMember === false) {
             event_log_write('0', 'Auth', 'LDAP user not a member of any required group');
             return false;
         }
         @ldap_close($ldap);
-            
+
         try {
             $kirjuri_database = connect_database('kirjuri-database');
             $query = $kirjuri_database->prepare('SELECT * FROM users WHERE username = :username AND attr_3 = "LDAP_AUTH_ONLY" LIMIT 1');

@@ -1,4 +1,5 @@
 dump_database_to_csv.php
 phpinfo.php
 .DS_store
-**/.DS_Store
+i**/.DS_Store
+.phptidy-cache

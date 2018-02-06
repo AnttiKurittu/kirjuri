@@ -10,8 +10,8 @@ $search_term = isset($_GET['search']) ? $_GET['search'] : '';
 if (!empty($case_file_number)) {
     $query = $kirjuri_database->prepare('SELECT case_status, case_name, case_suspect, id, case_added_date, case_id FROM exam_requests WHERE case_file_number = :case_file_number AND id = parent_id AND is_removed != "1" ORDER BY case_id');
     $query->execute(array(
-        ':case_file_number' => $case_file_number,
-    ));
+            ':case_file_number' => $case_file_number,
+        ));
     $out = $query->fetchAll(PDO::FETCH_ASSOC);
     if (!empty($out)) {
         echo "<h4><i class='fa fa-exclamation' style='color:red;'></i> " .$_SESSION['lang']['notice_duplicate_request']. ":</h4>";

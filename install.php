@@ -17,9 +17,8 @@ if (version_compare(PHP_VERSION, '7.0.0') <= 0) {
       <div class="main">
     <h3>Kirjuri installer</h3>
 <?php
-if (file_exists("conf/mysql_credentials.php"))
-{ echo "Installer has already been run on this instance. Please remove the file conf/mysql_credentials.php to run the installer again.";
-  die;
+if (file_exists("conf/mysql_credentials.php")) { echo "Installer has already been run on this instance. Please remove the file conf/mysql_credentials.php to run the installer again.";
+    die;
 }
 
 function error_handler($n, $s, $f) // Custom error handler for the installation script.
@@ -28,6 +27,8 @@ function error_handler($n, $s, $f) // Custom error handler for the installation 
     echo '<p style="color:red;">Installation error: ('.$n.') '.$s.'</p>';
     $i = 0;
 }
+
+
 set_error_handler('error_handler');
 
 echo '<p>Web server running as "'.exec('whoami').'"</p>';
@@ -35,9 +36,9 @@ echo '<p>Testing write permissions...</p>';
 
 $i = 0; // Count folders
 $test_folders = array(
-  'conf',
-  'cache',
-  'logs',
+    'conf',
+    'cache',
+    'logs',
 );
 foreach ($test_folders as $folder) {
     $result = '';
@@ -52,7 +53,7 @@ foreach ($test_folders as $folder) {
 
 if ($i === count($test_folders)) {
     // See if all folders passed the write test
-  echo '<b style="color:green;">   Write test passed!</b><hr>';
+    echo '<b style="color:green;">   Write test passed!</b><hr>';
 } else {
     echo '<b style="color:red;">   Write test failed, please check that the www server process owns the following folders: </b><br>';
     foreach ($test_folders as $folder) {
@@ -89,51 +90,51 @@ Please choose a name for your database. The default is "kirjuri".
 </body>
 </html>';
     die;
-  } else {
+} else {
     // If form is submitted
-  $admin_password = password_hash($_POST['ap'], PASSWORD_DEFAULT);
-  $_POST['drop_database'] = isset($_POST['drop_database']) ? $_POST['drop_database'] : '';
-  $_POST['migrate_old_database'] = isset($_POST['migrate_old_database']) ? $_POST['migrate_old_database'] : '';
-  $mysql_config['mysql_username'] = trim(preg_replace('/[^A-Za-z0-9\-]/', '', $_POST['u']));
-  $mysql_config['mysql_password'] = $_POST['p'];
-  $mysql_config['mysql_database'] = strtolower(trim(preg_replace('/[^A-Za-z0-9\-]/', '', $_POST['d'])));
+    $admin_password = password_hash($_POST['ap'], PASSWORD_DEFAULT);
+    $_POST['drop_database'] = isset($_POST['drop_database']) ? $_POST['drop_database'] : '';
+    $_POST['migrate_old_database'] = isset($_POST['migrate_old_database']) ? $_POST['migrate_old_database'] : '';
+    $mysql_config['mysql_username'] = trim(preg_replace('/[^A-Za-z0-9\-]/', '', $_POST['u']));
+    $mysql_config['mysql_password'] = $_POST['p'];
+    $mysql_config['mysql_database'] = strtolower(trim(preg_replace('/[^A-Za-z0-9\-]/', '', $_POST['d'])));
 
-  // Check for invalid database names
-  if (in_array($mysql_config['mysql_database'], array(
-    'mysql',
-    'information_schema',
-    'performance_schema',
-    'users',
-    'files',
-  ), true)) {
-      echo '<p style="color:red;">Reserved database name, please choose something else.</p>';
-      die;
-  }
+    // Check for invalid database names
+    if (in_array($mysql_config['mysql_database'], array(
+                'mysql',
+                'information_schema',
+                'performance_schema',
+                'users',
+                'files',
+            ), true)) {
+        echo '<p style="color:red;">Reserved database name, please choose something else.</p>';
+        die;
+    }
 
-  // Open a MySQL connection for database creation
-  $conn = new mysqli('localhost', $mysql_config['mysql_username'], $mysql_config['mysql_password']);
-  // Check the connection
-  if ($conn->connect_error) {
-      die('<p style="color:red;">Connection failed: '.$conn->connect_error.'</p>');
-  }
+    // Open a MySQL connection for database creation
+    $conn = new mysqli('localhost', $mysql_config['mysql_username'], $mysql_config['mysql_password']);
+    // Check the connection
+    if ($conn->connect_error) {
+        die('<p style="color:red;">Connection failed: '.$conn->connect_error.'</p>');
+    }
 
-  // Save credentials to file
-  $mysql_config_file = '<?php return '.var_export($mysql_config, true).'; ?>'."\n";
-  file_put_contents('conf/mysql_credentials.php', $mysql_config_file);
+    // Save credentials to file
+    $mysql_config_file = '<?php return '.var_export($mysql_config, true).'; ?>'."\n";
+    file_put_contents('conf/mysql_credentials.php', $mysql_config_file);
 
-  // Drop database if wanted
-  if ($_POST['drop_database'] === 'drop') {
-      // Drop database
-    $query = 'DROP DATABASE '.$mysql_config['mysql_database'];
-      if ($conn->query($query) === true) {
-          echo '<p style="color:green;">Database dropped successfully.</p>';
-      } else {
-          echo '<p style="color:red;">Error dropping database: '.$conn->error.'</p>';
-      }
-  }
+    // Drop database if wanted
+    if ($_POST['drop_database'] === 'drop') {
+        // Drop database
+        $query = 'DROP DATABASE '.$mysql_config['mysql_database'];
+        if ($conn->query($query) === true) {
+            echo '<p style="color:green;">Database dropped successfully.</p>';
+        } else {
+            echo '<p style="color:red;">Error dropping database: '.$conn->error.'</p>';
+        }
+    }
 
-  // Create new database
-  $query = 'CREATE DATABASE '.$mysql_config['mysql_database'];
+    // Create new database
+    $query = 'CREATE DATABASE '.$mysql_config['mysql_database'];
     if ($conn->query($query) === true) {
         echo '<p style="color:green;">Database created successfully.</p>';
     } else {
@@ -233,20 +234,20 @@ Please choose a name for your database. The default is "kirjuri".
   :admin_user_id, :admin_name, :admin_default_pw, :admin_realname, :admin_access, :system_flags, :admin_attr1,
   NULL, NULL, NULL, NULL, NULL, NULL, NULL);');
         $query->execute(array(
-      ':anon_user_id' => '1',
-      ':admin_user_id' => '2',
-      ':anon_name' => 'anonymous',
-      ':anon_realname' => 'Anonymous user',
-      ':anon_access' => '3', // Add only access
-      ':anon_attr1' => 'System account, do not remove.',
-      ':admin_name' => 'admin',
-      ':admin_default_pw' => $admin_password,
-      ':anon_pw' => 'Not set.',
-      ':admin_realname' => 'Administrator',
-      ':admin_access' => '0',
-      ':system_flags' => 'S',
-      ':admin_attr1' => 'Extra attribute columns for future compatibility',
-    ));
+                ':anon_user_id' => '1',
+                ':admin_user_id' => '2',
+                ':anon_name' => 'anonymous',
+                ':anon_realname' => 'Anonymous user',
+                ':anon_access' => '3', // Add only access
+                ':anon_attr1' => 'System account, do not remove.',
+                ':admin_name' => 'admin',
+                ':admin_default_pw' => $admin_password,
+                ':anon_pw' => 'Not set.',
+                ':admin_realname' => 'Administrator',
+                ':admin_access' => '0',
+                ':system_flags' => 'S',
+                ':admin_attr1' => 'Extra attribute columns for future compatibility',
+            ));
         echo '<p style="color:green;">Default users added.</p>';
     } catch (Exception $e) {
         echo '<p style="color:red;">Error creating user table: ', $e->getMessage(), '.</p>';
@@ -330,42 +331,42 @@ Please choose a name for your database. The default is "kirjuri".
   device_identifier,
   device_owner);');
         $query->execute(array(
-      ':zero' => '0',
-    ));
+                ':zero' => '0',
+            ));
         echo '<p style="color:green;">Examination requests table created.</p>';
     } catch (Exception $e) {
         echo '<p style="color:red;">Error creating exam_requests: ', $e->getMessage(), '. Tables not created.</p>';
     }
 
-  // Bring data from the limited release version database.
+    // Bring data from the limited release version database.
 
-  if ($_POST['migrate_old_database'] === 'migrate') {
-      try {
-          $query = $kirjuri_database->prepare('
+    if ($_POST['migrate_old_database'] === 'migrate') {
+        try {
+            $query = $kirjuri_database->prepare('
       INSERT INTO exam_requests SELECT * FROM tutkinta.jutut;
       ');
-          $query->execute(array());
-          echo '<p style="color:green;">Table tutkinta.jutut migrated.</p>';
-      } catch (Exception $e) {
-          echo '<p style="color:red;">Can not migrate old tables from tutkinta.jutut: ', $e->getMessage(), '.</p>';
-      }
-  }
+            $query->execute(array());
+            echo '<p style="color:green;">Table tutkinta.jutut migrated.</p>';
+        } catch (Exception $e) {
+            echo '<p style="color:red;">Can not migrate old tables from tutkinta.jutut: ', $e->getMessage(), '.</p>';
+        }
+    }
 
-  // Add columns for upgrading existing databases.
+    // Add columns for upgrading existing databases.
 
-  try {
-      $query = $kirjuri_database->prepare('
+    try {
+        $query = $kirjuri_database->prepare('
     ALTER TABLE exam_requests ADD criminal_act_date_start DATETIME;
     ALTER TABLE exam_requests ADD criminal_act_date_end DATETIME;
     ALTER TABLE exam_requests ADD case_password MEDIUMTEXT;
     ALTER TABLE exam_requests ADD case_owner MEDIUMTEXT;
     ALTER TABLE exam_requests ADD is_protected INT(1);
     ');
-      $query->execute(array());
-      echo '<p style="color:green;">Examination requests table upgraded.</p>';
-  } catch (Exception $e) {
-      echo '<p style="color:red;">Caught MySQL exception: ', $e->getMessage(), '. This is expected with existing tables.</p>';
-  }
+        $query->execute(array());
+        echo '<p style="color:green;">Examination requests table upgraded.</p>';
+    } catch (Exception $e) {
+        echo '<p style="color:red;">Caught MySQL exception: ', $e->getMessage(), '. This is expected with existing tables.</p>';
+    }
     echo '<p>Install script done, reload <a href="index.php">index.php</a>. The admininistrator account is "admin", log in with the password you designated.</p></div>
     </div>
     </body>

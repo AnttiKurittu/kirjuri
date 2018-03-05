@@ -8,18 +8,17 @@ $prefill_msgto = isset($_GET['msgto']) ? $_GET['msgto'] : '';
 $_SESSION['post_cache']['subject'] = urldecode(isset($_GET['subject']) ? $_GET['subject'] : '');
 $show = isset($_GET['show']) ? $_GET['show'] : '';
 
-foreach($_POST as $key => $value) // Sanitize all POST data
+foreach ($_POST as $key => $value) // Sanitize all POST data
 {
-  $value = filter_html($value);
-  $_POST[$key] = isset($value) ? $value : '';
+    $value = filter_html($value);
+    $_POST[$key] = isset($value) ? $value : '';
 }
 
 $open = filter_numbers($open);
 
-if ($open > 0)
-{
-  $query = $kirjuri_database->prepare('UPDATE messages SET received = NOW() WHERE id = :open AND msgto = :username');
-  $query->execute(array(':open' => $open, ':username' => $_SESSION['user']['username']));
+if ($open > 0) {
+    $query = $kirjuri_database->prepare('UPDATE messages SET received = NOW() WHERE id = :open AND msgto = :username');
+    $query->execute(array(':open' => $open, ':username' => $_SESSION['user']['username']));
 }
 
 $query = $kirjuri_database->prepare('SELECT
@@ -35,20 +34,20 @@ $query->execute(array(':username' => $_SESSION['user']['username']));
 $messages = $query->fetchAll(PDO::FETCH_ASSOC);
 
 $i = 0;
-foreach($messages as $message) {
-  $messages[$i]['body'] = gzinflate(base64_decode($message['body']));
-  $messages[$i]['subject'] = gzinflate(base64_decode($message['subject']));
-  $i++;
+foreach ($messages as $message) {
+    $messages[$i]['body'] = gzinflate(base64_decode($message['body']));
+    $messages[$i]['subject'] = gzinflate(base64_decode($message['subject']));
+    $i++;
 }
 
 $_SESSION['message_set'] = false;
 echo $twig->render('messages.twig', array(
-    'post' => $_POST,
-    'session' => $_SESSION,
-    'settings' => $prefs['settings'],
-    'lang' => $_SESSION['lang'],
-    'messages' => $messages,
-    'open' => $open,
-    'show' => $show,
-    'prefill_msgto' => $prefill_msgto
-));
+        'post' => $_POST,
+        'session' => $_SESSION,
+        'settings' => $prefs['settings'],
+        'lang' => $_SESSION['lang'],
+        'messages' => $messages,
+        'open' => $open,
+        'show' => $show,
+        'prefill_msgto' => $prefill_msgto
+    ));

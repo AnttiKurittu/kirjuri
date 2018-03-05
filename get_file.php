@@ -4,7 +4,7 @@ ksess_verify(1);
 ksess_validate($_GET['token']);
 
 if (!isset($_GET['file'])) {
-	die;
+    die;
 }
 $file_id = filter_numbers($_GET['file']);
 
@@ -23,10 +23,10 @@ if (!empty($file['content'])) {
     header('Cache-Control: must-revalidate');
     header('Pragma: public');
     header('Content-Length: ' . $file['size']);
-		echo gzdecode($file['content']);
+    echo gzdecode($file['content']);
     die;
 } else {
-	echo "File not found.";
-	die;
+    echo "File not found.";
+    die;
 }
 ?>

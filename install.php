@@ -79,6 +79,7 @@ Please choose a name for your database. The default is "kirjuri".
 <input type="checkbox" name="drop_database" value="drop"> Drop existing database. <b style="color:red;">THIS WILL DELETE YOUR DATA AND USERS.</b>
 <input type="checkbox" name="migrate_old_database" value="migrate"> Migrate tutkinta.jutut database. <b style="color:red;">THIS WILL OVERWRITE YOUR EXISTING DATABASE.</b>
 
+<input name="s" type="text" value="localhost"> MySQL server
 <input name="u" type="text"> MySQL username
 <input name="p" type="password"> MySQL password
 <input name="d" type="text" value="kirjuri"> MySQL database
@@ -95,6 +96,8 @@ Please choose a name for your database. The default is "kirjuri".
     $admin_password = password_hash($_POST['ap'], PASSWORD_DEFAULT);
     $_POST['drop_database'] = isset($_POST['drop_database']) ? $_POST['drop_database'] : '';
     $_POST['migrate_old_database'] = isset($_POST['migrate_old_database']) ? $_POST['migrate_old_database'] : '';
+
+    $mysql_config['mysql_server'] = $_POST['s'];
     $mysql_config['mysql_username'] = trim(preg_replace('/[^A-Za-z0-9\-]/', '', $_POST['u']));
     $mysql_config['mysql_password'] = $_POST['p'];
     $mysql_config['mysql_database'] = strtolower(trim(preg_replace('/[^A-Za-z0-9\-]/', '', $_POST['d'])));
@@ -112,7 +115,7 @@ Please choose a name for your database. The default is "kirjuri".
     }
 
     // Open a MySQL connection for database creation
-    $conn = new mysqli('localhost', $mysql_config['mysql_username'], $mysql_config['mysql_password']);
+    $conn = new mysqli($mysql_config['mysql_server'], $mysql_config['mysql_username'], $mysql_config['mysql_password']);
     // Check the connection
     if ($conn->connect_error) {
         die('<p style="color:red;">Connection failed: '.$conn->connect_error.'</p>');
@@ -142,7 +145,7 @@ Please choose a name for your database. The default is "kirjuri".
     }
     $conn->close();
 
-    $kirjuri_database = new PDO('mysql:host=localhost;dbname='.$mysql_config['mysql_database'].'', $mysql_config['mysql_username'], $mysql_config['mysql_password']);
+    $kirjuri_database = new PDO('mysql:host='.$mysql_config['mysql_server'].';dbname='.$mysql_config['mysql_database'].'', $mysql_config['mysql_username'], $mysql_config['mysql_password']);
     $kirjuri_database->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $kirjuri_database->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
     $kirjuri_database->exec('SET NAMES utf8');

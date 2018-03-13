@@ -18,12 +18,16 @@ if (file_exists('conf/mysql_credentials.php')) {
     die;
 }
 
+if (!$mysql_config['mysql_server']) {
+    $mysql_config['mysql_server'] = "localhost";
+}
+
 function db_r($database) // PDO Database connection
 {
     global $mysql_config;
     if ($database === 'kirjuri-database') {
         try {
-            $kirjuri_database = new PDO('mysql:host=localhost;dbname='.$mysql_config['mysql_database'].'', $mysql_config['mysql_username'], $mysql_config['mysql_password']);
+            $kirjuri_database = new PDO('mysql:host='.$mysql_config['mysql_server'].';dbname='.$mysql_config['mysql_database'].'', $mysql_config['mysql_username'], $mysql_config['mysql_password']);
             $kirjuri_database->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $kirjuri_database->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
             $kirjuri_database->exec('SET NAMES utf8');

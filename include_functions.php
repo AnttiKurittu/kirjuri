@@ -577,10 +577,10 @@ function connect_database($database) {
     // PDO Database connector
     global $mysql_config;
     global $prefs;
-    if (!isset($prefs['settings']['mysql_server_address'])) {
+    if (!isset($mysql_config['mysql_server'])) {
         $server = 'localhost';
     } else {
-        $server = $prefs['settings']['mysql_server_address'];
+        $server = $mysql_config['mysql_server'];
     }
     if ($database === 'kirjuri-database') {
         try {
@@ -721,7 +721,7 @@ if ($_SESSION['user']) { // Get unread message count
 }
 
 if ( (microtime(true) - $mysql_timer_start) > "2.0") {
-    trigger_error("Your MySQL connection is slow. This might be a timeout issue when resolving the localhost hostname to an IP address. Try setting the MySQL server to your server IP from the settings.");
+    trigger_error("Your MySQL connection is slow. This might be a timeout issue when resolving the localhost hostname to an IP address. Try setting the MySQL server to your server IP from conf/mysql_credentials.php.");
 }
 
 /* Really extensive access logging.

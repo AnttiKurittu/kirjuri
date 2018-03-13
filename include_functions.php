@@ -189,12 +189,12 @@ function ldap_authenticate($username, $password) {
                 if ($isMember) {
                     break;
                 }
-                foreach ($allowedNetgroups as $this) {
-                    $thisGroup = 'CN=' . $this . ',';
+                foreach ($allowedNetgroups as $thisInst) {
+                    $thisGroup = 'CN=' . $thisInst . ',';
                     $thisLen = strlen($thisGroup);
                     if (substr($info[$i]['memberof'][$j], 0, $thisLen) === $thisGroup) {
                         $isMember = true;
-                        event_log_write('0', 'Auth', 'LDAP netgroup match found: ' . $this);
+                        event_log_write('0', 'Auth', 'LDAP netgroup match found: ' . $thisInst);
                         break;
                     }
                 }

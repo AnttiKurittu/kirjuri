@@ -1,6 +1,13 @@
 CHANGELOG
 ------------
 
+2018-03 Version 0.9.2
+
+* A few fixes as requested and notified by the users of Kirjuri.
+* Merged good work on the LDAP authentication parts from the good people of Missouri S&T
+* Added a Spanish language file courtesy of QuiQue CiBeRs, thanks!
+* Fixed a bug causing the statistics page to ignore the last day of the year.
+
 2017-09
 
 * Fixed a few bugs

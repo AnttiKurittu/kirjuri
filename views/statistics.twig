@@ -395,7 +395,7 @@
   <script>
     var ctx = document.getElementById("devicespiderweb").getContext("2d");
     var data = {
-      labels: [{% for devtype in devices %}"Laite: {{ devtype }} ", {% endfor %}{% for media in media_objs %}"Media: {{ media }} ", {% endfor %}],
+      labels: [{% for devtype in devices %}"{{ lang.device }}: {{ devtype }} ", {% endfor %}{% for media in media_objs %}"{{ lang.media }}: {{ media }} ", {% endfor %}],
       datasets: [
       {
         label: "devices",

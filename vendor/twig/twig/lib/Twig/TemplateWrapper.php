@@ -93,12 +93,6 @@ final class Twig_TemplateWrapper
         ob_start();
         try {
             $this->template->displayBlock($name, $context);
-        } catch (Exception $e) {
-            while (ob_get_level() > $level) {
-                ob_end_clean();
-            }
-
-            throw $e;
         } catch (Throwable $e) {
             while (ob_get_level() > $level) {
                 ob_end_clean();
@@ -129,3 +123,5 @@ final class Twig_TemplateWrapper
         return $this->template->getSourceContext();
     }
 }
+
+class_alias('Twig_TemplateWrapper', 'Twig\TemplateWrapper', false);

@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-class Twig_Tests_Extension_SandboxTest extends PHPUnit_Framework_TestCase
+class Twig_Tests_Extension_SandboxTest extends \PHPUnit\Framework\TestCase
 {
     protected static $params;
     protected static $templates;
@@ -250,9 +250,8 @@ EOF
         try {
             $twig->loadTemplate('1_include')->render(self::$params);
         } catch (Throwable $e) {
-        } catch (Exception $e) {
         }
-        if ($e === null) {
+        if (null === $e) {
             $this->fail('An exception should be thrown for this test to be valid.');
         }
 

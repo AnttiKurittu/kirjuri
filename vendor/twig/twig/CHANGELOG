@@ -1,3 +1,72 @@
+* 2.4.6 (2018-03-03)
+
+ * fixed a regression in the way the profiler is registered in templates
+
+* 2.4.5 (2018-03-02)
+
+ * optimized the performance of calling an extension method at runtime
+ * optimized the performance of the dot operator for array and method calls
+ * added an exception when using "===" instead of "same as"
+ * fixed possible array to string conversion concealing actual error
+ * made variable names deterministic in compiled templates
+ * fixed length filter when passing an instance of IteratorAggregate
+ * fixed Environment::resolveTemplate to accept instances of TemplateWrapper
+
+* 2.4.4 (2017-09-27)
+
+ * added Twig_Profiler_Profile::reset()
+ * fixed use TokenParser to return an empty Node
+ * added RuntimeExtensionInterface
+ * added circular reference detection when loading templates
+ * added support for runtime loaders in IntegrationTestCase
+ * fixed deprecation when using Twig_Profiler_Dumper_Html
+ * removed @final from Twig_Profiler_Dumper_Text
+
+* 2.4.3 (2017-06-07)
+
+ * fixed namespaces introduction
+
+* 2.4.2 (2017-06-05)
+
+ * fixed namespaces introduction
+
+* 2.4.1 (2017-06-05)
+
+ * fixed namespaces introduction
+
+* 2.4.0 (2017-06-05)
+
+ * added support for PHPUnit 6 when testing extensions
+ * fixed PHP 7.2 compatibility
+ * fixed template name generation in Twig_Environment::createTemplate()
+ * removed final tag on Twig_TokenParser_Include
+ * dropped HHVM support
+ * added namespaced aliases for all (non-deprecated) classes and interfaces
+ * marked Twig_Filter, Twig_Function, Twig_Test, Twig_Node_Module and Twig_Profiler_Profile as final via the @final annotation
+
+* 2.3.2 (2017-04-20)
+
+ * fixed edge case in the method cache for Twig attributes
+
+* 2.3.1 (2017-04-18)
+
+ * fixed the empty() test
+
+* 2.3.0 (2017-03-22)
+
+ * fixed a race condition handling when writing cache files
+ * "length" filter now returns string length when applied to an object that does
+   not implement \Countable but provides __toString()
+ * "empty" test will now consider the return value of the __toString() method for
+   objects implement __toString() but not \Countable
+ * fixed JS escaping for unicode characters with higher code points
+ * added error message when calling `parent()` in a block that doesn't exist in the parent template
+
+* 2.2.0 (2017-02-26)
+
+ * added a PSR-11 compatible runtime loader
+ * added `side` argument to `trim` to allow left or right trimming only.
+
 * 2.1.0 (2017-01-11)
 
  * fixed twig_get_attribute()
@@ -24,7 +93,76 @@
  * improved the performance of the filesystem loader
  * removed features that were deprecated in 1.x
 
-* 1.31.0 (2017-XX-XX)
+* 1.35.2 (2018-XX-XX)
+
+ * fixed a regression in the way the profiler is registered in templates
+
+* 1.35.1 (2018-03-02)
+
+ * added an exception when using "===" instead of "same as"
+ * fixed possible array to string conversion concealing actual error
+ * made variable names deterministic in compiled templates
+ * fixed length filter when passing an instance of IteratorAggregate
+ * fixed Environment::resolveTemplate to accept instances of TemplateWrapper
+
+* 1.35.0 (2017-09-27)
+
+ * added Twig_Profiler_Profile::reset()
+ * fixed use TokenParser to return an empty Node
+ * added RuntimeExtensionInterface
+ * added circular reference detection when loading templates
+
+* 1.34.4 (2017-07-04)
+
+ * added support for runtime loaders in IntegrationTestCase
+ * fixed deprecation when using Twig_Profiler_Dumper_Html
+
+* 1.34.3 (2017-06-07)
+
+ * fixed namespaces introduction
+
+* 1.34.2 (2017-06-05)
+
+ * fixed namespaces introduction
+
+* 1.34.1 (2017-06-05)
+
+ * fixed namespaces introduction
+
+* 1.34.0 (2017-06-05)
+
+ * added support for PHPUnit 6 when testing extensions
+ * fixed PHP 7.2 compatibility
+ * fixed template name generation in Twig_Environment::createTemplate()
+ * removed final tag on Twig_TokenParser_Include
+ * added namespaced aliases for all (non-deprecated) classes and interfaces
+ * dropped HHVM support
+ * dropped PHP 5.2 support
+
+* 1.33.2 (2017-04-20)
+
+ * fixed edge case in the method cache for Twig attributes
+
+* 1.33.1 (2017-04-18)
+
+ * fixed the empty() test
+
+* 1.33.0 (2017-03-22)
+
+ * fixed a race condition handling when writing cache files
+ * "length" filter now returns string length when applied to an object that does
+   not implement \Countable but provides __toString()
+ * "empty" test will now consider the return value of the __toString() method for
+   objects implement __toString() but not \Countable
+ * fixed JS escaping for unicode characters with higher code points
+
+* 1.32.0 (2017-02-26)
+
+ * fixed deprecation notice in Twig_Util_DeprecationCollector
+ * added a PSR-11 compatible runtime loader
+ * added `side` argument to `trim` to allow left or right trimming only.
+
+* 1.31.0 (2017-01-11)
 
  * added Twig_NodeCaptureInterface for nodes that capture all output
  * fixed marking the environment as initialized too early
@@ -118,7 +256,7 @@
 
  * fixed reserved keywords (forbids true, false, null and none keywords for variables names)
  * fixed support for PHP7 (Throwable support)
- * marked the following methods as being internals on Twig_Environment: 
+ * marked the following methods as being internals on Twig_Environment:
    getFunctions(), getFilters(), getTests(), getFunction(), getFilter(), getTest(),
    getTokenParsers(), getTags(), getNodeVisitors(), getUnaryOperators(), getBinaryOperators(),
    getFunctions(), getFilters(), getGlobals(), initGlobals(), initExtensions(), and initExtension()

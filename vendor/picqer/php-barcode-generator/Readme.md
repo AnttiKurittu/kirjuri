@@ -12,6 +12,8 @@ Install through [composer](https://getcomposer.org/doc/00-intro.md):
 composer require picqer/php-barcode-generator
 ```
 
+If you want to generate PNG or JPG images, you need the GD library or Imagick installed on your system as well.
+
 ## Usage
 Initiate the barcode generator for the output you want, then call the ->getBarcode() routine as many times as you want.
 
@@ -23,7 +25,7 @@ echo $generator->getBarcode('081231723897', $generator::TYPE_CODE_128);
 The ->getBarcode() routine accepts the following:
 - $code Data for the barcode
 - $type Type of barcode, use the constants defined in the class
-- $widthFactor Width is based on the length of the data, with this factor you can make the barcode bars wider then default
+- $widthFactor Width is based on the length of the data, with this factor you can make the barcode bars wider than default
 - $totalHeight The total height of the barcode
 - $color Hex code of the foreground color
 

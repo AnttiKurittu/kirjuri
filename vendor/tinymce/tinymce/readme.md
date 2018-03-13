@@ -1,5 +1,5 @@
-TinyMCE - The JavaScript Rich Text editor
-==========================================
+TinyMCE - JavaScript Library for Rich Text Editing
+===================================================
 
 Building TinyMCE
 -----------------
@@ -25,22 +25,41 @@ Now, build TinyMCE by using `grunt`.
 $ grunt
 ```
 
+
 Build tasks
 ------------
 `grunt`
-Lints, minified, unit tests and creates release packages for TinyMCE.
+Lints, compiles, minifies and creates release packages for TinyMCE. This will produce the production ready packages.
 
-`grunt minify`
-Minifies all JS and CSS files.
+`grunt start`
+Starts a webpack-dev-server that compiles the core, themes, plugins and all demos. Go to `localhost:3000` for a list of links to all the demo pages.
+
+`grunt dev`
+Runs tsc, webpack and less. This will only produce the bare essentials for a development build and is a lot faster.
 
 `grunt test`
-Runs all qunit tests on PhantomJS.
+Runs all tests on PhantomJS.
 
-`grunt lint`
-Runs all source files through various JS linters.
+`grunt bedrock-manual`
+Runs all tests manually in a browser.
 
-`grunt watch`
-Watches for source code changes and triggers rebuilds and linting.
+`grunt bedrock-auto:<browser>`
+Runs all tests through selenium browsers supported are chrome, firefox, ie, MicrosoftEdge, chrome-headless and phantomjs.
+
+`grunt webpack:core`
+Builds the demo js files for the core part of tinymce this is required to get the core demos working.
+
+`grunt webpack:plugins`
+Builds the demo js files for the plugins part of tinymce this is required to get the plugins demos working.
+
+`grunt webpack:themes`
+Builds the demo js files for the themes part of tinymce this is required to get the themes demos working.
+
+`grunt webpack:<name>-plugin`
+Builds the demo js files for the specific plugin.
+
+`grunt webpack:<name>-theme`
+Builds the demo js files for the specific theme.
 
 `grunt --help`
 Displays the various build tasks.
@@ -48,6 +67,7 @@ Displays the various build tasks.
 Bundle themes and plugins into a single file
 ---------------------------------------------
 `grunt bundle --themes=modern --plugins=table,paste`
+
 Minifies the core, adds the modern theme and adds the table and paste plugin into tinymce.min.js.
 
 Contributing to the TinyMCE project
@@ -56,10 +76,10 @@ TinyMCE is an open source software project and we encourage developers to contri
 
 __Basic Rules__
 
-* Contributed code will be licensed under the LGPL license but not limited to LGPL.
-* Copyright notices will be changed to Ephox Corporation, contributors will get credit for their work.
-* All third party code will be reviewed, tested and possibly modified before being released.
-* All contributors will have to have signed the Contributor License Agreement.
+* Contributed code will be licensed under the LGPL license but not limited to LGPL
+* Copyright notices will be changed to Ephox Corporation, contributors will get credit for their work
+* All third party code will be reviewed, tested and possibly modified before being released
+* All contributors will have to have signed the Contributor License Agreement
 
 These basic rules ensures that the contributed code remains open source and under the LGPL license.
 

@@ -7,6 +7,12 @@ CHANGELOG
 * Merged good work on the LDAP authentication parts from the good people of Missouri S&T
 * Added a Spanish language file courtesy of QuiQue CiBeRs, thanks!
 * Fixed a bug causing the statistics page to ignore the last day of the year.
+* Updated the following dependencies:
+* - picqer/php-barcode-generator (v0.2.1 => v0.2.2)
+* - ezyang/htmlpurifier (v4.9.0 => v4.10.0)
+* - symfony/polyfill-mbstring (v1.3.0 => v1.7.0)
+* - twig/twig (v2.1.0 => v2.4.6)
+* - tinymce/tinymce (4.5.2 => 4.7.9)
 
 2017-09
 

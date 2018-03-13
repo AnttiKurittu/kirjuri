@@ -25,7 +25,7 @@ class Twig_Node_SandboxedPrint extends Twig_Node_Print
     {
         $compiler
             ->addDebugInfo($this)
-            ->write('echo $this->env->getExtension(\'Twig_Extension_Sandbox\')->ensureToStringAllowed(')
+            ->write('echo $this->extensions[\'Twig_Extension_Sandbox\']->ensureToStringAllowed(')
             ->subcompile($this->getNode('expr'))
             ->raw(");\n")
         ;
@@ -47,3 +47,5 @@ class Twig_Node_SandboxedPrint extends Twig_Node_Print
         return $node;
     }
 }
+
+class_alias('Twig_Node_SandboxedPrint', 'Twig\Node\SandboxedPrintNode', false);

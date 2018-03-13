@@ -27,20 +27,25 @@ abstract class Twig_Template
     const ARRAY_CALL = 'array';
     const METHOD_CALL = 'method';
 
-    /**
-     * @internal
-     */
-    protected static $cache = array();
-
     protected $parent;
     protected $parents = array();
     protected $env;
     protected $blocks = array();
     protected $traits = array();
 
+    /**
+     * @internal
+     */
+    protected $extensions = array();
+
     public function __construct(Twig_Environment $env)
     {
         $this->env = $env;
+        foreach ($env->getExtensions() as $extension) {
+            // For BC/FC with namespaced aliases
+            $class = (new ReflectionClass(get_class($extension)))->name;
+            $this->extensions[ltrim($class, '\\')] = $extension;
+        }
     }
 
     /**
@@ -204,6 +209,8 @@ abstract class Twig_Template
             }
         } elseif (false !== $parent = $this->getParent($context)) {
             $parent->displayBlock($name, $context, array_merge($this->blocks, $blocks), false);
+        } elseif (isset($blocks[$name])) {
+            throw new Twig_Error_Runtime(sprintf('Block "%s" should not call parent() in "%s" as the block does not exist in the parent template "%s".', $name, $blocks[$name][0]->getTemplateName(), $this->getTemplateName()), -1, $blocks[$name][0]->getTemplateName());
         } else {
             throw new Twig_Error_Runtime(sprintf('Block "%s" on template "%s" does not exist.', $name, $this->getTemplateName()), -1, $this->getTemplateName());
         }
@@ -370,12 +377,6 @@ abstract class Twig_Template
         ob_start();
         try {
             $this->display($context);
-        } catch (Exception $e) {
-            while (ob_get_level() > $level) {
-                ob_end_clean();
-            }
-
-            throw $e;
         } catch (Throwable $e) {
             while (ob_get_level() > $level) {
                 ob_end_clean();
@@ -417,3 +418,5 @@ abstract class Twig_Template
      */
     abstract protected function doDisplay(array $context, array $blocks = array());
 }
+
+class_alias('Twig_Template', 'Twig\Template', false);

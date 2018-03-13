@@ -9,14 +9,19 @@
  * file that was distributed with this source code.
  */
 
-class CustomExtensionTest extends PHPUnit_Framework_TestCase
+class CustomExtensionTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @dataProvider provideInvalidExtensions
      */
     public function testGetInvalidOperators(Twig_ExtensionInterface $extension, $expectedExceptionMessage)
     {
-        $this->setExpectedException('InvalidArgumentException', $expectedExceptionMessage);
+        if (method_exists($this, 'expectException')) {
+            $this->expectException('InvalidArgumentException');
+            $this->expectExceptionMessage($expectedExceptionMessage);
+        } else {
+            $this->setExpectedException('InvalidArgumentException', $expectedExceptionMessage);
+        }
 
         $env = new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock());
         $env->addExtension($extension);

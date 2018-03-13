@@ -31,12 +31,16 @@
         "symfony/polyfill-mbstring": "~1.0"
     },
     "require-dev": {
-        "symfony/phpunit-bridge": "~3.2",
-        "symfony/debug": "~2.7"
+        "symfony/phpunit-bridge": "~3.3@dev",
+        "symfony/debug": "~2.7",
+        "psr/container": "^1.0"
     },
     "autoload": {
         "psr-0" : {
             "Twig_" : "lib/"
+        },
+        "psr-4" : {
+            "Twig\\" : "src/"
         }
     },
     "autoload-dev": {
@@ -46,7 +50,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "2.1-dev"
+            "dev-master": "2.4-dev"
         }
     }
 }

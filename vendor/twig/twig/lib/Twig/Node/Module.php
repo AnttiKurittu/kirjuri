@@ -18,6 +18,8 @@
  * display_end, constructor_start, constructor_end, and class_end.
  *
  * @author Fabien Potencier <fabien@symfony.com>
+ *
+ * @final since version 2.4.0
  */
 class Twig_Node_Module extends Twig_Node
 {
@@ -25,6 +27,10 @@ class Twig_Node_Module extends Twig_Node
 
     public function __construct(Twig_Node $body, Twig_Node_Expression $parent = null, Twig_Node $blocks, Twig_Node $macros, Twig_Node $traits, $embeddedTemplates, Twig_Source $source)
     {
+        if (__CLASS__ !== get_class($this)) {
+            @trigger_error('Overriding '.__CLASS__.' is deprecated since version 2.4.0 and the class will be final in 3.0.', E_USER_DEPRECATED);
+        }
+
         $this->source = $source;
 
         $nodes = array(
@@ -74,16 +80,7 @@ class Twig_Node_Module extends Twig_Node
 
         $this->compileClassHeader($compiler);
 
-        if (
-            count($this->getNode('blocks'))
-            || count($this->getNode('traits'))
-            || !$this->hasNode('parent')
-            || $this->getNode('parent') instanceof Twig_Node_Expression_Constant
-            || count($this->getNode('constructor_start'))
-            || count($this->getNode('constructor_end'))
-        ) {
-            $this->compileConstructor($compiler);
-        }
+        $this->compileConstructor($compiler);
 
         $this->compileGetParent($compiler);
 
@@ -149,6 +146,7 @@ class Twig_Node_Module extends Twig_Node
             ->raw(sprintf(" extends %s\n", $compiler->getEnvironment()->getBaseTemplateClass()))
             ->write("{\n")
             ->indent()
+            ->write("private \$source;\n\n")
         ;
     }
 
@@ -159,6 +157,7 @@ class Twig_Node_Module extends Twig_Node
             ->indent()
             ->subcompile($this->getNode('constructor_start'))
             ->write("parent::__construct(\$env);\n\n")
+            ->write("\$this->source = \$this->getSourceContext();\n\n")
         ;
 
         // parent
@@ -442,3 +441,5 @@ class Twig_Node_Module extends Twig_Node
         }
     }
 }
+
+class_alias('Twig_Node_Module', 'Twig\Node\ModuleNode', false);

@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "ezyang/htmlpurifier",
-            "version": "v4.9.0",
+            "version": "v4.10.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ezyang/htmlpurifier.git",
-                "reference": "a1c09b09e398687deeb8e309a6305def4b43439b"
+                "reference": "d85d39da4576a6934b72480be6978fb10c860021"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ezyang/htmlpurifier/zipball/a1c09b09e398687deeb8e309a6305def4b43439b",
-                "reference": "a1c09b09e398687deeb8e309a6305def4b43439b",
+                "url": "https://api.github.com/repos/ezyang/htmlpurifier/zipball/d85d39da4576a6934b72480be6978fb10c860021",
+                "reference": "d85d39da4576a6934b72480be6978fb10c860021",
                 "shasum": ""
             },
             "require": {
@@ -51,20 +51,20 @@
             "keywords": [
                 "html"
             ],
-            "time": "2017-01-13T12:31:37+00:00"
+            "time": "2018-02-23T01:58:20+00:00"
         },
         {
             "name": "picqer/php-barcode-generator",
-            "version": "v0.2.1",
+            "version": "v0.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/picqer/php-barcode-generator.git",
-                "reference": "5328d821b076727163a3ad25373973055faadead"
+                "reference": "f754cbd592f3131af144dfcc6a3090fd0f6d1793"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/picqer/php-barcode-generator/zipball/5328d821b076727163a3ad25373973055faadead",
-                "reference": "5328d821b076727163a3ad25373973055faadead",
+                "url": "https://api.github.com/repos/picqer/php-barcode-generator/zipball/f754cbd592f3131af144dfcc6a3090fd0f6d1793",
+                "reference": "f754cbd592f3131af144dfcc6a3090fd0f6d1793",
                 "shasum": ""
             },
             "require": {
@@ -120,20 +120,20 @@
                 "svg",
                 "upc"
             ],
-            "time": "2016-10-17T14:20:28+00:00"
+            "time": "2017-09-28T19:23:19+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",
-            "version": "v1.3.0",
+            "version": "v1.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-mbstring.git",
-                "reference": "e79d363049d1c2128f133a2667e4f4190904f7f4"
+                "reference": "78be803ce01e55d3491c1397cf1c64beb9c1b63b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/e79d363049d1c2128f133a2667e4f4190904f7f4",
-                "reference": "e79d363049d1c2128f133a2667e4f4190904f7f4",
+                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/78be803ce01e55d3491c1397cf1c64beb9c1b63b",
+                "reference": "78be803ce01e55d3491c1397cf1c64beb9c1b63b",
                 "shasum": ""
             },
             "require": {
@@ -145,7 +145,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.3-dev"
+                    "dev-master": "1.7-dev"
                 }
             },
             "autoload": {
@@ -179,20 +179,20 @@
                 "portable",
                 "shim"
             ],
-            "time": "2016-11-14T01:06:16+00:00"
+            "time": "2018-01-30T19:27:44+00:00"
         },
         {
             "name": "tinymce/tinymce",
-            "version": "4.5.2",
+            "version": "4.7.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tinymce/tinymce-dist.git",
-                "reference": "7b45b6de0b8835d5b54dafbd4a3c5a0e11abc3d6"
+                "reference": "3edc2e2b270fb38e85db083b717ab57a092f77ab"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tinymce/tinymce-dist/zipball/7b45b6de0b8835d5b54dafbd4a3c5a0e11abc3d6",
-                "reference": "7b45b6de0b8835d5b54dafbd4a3c5a0e11abc3d6",
+                "url": "https://api.github.com/repos/tinymce/tinymce-dist/zipball/3edc2e2b270fb38e85db083b717ab57a092f77ab",
+                "reference": "3edc2e2b270fb38e85db083b717ab57a092f77ab",
                 "shasum": ""
             },
             "type": "component",
@@ -213,7 +213,7 @@
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "LGPL-2.1"
+                "LGPL-2.1-only"
             ],
             "description": "Web based JavaScript HTML WYSIWYG editor control.",
             "homepage": "http://www.tinymce.com",
@@ -225,7 +225,7 @@
                 "tinymce",
                 "wysiwyg"
             ],
-            "time": "2017-01-04T13:58:37+00:00"
+            "time": "2018-02-27T13:04:09+00:00"
         },
         {
             "name": "twbs/bootstrap",
@@ -280,16 +280,16 @@
         },
         {
             "name": "twig/twig",
-            "version": "v2.1.0",
+            "version": "v2.4.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "9062992538bc5855a683c6737257bfa18d25a4b8"
+                "reference": "d2117ec118c1ff3d28ccddca8212d82787a4809f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/9062992538bc5855a683c6737257bfa18d25a4b8",
-                "reference": "9062992538bc5855a683c6737257bfa18d25a4b8",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/d2117ec118c1ff3d28ccddca8212d82787a4809f",
+                "reference": "d2117ec118c1ff3d28ccddca8212d82787a4809f",
                 "shasum": ""
             },
             "require": {
@@ -297,18 +297,22 @@
                 "symfony/polyfill-mbstring": "~1.0"
             },
             "require-dev": {
+                "psr/container": "^1.0",
                 "symfony/debug": "~2.7",
-                "symfony/phpunit-bridge": "~3.2"
+                "symfony/phpunit-bridge": "~3.3@dev"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.1-dev"
+                    "dev-master": "2.4-dev"
                 }
             },
             "autoload": {
                 "psr-0": {
                     "Twig_": "lib/"
+                },
+                "psr-4": {
+                    "Twig\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -338,7 +342,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2017-01-11T19:39:01+00:00"
+            "time": "2018-03-03T16:23:01+00:00"
         }
     ],
     "packages-dev": [],

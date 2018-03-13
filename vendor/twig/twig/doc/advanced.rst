@@ -451,7 +451,7 @@ from the token stream (``$this->parser->getStream()``):
   type/value a syntax error is thrown. Otherwise, if the type and value are correct,
   the token is returned and the stream moves to the next token.
 
-* ``look()``: Looks a the next token without consuming it.
+* ``look()``: Looks at the next token without consuming it.
 
 Parsing expressions is done by calling the ``parseExpression()`` like we did for
 the ``set`` tag.
@@ -755,7 +755,7 @@ The simplest way to use methods is to define them on the extension itself::
 
         public function rot13($value)
         {
-            return $rot13Provider->rot13($value);
+            return $this->rot13Provider->rot13($value);
         }
     }
 
@@ -785,10 +785,15 @@ classes must be autoload-able)::
 
     $twig->addRuntimeLoader(new RuntimeLoader());
 
+.. note::
+
+    Twig comes with a PSR-11 compatible runtime loader
+    (``Twig_ContainerRuntimeLoader``).
+
 It is now possible to move the runtime logic to a new
 ``Project_Twig_RuntimeExtension`` class and use it directly in the extension::
 
-    class Project_Twig_RuntimeExtension extends Twig_Extension
+    class Project_Twig_RuntimeExtension
     {
         private $rot13Provider;
 
@@ -799,7 +804,7 @@ It is now possible to move the runtime logic to a new
 
         public function rot13($value)
         {
-            return $rot13Provider->rot13($value);
+            return $this->rot13Provider->rot13($value);
         }
     }
 

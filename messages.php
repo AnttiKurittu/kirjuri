@@ -5,7 +5,13 @@ ksess_verify(3);
 
 $open = isset($_GET['open']) ? $_GET['open'] : '';
 $prefill_msgto = isset($_GET['msgto']) ? $_GET['msgto'] : '';
-$_SESSION['post_cache']['subject'] = urldecode(isset($_GET['subject']) ? $_GET['subject'] : '');
+if (isset($_GET['subject'])) {
+    $_SESSION['post_cache'] = array('subject' => urldecode(isset($_GET['subject'])));
+}
+else {
+  $_SESSION['post_cache'] = array('subject' => '');
+}
+
 $show = isset($_GET['show']) ? $_GET['show'] : '';
 
 foreach ($_POST as $key => $value) // Sanitize all POST data

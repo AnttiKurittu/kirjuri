@@ -46,7 +46,7 @@ class Twig_Node_CheckSecurity extends Twig_Node
             ->write('$functions = ')->repr(array_filter($functions))->raw(";\n\n")
             ->write("try {\n")
             ->indent()
-            ->write("\$this->env->getExtension('Twig_Extension_Sandbox')->checkSecurity(\n")
+            ->write("\$this->extensions['Twig_Extension_Sandbox']->checkSecurity(\n")
             ->indent()
             ->write(!$tags ? "array(),\n" : "array('".implode("', '", array_keys($tags))."'),\n")
             ->write(!$filters ? "array(),\n" : "array('".implode("', '", array_keys($filters))."'),\n")
@@ -56,7 +56,7 @@ class Twig_Node_CheckSecurity extends Twig_Node
             ->outdent()
             ->write("} catch (Twig_Sandbox_SecurityError \$e) {\n")
             ->indent()
-            ->write("\$e->setSourceContext(\$this->getSourceContext());\n\n")
+            ->write("\$e->setSourceContext(\$this->source);\n\n")
             ->write("if (\$e instanceof Twig_Sandbox_SecurityNotAllowedTagError && isset(\$tags[\$e->getTagName()])) {\n")
             ->indent()
             ->write("\$e->setTemplateLine(\$tags[\$e->getTagName()]);\n")
@@ -76,3 +76,5 @@ class Twig_Node_CheckSecurity extends Twig_Node
         ;
     }
 }
+
+class_alias('Twig_Node_CheckSecurity', 'Twig\Node\CheckSecurityNode', false);

@@ -37,8 +37,11 @@ Twig supports array notation
 {% set ary = { (a): 'a', (b): 'b', 'c': 'c', (a ~ b): 'd' } %}
 {{ ary|keys|join(',') }}
 {{ ary|join(',') }}
+
+{# ArrayAccess #}
+{{ array_access['a'] }}
 --DATA--
-return array('bar' => 'bar', 'foo' => array('bar' => 'bar'))
+return array('bar' => 'bar', 'foo' => array('bar' => 'bar'), 'array_access' => new ArrayObject(array('a' =>  'b')))
 --EXPECT--
 1,2
 foo,bar
@@ -59,3 +62,5 @@ FOO,BAR,
 
 1,foo,c,1foo
 a,b,c,d
+
+b

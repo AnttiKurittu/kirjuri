@@ -9,29 +9,27 @@ verify_case_ownership($case_number);
 $kirjuri_database = connect_database('kirjuri-database');
 $query = $kirjuri_database->prepare('SELECT * FROM exam_requests WHERE id=:id AND parent_id=:id LIMIT 1');
 $query->execute(array(
-  ':id' => $case_number,
-));
+        ':id' => $case_number,
+    ));
 $caserow = $query->fetchAll(PDO::FETCH_ASSOC);
 
-if (count($caserow) === 0)
-{
-  header('Location: index.php');
-  die;
+if (count($caserow) === 0) {
+    header('Location: index.php');
+    die;
 }
 
-if (file_exists('logs/cases/uid' . $case_number . '/events.log'))
-{
-  $caselog = array_reverse(file('logs/cases/uid' . $case_number . '/events.log'));
+if (file_exists('logs/cases/uid' . $case_number . '/events.log')) {
+    $caselog = array_reverse(file('logs/cases/uid' . $case_number . '/events.log'));
 }
 else {
-  $caselog = "";
+    $caselog = "";
 }
 
 $_SESSION['message_set'] = false; // Prevent a message from being shown twice.
 echo $twig->render('timeline.twig', array(
-  'caselog' => $caselog,
-  'session' => $_SESSION,
-  'caserow' => $caserow,
-  'settings' => $prefs['settings'],
-  'lang' => $_SESSION['lang'],
-));
+        'caselog' => $caselog,
+        'session' => $_SESSION,
+        'caserow' => $caserow,
+        'settings' => $prefs['settings'],
+        'lang' => $_SESSION['lang'],
+    ));

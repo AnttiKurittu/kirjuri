@@ -8,8 +8,8 @@ verify_case_ownership($case_number);
 
 $query = $kirjuri_database->prepare('SELECT * FROM exam_requests WHERE parent_id = :id AND is_removed != "1" ORDER BY id');
 $query->execute(array(
-  ':id' => $case_number,
-));
+        ':id' => $case_number,
+    ));
 $request_items = $query->fetchAll(PDO::FETCH_ASSOC);
 
 $filename = 'Kirjuri '.$request_items[0]['case_id'].'-'.date('Y', strtotime($request_items[0]['case_added_date'])).' '.$request_items[0]['case_name'];

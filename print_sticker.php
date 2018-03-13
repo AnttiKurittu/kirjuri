@@ -28,19 +28,19 @@ if ($_GET['type'] === 'examination_request') {
 if ($_GET['type'] === 'device') {
     $query = $kirjuri_database->prepare('select parent_id FROM exam_requests WHERE id=:uid');
     $query->execute(array(
-        ':uid' => $_GET['uid'],
-    ));
+            ':uid' => $_GET['uid'],
+        ));
     $parentrow = $query->fetch(PDO::FETCH_ASSOC);
     $parent = $parentrow['parent_id'];
     $query = $kirjuri_database->prepare('select * FROM exam_requests WHERE id=:uid AND id = parent_id LIMIT 1');
     $query->execute(array(
-        ':uid' => $parent,
-    ));
+            ':uid' => $parent,
+        ));
     $parentrow = $query->fetch(PDO::FETCH_ASSOC);
     $query = $kirjuri_database->prepare('select * FROM exam_requests WHERE id=:uid AND id != parent_id LIMIT 1');
     $query->execute(array(
-        ':uid' => $_GET['uid'],
-    ));
+            ':uid' => $_GET['uid'],
+        ));
     $row = $query->fetch(PDO::FETCH_ASSOC);
     $generator = new \Picqer\Barcode\BarcodeGeneratorSVG();
     echo $generator->getBarcode('UID'.$row['id'], $generator::TYPE_CODE_128);

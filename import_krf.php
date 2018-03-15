@@ -182,7 +182,7 @@ if (!empty($case_array['children'])) {
     }
 }
 
-if (isset($case_array['files'])) {
+if (!empty($case_array['files'])) {
     $i = 0;
     foreach ($case_array['files'] as $file) {
         foreach ($file as $key => $value) {

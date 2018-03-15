@@ -509,8 +509,10 @@
         "device_type_12": "Navigator",
         "device_type_13": "Network device",
         "device_type_14": "Mobile broadband",
-        "device_type_15": "Data",
-        "device_type_16": "Other device"
+        "device_type_15": "Drone",
+        "device_type_16": "Smartwatch",
+        "device_type_17": "Data",
+        "device_type_18": "Other device"
     },
     "media_objs": {
         "media_type_1": "Internal HDD",
@@ -525,6 +527,9 @@
         "media_type_10": "SIM-card",
         "media_type_11": "Objective",
         "media_type_12": "Data",
-        "media_type_13": "Other media"
+        "media_type_13": "User account",
+        "media_type_14": "Database",
+        "media_type_15": "Log file",
+        "media_type_16": "Other media"
     }
 }

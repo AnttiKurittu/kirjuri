@@ -1,8 +1,16 @@
+# SECURITY UPDATE (7.5.2021)
+
+As this project has been inactive for years, it was inevitable that some of the dependencies will become out of date. There are several security vulnerabilities in the dependencies involved, and some of the dependencies, like Twig, don't play nice with the newest version of PHP. IF you wish to install and use Kirjuri, please update the dependencies manually & make sure you install it in a safe environment. The original advice was to install in an [air-gapped environment](https://en.wikipedia.org/wiki/Air_gap_(networking) and this advice still stands.
+
+As always, I can not guarantee the security of this software, and any users will be solely responsible of configuring it securely before using. There have been several attempts by well-meaning individuals to develop this project further, but they have all been deterred from it by the quality of the code and the lack of proper commenting.
+
+**Use Kirjuri at your own risk.**
+
 # Kirjuri
 
 Kirjuri is a simple php/mysql web application for managing physical forensic evidence items. It is intended to be used as a workflow tool from receiving, booking, note-taking and possibly reporting findings. It simplifies and helps in case management when dealing with a large (or small!) number of devices submitted for forensic analysis. Kirjuri requires PHP7.
 
-[See the official Kirjuri home page for more details.](https://kirjuri.kurittu.org/)
+[See the official Kirjuri home page for more details.](https://kurittu.org/2018/06/kirjuri/)
 
 NOTICE: Kirjuri is no longer actively developed since 09/2017, as I don't have time for this project anymore. If you are interested in developing this tool further, please contact me.
 

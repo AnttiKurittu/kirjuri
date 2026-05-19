@@ -1,4 +1,8 @@
-# SECURITY UPDATE (7.5.2021)
+# Kirjuri has been deprecated.
+
+I have started a new project that covers most of the use cases that Kirjuri handles and a lot more. Check out the [DFIRe case management application](https://dfire.fi/) for all your case and evidence management needs.
+
+## SECURITY UPDATE (7.5.2021)
 
 As this project has been inactive for years, it was inevitable that some of the dependencies will become out of date. There are several security vulnerabilities in the dependencies involved, and some of the dependencies, like Twig, don't play nice with the newest version of PHP. IF you wish to install and use Kirjuri, please update the dependencies manually & make sure you install it in a safe environment. The original advice was to install in an [air-gapped environment](https://en.wikipedia.org/wiki/Air_gap_(networking) and this advice still stands.
 
